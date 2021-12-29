@@ -1,0 +1,4 @@
+Manufacturer and model: Toyota Corolla
+Year: 1996
+Starting price $1500.00
+Final price $1369.50
