@@ -1,0 +1,98 @@
+<html>
+	<head>
+		<title>
+			Web page
+		</title>
+	</head>
+
+	<body>
+		<h3>
+			The start
+		</h3>
+		<hr align="left" width="37%"/>
+		<h4>
+			System startup
+		</h4>
+		<p>
+		When system starts, the first process to call is <i>init</i>
+		</p>
+		<p>
+		If the last in <i>passwd</i> file is <i>/bin/bash</i> or null, then the Bash shell starts up.
+		</p>
+		<p>
+		The order of processing the command line:
+		</p>
+
+		<h4>
+			Parsing the command line
+		</h4>
+		<ol>
+			<li>
+				History substitution (if needed)
+			</li>
+			<li>
+				Command line is broken up into tokens
+			</li>
+			<li>
+				Histor is updated if needed
+			</li>
+			<li>
+				Quotes are processed
+			</li>
+			<li>
+				Alias substitution and functions are defined (if applicable)
+			</li>
+			<li>
+				Redirection, background and pipes are set up
+			</li>
+			<li>
+				Variable substitution (<big>$user</big>, <strong>$name</strong>, etc.) is performed
+			</li>
+			<li>
+				Command substitution (echo "Today is `date`") is performed
+			</li>
+			<li>
+				Filename substitution, called globbing (cat abc.??, rm *.c, etc.) is performed
+			</li>
+			<li>
+				Command is executed.
+			</li>
+		</ol>
+
+		<h4>
+			See the processes.
+		</h4>
+		<p>
+		The <i>ps</i> command.
+		The <i>pstree</i> command.
+		</p>
+
+		<h4>
+			System calls.
+		</h4>
+		<p>
+			<i>fork, wait, exec, exit</i>
+		</p>
+		<h4>
+			Pipes.
+		</h4>
+		<p>
+		One command writes to the buffer, another command reads from the buffer.
+		</p>
+
+		<p>
+			<i>who | wc</i>
+		</p>
+
+		<h4>
+			Tmux commands.
+		</h4>
+		<div>
+			<span style="color:blue">tmux, tmux new, tmux new-session</span>
+		</div>
+		<div>
+			<span style="color:blue">tmux new -s title, tmux new-session</span>
+		</div>
+
+	</body>
+</html>
