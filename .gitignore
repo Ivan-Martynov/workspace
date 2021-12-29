@@ -1,0 +1,29 @@
+# Prerequisites
+*.d
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Compiled object files
+*.o
+*.obj
+
+# Compiled dynamic libraries
+*.so
+*.dll
+
+# Compiled static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Folders
+cpp/computer_graphics/
+cpp/stroustrup_exercises/
+cpp/tutorials/
+unix/unix_and_system_programming_CT50A3000/
