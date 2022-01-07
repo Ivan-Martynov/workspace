@@ -1,0 +1,6 @@
+tmux new-session -s basic -n editor -d
+tmux split-window -h -p 33 -t basic
+tmux split-window -h -t basic
+tmux select-layout -t basic even-horizontal
+tmux new-window -n console -t basic
+tmux select-window -t basic:1

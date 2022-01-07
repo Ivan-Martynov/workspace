@@ -1,0 +1,11 @@
+!! xfontsel fc-list or /usr/share/fonts/X11/misc/fonts.alias
+
+#define font1 Courier 10 Pitch
+#define font2 Ubuntu Mono
+#define font3 DejaVu Sans Mono
+#define font4 FreeMono
+
+URxvt*font: xft:font1:size=12:antialias=true:minspace=false
+URxvt*boldFont: xft:font1:bold:size=12:antialias=true
+URxvt*italicFont: xft:font1:italic:size=12:antialias=true
+URxvt*boldItalicFont: xft:font1:bold:italic:size=12:antialias=true
