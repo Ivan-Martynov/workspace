@@ -1,1 +1,5 @@
-#include ".config/urxvt"
+#include ".config/xft"
+#include ".config/urxvt/urxvt_common"
+#include ".config/urxvt/urxvt_colors"
+#include ".config/urxvt/urxvt_scrolling"
+#include ".config/urxvt/urxvt_font"

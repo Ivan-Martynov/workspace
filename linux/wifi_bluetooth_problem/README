@@ -1,0 +1,3 @@
+Had a problem when Internet via wifi worked bad when bluetooth headphones were on. Found one solution:
+1. Add next line to /etc/modprobe.d/iwlwifi.conf:
+options iwlwifi bt_coex_active=0 swcrypto=1 11n_disable=8

@@ -1,7 +1,7 @@
 !! xfontsel fc-list or /usr/share/fonts/X11/misc/fonts.alias
 
-#define font1 Courier 10 Pitch
-#define font2 Ubuntu Mono
+#define font1 Ubuntu Mono
+#define font2 Courier 10 Pitch
 #define font3 DejaVu Sans Mono
 #define font4 FreeMono
 

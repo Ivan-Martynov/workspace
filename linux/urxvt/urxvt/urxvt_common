@@ -1,0 +1,20 @@
+URxvt.depth: 32
+URxvt.geometry: 80x49
+URxvt.transparent: false
+URxvt.fading: 0
+URxvt.loginShell: true
+URxvt.saveLines: 50
+URxvt.lineSpace: 0
+
+! Perl extensions
+URxvt.perl-ext-common: default,matcher
+URxvt.matcher.button:  1
+URxvt.urlLauncher: opera
+
+! Cursor
+URxvt.cursorBlink:          false
+URxvt.cursorColor:          #657b83
+URxvt.cursorUnderline:      false
+
+! Pointer
+URxvt.pointerBlank:         true

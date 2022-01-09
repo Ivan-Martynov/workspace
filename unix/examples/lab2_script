@@ -1,0 +1,5 @@
+1i\
+PERSONNEL FILE
+s/:[0-9]*500$//
+s/\(^[A-Za-z]*\) \([A-Za-z]*\)/\2 \1/
+$a\THE END
