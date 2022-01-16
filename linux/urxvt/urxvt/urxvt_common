@@ -1,5 +1,5 @@
 URxvt.depth: 32
-URxvt.geometry: 80x49
+URxvt.geometry: 85x46
 URxvt.transparent: false
 URxvt.fading: 0
 URxvt.loginShell: true
