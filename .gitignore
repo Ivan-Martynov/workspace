@@ -1,27 +1,3 @@
-# Prerequisites
-*.d
-
-# Precompiled headers
-*.gch
-*.pch
-
-# Compiled object files
-*.o
-*.obj
-
-# Compiled dynamic libraries
-*.so
-*.dll
-
-# Compiled static libraries
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
 # Folders
 cpp/computer_graphics/
 cpp/stroustrup_exercises/

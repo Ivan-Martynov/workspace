@@ -1,0 +1,28 @@
+# Global ignore settings
+
+# Prerequisites
+*.d
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Compiled files
+*.i
+*.s
+*.o
+*.obj
+
+# Compiled dynamic libraries
+*.so
+*.dll
+
+# Compiled static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+

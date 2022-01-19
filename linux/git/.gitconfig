@@ -1,0 +1,5 @@
+[user]
+	name = Ivan-Martynov
+	email = ivan.a.martynov@gmail.com
+[core]
+	excludesFile = /home/samsung/.gitignore_global
