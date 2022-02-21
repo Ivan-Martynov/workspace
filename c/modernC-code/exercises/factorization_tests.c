@@ -85,7 +85,11 @@ int main(int argc, char* argv[argc + 1]) {
 
 	if (argc > 1) {
 		for (size_t i = 1; i < argc; ++i) {
-			prime_factorization(atoi(argv[i]));
+            int j = atoi(argv[i]);
+            if (j < 0) {
+                j = -j;
+            }
+			prime_factorization(j);
 		}
 	} else {
 		test_factorization();

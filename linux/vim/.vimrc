@@ -9,6 +9,7 @@ set showmatch                  " Show matching words during a search
 set gcr=a:blinkon0             " Disable cursor blink
 set autoread                   " Reload files changed outside
 set mouse=a                    " Mouse
+set hidden                     " Switch buffers without saving
 
 " set UTF-8 encoding
 set enc=utf-8
@@ -62,4 +63,7 @@ set lazyredraw " Redraw lazily
 
 set background=light
 colorscheme solarized " Choose colorscheme
+
+" cursor
+" :autocmd InsertEnter,InsertLeave * set cul!
 

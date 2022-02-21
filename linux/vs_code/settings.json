@@ -1,0 +1,10 @@
+{
+    "workbench.colorTheme": "Solarized Light",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.rulers": [80],
+    "editor.fontFamily": "Fira Code Retina, Cascadia Mono, 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontLigatures": true,
+    "extensions.ignoreRecommendations": true
+}

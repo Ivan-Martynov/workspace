@@ -1,0 +1,46 @@
+#include <stdio.h>
+
+#include "printmode.h"
+
+/*
+* Testing color output
+*/
+void display_color_test() {
+    set_printmode_fg_bg(RED_C, BLACK_C);
+    printf("Red text on black background");
+    reset_printmode();
+    printf("\n");
+
+    set_printmode_fg_bg(WHITE_C, BLUE_C);
+    printf("White text on blue background");
+    reset_printmode();
+    printf("\n");
+
+    set_printmode_fg_bg(BLACK_C, GREEN_C);
+    printf("Black text on green background");
+    reset_printmode();
+    printf("\n");
+
+    set_printmode_fg_bg(MAGENTA_C, YELLOW_C);
+    printf("Magenta text on yellow background");
+    reset_printmode();
+    printf("\n");
+
+    set_printmode_fg(BLUE_C);
+    printf("Blue text");
+    reset_printmode();
+    printf("\n");
+
+    set_printmode_fg(CYAN_C);
+    printf("Cyan text");
+    reset_printmode();
+    printf("\n");
+
+    printf("Back to defaults\n");
+}
+
+int main(int argc, const char* argv[static argc]) {
+    display_color_test();
+
+    return 0;
+}

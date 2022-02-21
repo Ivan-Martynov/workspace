@@ -25,10 +25,39 @@ void print_string(const void* const arg) {
 	printf("%s ", *(const char** const)arg);
 }
 
+void random_array(const size_t n)
+{
+	srand(time(NULL));
+
+	double array[n];
+
+	for (size_t i = 0; i < n; ++i)
+	{
+		array[i] = rand();
+	}
+
+	clock_t start = clock();
+	merge_sort_d(array, 0, n - 1);
+	start = clock() - start;
+
+	printf("Is random array[%zu] merge sorted? %d; time: %f\n",
+		   n,
+		   is_sorted_general(array, n, sizeof(double), compare_doubles),
+		   (double)start / CLOCKS_PER_SEC);
+	//quick_sort_d(array, 0, count - 1);
+	//for (size_t i = 0; i < n; ++i)
+	//{
+	//	printf("%f ", array[i]);
+	//}
+	//puts("");
+}
 
 int main() {
 	printf("C version: %ld\n", __STDC_VERSION__);
 	fflush(stdout);
+
+	const size_t random_array_size = 1E5;
+	random_array(random_array_size);
 	
 	clock_t start = clock();
 	time_t t1;
@@ -57,7 +86,7 @@ int main() {
 	strings[0] = str1;
 	strings[1] = str2;
 
-	for (size_t i = 0; i < 1E4; ++i) {
+	for (size_t i = 0; i < 1; ++i) {
 		print_array_general(strings, string_count, sizeof(const char*), print_string);
 		printf("%d\n", is_sorted_general(strings, string_count, sizeof(const char*), compare_strings));
 		bubble_sort_general(strings, string_count, sizeof(const char*), compare_strings);
