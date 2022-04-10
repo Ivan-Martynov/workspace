@@ -41,7 +41,7 @@ void time_to_loop(const size_t n)
         clock_count += clock() - start;
     }
 
-    printf("Bummer, it takes nothing for me. To be precise ");
+    printf("Bummer, it takes nothing for me... To be precise, ");
     set_printmode_fg(BLUE_C);
     printf("%ld ", clock_count);
     reset_printmode();
