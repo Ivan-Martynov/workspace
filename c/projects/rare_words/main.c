@@ -64,7 +64,7 @@ struct rare_word make_word(
 
 size_t getline_from_file(char** restrict line, size_t* restrict len, FILE* restrict file_p)
 {
-    if (line == NULL || len == 0 || file_p == NULL)
+    if ((line == NULL) || (len == 0) || (file_p == NULL))
     {
         errno = EINVAL;
         return -1;
@@ -109,7 +109,8 @@ size_t getline_from_file(char** restrict line, size_t* restrict len, FILE* restr
             return -1;
         }
 
-        memcpy(*line + len_used, buffer, buf_len);
+        //memcpy(*line + len_used, buffer, buf_len);
+        strcat(*line, buffer);
         len_used += buf_len;
         (*line)[len_used] = '\0';
 
@@ -128,7 +129,7 @@ void read_from_file(const char* filepath)
 
     if (file_p == NULL)
     {
-        printf("Unable to open file %s\n", filepath);
+        printf("Unable to open file %s: %s\n", filepath, strerror(errno));
         return;
     }
 
