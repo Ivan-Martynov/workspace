@@ -23,9 +23,8 @@ void set_printmode_fg(const enum color_code foreground_color);
 */
 void set_printmode_bg(const enum color_code background_color);
 
-void set_printmode_fg_bg(
-        const enum color_code foreground_color,
-        const enum color_code background_color);
+void set_printmode_fg_bg(enum color_code foreground_color,
+                         enum color_code background_color);
 
 /*
  * Reset to defaults

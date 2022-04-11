@@ -8,9 +8,9 @@
 void display_color_test() {
 #ifdef _WIN32
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(__CYGWIN__)
-    printf("Windows\n");
+	printf("Windows\n");
 #else
-    printf("Not Windows\n");
+	printf("Not Windows\n");
 
     set_printmode_fg_bg(RED_C, BLACK_C);
     printf("Red text on black background");

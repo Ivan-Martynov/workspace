@@ -8,28 +8,28 @@ find the sum of the even-valued terms.
 #include <stdio.h>
 
 void print_fib() {
-    const int limit = 4000000;
-    int a = 1;
-    int b = 2;
-    int sum = b;
+  const int limit = 4000000;
+  int a = 1;
+  int b = 2;
+  int sum = b;
 
-    int i = 0;
-    while (b < limit)
-    {
-        const int temp = b;
-        b += a;
-        if (++i == 3) {
-            sum += b;
-            i = 0;
-        }
-        a = temp;
+  int i = 0;
+  while (b < limit)
+  {
+    const int temp = b;
+    b += a;
+    if (++i == 3) {
+      sum += b;
+      i = 0;
     }
+    a = temp;
+  }
 
-    printf("Sum = %d\n", sum);
+  printf("Sum = %d\n", sum);
 }
 
 int main() {
-    print_fib();
+  print_fib();
 
-    return 0;
+  return 0;
 }
