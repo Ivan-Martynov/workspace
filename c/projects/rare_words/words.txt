@@ -9,3 +9,5 @@ Description: Accismus is a useful term for pretending to be disinterested in som
 Origin: Via Latin accismus from Ancient Greek ἀκκισμός (akkismos, “prudery”).
 
 Example: "I know you want that donut. You're just displaying accismus by pretending you don't."
+
+Добавим немного русских слов.
