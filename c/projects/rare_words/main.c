@@ -1,3 +1,9 @@
+#ifdef __STDC_ALLOC_LIB__
+#define __STDC_WANT_LIB_EXT2__ 1
+#else
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -86,9 +92,16 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
 
     while (fgetws(buffer, CHUNK_SIZE, stream) != NULL)
     {
-        size_t buf_len = wcslen(buffer);
+        size_t buf_len = wcslen(buffer) + 1;
 
-        if (len > SIZE_MAX - buf_len)
+        if (buffer[buf_len - 1] == L'\0')
+        {
+            //wprintf(L"Doing good");
+        }
+
+        //wprintf(L"Buffer size: %zu\n, %C\n", buf_len, buffer[buf_len - 2]);
+
+        if (len > SIZE_MAX - CHUNK_SIZE)
         {
             if (line != NULL)
             {
@@ -99,27 +112,88 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
         }
         else
         {
-            len += buf_len + 1;
+            len += CHUNK_SIZE;
         }
 
-        if ((line = realloc(line, len * sizeof(*line))) == NULL)
+        wchar_t* temp_buf = realloc(line, len * sizeof(*line));
+        if (temp_buf == NULL)
+        //if ((line = realloc(line, len * sizeof(*line))) == NULL)
         {
+            if (line != NULL)
+            {
+                free(line);
+            }
+
             return NULL;
         }
+        else
+        {
+            line = temp_buf;
+        }
 
-        wcscat(line, buffer);
+        //wcscat(line, buffer);
+        memcpy(line + wcslen(line), buffer, buf_len * sizeof(*line));
         line[len] = L'\0';
 
-        if (buffer[buf_len - 1] == L'\n')
+        if (line != NULL)
+        {
+          wprintf(L"Line size: %zu, %zu\n", wcslen(line), buf_len);
+        }
+
+        if (buffer[buf_len - 2] == L'\n')
+        //if (line[len - 1] == L'\n')
         {
             return line;
         }
     }
 
-    return NULL;
+    //return NULL;
+    return line;
 }
 
-size_t getline_from_file(char** restrict line, size_t* restrict len,
+long int getwdelim_from_file(
+    wchar_t** restrict line_ptr,
+    size_t* restrict len,
+    FILE* stream)
+{
+
+    if ((line_ptr == NULL) || (len == NULL))
+    {
+        return -1;
+    }
+
+    if ((*line_ptr == NULL) || (*len < CHUNK_SIZE))
+    {
+        *len = CHUNK_SIZE;
+        if ((*line_ptr = malloc(CHUNK_SIZE * sizeof(**line_ptr))) == NULL)
+        {
+            return -1;
+        }
+    }
+
+    (*line_ptr)[0] = L'\0';
+
+    //long int current_len = 0;
+    while (true)
+    {
+        if (ferror(stream))
+        {
+            return -1;
+        }
+
+        wint_t c = fgetwc(stream);
+        if (c == WEOF)
+        {
+            break;
+        }
+
+        //size_t needed = current_len + 1;
+    }
+
+    return -1;
+}
+
+long long int getline_from_file(char** restrict line, size_t* restrict len,
                          FILE* restrict file_p)
 {
     if ((line == NULL) || (len == NULL) || (file_p == NULL))
@@ -180,13 +254,14 @@ size_t getline_from_file(char** restrict line, size_t* restrict len,
     return -1;
 }
 
-int getwline_from_file(wchar_t** restrict line, size_t* len, FILE* file_p)
+long int getwline_from_file(wchar_t** restrict line, size_t* restrict len, FILE* restrict file_p)
 {
     if ((line == NULL) || (len == NULL) || (file_p == NULL))
     {
-        errno = EINVAL;
         return -1;
     }
+
+    const size_t element_size = sizeof(**line);
 
     wchar_t buffer[CHUNK_SIZE];
 
@@ -194,9 +269,8 @@ int getwline_from_file(wchar_t** restrict line, size_t* len, FILE* file_p)
     {
         *len = CHUNK_SIZE;
 
-        if ((*line = malloc((*len) * sizeof(**line))) == NULL)
+        if ((*line = malloc((*len) * element_size)) == NULL)
         {
-            errno = ENOMEM;
             return -1;
         }
     }
@@ -212,7 +286,6 @@ int getwline_from_file(wchar_t** restrict line, size_t* len, FILE* file_p)
         {
             if (*len > SIZE_MAX >> 1)
             {
-                errno = EOVERFLOW;
                 return -1;
             }
             else
@@ -221,31 +294,42 @@ int getwline_from_file(wchar_t** restrict line, size_t* len, FILE* file_p)
             }
         }
 
-        if ((*line = realloc(*line, (*len) * sizeof(**line))) == NULL)
+        if ((*line = realloc(*line, (*len) * element_size)) == NULL)
         {
-            errno = ENOMEM;
             return -1;
         }
 
-        wcscat(*line, buffer);
+        memcpy(*line + len_used, buffer, buf_len * element_size);
         len_used += buf_len;
         (*line)[len_used] = L'\0';
 
         if ((*line)[len_used - 1] == L'\n')
         {
-            return len_used;
+          (*line)[len_used - 1] = L'\0';
+          return len_used;
         }
     }
 
     return -1;
 }
 
+void scan_by_wchar(FILE* restrict stream)
+{
+    wint_t c;
+    while((c = getwc(stream)) != WEOF)
+    {
+        putwchar(c);
+    }
+}
+
 void wread_from_file(const char* filepath)
 {
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, "en_US.UTF-8");
+    // Can be "" for the user-preferred locale or "C" for the minimal locale
+    //setlocale(LC_ALL, "");
 
-    //FILE* file_p = fopen(filepath, "r, css=UTF-8");
-    FILE* file_p = fopen(filepath, "r");
+    FILE* file_p = fopen(filepath, "r, css=UTF-8");
+    //FILE* file_p = fopen(filepath, "r");
 
     if (file_p == NULL)
     {
@@ -253,19 +337,23 @@ void wread_from_file(const char* filepath)
         return;
     }
 
+#if 0
+    scan_by_wchar(file_p);
+#else
     wchar_t* line = NULL;
     size_t len = 0;
 
-    while ((line = wgetline_from_file(file_p)) != NULL)
-    //while (getwline_from_file(&line, &len, file_p) != -1)
+    //while ((line = wgetline_from_file(file_p)) != NULL)
+    while (getwline_from_file(&line, &len, file_p) != -1)
     {
-        wprintf(L"Line: %ls", line);
+      wprintf(L"Line: %ls\n", line);
     }
 
     if (line != NULL)
     {
         free(line);
     }
+#endif
 
     fclose(file_p);
 }
@@ -283,7 +371,8 @@ void read_from_file(const char* filepath)
     char* line = NULL;
     size_t len = 0;
 
-    while (getline_from_file(&line, &len, file_p) != -1)
+    while (getline(&line, &len, file_p) != -1)
+    //while (getline_from_file(&line, &len, file_p) != -1)
     {
         printf("Line: %s", line);
     }
@@ -296,7 +385,7 @@ void read_from_file(const char* filepath)
     fclose(file_p);
 }
 
-int main(int argc, char *agrv[])
+int main()
 {
 #if 0
     const char* term = "Accismus";
@@ -317,6 +406,8 @@ int main(int argc, char *agrv[])
 
   //read_from_file("words.txt");
   wread_from_file("words.txt");
+
+  //getchar();
 
   return 0;
 }
