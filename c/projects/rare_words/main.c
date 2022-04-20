@@ -7,6 +7,8 @@
 #include <locale.h>
 #include <errno.h>
 
+#include "file_line_reader.h"
+
 #define CHUNK_SIZE 16
 
 struct rare_word_wide
@@ -42,6 +44,34 @@ void free_char_pointer(char* p)
     }
 }
 
+bool nullify_char(char* line, const char ch)
+{
+    char* res = strchr(line, ch);
+    if (res != NULL)
+    {
+        line[res - line] = '\0';
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool nullify_wchar(wchar_t* const line, const wchar_t ch)
+{
+    wchar_t* res = wcschr(line, ch);
+    if (res != NULL)
+    {
+        line[res - line] = L'\0';
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void free_rare_word(struct rare_word* word)
 {
     free_char_pointer(word->term);
@@ -50,14 +80,33 @@ void free_rare_word(struct rare_word* word)
     free_char_pointer(word->description);
 }
 
-void allocate_and_copy(char** dest, const char* src)
+void allocate_and_copy(char** restrict dest, const char* restrict const src)
 {
-    size_t len = strlen(src) + 1;
-    *dest = malloc(sizeof(*dest) * len);
-
-    if (*dest != NULL)
+    if ((*dest = malloc((strlen(src) + 1) * sizeof(**dest))) != NULL)
     {
         strcpy(*dest, src);
+    }
+}
+
+void reallocate_and_cat(char** restrict dest, const char* restrict const src)
+{
+  size_t src_len = strlen(src) + 1;
+  size_t dest_len = (*dest == NULL) ? 0 : strlen(*dest);
+
+  if ((*dest = realloc(*dest, (dest_len + src_len) * sizeof(**dest))) != NULL)
+  {
+    strcat(*dest, src);
+  }
+}
+
+void wreallocate_and_cat(wchar_t** restrict dest, const wchar_t* restrict const src)
+{
+    size_t src_len = wcslen(src) + 1;
+    size_t dest_len = (*dest == NULL) ? 0 : wcslen(*dest);
+
+    if ((*dest = realloc(*dest, (dest_len + src_len ) * sizeof(**dest))) != NULL)
+    {
+        wcscat(*dest, src);
     }
 }
 
@@ -67,11 +116,12 @@ struct rare_word make_word(
     const char* description
     )
 {
-    struct rare_word result;
+    struct rare_word result = { NULL };
 
     allocate_and_copy(&result.term, term);
     allocate_and_copy(&result.origin, origin);
-    allocate_and_copy(&result.description, description);
+    //allocate_and_copy(&result.description, description);
+    reallocate_and_cat(&result.description, description);
 
     return result;
 }
@@ -80,15 +130,45 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
 {
     wchar_t* line = NULL;
 
-    size_t len = 0;
+    //size_t len = 0;
 
     wchar_t buffer[CHUNK_SIZE];
 
     while (fgetws(buffer, CHUNK_SIZE, stream) != NULL)
     {
-        size_t buf_len = wcslen(buffer);
+        wreallocate_and_cat(&line, buffer);
+        if (nullify_wchar(line, L'\n'))
+        {
+          nullify_wchar(line, L'\r');
+          return line;
+        }
+        //size_t n = wcslen(line);
+        //if ((n > 0) && (line[n - 1] == L'\n'))
+        //{
+        //  nullify_wchar(line, L'\n');
+        //  nullify_wchar(line, L'\r');
+        //  return line;
+        //}
+        //if ((n > 0) && (line[n - 1] == L'\n'))
+        //{
+          //if ((n > 1) && (line[n - 2] == L'\r')) {
+          //  line[n - 2] = L'\0';
+          //  }
+          //  line[n - 1] = L'\0';
 
-        if (len > SIZE_MAX - buf_len)
+          //  return line;
+       // }
+#if 0
+        size_t buf_len = wcslen(buffer) + 1;
+
+        if (buffer[buf_len - 1] == L'\0')
+        {
+            //wprintf(L"Doing good");
+        }
+
+        //wprintf(L"Buffer size: %zu\n, %C\n", buf_len, buffer[buf_len - 2]);
+
+        if (len > SIZE_MAX - CHUNK_SIZE)
         {
             if (line != NULL)
             {
@@ -99,168 +179,71 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
         }
         else
         {
-            len += buf_len + 1;
+            len += CHUNK_SIZE;
         }
 
-        if ((line = realloc(line, len * sizeof(*line))) == NULL)
+        wchar_t* temp_buf = realloc(line, len * sizeof(*line));
+        if (temp_buf == NULL)
+        //if ((line = realloc(line, len * sizeof(*line))) == NULL)
         {
+            if (line != NULL)
+            {
+                free(line);
+            }
+
             return NULL;
         }
+        else
+        {
+            line = temp_buf;
+        }
 
-        wcscat(line, buffer);
+        //wcscat(line, buffer);
+        memcpy(line + wcslen(line), buffer, buf_len * sizeof(*line));
         line[len] = L'\0';
 
-        if (buffer[buf_len - 1] == L'\n')
+        if (line != NULL)
+        {
+          wprintf(L"Line size: %zu, %zu\n", wcslen(line), buf_len);
+        }
+
+        if (buffer[buf_len - 2] == L'\n')
+        //if (line[len - 1] == L'\n')
         {
             return line;
         }
+#endif
     }
 
-    return NULL;
-}
-
-size_t getline_from_file(char** restrict line, size_t* restrict len,
-                         FILE* restrict file_p)
-{
-    if ((line == NULL) || (len == NULL) || (file_p == NULL))
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    char buffer[CHUNK_SIZE];
-
-    if ((*line == NULL) || (*len < sizeof(buffer)))
-    {
-        *len = sizeof(buffer);
-
-        if ((*line = malloc(*len)) == NULL)
-        {
-            errno = ENOMEM;
-            return -1;
-        }
-    }
-
-    (*line)[0] = '\0';
-
-    while (fgets(buffer, sizeof(buffer), file_p) != NULL)
-    {
-        size_t len_used = strlen(*line);
-        size_t buf_len = strlen(buffer);
-
-        if (*len - len_used < buf_len)
-        {
-            if (*len > SIZE_MAX >> 1)
-            {
-                errno = EOVERFLOW;
-                return -1;
-            }
-            else
-            {
-                (*len) <<= 1;
-            }
-        }
-
-        if ((*line = realloc(*line, (*len) * sizeof(**line))) == NULL)
-        {
-            errno = ENOMEM;
-            return -1;
-        }
-
-        strcat(*line, buffer);
-        len_used += buf_len;
-        (*line)[len_used] = '\0';
-
-        if ((*line)[len_used - 1] == '\n')
-        {
-            return len_used;
-        }
-    }
-
-    return -1;
-}
-
-int getwline_from_file(wchar_t** restrict line, size_t* len, FILE* file_p)
-{
-    if ((line == NULL) || (len == NULL) || (file_p == NULL))
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    wchar_t buffer[CHUNK_SIZE];
-
-    if ((*line == NULL) || (*len < CHUNK_SIZE))
-    {
-        *len = CHUNK_SIZE;
-
-        if ((*line = malloc((*len) * sizeof(**line))) == NULL)
-        {
-            errno = ENOMEM;
-            return -1;
-        }
-    }
-
-    (*line)[0] = L'\0';
-
-    while (fgetws(buffer, CHUNK_SIZE, file_p) != NULL)
-    {
-        size_t len_used = wcslen(*line);
-        size_t buf_len = wcslen(buffer);
-
-        if (*len - len_used < buf_len)
-        {
-            if (*len > SIZE_MAX >> 1)
-            {
-                errno = EOVERFLOW;
-                return -1;
-            }
-            else
-            {
-                (*len) <<= 1;
-            }
-        }
-
-        if ((*line = realloc(*line, (*len) * sizeof(**line))) == NULL)
-        {
-            errno = ENOMEM;
-            return -1;
-        }
-
-        wcscat(*line, buffer);
-        len_used += buf_len;
-        (*line)[len_used] = L'\0';
-
-        if ((*line)[len_used - 1] == L'\n')
-        {
-            return len_used;
-        }
-    }
-
-    return -1;
+    //return NULL;
+    return line;
 }
 
 void wread_from_file(const char* filepath)
 {
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, "en_US.UTF-8");
+    // Can be "" for the user-preferred locale or "C" for the minimal locale
+    //setlocale(LC_ALL, "");
 
-    //FILE* file_p = fopen(filepath, "r, css=UTF-8");
-    FILE* file_p = fopen(filepath, "r");
+    FILE* file_p = fopen(filepath, "r, css=UTF-8");
+    //FILE* file_p = fopen(filepath, "r");
+    //fwide(file_p, -1);
 
     if (file_p == NULL)
     {
-        printf("Unable to open file %s: %s\n", filepath, strerror(errno));
+        wprintf(L"Unable to open file %s: %s\n", filepath, strerror(errno));
         return;
     }
 
     wchar_t* line = NULL;
-    size_t len = 0;
+    //size_t len = 0;
 
     while ((line = wgetline_from_file(file_p)) != NULL)
     //while (getwline_from_file(&line, &len, file_p) != -1)
     {
-        wprintf(L"Line: %ls", line);
+      wprintf(L"Line: %ls: %zu\n", line, wcslen(line));
     }
+    //wprintf(L"Line: %ls\n", line);
 
     if (line != NULL)
     {
@@ -273,6 +256,7 @@ void wread_from_file(const char* filepath)
 void read_from_file(const char* filepath)
 {
     FILE* file_p = fopen(filepath, "r");
+    fwide(file_p, 1);
 
     if (file_p == NULL)
     {
@@ -287,6 +271,7 @@ void read_from_file(const char* filepath)
     {
         printf("Line: %s", line);
     }
+    printf("Line: %s", line);
 
     if (line != NULL)
     {
@@ -296,7 +281,7 @@ void read_from_file(const char* filepath)
     fclose(file_p);
 }
 
-int main(int argc, char *agrv[])
+int main()
 {
 #if 0
     const char* term = "Accismus";
@@ -315,8 +300,12 @@ int main(int argc, char *agrv[])
     free_rare_word(&word);
 #endif
 
+#if 1
   //read_from_file("words.txt");
   wread_from_file("words.txt");
+#endif
 
-  return 0;
+    // getchar();
+
+    return 0;
 }
