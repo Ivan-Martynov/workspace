@@ -44,6 +44,34 @@ void free_char_pointer(char* p)
     }
 }
 
+bool nullify_char(char* line, const char ch)
+{
+    char* res = strchr(line, ch);
+    if (res != NULL)
+    {
+        line[res - line] = '\0';
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool nullify_wchar(wchar_t* const line, const wchar_t ch)
+{
+    wchar_t* res = wcschr(line, ch);
+    if (res != NULL)
+    {
+        line[res - line] = L'\0';
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void free_rare_word(struct rare_word* word)
 {
     free_char_pointer(word->term);
@@ -52,14 +80,33 @@ void free_rare_word(struct rare_word* word)
     free_char_pointer(word->description);
 }
 
-void allocate_and_copy(char** dest, const char* src)
+void allocate_and_copy(char** restrict dest, const char* restrict const src)
 {
-    size_t len = strlen(src) + 1;
-    *dest = malloc(sizeof(*dest) * len);
-
-    if (*dest != NULL)
+    if ((*dest = malloc((strlen(src) + 1) * sizeof(**dest))) != NULL)
     {
         strcpy(*dest, src);
+    }
+}
+
+void reallocate_and_cat(char** restrict dest, const char* restrict const src)
+{
+  size_t src_len = strlen(src) + 1;
+  size_t dest_len = (*dest == NULL) ? 0 : strlen(*dest);
+
+  if ((*dest = realloc(*dest, (dest_len + src_len) * sizeof(**dest))) != NULL)
+  {
+    strcat(*dest, src);
+  }
+}
+
+void wreallocate_and_cat(wchar_t** restrict dest, const wchar_t* restrict const src)
+{
+    size_t src_len = wcslen(src) + 1;
+    size_t dest_len = (*dest == NULL) ? 0 : wcslen(*dest);
+
+    if ((*dest = realloc(*dest, (dest_len + src_len ) * sizeof(**dest))) != NULL)
+    {
+        wcscat(*dest, src);
     }
 }
 
@@ -69,11 +116,12 @@ struct rare_word make_word(
     const char* description
     )
 {
-    struct rare_word result;
+    struct rare_word result = { NULL };
 
     allocate_and_copy(&result.term, term);
     allocate_and_copy(&result.origin, origin);
-    allocate_and_copy(&result.description, description);
+    //allocate_and_copy(&result.description, description);
+    reallocate_and_cat(&result.description, description);
 
     return result;
 }
@@ -82,12 +130,35 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
 {
     wchar_t* line = NULL;
 
-    size_t len = 0;
+    //size_t len = 0;
 
     wchar_t buffer[CHUNK_SIZE];
 
     while (fgetws(buffer, CHUNK_SIZE, stream) != NULL)
     {
+        wreallocate_and_cat(&line, buffer);
+        if (nullify_wchar(line, L'\n'))
+        {
+          nullify_wchar(line, L'\r');
+          return line;
+        }
+        //size_t n = wcslen(line);
+        //if ((n > 0) && (line[n - 1] == L'\n'))
+        //{
+        //  nullify_wchar(line, L'\n');
+        //  nullify_wchar(line, L'\r');
+        //  return line;
+        //}
+        //if ((n > 0) && (line[n - 1] == L'\n'))
+        //{
+          //if ((n > 1) && (line[n - 2] == L'\r')) {
+          //  line[n - 2] = L'\0';
+          //  }
+          //  line[n - 1] = L'\0';
+
+          //  return line;
+       // }
+#if 0
         size_t buf_len = wcslen(buffer) + 1;
 
         if (buffer[buf_len - 1] == L'\0')
@@ -141,6 +212,7 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
         {
             return line;
         }
+#endif
     }
 
     //return NULL;
@@ -159,18 +231,19 @@ void wread_from_file(const char* filepath)
 
     if (file_p == NULL)
     {
-        printf("Unable to open file %s: %s\n", filepath, strerror(errno));
+        wprintf(L"Unable to open file %s: %s\n", filepath, strerror(errno));
         return;
     }
 
     wchar_t* line = NULL;
-    size_t len = 0;
+    //size_t len = 0;
 
-    while (getwline_from_file(&line, &len, file_p) != -1)
+    while ((line = wgetline_from_file(file_p)) != NULL)
+    //while (getwline_from_file(&line, &len, file_p) != -1)
     {
-      wprintf(L"Line: %ls\n", line);
+      wprintf(L"Line: %ls: %zu\n", line, wcslen(line));
     }
-    wprintf(L"Line: %ls\n", line);
+    //wprintf(L"Line: %ls\n", line);
 
     if (line != NULL)
     {
@@ -227,10 +300,12 @@ int main()
     free_rare_word(&word);
 #endif
 
-  read_from_file("words.txt");
+#if 1
+  //read_from_file("words.txt");
   wread_from_file("words.txt");
+#endif
 
-  //getchar();
+    // getchar();
 
-  return 0;
+    return 0;
 }
