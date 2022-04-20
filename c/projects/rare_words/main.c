@@ -2,11 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <wchar.h>
 #include <locale.h>
 #include <errno.h>
 
+#include "string_helper.h"
 #include "file_line_reader.h"
 
 #define CHUNK_SIZE 16
@@ -44,70 +44,12 @@ void free_char_pointer(char* p)
     }
 }
 
-bool nullify_char(char* line, const char ch)
-{
-    char* res = strchr(line, ch);
-    if (res != NULL)
-    {
-        line[res - line] = '\0';
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-bool nullify_wchar(wchar_t* const line, const wchar_t ch)
-{
-    wchar_t* res = wcschr(line, ch);
-    if (res != NULL)
-    {
-        line[res - line] = L'\0';
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 void free_rare_word(struct rare_word* word)
 {
     free_char_pointer(word->term);
     //free_char_pointer(word->part_of_speech);
     free_char_pointer(word->origin);
     free_char_pointer(word->description);
-}
-
-void allocate_and_copy(char** restrict dest, const char* restrict const src)
-{
-    if ((*dest = malloc((strlen(src) + 1) * sizeof(**dest))) != NULL)
-    {
-        strcpy(*dest, src);
-    }
-}
-
-void reallocate_and_cat(char** restrict dest, const char* restrict const src)
-{
-  size_t src_len = strlen(src) + 1;
-  size_t dest_len = (*dest == NULL) ? 0 : strlen(*dest);
-
-  if ((*dest = realloc(*dest, (dest_len + src_len) * sizeof(**dest))) != NULL)
-  {
-    strcat(*dest, src);
-  }
-}
-
-void wreallocate_and_cat(wchar_t** restrict dest, const wchar_t* restrict const src)
-{
-    size_t src_len = wcslen(src) + 1;
-    size_t dest_len = (*dest == NULL) ? 0 : wcslen(*dest);
-
-    if ((*dest = realloc(*dest, (dest_len + src_len ) * sizeof(**dest))) != NULL)
-    {
-        wcscat(*dest, src);
-    }
 }
 
 struct rare_word make_word(
@@ -130,8 +72,6 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
 {
     wchar_t* line = NULL;
 
-    //size_t len = 0;
-
     wchar_t buffer[CHUNK_SIZE];
 
     while (fgetws(buffer, CHUNK_SIZE, stream) != NULL)
@@ -142,80 +82,8 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
           nullify_wchar(line, L'\r');
           return line;
         }
-        //size_t n = wcslen(line);
-        //if ((n > 0) && (line[n - 1] == L'\n'))
-        //{
-        //  nullify_wchar(line, L'\n');
-        //  nullify_wchar(line, L'\r');
-        //  return line;
-        //}
-        //if ((n > 0) && (line[n - 1] == L'\n'))
-        //{
-          //if ((n > 1) && (line[n - 2] == L'\r')) {
-          //  line[n - 2] = L'\0';
-          //  }
-          //  line[n - 1] = L'\0';
-
-          //  return line;
-       // }
-#if 0
-        size_t buf_len = wcslen(buffer) + 1;
-
-        if (buffer[buf_len - 1] == L'\0')
-        {
-            //wprintf(L"Doing good");
-        }
-
-        //wprintf(L"Buffer size: %zu\n, %C\n", buf_len, buffer[buf_len - 2]);
-
-        if (len > SIZE_MAX - CHUNK_SIZE)
-        {
-            if (line != NULL)
-            {
-                free(line);
-            }
-
-            return NULL;
-        }
-        else
-        {
-            len += CHUNK_SIZE;
-        }
-
-        wchar_t* temp_buf = realloc(line, len * sizeof(*line));
-        if (temp_buf == NULL)
-        //if ((line = realloc(line, len * sizeof(*line))) == NULL)
-        {
-            if (line != NULL)
-            {
-                free(line);
-            }
-
-            return NULL;
-        }
-        else
-        {
-            line = temp_buf;
-        }
-
-        //wcscat(line, buffer);
-        memcpy(line + wcslen(line), buffer, buf_len * sizeof(*line));
-        line[len] = L'\0';
-
-        if (line != NULL)
-        {
-          wprintf(L"Line size: %zu, %zu\n", wcslen(line), buf_len);
-        }
-
-        if (buffer[buf_len - 2] == L'\n')
-        //if (line[len - 1] == L'\n')
-        {
-            return line;
-        }
-#endif
     }
 
-    //return NULL;
     return line;
 }
 
@@ -226,8 +94,6 @@ void wread_from_file(const char* filepath)
     //setlocale(LC_ALL, "");
 
     FILE* file_p = fopen(filepath, "r, css=UTF-8");
-    //FILE* file_p = fopen(filepath, "r");
-    //fwide(file_p, -1);
 
     if (file_p == NULL)
     {
@@ -243,7 +109,7 @@ void wread_from_file(const char* filepath)
     {
       wprintf(L"Line: %ls: %zu\n", line, wcslen(line));
     }
-    //wprintf(L"Line: %ls\n", line);
+    wprintf(L"Line: %ls\n", line);
 
     if (line != NULL)
     {
