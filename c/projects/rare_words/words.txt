@@ -11,3 +11,20 @@ Origin: Via Latin accismus from Ancient Greek ἀκκισμός (akkismos, “pr
 Example: "I know you want that donut. You're just displaying accismus by pretending you don't."
 
 Добавим немного русских слов.
+
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+"Viran ensimmäinen väri, hallinnon seuraaja, ei saa ylittää laboratorion ja alikvootin ajallista esiintymistä. Näin ei ole, jos tuki on nolla.
+
+"Màu sắc đầu tiên của văn phòng, người kế nhiệm cơ quan quản lý, không được vượt quá tỷ lệ tạm thời của phòng thí nghiệm và tỷ lệ. Đây không phải là trường hợp viện trợ bằng không.
+
+“辦公室的第一色，接任的行政，不得超過實驗室和等分的時間發生率。援助為零的情況並非如此。
+“Bàngōngshì de dì yī sè, jiērèn de xíngzhèng, bùdé chāoguò shíyàn shì hé děng fēn de shíjiān fāshēng lǜ. Yuánzhù wéi líng de qíngkuàng bìngfēi rúcǐ.
+
+« La première couleur du bureau, successeur de l'administration, ne doit pas dépasser l'incidence temporelle du laboratoire et de l'aliquote. Ce n'est pas le cas lorsque l'aide est nulle.
+
+「政権の後継者であるオフィスの最初の色は、実験室とアリコートの一時的な発生率を超えてはならない。これは、援助がゼロの場合ではない。
+`Seiken no kōkei-shadearu ofisu no saisho no iro wa, jikken-shitsu to arikōto no ichiji-tekina hassei-ritsu o koete wa naranai. Kore wa, enjo ga zero no baaide wanai.
+
+הצבע הראשון של המשרד, היורש למינהל, לא יעלה על השכיחות הזמנית של
+המעבדה והכמות. אין זה המקרה כאשר הסיוע הוא אפס.
