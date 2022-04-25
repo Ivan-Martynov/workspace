@@ -10,7 +10,7 @@ bool nullify_wchar(wchar_t* const line, const wchar_t ch);
 
 void allocate_and_copy(char** restrict dest, const char* restrict const src);
 
-void wallocate_and_copy(wchar_t** restrict dest, const wchar_t* restrict const src);
+bool wallocate_and_copy(wchar_t** restrict dest, const wchar_t* restrict const src);
 
 void reallocate_and_cat(char** restrict dest, const char* restrict const src);
 

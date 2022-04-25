@@ -22,6 +22,20 @@ struct rare_word_wide
     size_t example_count;
 };
 
+void free_rare_word_wide(struct rare_word_wide* entry)
+{
+    free(entry->title);
+    free(entry->part_of_speech);
+    free(entry->origin);
+    free(entry->description);
+
+    for (size_t i = 0; i < entry->example_count; ++i)
+    {
+        free(entry->examples[i]);
+    }
+    entry->example_count = 0;
+}
+
 struct rare_word
 {
     char* term;
@@ -46,74 +60,71 @@ void display_rare_word(const struct rare_word word)
     printf("Origin: %s\n", word.origin);
 }
 
-void free_char_pointer(char* p)
-{
-    if (p != NULL)
-    {
-        free(p);
-    }
-}
-
 void free_rare_word(struct rare_word* word)
 {
-    free_char_pointer(word->term);
-    //free_char_pointer(word->part_of_speech);
-    free_char_pointer(word->origin);
-    free_char_pointer(word->description);
+    free(word->term);
+    //free(word->part_of_speech);
+    free(word->origin);
+    free(word->description);
 }
 
 bool try_add_wide_title(struct rare_word_wide* entry, const wchar_t* const line)
 {
     const wchar_t text[] = L"Title: ";
-    if (wcsstr(line, text) == line)
-    {
-        wallocate_and_copy(&entry->title, line + wcslen(text));
-        wprintf(L"%ls\n", entry->title);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (wcsstr(line, text) == line)
+        ? wallocate_and_copy(&entry->title, line + wcslen(text)) : false;
 }
 
 bool try_add_wide_part_of_speech(struct rare_word_wide* entry, const wchar_t* const line)
 {
     const wchar_t text[] = L"Part of speech: ";
-    if (wcsstr(line, text) == line)
-    {
-        wallocate_and_copy(&entry->part_of_speech, line + wcslen(text));
-        wprintf(L"%ls\n", entry->part_of_speech);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (wcsstr(line, text) == line)
+        ? wallocate_and_copy(&entry->part_of_speech, line + wcslen(text)) : false;
 }
 
 bool try_add_wide_origin(struct rare_word_wide* entry, const wchar_t* const line)
 {
     const wchar_t text[] = L"Origin: ";
-    if (wcsstr(line, text) == line)
-    {
-        wallocate_and_copy(&entry->origin, line + wcslen(text));
-        wprintf(L"%ls\n", entry->origin);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (wcsstr(line, text) == line)
+        ? wallocate_and_copy(&entry->origin, line + wcslen(text)) : false;
 }
 
 bool try_add_wide_description(struct rare_word_wide* entry, const wchar_t* const line)
 {
     const wchar_t text[] = L"Description: ";
+    return (wcsstr(line, text) == line)
+        ? wallocate_and_copy(&entry->description, line + wcslen(text)) : false;
+}
+
+bool try_add_wide_example(struct rare_word_wide* entry, const wchar_t* const line)
+{
+    const wchar_t text[] = L"Example: ";
     if (wcsstr(line, text) == line)
     {
-        wallocate_and_copy(&entry->description, line + wcslen(text));
-        wprintf(L"%ls\n", entry->description);
+        size_t n = entry->example_count + 1;
+        entry->examples = realloc(entry->examples, n * sizeof(*entry->examples));
+
+        if (entry->examples != NULL)
+        {
+          if (wallocate_and_copy(&entry->examples[entry->example_count],
+                             line + wcslen(text)))
+          {
+            wprintf(L"%ls\n", entry->examples[entry->example_count]);
+            entry->example_count = n;
+            return true;
+          }
+          else
+          {
+            entry->example_count = 0;
+            return false;
+          }
+        }
+        else
+        {
+          entry->example_count = 0;
+          return false;
+        }
+        
         return true;
     }
     else
@@ -123,11 +134,6 @@ bool try_add_wide_description(struct rare_word_wide* entry, const wchar_t* const
 }
 
 
-void add_wide_title(struct rare_word_wide* rw, const wchar_t* const title)
-{
-    wallocate_and_copy(&rw->title, title);
-
-}
 
 struct rare_word make_word(
     const char* term,
@@ -166,10 +172,23 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
 
 void process_wline(struct rare_word_wide* entry, const wchar_t* const line)
 {
-    try_add_wide_title(entry, line);
-    try_add_wide_part_of_speech(entry, line);
-    try_add_wide_origin(entry, line);
-    try_add_wide_description(entry, line);
+    if (try_add_wide_title(entry, line))
+    {
+        wprintf(L"Here is the title: %ls\n", entry->title);
+    }
+    if (try_add_wide_part_of_speech(entry, line))
+    {
+      wprintf(L"Here is the part of speech: %ls\n", entry->part_of_speech);
+    }
+    if (try_add_wide_origin(entry, line))
+    {
+      wprintf(L"Here is the origin: %ls\n", entry->origin);
+    }
+    if (try_add_wide_description(entry, line))
+    {
+      wprintf(L"Here is the description: %ls\n", entry->description);
+    }
+    try_add_wide_example(entry, line);
 
     //display_rare_word_wide(entry);
 }
@@ -197,18 +216,6 @@ void wread_from_file(const char* filepath)
     //while (getwline_from_file(&line, &len, file_p) != -1)
     {
         process_wline(&entry, line);
-#if 0
-        const wchar_t text[] = L"Title: ";
-        wchar_t* res = wcsstr(line, text);
-        //wchar_t* res = wcsstr(line, L"Accismus");
-        if (res == line)
-        {
-            add_wide_title(&entry, line + wcslen(text));
-            wprintf(L"Line: %ls: %zu\n", line, wcslen(line));
-            wprintf(L"Try: %ls\n", entry.title);
-            //wprintf(L"Search result: %ls %d\n", res, res - line);
-        }
-#endif
     }
     //wprintf(L"Line: %ls\n", line);
 
@@ -216,6 +223,8 @@ void wread_from_file(const char* filepath)
     {
         free(line);
     }
+
+    free_rare_word_wide(&entry);
 
     fclose(file_p);
 }

@@ -39,11 +39,16 @@ void allocate_and_copy(char** restrict dest, const char* restrict const src)
     }
 }
 
-void wallocate_and_copy(wchar_t** restrict dest, const wchar_t* restrict const src)
+bool wallocate_and_copy(wchar_t** restrict dest, const wchar_t* restrict const src)
 {
     if ((*dest = malloc((wcslen(src) + 1) * sizeof(**dest))) != NULL)
     {
         wcscpy(*dest, src);
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
