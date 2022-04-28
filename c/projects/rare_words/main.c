@@ -22,6 +22,13 @@ struct rare_word_wide
     size_t example_count;
 };
 
+struct rare_word_collection
+{
+    struct rare_word_wide* array;
+    size_t size;
+    size_t capacity;
+};
+
 void free_rare_word_wide(struct rare_word_wide* entry)
 {
     free(entry->title);
@@ -210,6 +217,15 @@ void wread_from_file(const char* filepath)
     wchar_t* line = NULL;
     //size_t len = 0;
 
+    struct rare_word_collection entries = {
+        .array = NULL, .capacity = 1, .size = 0 };
+    entries.array = malloc(entries.capacity * sizeof(*entries.array));
+
+    wprintf(L"Sizes: wchar_t*, wchar_t**, size_t = %zu, %zu, %zu\n",
+            sizeof(wchar_t*), sizeof(wchar_t**), sizeof(size_t));
+    wprintf(L"Size of struct rare_word_wide: %zu; %zu\n",
+            sizeof(*entries.array), sizeof(struct rare_word_wide));
+
     struct rare_word_wide entry = { NULL };
 
     while ((line = wgetline_from_file(file_p)) != NULL)
@@ -225,6 +241,7 @@ void wread_from_file(const char* filepath)
     }
 
     free_rare_word_wide(&entry);
+    free(entries.array);
 
     fclose(file_p);
 }
