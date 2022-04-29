@@ -10,8 +10,6 @@ C_COMP = gcc
 #	 -Wshadow = warn whenever a local variable or type declaration shadows
 #	 another (warns if a local var shadows an explicit typedef, but not if it
 #	 shadows a struct/class/enum)
-#	 -Weffc++ = warn about violations of the style guidelines from Scott
-#	 Meyers' Effective C++ series of books
 
 C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror
 DEBUG_FLAGS = -O0 -g -D _DEBUG

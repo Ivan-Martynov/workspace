@@ -8,6 +8,7 @@
 
 #include "string_helper.h"
 #include "file_line_reader.h"
+#include "printmode_wide.h"
 
 #define CHUNK_SIZE 16
 
@@ -40,39 +41,91 @@ void free_rare_word_wide(struct rare_word_wide* entry)
     {
         free(entry->examples[i]);
     }
+    free(entry->examples);
     entry->example_count = 0;
 }
 
-struct rare_word
+void init_collection(struct rare_word_collection* entries)
 {
-    char* term;
-    char* part_of_speech;
-    char* origin;
-    char* description;
-};
+    entries->array = NULL;
+    entries->capacity = 1;
+    entries->size = 0;
+    entries->array = malloc(entries->capacity * sizeof(*entries->array));
+}
+
+void free_collection(struct rare_word_collection* entries)
+{
+  for (size_t i = 0; i < entries->size; ++i)
+  {
+    free_rare_word_wide(&entries->array[i]);
+  }
+  free(entries->array);
+  entries->size = 0;
+}
+
+bool add_entry(struct rare_word_collection* entries)
+{
+    if (entries->size >= entries->capacity)
+    {
+      entries->capacity <<= 1;
+      entries->array = realloc(entries->array, entries->capacity * sizeof(*entries->array));
+
+      if (entries->array == NULL)
+      {
+          return false;
+      }
+    }
+
+    struct rare_word_wide entry = { NULL };
+    entries->array[entries->size++] = entry;
+
+    return true;
+}
+
+void display_component(const wchar_t *const component,
+                       const wchar_t *const text,
+                       const enum color_code background_color,
+                       const enum color_code foreground_color)
+{
+  if (text != NULL)
+  {
+    set_printmode_bg(background_color);
+    set_printmode_fg(foreground_color);
+    wprintf(component);
+    set_printmode_fgh(foreground_color);
+    wprintf(L"%ls", text);
+    reset_printmode();
+    wprintf(L"\n");
+  }
+}
 
 void display_rare_word_wide(const struct rare_word_wide* const word)
 {
-    wprintf(L"%ls.\n", word->title);
-    wprintf(L"%ls\n", word->part_of_speech);
-    wprintf(L"%ls\n", word->description);
-    wprintf(L"Origin: %ls\n", word->origin);
+  wprintf(L"\n");
+  display_component(L"Title: ", word->title, YELLOW_C, BLUE_C);
+  display_component(L"Part of speech: ", word->part_of_speech, CYAN_C, RED_C);
+  display_component(L"Description: ", word->description, RED_C, CYAN_C);
+  display_component(L"Origin: ", word->origin, GREEN_C, MAGENTA_C);
+
+  for (size_t i = 0; i < word->example_count; ++i) {
+    display_component(L"Example: ", word->examples[i], MAGENTA_C, GREEN_C);
+  }
 }
 
-void display_rare_word(const struct rare_word word)
+void display_collection(const struct rare_word_collection* const entries)
 {
-    printf("%s.\n", word.term);
-    printf("%s\n", word.part_of_speech);
-    printf("%s\n", word.description);
-    printf("Origin: %s\n", word.origin);
+    for (size_t i = 0; i < entries->size; ++i)
+    {
+        display_rare_word_wide(&entries->array[i]);
+    }
 }
 
-void free_rare_word(struct rare_word* word)
+wchar_t* find_title(const wchar_t* const line)
 {
-    free(word->term);
-    //free(word->part_of_speech);
-    free(word->origin);
-    free(word->description);
+    const wchar_t text[] = L"Title: ";
+    wchar_t* res = wcsstr(line, text);
+
+    return (res == line) ? (res + wcslen(text)) : NULL;
 }
 
 bool try_add_wide_title(struct rare_word_wide* entry, const wchar_t* const line)
@@ -106,56 +159,23 @@ bool try_add_wide_description(struct rare_word_wide* entry, const wchar_t* const
 bool try_add_wide_example(struct rare_word_wide* entry, const wchar_t* const line)
 {
     const wchar_t text[] = L"Example: ";
-    if (wcsstr(line, text) == line)
+    bool valid = (wcsstr(line, text) == line);
+
+    if (valid)
     {
         size_t n = entry->example_count + 1;
-        entry->examples = realloc(entry->examples, n * sizeof(*entry->examples));
+        valid = ((entry->examples = realloc(entry->examples, n * sizeof(*entry->examples))) != NULL);
 
-        if (entry->examples != NULL)
+        if (valid)
         {
-          if (wallocate_and_copy(&entry->examples[entry->example_count],
-                             line + wcslen(text)))
-          {
-            wprintf(L"%ls\n", entry->examples[entry->example_count]);
-            entry->example_count = n;
-            return true;
-          }
-          else
-          {
-            entry->example_count = 0;
-            return false;
-          }
+          valid = wallocate_and_copy(&entry->examples[entry->example_count],
+                             line + wcslen(text));
         }
-        else
-        {
-          entry->example_count = 0;
-          return false;
-        }
-        
-        return true;
+
+        entry->example_count = valid ? n : 0;
     }
-    else
-    {
-        return false;
-    }
-}
 
-
-
-struct rare_word make_word(
-    const char* term,
-    const char* origin,
-    const char* description
-    )
-{
-    struct rare_word result = { NULL };
-
-    allocate_and_copy(&result.term, term);
-    allocate_and_copy(&result.origin, origin);
-    //allocate_and_copy(&result.description, description);
-    reallocate_and_cat(&result.description, description);
-
-    return result;
+    return valid;
 }
 
 wchar_t* wgetline_from_file(FILE* restrict stream)
@@ -170,37 +190,35 @@ wchar_t* wgetline_from_file(FILE* restrict stream)
         if (nullify_wchar(line, L'\n'))
         {
           nullify_wchar(line, L'\r');
-          return line;
+          break;
         }
     }
 
     return line;
 }
 
-void process_wline(struct rare_word_wide* entry, const wchar_t* const line)
+void process_line(struct rare_word_collection* entries, const wchar_t* const line)
 {
-    if (try_add_wide_title(entry, line))
-    {
-        wprintf(L"Here is the title: %ls\n", entry->title);
-    }
-    if (try_add_wide_part_of_speech(entry, line))
-    {
-      wprintf(L"Here is the part of speech: %ls\n", entry->part_of_speech);
-    }
-    if (try_add_wide_origin(entry, line))
-    {
-      wprintf(L"Here is the origin: %ls\n", entry->origin);
-    }
-    if (try_add_wide_description(entry, line))
-    {
-      wprintf(L"Here is the description: %ls\n", entry->description);
-    }
-    try_add_wide_example(entry, line);
+  wchar_t* title = find_title(line);
 
-    //display_rare_word_wide(entry);
+  if (title != NULL)
+  {
+    add_entry(entries);
+    wallocate_and_copy(&entries->array[entries->size - 1].title, title);
+  }
+
+  if ((entries->size > 0) && (entries->array[entries->size - 1].title != NULL))
+  {
+    struct rare_word_wide* word_ptr = &entries->array[entries->size - 1];
+
+    try_add_wide_part_of_speech(word_ptr, line);
+    try_add_wide_origin(word_ptr, line);
+    try_add_wide_description(word_ptr, line);
+    try_add_wide_example(word_ptr, line);
+  }
 }
 
-void wread_from_file(const char* filepath)
+void read_from_file(const char* filepath)
 {
     setlocale(LC_ALL, "en_US.UTF-8");
     // Can be "" for the user-preferred locale or "C" for the minimal locale
@@ -214,91 +232,24 @@ void wread_from_file(const char* filepath)
         return;
     }
 
-    wchar_t* line = NULL;
-    //size_t len = 0;
-
-    struct rare_word_collection entries = {
-        .array = NULL, .capacity = 1, .size = 0 };
+    struct rare_word_collection entries = { .array = NULL, .capacity = 32, .size = 0 };
     entries.array = malloc(entries.capacity * sizeof(*entries.array));
 
-    wprintf(L"Sizes: wchar_t*, wchar_t**, size_t = %zu, %zu, %zu\n",
-            sizeof(wchar_t*), sizeof(wchar_t**), sizeof(size_t));
-    wprintf(L"Size of struct rare_word_wide: %zu; %zu\n",
-            sizeof(*entries.array), sizeof(struct rare_word_wide));
-
-    struct rare_word_wide entry = { NULL };
-
+    wchar_t* line = NULL;
     while ((line = wgetline_from_file(file_p)) != NULL)
-    //while (getwline_from_file(&line, &len, file_p) != -1)
     {
-        process_wline(&entry, line);
+        process_line(&entries, line);
     }
-    //wprintf(L"Line: %ls\n", line);
-
-    if (line != NULL)
-    {
-        free(line);
-    }
-
-    free_rare_word_wide(&entry);
-    free(entries.array);
-
+    free(line);
     fclose(file_p);
-}
 
-void read_from_file(const char* filepath)
-{
-    FILE* file_p = fopen(filepath, "r");
-    fwide(file_p, 1);
-
-    if (file_p == NULL)
-    {
-        printf("Unable to open file %s: %s\n", filepath, strerror(errno));
-        return;
-    }
-
-    char* line = NULL;
-    size_t len = 0;
-
-    while (getline_from_file(&line, &len, file_p) != -1)
-    {
-        printf("Line: %s", line);
-    }
-    printf("Line: %s", line);
-
-    if (line != NULL)
-    {
-        free(line);
-    }
-
-    fclose(file_p);
+    display_collection(&entries);
+    free_collection(&entries);
 }
 
 int main()
 {
-#if 0
-    const char* term = "Accismus";
-    const char* description = "Accismus is a useful term for pretending to be "
-                       "disinterested in something when you actually want it. "
-                       "Pull this word out when you see someone acting like "
-                       "he doesn’t want the last donut.";
-    const char* origin = "Via Latin accismus from Ancient Greek ἀκκισμός "
-                  "(akkismos, “prudery”)";
+  read_from_file("entries_default.txt");
 
-    struct rare_word word = make_word(term, origin, description);
-    word.part_of_speech = "Noun";
-
-    display_rare_word(word);
-
-    free_rare_word(&word);
-#endif
-
-#if 1
-  //read_from_file("words.txt");
-  wread_from_file("words.txt");
-#endif
-
-    // getchar();
-
-    return 0;
+  return 0;
 }
