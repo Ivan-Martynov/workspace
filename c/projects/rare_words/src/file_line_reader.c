@@ -1,5 +1,5 @@
-#include "file_line_reader.h"
-#include "string_helper.h"
+#include "../include/file_line_reader.h"
+#include "../include/string_helper.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -7,65 +7,27 @@
 
 #define CHUNK_SIZE 16
 
-long int getline_from_file(char** restrict line, size_t* restrict len,
-                         FILE* restrict file_p)
+wchar_t* getline_from_file_wide(FILE* stream)
 {
-    if ((line == NULL) || (len == NULL) || (file_p == NULL))
+    wchar_t* line = NULL;
+
+    wchar_t buffer[CHUNK_SIZE];
+
+    while (fgetws(buffer, CHUNK_SIZE, stream) != NULL)
     {
-        return -1;
-    }
-
-    char buffer[CHUNK_SIZE];
-
-    if ((*line == NULL) || (*len < sizeof(buffer)))
-    {
-        *len = sizeof(buffer);
-
-        if ((*line = malloc(*len)) == NULL)
+        reallocate_and_cat_wide(&line, buffer);
+        if (nullify_char_wide(line, L'\n'))
         {
-            return -1;
+          nullify_char_wide(line, L'\r');
+          break;
         }
     }
 
-    (*line)[0] = '\0';
-
-    while (fgets(buffer, sizeof(buffer), file_p) != NULL)
-    {
-        size_t len_used = strlen(*line);
-        size_t buf_len = strlen(buffer);
-
-        if (*len - len_used < buf_len)
-        {
-            if (*len > SIZE_MAX >> 1)
-            {
-                return -1;
-            }
-            else
-            {
-                (*len) <<= 1;
-            }
-        }
-
-        if ((*line = realloc(*line, (*len) * sizeof(**line))) == NULL)
-        {
-            return -1;
-        }
-
-        strcat(*line, buffer);
-        len_used += buf_len;
-        (*line)[len_used] = '\0';
-
-        if ((*line)[len_used - 1] == '\n')
-        {
-            return len_used;
-        }
-    }
-
-    return -1;
+    return line;
 }
 
 long int
-getwline_from_file(wchar_t** restrict line, size_t* restrict len, FILE* restrict file_ptr)
+getline_wide(wchar_t** restrict line, size_t* restrict len, FILE* restrict file_ptr)
 {
     if ((line == NULL) || (len == NULL) || (file_ptr == NULL))
     {

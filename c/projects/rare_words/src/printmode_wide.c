@@ -1,6 +1,6 @@
 #include <wchar.h>
 
-#include "printmode_wide.h"
+#include "../include/printmode_wide.h"
 
 /*
  * Change text foreground
