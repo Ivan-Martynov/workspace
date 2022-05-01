@@ -2,11 +2,16 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include "../include/string_helper.h"
 #include "../include/file_line_reader.h"
 #include "../include/printmode_wide.h"
 #include "../include/rare_word_wide.h"
+
+#define WIDE2(x) L##x
+#define WIDE(x) WIDE2(x)
+#define WFILE WIDE(__FILE__)
 
 struct rare_word_collection
 {
@@ -151,6 +156,7 @@ void test_reading_from_file(const char* const filepath)
         free_collection(&entries);
     }
 }
+
 
 int main()
 {
