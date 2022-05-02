@@ -49,3 +49,7 @@ clean:
 
 distclean: clean
 	@-rm -f *~
+
+print: src/*.[hc]
+	printf $?
+	touch $@

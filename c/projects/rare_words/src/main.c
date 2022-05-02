@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <errno.h>
-#include <unistd.h>
 
 #include "../include/string_helper.h"
 #include "../include/file_line_reader.h"
