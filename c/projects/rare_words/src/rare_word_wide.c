@@ -1,6 +1,6 @@
-#include "../include/rare_word_wide.h"
-#include "../include/printmode_wide.h"
-#include "../include/string_helper.h"
+#include "rare_word_wide.h"
+#include "printmode_wide.h"
+#include "string_helper.h"
 
 #include <stdlib.h>
 

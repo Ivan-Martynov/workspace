@@ -1,5 +1,5 @@
-#include "../include/file_line_reader.h"
-#include "../include/string_helper.h"
+#include "file_line_reader.h"
+#include "string_helper.h"
 
 #include <string.h>
 #include <stdlib.h>

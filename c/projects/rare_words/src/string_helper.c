@@ -1,4 +1,4 @@
-#include "../include/string_helper.h"
+#include "string_helper.h"
 
 #include <stdlib.h>
 #include <string.h>
