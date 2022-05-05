@@ -75,12 +75,6 @@ getline_wide(wchar_t** restrict line, size_t* restrict len, FILE* restrict file_
         memcpy(*line + len_used, buffer, buf_len * element_size);
         len_used += buf_len;
         (*line)[len_used] = L'\0';
-
-        if ((*line)[len_used - 1] == L'\n')
-        {
-          (*line)[len_used - 1] = L'\0';
-          return len_used;
-        }
     }
 
     return -1;
