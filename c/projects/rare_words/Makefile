@@ -13,8 +13,11 @@ C_COMP = gcc
 
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
-vpath %.c src
-vpath %.h include
+#vpath %.c src
+#vpath %.h include
+
+#VPATH = src include
+#CPPFLAGS = -I include
 
 %.o: %.c
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
