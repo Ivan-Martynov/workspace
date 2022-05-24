@@ -156,9 +156,31 @@ void test_reading_from_file(const char* const filepath)
     }
 }
 
+extern char **environ;
 
 int main()
 {
+    char* env_var = getenv("USERNAME");
+    if (env_var != NULL)
+    {
+      wchar_t t[256] = L"\0";
+      mbstowcs(t, env_var, 256);
+      wprintf(L"%ls\n", t);
+    }
+    else
+    {
+        wprintf(L"Not found\n");
+    }
+
+    for (char* const* p = environ; *p != NULL; ++p)
+    {
+        const size_t count = strlen(*p) + 1;
+        wchar_t* const v = malloc(sizeof(wchar_t) * count);
+        mbstowcs(v, *p, count);
+        wprintf(L"Environment vairable: %ls\n", v);
+        free(v);
+    }
+
     test_reading_from_file("entries_default.txt");
 
     return 0;

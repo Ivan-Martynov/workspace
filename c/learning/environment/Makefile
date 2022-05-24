@@ -21,7 +21,7 @@ vpath %.c src
 vpath %.h include
 
 SOURCES := $(wildcard src/*.c)
-TARGET := bin/main.out
+TARGET := main.out
 
 debug:
 	$(C_COMP) $(SOURCES) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) -o $(TARGET)
@@ -30,20 +30,10 @@ release:
 	$(C_COMP) $(SOURCES) $(C_FLAGS) $(RELEASE_FLAGS) $(LIBS) -o $(TARGET)
 
 # $^ - '^' is a special character, meaning all unique prerequisites separated by space.
-main: main.o file_line_reader.o printmode_wide.o rare_word_wide.o string_helper.o
+main: main.o env_helper.o
 	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $(TARGET)
 
-# $< - '<' is a special character, meaning the first prerequisite.
-file_line_reader.o: file_line_reader.c file_line_reader.h
-	$(C_COMP) $(C_FLAGS) -c $<
-
-printmode_wide.o: printmode_wide.c printmode_wide.h
-	$(C_COMP) $(C_FLAGS) -c $<
-
-rare_word_wide.o: rare_word_wide.c rare_word_wide.h
-	$(C_COMP) $(C_FLAGS) -c $<
-
-string_helper.o: string_helper.c string_helper.h
+env_helper.o: env_helper.c env_helper.h
 	$(C_COMP) $(C_FLAGS) -c $<
 
 main.o: main.c
@@ -54,6 +44,3 @@ clean:
 
 distclean: clean
 	@-rm -f *~
-
-print: src/*.[hc]
-	printf $?
