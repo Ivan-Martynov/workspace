@@ -21,23 +21,22 @@ LIBS =
 vpath %.c src
 vpath %.h include
 
-# SOURCES := $(wildcard src/*.c)
-TARGETS := main.out
+SOURCES := $(wildcard *.c)
+TARGETS = doubly_linked_list.out singly_linked_list.out
+
+all: doubly_linked_list.out singly_linked_list.out
 
 # $^ - '^' means all unique prerequisites separated by space.
 # $@ - '@' means the target.
-main.out: main.o env_helper.o
+
+%.out: %.o
 	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
 
-# $< - '<' means the first prerequisite.
-%.o: %.c %.h
-	$(COMP_CMD) -c $<
-
-main.o: main.c
+%.o: %.c
 	$(COMP_CMD) -c $<
 
 clean:
-	rm -f $(TARGETS) $(wildcard *.o)
+	rm -f $(TARGETS) $(wildcard *.o) $(wildcard *.exe)
 
 distclean: clean
 	rm -f  $(wildcard *~)
