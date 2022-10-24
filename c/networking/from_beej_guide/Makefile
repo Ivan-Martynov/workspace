@@ -1,14 +1,16 @@
-C_COMP = gcc
-C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I $(INC_DIR)
-COMP_CMD = $(C_COMP) $(C_FLAGS)
-DEBUG_FLAGS = -O0 -g -D _DEBUG
-RELEASE_FLAGS = -O3 -D NDEBUG
-LIBS =
 
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 INC_DIR = include
+
+C_COMP = gcc
+C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I $(INC_DIR)
+COMP_CMD = $(C_COMP) $(C_FLAGS)
+DEBUG_FLAGS = -O0 -g -D _DEBUG
+RELEASE_FLAGS = -O3 -D NDEBUG
+LIBS = -lws2_32 -lwsock32
+
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
 vpath %.c $(SRC_DIR)
@@ -26,9 +28,20 @@ release_target = $(BIN_DIR)/release/main.out
 all : $(target)
 
 # Make a list of object (.o) files from the present source (.c) files.
-#objects = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(wildcard $(SRC_DIR)/*.c))
-#objects = main.o tic_tac_toe.o
-#objects = $(OBJ_DIR)/main.o $(OBJ_DIR)/tic_tac_toe.o
+
+server : $(OBJ_DIR)/simple_server.o
+	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) \
+	$(SRC_DIR)/simple_server.c \
+	$(SRC_DIR)/tcp_utils.c \
+	$(SRC_DIR)/error_handler.c -o \
+	$(BIN_DIR)/debug/server.out
+
+client : $(OBJ_DIR)/simple_client.o
+	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) \
+	$(SRC_DIR)/simple_client.c \
+	$(SRC_DIR)/tcp_utils.c \
+	$(SRC_DIR)/error_handler.c -o \
+	$(BIN_DIR)/debug/client.out
 
 debug : $(objects)
 	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) $^ -o $(debug_target)
@@ -39,20 +52,8 @@ release : $(objects)
 $(target) : $(objects)
 	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
 
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c tic_tac_toe.h
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) -c $< -o $@
-
-#$(OBJ_DIR)/tic_tac_toe.o : $(SRC_DIR)/tic_tac_toe.c tic_tac_toe.h
-#	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) -c $< -o $@
-
-#$(OBJ_DIR)/main.o : $(SRC_DIR)/main.c tic_tac_toe.h
-#	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) -c $< -o $@
-
-#tic_tac_toe.o : tic_tac_toe.c tic_tac_toe.h
-#	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) -c $<
-
-#main.o : main.c tic_tac_toe.h
-#	$(COMP_CMD) $(DEBUG_FLAGS) $(LIBS) -c $<
 
 .PHONY : clean clean_obj
 

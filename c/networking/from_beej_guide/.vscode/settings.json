@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "error_handler.h": "c",
+        "platform_specific.h": "c",
+        "net_ids.h": "c"
+    }
+}
