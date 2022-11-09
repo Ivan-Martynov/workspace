@@ -1,4 +1,9 @@
+#define _POSIX_C_SOURCE 200112L
+#define _GNU_SOURCE
+
 #include <stdio.h>
+#include <errno.h>
+#include <string.h>
 
 #include "error_handler.h"
 #include "platform_specific.h"

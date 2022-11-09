@@ -1,7 +1,7 @@
-#include <stdio.h>
+#define _POSIX_C_SOURCE 200112L
 
-#include "platform_specific.h"
-#include "error_handler.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #if WINDOWS_PLATFORM
     #include <winsock2.h>
@@ -15,6 +15,9 @@
     #include <arpa/inet.h>
     #include <netinet/in.h>
 #endif
+
+#include "platform_specific.h"
+#include "error_handler.h"
 
 enum MAIN_RETURN_VALUES
 {
