@@ -1,5 +1,10 @@
+#include "platform_specific.h"
+
+#ifdef WINDOWS_PLATFORM
+#else
 #define _POSIX_C_SOURCE 200112L
 #define _GNU_SOURCE
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +15,6 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#include "platform_specific.h"
 #include "error_handler.h"
 #include "net_ids.h"
 #include "tcp_utils.h"

@@ -1,4 +1,3 @@
-#define _POSIX_C_SOURCE 200112L
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +20,7 @@
 
 //#pragma comment(lib, "ws2_32")
 #else
+#define _POSIX_C_SOURCE 200112L
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
