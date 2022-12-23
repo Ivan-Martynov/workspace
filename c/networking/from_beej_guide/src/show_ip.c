@@ -1,19 +1,21 @@
-#define _POSIX_C_SOURCE 200112L
+#include "platform_specific.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #if WINDOWS_PLATFORM
-    #include <winsock2.h>
-    #include <ws2tcpip.h>
-    //#pragma comment(lib, "ws2_32")
+#include <winsock2.h>
+#include <ws2tcpip.h>
+//#pragma comment(lib, "ws2_32")
 #else
-    #include <string.h>
-    #include <sys/socket.h>
-    #include <sys/types.h>
-    #include <netdb.h>
-    #include <arpa/inet.h>
-    #include <netinet/in.h>
+#define _POSIX_C_SOURCE 200112L
+
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #endif
 
 #include "platform_specific.h"
@@ -37,8 +39,8 @@ void show_help(void)
 int main(int argc, char* argv[])
 {
 #if WINDOWS_PLATFORM // Windows specific.
-    //WSADATA wsaData;
-    //if (WSAStartup(MAKEWORD(1, 1), &wsaData) != 0)
+    // WSADATA wsaData;
+    // if (WSAStartup(MAKEWORD(1, 1), &wsaData) != 0)
     //{
     //    fprintf(stderr, "WSAStartup failed.\n");
     //    return WSASTARTUP_FAILURE;
@@ -71,7 +73,7 @@ int main(int argc, char* argv[])
     {
         fprintf(stderr, "getaddrinfo error: %s\n",
             getaddrinfo_error_code_to_string(status));
-        //fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+        // fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
         return GETADDRINFO_FAILURE;
     }
 
@@ -84,13 +86,15 @@ int main(int argc, char* argv[])
         void* address;
         if (current->ai_family == AF_INET)
         {
-            struct sockaddr_in* ip_v4 = (struct sockaddr_in*)current->ai_addr;
+            struct sockaddr_in* const ip_v4
+                = (struct sockaddr_in*)current->ai_addr;
             address = &(ip_v4->sin_addr);
             ip_version = "IPv4";
         }
         else
         {
-            struct sockaddr_in6* ip_v6 = (struct sockaddr_in6*)current->ai_addr;
+            struct sockaddr_in6* const ip_v6
+                = (struct sockaddr_in6*)current->ai_addr;
             address = &(ip_v6->sin6_addr);
             ip_version = "IPv6";
         }
@@ -104,7 +108,7 @@ int main(int argc, char* argv[])
     freeaddrinfo(results);
 
 #if WINDOWS_PLATFORM // Windows specific.
-    //WSACleanup();
+    // WSACleanup();
 #endif
 
     return EXIT_SUCCESS;

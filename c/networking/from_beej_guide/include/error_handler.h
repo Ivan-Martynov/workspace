@@ -5,14 +5,11 @@
  * @brief Get the addrinfo error code to string object.
  * 
  * @param status Result of the getaddrinfo function call.
+ * 
  * @return char* String representing the error.
  */
 char* getaddrinfo_error_code_to_string(const int);
 
-/**
- * 
- * 
- */
 /**
  * @brief Print an error message and reset the errno value.
  * 

@@ -11,8 +11,8 @@ RELEASE_FLAGS = -O3 -D NDEBUG
 
 COMP_CMD = $(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS)
 
-#LIBS = -lws2_32 -lwsock32
 LIBS =
+LIBS = -lws2_32 -lwsock32
 
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.

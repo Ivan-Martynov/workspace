@@ -77,6 +77,7 @@ int main(int argc, char* argv[])
     int socket_fd;
     for (; current != NULL; current = current->ai_next)
     {
+        // Get a socket descriptor, referring to a created endpoint.
         socket_fd = socket(
             current->ai_family, current->ai_socktype, current->ai_protocol);
 
@@ -86,6 +87,7 @@ int main(int argc, char* argv[])
             continue;
         }
 
+        // Connect socket (using socket descriptor) to the address.
         if (connect(socket_fd, current->ai_addr, current->ai_addrlen) == -1)
         {
             close(socket_fd);
