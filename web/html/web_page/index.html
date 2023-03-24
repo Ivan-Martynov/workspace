@@ -1,14 +1,75 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>
 			Web page
 		</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial_scale=1.0">
 	</head>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #586e75;
+            padding: 10px;
+            text-align: center;
+            font-size: 24px;
+            color: #eee8d5;
+        }
+
+        nav {
+            float: left;
+            width: 30%;
+            height: 300px;
+            background: #839496;
+            padding: 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        article {
+            float: left;
+            padding: 20px;
+            width: 70%;
+            background-color: #f1f1f1;
+            height: 300px;
+        }
+
+        section::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        footer {
+            background-color: #586e75;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            nav, article {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+
 	<body>
-		<h3>
-			The start
-		</h3>
+        <header>
+            <h3>
+                The start
+            </h3>
+            And that's about the header.
+        </header>
 		<hr align="left" width="37%"/>
 		<h4>
 			System startup
@@ -93,6 +154,16 @@
 		<div>
 			<span style="color:blue">tmux new -s title, tmux new-session</span>
 		</div>
+
+        <p>Михалков, Котята</p>
+        <audio controls>
+            <source src="media/audio/cat.mp3" type="audio/mpeg">
+            Audio not supported.
+        </audio>
+
+        <svg width="200" height="200">
+            <circle cx="0" cy="0" r="43" style="fill:yellow; stroke:aquamarine" />
+        </svg>
 
 	</body>
 </html>

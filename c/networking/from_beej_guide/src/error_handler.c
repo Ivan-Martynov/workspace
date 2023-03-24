@@ -14,7 +14,7 @@
     #include <netdb.h>
 #endif
 
-char* getaddrinfo_error_code_to_string(const int error_code)
+const char* getaddrinfo_error_code_to_string(const int error_code)
 {
     char* result;
     switch (error_code)
