@@ -12,7 +12,7 @@
 #endif
 
 // Get sockaddr, IPv4 or IPv6.
-void* get_in_addr(struct sockaddr* sock_addr)
+const void* get_in_addr(struct sockaddr* sock_addr)
 {
     if (sock_addr->sa_family == AF_INET)
     {

@@ -1,5 +1,10 @@
+#include "platform_specific.h"
+
+#ifdef WINDOWS_PLATFORM
+#else
 #define _POSIX_C_SOURCE 200112L
 #define _GNU_SOURCE
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +15,6 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#include "platform_specific.h"
 #include "error_handler.h"
 #include "net_ids.h"
 #include "tcp_utils.h"
@@ -46,7 +50,7 @@ void sig_child_handler(int s)
 {
     (void)s; // Unused variable warning cure.
 
-    // Save the current errno value to restore it, because funtction waitpid()
+    // Save the current errno value to restore it, because function waitpid()
     // might overwrite its value.
     const int errno_backup = errno;
 
@@ -59,13 +63,22 @@ void sig_child_handler(int s)
 
 int main(void)
 {
+    /*
+     * Structure addrinfo is used to prepare socket address structures for
+     * subsequent use. It is also used in host and service names lookups.
+     */
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
 
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = AF_UNSPEC; // Make the code IP-version agnostic.
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // Use my IP.
 
+    // Use getaddrinfo function to fill an addrinfo linked list structure.
+    // The first parameter is a host name or an ip address to connect to.
+    // The second parameter is a port number or the name of a service (e.g.,
+    // http, ftp, telnet etc.).
+    // The third parameter is the hints, containing the relevant information.
     struct addrinfo* server_info;
     const int status = getaddrinfo(NULL, PORT, &hints, &server_info);
 
@@ -81,6 +94,7 @@ int main(void)
     struct addrinfo* current = server_info;
     for (; current != NULL; current = current->ai_next)
     {
+        // Get a socket descriptor, referring to a created endpoint.
         socket_fd = socket(
             current->ai_family, current->ai_socktype, current->ai_protocol);
 
@@ -90,15 +104,19 @@ int main(void)
             continue;
         }
 
+        // Set socket options. SOL_SOCKET - options to be accessed to socket
+        // level (not protocol level). SO_REUSEADDR - reuse of local addresses
+        // is supported.
         int yes = 1;
         if (setsockopt(
                 socket_fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(int))
             == -1)
         {
-            report_error("Server: setsocketop error");
+            report_error("Server: setsocketopt error");
             return SETSOCKETOPT_FAILURE;
         }
 
+        // Bind to a socket: assigning the address (name) to the socket.
         if (bind(socket_fd, current->ai_addr, current->ai_addrlen) == -1)
         {
             close(socket_fd);
@@ -117,6 +135,8 @@ int main(void)
         return BIND_FAILURE;
     }
 
+    // Listen for connections on the socket. BACKLOG - maximum length of a
+    // waiting queue of pending connections.
     if (listen(socket_fd, BACKLOG) == -1)
     {
         report_error("Server: listen error");

@@ -3,3 +3,7 @@ cpp/computer_graphics/
 cpp/stroustrup_exercises/
 cpp/tutorials/
 unix/unix_and_system_programming_CT50A3000/
+
+*.o
+*.out
+*.exe

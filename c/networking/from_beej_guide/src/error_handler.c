@@ -1,5 +1,5 @@
-#define _POSIX_C_SOURCE 200112L
-#define _GNU_SOURCE
+//#define _POSIX_C_SOURCE 200112L
+//#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <errno.h>
@@ -9,9 +9,11 @@
 #include "platform_specific.h"
 
 #if WINDOWS_PLATFORM
-    #include <ws2tcpip.h>
+#include <ws2tcpip.h>
 #else
-    #include <netdb.h>
+#define _POSIX_C_SOURCE 200112L
+#define _GNU_SOURCE
+#include <netdb.h>
 #endif
 
 const char* getaddrinfo_error_code_to_string(const int error_code)

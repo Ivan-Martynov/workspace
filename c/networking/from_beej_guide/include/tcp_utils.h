@@ -10,6 +10,6 @@
 #include <netinet/in.h>
 #endif
 
-void* get_in_addr(struct sockaddr* sock_addr);
+const void* get_in_addr(struct sockaddr* sock_addr);
 
 #endif // TCP_UTILS_H

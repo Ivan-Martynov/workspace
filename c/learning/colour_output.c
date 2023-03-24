@@ -13,35 +13,38 @@ enum color_code
 };
 
 /*
-* Change text foreground
-*/
-void set_printmode_fg(const enum color_code foreground_color) {
-    printf("\e[3%dm", foreground_color);
+ * Change text foreground
+ */
+void set_printmode_fg(const enum color_code foreground_color)
+{
+    printf("\033[3%dm", foreground_color);
 }
 
 /*
-* Change text background
-*/
-void set_printmode_bg(const enum color_code background_color) {
-    printf("\e[4%dm", background_color);
+ * Change text background
+ */
+void set_printmode_bg(const enum color_code background_color)
+{
+    printf("\033[4%dm", background_color);
 }
 
-void set_printmode_fg_bg(
-    const enum color_code foreground_color,
+void set_printmode_fg_bg(const enum color_code foreground_color,
     const enum color_code background_color)
 {
     set_printmode_fg(foreground_color);
     set_printmode_bg(background_color);
 }
 
-void reset_printmode(void) {
-    printf("\e[0m");
+void reset_printmode(void)
+{
+    printf("\033[0m");
 }
 
 /*
-* Testing color output
-*/
-void display_color_test() {
+ * Testing color output
+ */
+void display_color_test()
+{
     set_printmode_fg_bg(RED_C, BLACK_C);
     printf("Red text on black background");
     reset_printmode();
@@ -75,7 +78,8 @@ void display_color_test() {
     printf("Back to defaults\n");
 }
 
-int main(int argc, const char* argv[static argc]) {
+int main()
+{
     display_color_test();
 
     return 0;
