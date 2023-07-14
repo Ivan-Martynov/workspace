@@ -99,8 +99,8 @@ int main(){
     test_sum(11, -28);
     test_sum(0, 0);
 
-    printf("%f\n", 0x1p-2);
-    printf("%f\n", 0x1p4);
+    //printf("%f\n", 0x1p-2);
+    //printf("%f\n", 0x1p4);
 
     return 0;
 }

@@ -1,0 +1,15 @@
+#lang sicp
+
+(define (* a b)
+  (if (= b 0)
+      0
+      (+ a (* a (dec b)))))
+
+(define (fast_mult 
+
+(* 0 0)
+(* 3 0)
+(* 0 4)
+(* 1 4)
+(* 5 1)
+(* 2.3 5)

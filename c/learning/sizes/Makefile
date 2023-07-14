@@ -10,12 +10,12 @@ OBJ = $(wildcard *.o)
 
 TARGET = main
 
-$(TARGET): main.o binary_representation.o
+$(TARGET): main.o size_info.o
 	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $(TARGET)
 
 main.o: main.c
 
-binary_representation.o: binary_representation.c binary_representation.h
+size_info.o: size_info.c size_info.h
 
 clean: clean_obj
 	rm $(TARGET)
