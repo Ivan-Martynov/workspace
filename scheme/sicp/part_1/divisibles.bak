@@ -1,0 +1,9 @@
+#lang sicp
+
+(define (is_divisible a b)
+  (= (remainder b a) 0))
+
+(define (find_divisor n value)
+  (cond ((> (square value) n) n)
+        ((is_divisible value n) value)
+        (else (find_divisor n (inc value)))))

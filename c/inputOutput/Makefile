@@ -16,6 +16,8 @@ SOURCES = main.c
 # Output file
 OUTPUT = main
 
+TARGETS = list_files
+
 # ------------------------------ COMMANDS ------------------------------ #
 
 # Build all ("make")
@@ -28,6 +30,11 @@ build:
 # Build application with debugging info # "make debug"
 debug:
 	$(COMPILER) $(SOURCES) $(CFLAGS) $(DFLAGS) $(LIBS) -o $(OUTPUT)
+
+list_files: list_files.o
+	$(COMPILER) $(SOURCES) $(CFLAGS) $(DFLAGS) $(LIBS) -o $@
+
+list_files.o: list_files.c
 
 # Remove generated files: "make clean"
 clean:

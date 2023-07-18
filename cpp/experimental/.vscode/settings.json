@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.mc": "c",
+        "filesystem": "cpp"
+    }
+}

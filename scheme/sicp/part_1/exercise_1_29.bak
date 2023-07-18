@@ -1,0 +1,57 @@
+#lang sicp
+
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a) (sum term (next a) next b))))
+
+(define (cube x) (* x x x))
+
+(define (sum_ints a b)
+  (if (> a b)
+      0
+      (+ a (sum_ints (inc a) b))))
+
+(define (identity x) x)
+
+(define (sum_ints_gen a b)
+  (sum identity a inc b))
+
+(define (sum_cubes a b)
+  (if (> a b)
+      0
+      (+ (cube a) (sum_cubes (inc a) b))))
+
+(define (sum_cubes_gen a b)
+  (sum cube a inc b))
+
+(define (sum_pi a b)
+  (if (> a b)
+      0
+      (+ (/ 1.0 (* a (+ a 2))) (sum_pi (+ a 4) b))))
+
+(define (sum_pi_gen a b)
+  (define (term a)
+    (/ 1.0 (* a (+ a 2))))
+  (define (next a)
+    (+ a 4))
+  (sum term a next b))
+
+(define (integral_gen f a b dx)
+  (define (add_dx x)
+    (+ x dx))
+  (* dx (sum f (+ a (/ dx 2.0)) add_dx b)))
+
+(define (simpson_integral f a b n)
+  (define (h)
+    (/ (- b a) n))
+  (define (y)
+    (f (+ a (* n (h))))
+
+(sum_ints_gen 1 10)
+(sum_cubes_gen 1 10)
+(* 8 (sum_pi_gen 1 10000))
+(integral_gen cube 0 1 0.001)
+
+
+

@@ -8,25 +8,15 @@ LIBS =
 SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
-TARGETS = factorial exponentiation accumulation
+TARGETS = list_files
 
 .PHONY: all
 all: $(TARGETS)
 
-factorial: factorial.o
+list_files: list_files.o
 	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
 
-factorial.o: factorial.c
-
-exponentiation: exponentiation.o
-	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
-
-exponentiation.o: exponentiation.c
-
-accumulation: accumulation.o
-	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
-
-accumulation.o: accumulation.c
+list_files.o: list_files.c
 
 clean: clean_obj
 	rm $(TARGETS)
