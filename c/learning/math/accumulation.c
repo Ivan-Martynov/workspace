@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include "functions.h"
 
 double filtered_accumulate(double start, const double end,
     const double null_value, const bool filter(const double),
@@ -35,44 +36,9 @@ double accumulate(double start, const double end, const double null_value,
         next_item_function, term_function, combine_function);
 }
 
-double add_two(const double x, const double y)
-{
-    return x + y;
-}
-
-double multiply_two(const double x, const double y)
-{
-    return x * y;
-}
-
-double inc_by_dx(const double x, const double dx)
-{
-    return x + dx;
-}
-
-double inc_by_two(const double x)
-{
-    return inc_by_dx(x, 2);
-}
-
-double inc(const double x)
-{
-    return inc_by_dx(x, 1);
-}
-
-double identity(const double x)
-{
-    return x;
-}
-
-double square(const double x)
-{
-    return x * x;
-}
-
 double sum_squares(double start, const double end)
 {
-    return accumulate(start, end, 0.0, inc, square, add_two);
+    return accumulate(start, end, 0.0, inc, square, sum_two);
 }
 
 double factorial(const size_t n)

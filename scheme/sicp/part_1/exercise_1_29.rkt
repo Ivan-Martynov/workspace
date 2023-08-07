@@ -20,7 +20,6 @@
 
 (define (is_prime n)
   (= n (smallest_divisor n)))
-
 (define (gcd a b)
   (if (= b 0)
       a
@@ -130,9 +129,8 @@
 ;  (accumulate_iterative combiner null_value term a next b))
 
 (define (accumulate combiner null_value term a next b)
-  (define (filtered_term x) true)
   (filtered_accumulate
-   filtered_term
+   (lambda (x) true)
    combiner
    null_value
    term
@@ -151,10 +149,8 @@
    b))
 
 (define (product_relative_primes n)
-  (define (is_relative_prime k)
-    (= (gcd n k) 1))
   (filtered_accumulate
-   is_relative_prime
+   (lambda (k) (= (gcd n k) 1))
    *
    1
    identity
@@ -187,9 +183,9 @@
 (define (pi_prod n)
   (define (term k)
     (/ (* k (+ k 2.0)) (* (+ k 1) (+ k 1))))
-  (define (next k)
-    (+ k 2))
-  (product term 2 next n))
+;  (define (next k)
+;    (+ k 2))
+  (product term 2 (lambda (k) (+ k 2)) n))
 
 (* 4 (pi_prod 100))
 (* 4 (pi_prod 101))
