@@ -1,0 +1,33 @@
+\begin{thebibliography}{1}
+
+\bibitem{Mar2:2008}
+Ivan Martynov.
+\newblock About {F}ree {P}roducts {H}omeomorphisms.
+\newblock Master's thesis, Petrozavodsk State University, 2008.
+
+\bibitem{Mar:2008}
+Ivan Martynov.
+\newblock Computing the {P}ersistent {H}omology of {R}ange {I}mages with
+  {A}lpha {S}hapes.
+\newblock Master's thesis, Lappeenranta University of Technology, 2008.
+
+\bibitem{InvCamCal:2011}
+{Martynov, I., Kamarainen, J.\,K., Lensu, L.}
+\newblock Projector calibration by ``inverse camera calibration'': {JUFO} level
+  1.
+\newblock In {\em Heyden, A., Kahl, F. (eds.) SCIA}, volume 6688 of {\em
+  Lecture Notes in Computer Science}, pages 536\,--\,544. Springer, 2011.
+
+\bibitem{DetShaArt:2014}
+{Martynov, I., Kauranne, T.}
+\newblock Detection of {S}hadow artifacts in satellite imagery using digital
+  elevation models.
+\newblock volume 6688 of {\em Lecture Notes in Computer Science}, pages
+  536\,--\,544. Springer, 2015.
+
+\bibitem{ShaAreCal:2015}
+Ivan Martynov and Tuomo Kauranne.
+\newblock Defining solar park location using shadow over time detection method.
+\newblock {\em AIP Conference Proceedings}, 1738(1), 2016.
+
+\end{thebibliography}
