@@ -1,0 +1,11 @@
+#lang sicp
+
+(define x (list (list 1 2 4) (list 3 9)))
+
+(define (deep-reverse a)
+  (if (not (pair? (cdr a)))
+      (reverse a)
+      (cons (deep-reverse (cdr a))))
+
+(deep-reverse x)
+(deep-reverse 1)

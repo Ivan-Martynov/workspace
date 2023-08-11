@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.mc": "c",
+        "functions.h": "c",
+        "rat_num.h": "c"
+    }
+}

@@ -1,0 +1,15 @@
+#lang sicp
+
+(define (reverse_iter a)
+  (define (iter i)
+    (if (= i 0)
+        nil
+        (cons (list-ref a i) (iter (dec i)))))
+  (iter (dec (length a))))
+
+(define (reverse_rec a)
+  (if (null? (cdr a))
+      (car a)
+      (cons (reverse_rec (cdr a)) (car a))))
+
+(reverse_iter (list 1 4 9 5))

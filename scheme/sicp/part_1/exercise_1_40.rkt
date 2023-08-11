@@ -83,10 +83,12 @@
 ((compose square inc) 6)
 
 (define (repeated f n)
-  (if (= n 1)
-      f
-      (compose f (repeated f (dec n)))))
+  (cond ((= n 1)
+        f)
+        ((even? n) (double (repeated f (/ n 2))))
+        (else (compose f (repeated f (dec n))))))
 
+((repeated inc 23) 2)
 ((repeated square 3) 2)
 ((repeated dec 5) 13)
 
@@ -95,6 +97,12 @@
 
 (define (smooth_n_fold f n)
   ((repeated smooth n) f))
+
+"Smooth n fold"
+((smooth_n_fold square 1) 5)
+((smooth_n_fold square 2) 5)
+((smooth_n_fold square 3) 5)
+((smooth_n_fold square 3) 5)
 
 (define (exp_n_iter x n)
   (define (iter i result)
@@ -139,6 +147,7 @@
                (* (- 1 alpha) (f x))
                (* alpha x))))
 
+(general_root 2 4)
 (general_root 2 258)
 
 

@@ -1,0 +1,12 @@
+#lang sicp
+
+(define (count-leaves x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        ;((null? (cdr x)) 1)
+        (else (+ (count-leaves (car x))
+                 (count-leaves (cdr x))))))
+
+(define (fringe items)
+  (cond ((null? x) nil)
+        ((not (pair? x)) x)
