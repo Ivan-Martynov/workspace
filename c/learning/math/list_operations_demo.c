@@ -42,6 +42,16 @@ void map_list(
     }
 }
 
+void map_linked_list(
+    struct linked_list_d* head, const double func(const double))
+{
+    while (head)
+    {
+        head->data = func(head->data);
+        head = head->next;
+    }
+}
+
 void test_map()
 {
     const size_t n = 5;
@@ -84,6 +94,23 @@ void test_linked_list()
     double array[] = {1.0, 3.0, 2.0, 9.0, 5.0};
 
     struct linked_list_d* head = make_linked_list_from_array(n, array);
+    linked_list_d_push_back(&head, -7.0);
+
+    double second_array[] = {-2.0, 8.0, -4.0};
+    struct linked_list_d* second_list
+        = make_linked_list_from_array(3, second_array);
+
+    linked_list_d_append(&head, second_list);
+
+    linked_list_d_print(head);
+
+    map_linked_list(head, square);
+
+    linked_list_reverse(head);
+
+    linked_list_d_print(head);
+
+    linked_list_d_free(&head);
 }
 
 int main()

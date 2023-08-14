@@ -21,7 +21,7 @@ double filtered_accumulate(double start, const double end,
     return result;
 }
 
-bool always_true(const double)
+bool always_true(const double _)
 {
     return true;
 }

@@ -1,6 +1,8 @@
 #ifndef _BINARY_TREE_D_H_
 #define _BINARY_TREE_D_H_
 
+#include <stddef.h>
+
 struct binary_tree_d
 {
     double data;

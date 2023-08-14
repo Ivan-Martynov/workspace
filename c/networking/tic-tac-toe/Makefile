@@ -28,7 +28,7 @@ OUT_DIR = $(BIN_DIR)/debug
 release_target = $(BIN_DIR)/release/main.out
 
 .PHONY : all
-all : server client show_ip
+all : server client 
 
 debug : all
 
@@ -36,14 +36,11 @@ release : OUT_DIR = $(BIN_DIR)/release
 release : COMP_CMD = $(C_COMP) $(C_FLAGS) $(RELEASE_FLAGS)
 release : all
 
-server : $(OBJ_DIR)/simple_server.o $(OBJ_DIR)/tcp_utils.o $(OBJ_DIR)/error_handler.o
+server : $(OBJ_DIR)/server.o $(OBJ_DIR)/tcp_utils.o $(OBJ_DIR)/error_handler.o
 	$(COMP_CMD) $^ -o $(OUT_DIR)/server.out
 
-client : $(OBJ_DIR)/simple_client.o $(OBJ_DIR)/tcp_utils.o $(OBJ_DIR)/error_handler.o
+client : $(OBJ_DIR)/client.o $(OBJ_DIR)/tcp_utils.o $(OBJ_DIR)/error_handler.o
 	$(COMP_CMD) $^ -o $(OUT_DIR)/client.out
-
-show_ip : $(OBJ_DIR)/show_ip.o  $(OBJ_DIR)/error_handler.o
-	$(COMP_CMD) $^ -o $(OUT_DIR)/show_ip.out
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	$(COMP_CMD) -c $< -o $@

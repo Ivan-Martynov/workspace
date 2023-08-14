@@ -1,14 +1,15 @@
 #include "platform_specific.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #if WINDOWS_PLATFORM
 #include <winsock2.h>
 #include <ws2tcpip.h>
 //#pragma comment(lib, "ws2_32")
 #else
 #define _POSIX_C_SOURCE 200112L
+#define _GNU_SOURCE
+
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <string.h>
 #include <sys/socket.h>
@@ -18,7 +19,6 @@
 #include <netinet/in.h>
 #endif
 
-#include "platform_specific.h"
 #include "error_handler.h"
 
 enum MAIN_RETURN_VALUES

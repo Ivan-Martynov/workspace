@@ -3,7 +3,7 @@ C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
 
 DEBUG_FLAGS = -O0 -g -D _DEBUG
 RELEASE_FLAGS = -O3 -D NDEBUG
-LIBS =
+LIBS = -lm
 
 COMP_CMD = $(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS)
 
@@ -17,7 +17,7 @@ all: $(TARGETS)
 
 list_operations_demo: list_operations_demo.o data_structures/list_operations.o\
 	data_structures/vec_d.o data_structures/linked_list_d.o functions.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 list_operations_demo.o: list_operations_demo.c data_structures/list_operations.h\
 	functions.h data_structures/linked_list_d.h
 
@@ -28,42 +28,42 @@ data_structures/linked_list_d.o: data_structures/linked_list_d.c\
 	data_structures/linked_list_d.h
 
 vec_demo: vec_demo.o data_structures/vec_d.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 vec_demo.o: vec_demo.c data_structures/vec_d.h
 
 data_structures/vec_d.o: data_structures/vec_d.c data_structures/vec_d.h
 
 interval_arithmetic_demo: interval_arithmetic_demo.o interval_arithmetic.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 interval_arithmetic_demo.o: interval_arithmetic_demo.c interval_arithmetic.h
 
 newton_method: newton_method.o fixed_point.o functions.o rat_num.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 newton_method.o: newton_method.c fixed_point.h functions.h rat_num.h
 
 deriv: deriv.o functions.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 deriv.o: deriv.c functions.h
 
 continued_fraction: continued_fraction.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 
 continued_fraction.o: continued_fraction.c
 
 fixed_point.o: fixed_point.c fixed_point.h functions.h
 
 factorial: factorial.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 
 factorial.o: factorial.c
 
 exponentiation: exponentiation.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 
 exponentiation.o: exponentiation.c
 
 accumulation: accumulation.o functions.o
-	$(COMP_CMD) $^ -o $@
+	$(COMP_CMD) $^ -o $@ $(LIBS)
 
 accumulation.o: accumulation.c functions.h
 
