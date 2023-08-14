@@ -11,10 +11,27 @@ SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
 TARGETS = factorial exponentiation accumulation continued_fraction\
-	deriv newton_method interval_arithmetic_demo
-
+	deriv newton_method interval_arithmetic_demo vec_demo list_operations_demo
 .PHONY: all
 all: $(TARGETS)
+
+list_operations_demo: list_operations_demo.o data_structures/list_operations.o\
+	data_structures/vec_d.o data_structures/linked_list_d.o functions.o
+	$(COMP_CMD) $^ -o $@
+list_operations_demo.o: list_operations_demo.c data_structures/list_operations.h\
+	functions.h data_structures/linked_list_d.h
+
+data_structures/list_operations.o: data_structures/list_operations.c\
+	data_structures/list_operations.h data_structures/vec_d.h
+
+data_structures/linked_list_d.o: data_structures/linked_list_d.c\
+	data_structures/linked_list_d.h
+
+vec_demo: vec_demo.o data_structures/vec_d.o
+	$(COMP_CMD) $^ -o $@
+vec_demo.o: vec_demo.c data_structures/vec_d.h
+
+data_structures/vec_d.o: data_structures/vec_d.c data_structures/vec_d.h
 
 interval_arithmetic_demo: interval_arithmetic_demo.o interval_arithmetic.o
 	$(COMP_CMD) $^ -o $@

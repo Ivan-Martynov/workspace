@@ -2,6 +2,8 @@
     "files.associations": {
         "*.mc": "c",
         "functions.h": "c",
-        "rat_num.h": "c"
+        "rat_num.h": "c",
+        "interval_arithmetic.h": "c",
+        "vec_d.h": "c"
     }
 }
