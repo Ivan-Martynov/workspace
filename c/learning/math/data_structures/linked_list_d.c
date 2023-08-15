@@ -1,12 +1,11 @@
 #include "linked_list_d.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 struct linked_list_d* make_linked_list_d_node(const double value)
 {
     struct linked_list_d* node_ptr = malloc(sizeof(*node_ptr));
     node_ptr->data = value;
-    node_ptr->next = NULL;
+    node_ptr->next_ptr = NULL;
 
     return node_ptr;
 }
@@ -22,12 +21,12 @@ void linked_list_d_push_back(
     {
         struct linked_list_d* last_ptr = *pp_head;
 
-        while (last_ptr->next)
+        while (last_ptr->next_ptr)
         {
-            last_ptr = last_ptr->next;
+            last_ptr = last_ptr->next_ptr;
         }
 
-        last_ptr->next = make_linked_list_d_node(value);
+        last_ptr->next_ptr = make_linked_list_d_node(value);
     }
 }
 
@@ -38,7 +37,7 @@ struct linked_list_d* linked_list_d_at(
 
     for (size_t i = 0; i < index; ++i)
     {
-        current_ptr = current_ptr->next;
+        current_ptr = current_ptr->next_ptr;
     }
 
     return current_ptr;
@@ -51,9 +50,9 @@ struct linked_list_d* linked_list_d_last(struct linked_list_d* head_ptr)
         return NULL;
     }
 
-    while (head_ptr->next)
+    while (head_ptr->next_ptr)
     {
-        head_ptr = head_ptr->next;
+        head_ptr = head_ptr->next_ptr;
     }
 
     return head_ptr;
@@ -68,20 +67,20 @@ void linked_list_d_append(struct linked_list_d** const pp_target,
     if (!head_ptr && src_head_ptr)
     {
         head_ptr = make_linked_list_d_node(src_head_ptr->data);
-        src_head_ptr = src_head_ptr->next;
+        src_head_ptr = src_head_ptr->next_ptr;
     }
 
-    while (head_ptr->next)
+    while (head_ptr->next_ptr)
     {
-        head_ptr = head_ptr->next;
+        head_ptr = head_ptr->next_ptr;
     }
 
     while (src_head_ptr)
     {
-        head_ptr->next = make_linked_list_d_node(src_head_ptr->data);
+        head_ptr->next_ptr = make_linked_list_d_node(src_head_ptr->data);
 
-        src_head_ptr = src_head_ptr->next;
-        head_ptr = head_ptr->next;
+        src_head_ptr = src_head_ptr->next_ptr;
+        head_ptr = head_ptr->next_ptr;
     }
 }
 
@@ -91,7 +90,7 @@ void linked_list_d_free(struct linked_list_d** const pp_head)
 
     while (current_ptr)
     {
-        struct linked_list_d* next_ptr = current_ptr->next;
+        struct linked_list_d* next_ptr = current_ptr->next_ptr;
 
         free(current_ptr);
 
@@ -117,7 +116,7 @@ struct linked_list_d* make_linked_list_from_array(
     {
         struct linked_list_d* node_ptr = make_linked_list_d_node(array[i]);
 
-        current_ptr->next = node_ptr;
+        current_ptr->next_ptr = node_ptr;
         current_ptr = node_ptr;
     }
 
@@ -128,37 +127,10 @@ size_t linked_list_d_size(const struct linked_list_d* head_ptr)
 {
     size_t n = 0;
 
-    for (; head_ptr; head_ptr = head_ptr->next)
+    for (; head_ptr; head_ptr = head_ptr->next_ptr)
     {
         ++n;
     }
 
     return n;
-}
-
-void linked_list_d_print(const struct linked_list_d* head_ptr)
-{
-    while (head_ptr)
-    {
-        printf("%f ", head_ptr->data);
-        head_ptr = head_ptr->next;
-    }
-    printf("\n");
-}
-
-void linked_list_reverse(struct linked_list_d* head_ptr)
-{
-    size_t size = linked_list_d_size(head_ptr);
-    const size_t middle = size >> 1;
-
-    --size;
-    for (size_t i = 0; i < middle; ++i)
-    {
-        struct linked_list_d* first_ptr = linked_list_d_at(head_ptr, i);
-        struct linked_list_d* second_ptr = linked_list_d_at(head_ptr, size - i);
-
-        const double temp = first_ptr->data;
-        first_ptr->data = second_ptr->data;
-        second_ptr->data = temp;
-    }
 }

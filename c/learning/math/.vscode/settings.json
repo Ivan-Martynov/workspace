@@ -4,6 +4,9 @@
         "functions.h": "c",
         "rat_num.h": "c",
         "interval_arithmetic.h": "c",
-        "vec_d.h": "c"
+        "vec_d.h": "c",
+        "binary_tree_d.h": "c",
+        "linked_list_d.h": "c",
+        "list_operations.h": "c"
     }
 }

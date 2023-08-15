@@ -3,6 +3,11 @@
 #include "functions.h"
 #include "data_structures/list_operations.h"
 #include "data_structures/linked_list_d.h"
+#include "data_structures/list_of_lists_d.h"
+
+#include <string.h>
+#include <inttypes.h>
+#include <math.h>
 
 static void debug_vec_d(const struct vec_d* const vec_ptr)
 {
@@ -22,34 +27,6 @@ static void debug_vec_d(const struct vec_d* const vec_ptr)
 void print_double(const double value)
 {
     printf("%f ", value);
-}
-
-void for_each_list(
-    double* array, const size_t count, const void func(const double))
-{
-    for (size_t i = 0; i < count; ++i)
-    {
-        func(array[i]);
-    }
-}
-
-void map_list(
-    double* array, const size_t count, const double func(const double))
-{
-    for (size_t i = 0; i < count; ++i)
-    {
-        array[i] = func(array[i]);
-    }
-}
-
-void map_linked_list(
-    struct linked_list_d* head, const double func(const double))
-{
-    while (head)
-    {
-        head->data = func(head->data);
-        head = head->next;
-    }
 }
 
 void test_map()
@@ -102,23 +79,90 @@ void test_linked_list()
 
     linked_list_d_append(&head, second_list);
 
+    linked_list_d_free(&second_list);
+
     linked_list_d_print(head);
+    printf("\n");
 
     map_linked_list(head, square);
 
     linked_list_reverse(head);
 
     linked_list_d_print(head);
+    printf("\n");
 
     linked_list_d_free(&head);
+}
+
+void test_list_of_lists()
+{
+    double array_1[] = {11.5, 22.3};
+    struct list_of_lists_d* lol_11_ptr
+        = make_list_of_lists(make_list_node_d_from_array(2, array_1));
+
+    double array_2[] = {328.0, 14.7};
+    lol_11_ptr->next_ptr
+        = make_list_of_lists(make_list_node_d_from_array(2, array_2));
+
+    double array_3[] = {5.0, -16.8, -7.0};
+    struct list_of_lists_d* lol_21_ptr
+        = make_list_of_lists(make_list_node_d_from_array(3, array_3));
+
+    double array_4[] = {8.0, 9.0, -0.0, -1.2, 0.0, 3.0};
+    lol_21_ptr->next_ptr
+        = make_list_of_lists(make_list_node_d_from_array(6, array_4));
+
+    struct list_of_lists_d* lol_1_ptr
+        = make_list_of_lists(make_list_node_d(NAN, lol_11_ptr));
+
+    struct list_of_lists_d* lol_2_ptr
+        = make_list_of_lists(make_list_node_d(NAN, lol_21_ptr));
+    lol_1_ptr->next_ptr = lol_2_ptr;
+
+    struct list_of_lists_d* lol_ptr
+        = make_list_of_lists(make_list_node_d(NAN, lol_1_ptr));
+
+    //list_of_lists_d_map(lol_ptr, square);
+
+    print_list_of_lists(lol_ptr);
+    printf("\n");
+
+#if 1 // TODO: Need to fix this.
+    struct list_of_lists_d* target_ptr = reverse_list_of_lists(lol_ptr);
+    //deep_reverse_list_of_lists(
+    //    &target_ptr,
+    //    lol_ptr);
+    //print_list_of_lists(target_ptr);
+    //printf("\n");
+    //list_of_lists_free(&target_ptr);
+#endif
+
+    struct linked_list_d* list_ptr = NULL;
+    fringe_list_of_lists(&list_ptr, lol_ptr);
+
+    //linked_list_d_print(list_ptr);
+    //printf("\n");
+
+    linked_list_d_free(&list_ptr);
+    list_of_lists_free(&lol_ptr);
+}
+
+void test_nan()
+{
+    const double d = NAN;
+    uint64_t d_n;
+    memcpy(&d_n, &d, sizeof(d));
+    printf("Is %f nan? %d => %" PRIx64 "\n", d, isnan(d), d_n);
 }
 
 int main()
 {
     //test_vec_reverse();
     //test_map();
+    //test_linked_list();
+    test_list_of_lists();
 
-    test_linked_list();
+    //test_nan();
 
     return 0;
 }

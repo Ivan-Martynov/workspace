@@ -6,7 +6,7 @@
 struct linked_list_d
 {
     double data;
-    struct linked_list_d* next;
+    struct linked_list_d* next_ptr;
 };
 
 
@@ -25,10 +25,6 @@ void linked_list_d_append(struct linked_list_d**, struct linked_list_d* const);
 
 void linked_list_d_free(struct linked_list_d** const);
 
-void linked_list_d_print(const struct linked_list_d*);
-
 size_t linked_list_d_size(const struct linked_list_d*);
-
-void linked_list_reverse(struct linked_list_d*);
 
 #endif // _LINKED_LIST_D_H_

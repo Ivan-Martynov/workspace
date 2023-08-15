@@ -11,18 +11,38 @@ SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
 TARGETS = factorial exponentiation accumulation continued_fraction\
-	deriv newton_method interval_arithmetic_demo vec_demo list_operations_demo
+	deriv newton_method interval_arithmetic_demo vec_demo list_operations_demo\
+	tree_operations_demo
+
 .PHONY: all
 all: $(TARGETS)
 
+tree_operations_demo: tree_operations_demo.o data_structures/tree_operations.o\
+	data_structures/binary_tree_d.o
+	$(COMP_CMD) $^ -o $@ $(LIBS)
+
 list_operations_demo: list_operations_demo.o data_structures/list_operations.o\
-	data_structures/vec_d.o data_structures/linked_list_d.o functions.o
+	data_structures/vec_d.o data_structures/linked_list_d.o functions.o\
+	data_structures/list_of_lists_d.o
 	$(COMP_CMD) $^ -o $@ $(LIBS)
 list_operations_demo.o: list_operations_demo.c data_structures/list_operations.h\
-	functions.h data_structures/linked_list_d.h
+	functions.h data_structures/linked_list_d.h data_structures/list_of_lists_d.h
+
+tree_operations_demo.o: tree_operations_demo.c data_structures/tree_operations.h\
+	data_structures/binary_tree_d.h
+
+data_structures/tree_operations.o: data_structures/tree_operations.c\
+	data_structures/tree_operations.h data_structures/binary_tree_d.h
+
+data_structures/binary_tree_d.o: data_structures/binary_tree_d.c\
+	data_structures/binary_tree_d.h
 
 data_structures/list_operations.o: data_structures/list_operations.c\
-	data_structures/list_operations.h data_structures/vec_d.h
+	data_structures/list_operations.h data_structures/vec_d.h\
+	data_structures/list_of_lists_d.h
+
+data_structures/list_of_lists_d.o: data_structures/list_of_lists_d.c\
+	data_structures/list_of_lists_d.h
 
 data_structures/linked_list_d.o: data_structures/linked_list_d.c\
 	data_structures/linked_list_d.h
