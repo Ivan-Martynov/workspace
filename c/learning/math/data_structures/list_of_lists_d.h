@@ -18,9 +18,13 @@ struct list_of_lists_d
 
 struct list_node_d* make_list_node_d(const double, struct list_of_lists_d*);
 
+void list_node_d_push_front(
+    struct list_node_d** const, const double, struct list_of_lists_d*);
 void list_node_d_push_back(
     struct list_node_d** const, const double, struct list_of_lists_d*);
 
+void list_of_lists_d_push_front(
+    struct list_of_lists_d** const, struct list_node_d*);
 void list_of_lists_d_push_back(
     struct list_of_lists_d** const, struct list_node_d*);
 

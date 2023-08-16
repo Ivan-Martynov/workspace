@@ -58,6 +58,19 @@ void map_linked_list(
     }
 }
 
+struct linked_list_d* reverse_of_linked_list(struct linked_list_d* head_ptr)
+{
+    struct linked_list_d* result_ptr = NULL;
+
+    while (head_ptr)
+    {
+        linked_list_d_push_front(&result_ptr, head_ptr->data);
+        head_ptr = head_ptr->next_ptr;
+    }
+
+    return result_ptr;
+}
+
 void linked_list_reverse(struct linked_list_d* head_ptr)
 {
     size_t size = linked_list_d_size(head_ptr);
@@ -79,7 +92,7 @@ void linked_list_d_print(const struct linked_list_d* head_ptr)
 {
     if (head_ptr)
     {
-        printf("%f", head_ptr->data);
+        printf("(%f", head_ptr->data);
         head_ptr = head_ptr->next_ptr;
     }
 
@@ -88,6 +101,7 @@ void linked_list_d_print(const struct linked_list_d* head_ptr)
         printf(", %f", head_ptr->data);
         head_ptr = head_ptr->next_ptr;
     }
+    printf(")");
 }
 
 static void list_of_lists_d_map_helper(
@@ -135,7 +149,10 @@ void print_list_node_d(struct list_node_d* node_ptr)
     }
     else
     {
-        printf("%f", node_ptr->data);
+        if (!isnan(node_ptr->data))
+        {
+            printf("%f", node_ptr->data);
+        }
         node_ptr = node_ptr->next_ptr;
 
         while (node_ptr)
@@ -155,6 +172,11 @@ void print_list_of_lists(struct list_of_lists_d* lists_ptr)
         printf(")");
 
         lists_ptr = lists_ptr->next_ptr;
+    }
+    else
+    {
+        //printf("(");
+        //printf(")");
     }
 
     while (lists_ptr)
@@ -207,57 +229,24 @@ static void deep_reverse_list_node_d(
         return;
     }
 
-    if (src_ptr->list_ptr)
+    if (isnan(src_ptr->data) && (src_ptr->list_ptr))
     {
-        // printf("Reverse nodes step 1\n");
-        // printf("Target is null? %d\n", (pp_target == NULL));
-         deep_reverse_list_of_lists(
-            &((*pp_target)->list_ptr), src_ptr->list_ptr);
-        //deep_reverse_list_of_lists(pp_target, src_ptr->list_ptr);
+        struct list_of_lists_d* inner_list_ptr = NULL;
+
+        deep_reverse_list_of_lists(
+            &inner_list_ptr, src_ptr->list_ptr);
+
+        *pp_target = make_list_node_d(NAN, inner_list_ptr);
     }
     else
     {
-        //printf("Reverse nodes step 2\n");
         deep_reverse_list_node_d(pp_target, src_ptr->next_ptr);
         list_node_d_push_back(pp_target, src_ptr->data, NULL);
     }
 }
 
-struct list_of_lists_d* reverse_list_of_lists(struct list_of_lists_d* lists_ptr)
-{
-    if (!lists_ptr)
-    {
-        return NULL;
-    }
-    else
-    {
-        //return reverse_list_of_lists(lists_ptr->next_ptr);
-        struct list_node_d* node_ptr = NULL;
-        // printf("Reverse lists step 1\n");
-        // deep_reverse_list_of_lists(pp_target, lists_ptr->next_ptr);
-        // printf("Reverse lists step 2\n");
-        deep_reverse_list_node_d(&node_ptr, lists_ptr->node_ptr);
-
-        if (!node_ptr)
-        {
-            // node_ptr = make_list_node_d(NAN, lists_ptr);
-            printf("Empty list.\n");
-            return make_list_of_lists(make_list_node_d(
-                NAN, reverse_list_of_lists(lists_ptr->next_ptr)));
-        }
-        else
-        {
-            print_list_node_d(node_ptr);
-            printf("\n");
-            return make_list_of_lists(make_list_node_d(NAN, node_ptr->list_ptr));
-            // list_of_lists_d_push_back(pp_target, node_ptr);
-        }
-    }
-}
-
 void deep_reverse_list_of_lists(
-    struct list_of_lists_d** pp_target,
-    struct list_of_lists_d* lists_ptr)
+    struct list_of_lists_d** pp_target, struct list_of_lists_d* lists_ptr)
 {
     if (!lists_ptr)
     {
@@ -265,30 +254,61 @@ void deep_reverse_list_of_lists(
     }
     else
     {
-        deep_reverse_list_of_lists(pp_target, lists_ptr->next_ptr);
-
         struct list_node_d* node_ptr = NULL;
-        // printf("Reverse lists step 1\n");
-        // deep_reverse_list_of_lists(pp_target, lists_ptr->next_ptr);
-        // printf("Reverse lists step 2\n");
         deep_reverse_list_node_d(&node_ptr, lists_ptr->node_ptr);
 
-        if (!node_ptr)
-        {
-            //node_ptr = make_list_node_d(NAN, lists_ptr);
-            printf("Empty list.\n");
-            *pp_target = make_list_of_lists(make_list_node_d(NAN, *pp_target));
-        }
-        else
-        {
-            print_list_node_d(node_ptr);
-            printf("\n");
-            //list_of_lists_d_push_back(pp_target, node_ptr);
-        }
-
-        // list_node_d_free(&node_ptr);
-        // printf("Reverse lists step 3\n");
-        // list_of_lists_d_push_back(pp_target, node_ptr);
-        // lists_ptr = lists_ptr->next_ptr;
+        list_of_lists_d_push_front(pp_target, node_ptr);
+        deep_reverse_list_of_lists(pp_target, lists_ptr->next_ptr);
     }
+}
+
+static struct list_node_d* copy_list_node_d(struct list_node_d* node_ptr)
+{
+    struct list_node_d* copy_ptr = NULL;
+
+    while (node_ptr)
+    {
+        list_node_d_push_back(&copy_ptr, node_ptr->data, node_ptr->list_ptr);
+        node_ptr = node_ptr->next_ptr;
+    }
+
+    return copy_ptr;
+}
+
+void make_sets_from_list_node_d(
+    struct list_of_lists_d** pp_target, struct list_node_d* node_ptr)
+{
+    if (!node_ptr)
+    {
+        return;
+    }
+
+    struct list_of_lists_d* temp_ptr = NULL;
+    make_sets_from_list_node_d(&temp_ptr, node_ptr->next_ptr);
+
+    struct list_node_d* copy_ptr = NULL;
+    list_node_d_push_front(&copy_ptr, node_ptr->data, node_ptr->list_ptr);
+    list_of_lists_d_push_back(pp_target, copy_ptr);
+
+    while (temp_ptr)
+    {
+        copy_ptr = copy_list_node_d(temp_ptr->node_ptr);
+        list_node_d_push_front(&copy_ptr, node_ptr->data, node_ptr->list_ptr);
+
+        list_of_lists_d_push_back(pp_target, temp_ptr->node_ptr);
+        list_of_lists_d_push_back(pp_target, copy_ptr);
+
+        temp_ptr = temp_ptr->next_ptr;
+    }
+}
+
+double accumulate_list_d(struct linked_list_d* node_ptr,
+    const double op(double, double), double initial)
+{
+    for (; node_ptr; node_ptr = node_ptr->next_ptr)
+    {
+        initial = op(initial, node_ptr->data);
+    }
+
+    return initial;
 }

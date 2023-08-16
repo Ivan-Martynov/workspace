@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.mc": "c",
+        "sorting_algos.h": "c"
+    }
+}

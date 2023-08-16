@@ -12,6 +12,15 @@ struct list_node_d* make_list_node_d(
     return node_ptr;
 }
 
+void list_node_d_push_front(struct list_node_d** const pp_head,
+    const double value, struct list_of_lists_d* list_ptr)
+{
+    struct list_node_d* node_ptr = make_list_node_d(value, list_ptr);
+    node_ptr->next_ptr = *pp_head;
+
+    *pp_head = node_ptr;
+}
+
 void list_node_d_push_back(struct list_node_d** const pp_head,
     const double value, struct list_of_lists_d* list_ptr)
 {
@@ -32,6 +41,15 @@ void list_node_d_push_back(struct list_node_d** const pp_head,
     {
         *pp_head = node_ptr;
     }
+}
+
+void list_of_lists_d_push_front(
+    struct list_of_lists_d** const pp_head, struct list_node_d* node_ptr)
+{
+    struct list_of_lists_d* list_ptr = make_list_of_lists(node_ptr);
+    list_ptr->next_ptr = *pp_head;
+
+    *pp_head = list_ptr;
 }
 
 void list_of_lists_d_push_back(

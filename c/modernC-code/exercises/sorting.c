@@ -12,7 +12,8 @@ int compare_doubles(const void* const arg1, const void* const arg2)
 
 int compare_strings(const void* const arg1, const void* const arg2)
 {
-    return strcmp(*(const char** const)arg1, *(const char** const)arg2);
+    return strcmp(
+        *(const char* const* const)arg1, *(const char* const* const)arg2);
 }
 
 void print_int(const void* const arg)
@@ -59,7 +60,7 @@ void random_array(const size_t n)
 int main()
 {
     printf("C version: %ld\n", __STDC_VERSION__);
-    fflush(stdout);
+    //fflush(stdout);
 
     const size_t random_array_size = 1E5;
     random_array(random_array_size);

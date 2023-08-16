@@ -17,6 +17,17 @@ void swap_voids(
     }
 }
 
+void swap_doubles(double* a, double* b)
+{
+#if 1
+    swap_voids((void*)a, (void*)b, sizeof(double));
+#else
+    double temp = *a;
+    *a = *b;
+    *b = temp;
+#endif
+}
+
 void print_array_general(const void* ptr, const size_t count, const size_t size,
     void (*print_element)(const void* const))
 {
@@ -51,13 +62,13 @@ bool is_sorted_d(const double arr[static 1], const size_t count)
 }
 
 bool is_sorted_general(void* ptr, const size_t count, const size_t size,
-    int (*compare)(const void*, const void*))
+    int compare_func(const void*, const void*))
 {
     for (size_t i = 1; i < count; i++)
     {
         void* next = ptr + size;
 
-        if (compare(ptr, next) > 0)
+        if (compare_func(ptr, next) > 0)
         {
             return false;
         }
@@ -82,10 +93,7 @@ void bubble_sort_d(double arr[static 1], size_t count)
         {
             if (arr[i - 1] > arr[i])
             {
-                double t = arr[i - 1];
-                arr[i - 1] = arr[i];
-                arr[i] = t;
-
+                swap_doubles(&arr[i - 1], &arr[i]);
                 no_change = false;
             }
         }
@@ -100,7 +108,7 @@ void bubble_sort_d(double arr[static 1], size_t count)
 }
 
 void bubble_sort_general(void* ptr, size_t count, const size_t size,
-    int (*compare)(const void*, const void*))
+    int compare_func(const void*, const void*))
 {
     while (true)
     {
@@ -111,7 +119,7 @@ void bubble_sort_general(void* ptr, size_t count, const size_t size,
         {
             void* next = prev + size;
 
-            if (compare(prev, next) > 0)
+            if (compare_func(prev, next) > 0)
             {
                 swap_voids(prev, next, size);
                 no_change = false;
@@ -177,13 +185,6 @@ void merge_d(double arr[static 1], const size_t left, const size_t middle,
     {
         arr[k++] = second_subarray[j++];
     }
-}
-
-void swap_doubles(double* a, double* b)
-{
-    double temp = *a;
-    *a = *b;
-    *b = temp;
 }
 
 void merge_sort_d(double arr[static 1], const size_t left, const size_t right)
