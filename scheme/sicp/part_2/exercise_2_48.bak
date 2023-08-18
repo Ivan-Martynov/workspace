@@ -1,0 +1,15 @@
+#lang sicp
+
+(define (make-vect x y) (list x y))
+(define (xcor-vect v) (car v))
+(define (ycor-vect v) (cadr v))
+
+(define (elementwise-vec-op op)
+  (lambda (v1 v2)
+    (make-vect (op (xcor-vect v1) (xcor-vect v2))
+            (op (ycor-vect v1) (ycor-vect v2)))))
+
+(define add-vect (elementwise-vec-op +))
+(define sub-vect (elementwise-vec-op -))
+
+(define (scale-vect s v) (map (lambda (a) (* a s)) v))

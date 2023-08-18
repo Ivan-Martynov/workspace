@@ -1,0 +1,6 @@
+#lang sicp
+
+(define (variable? x) (symbol? x))
+
+(define (same-variable? x y)
+  (and (variable? x) (variable? y) (eq? x y)))

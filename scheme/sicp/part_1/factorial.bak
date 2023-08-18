@@ -1,6 +1,0 @@
-#lang sicp
-
-(define (factorial_01 n)
-  (if (= n 1)
-      1
-      (* n (factorial_01 (- n 1)))))

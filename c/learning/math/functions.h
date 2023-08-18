@@ -23,7 +23,11 @@ double identity(const double);
 
 double square(const double);
 
-int gcd(int, int);
+size_t gcd(int, int);
+size_t lcm(int, int);
+
+size_t gcd_array(const size_t n, int arr[static n]);
+size_t lcm_array(const size_t n, int arr[static n]);
 
 double repeated(const double (*)(const double), size_t, double);
 

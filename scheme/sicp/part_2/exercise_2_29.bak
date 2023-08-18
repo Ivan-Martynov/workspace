@@ -1,7 +1,0 @@
-#lang sicp
-
-(define (make-mobile left right)
-  (list left rigth))
-
-(define (make-branch length structure)
-  (list length structure))

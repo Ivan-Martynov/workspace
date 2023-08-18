@@ -1,5 +1,0 @@
-#lang sicp
-
-(define (f i j)
-  (cond ((or (= i 0) (= j 0) (= j i)) 1)
-        (else 

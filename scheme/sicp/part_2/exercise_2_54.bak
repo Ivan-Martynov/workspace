@@ -1,0 +1,10 @@
+#lang sicp
+
+(define (equal-list? x y)
+  (cond ((and (null? x) (null? y))
+         true)
+        ((eq? (car x) (car y))
+         (equal-list? (cdr x) (cdr y)))
+        (else false)))
+
+(equal? '(this is a list) '(this is a list))
