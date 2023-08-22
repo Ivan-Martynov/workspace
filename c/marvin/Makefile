@@ -5,42 +5,49 @@ DEBUG_FLAGS = -O0 -g -D _DEBUG
 RELEASE_FLAGS = -O3 -D NDEBUG
 LIBS = -lm
 
-COMP_CMD = $(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS)
+COMP_CMD = $(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS)
 
-SRC = $(wildcard *.c)
-OBJ = $(wildcard *.o)
+BIN = bin/
+OBJ = obj/
 
-TARGETS = demos/mem_util_demo\
-		  demos/sorting_demo
+TARGETS = 	$(BIN)mem_util_demo\
+			$(BIN)sorting_demo
 
 .PHONY: all
 all: $(TARGETS)
 
-
-demos/mem_util_demo: demos/mem_util_demo.o\
-		memory_utilities/memory_blocks_operations.o
+# Binaries
+$(BIN)mem_util_demo: $(OBJ)mem_util_demo.o\
+		$(OBJ)memory_blocks_operations.o
 	$(COMP_CMD) $^ -o $@
 
-demos/mem_util_demo.o: demos/mem_util_demo.c\
-	memory_utilities/memory_blocks_operations.h
-
-demos/sorting_demo: demos/sorting_demo.o\
-		algorithms/sorting/sorting_algorithms.o\
-		memory_utilities/memory_blocks_operations.o
+$(BIN)sorting_demo: $(OBJ)sorting_demo.o\
+		$(OBJ)sorting_algorithms.o\
+		$(OBJ)memory_blocks_operations.o
 	$(COMP_CMD) $^ -o $@
 
-algorithms/sorting/sorting_algorithms.o:\
-	algorithms/sorting/sorting_algorithms.c\
-	algorithms/sorting/sorting_algorithms.h\
-	memory_utilities/memory_blocks_operations.h
+# Objects
+$(OBJ)mem_util_demo.o: demos/mem_util_demo.c\
+		memory_utilities/memory_blocks_operations.h
+	$(COMP_CMD) $(DEBUG_FLAGS) -c $< -o $@
 
+$(OBJ)sorting_demo.o: demos/sorting_demo.c\
+		algorithms/sorting/sorting_algorithms.h
+	$(COMP_CMD) $(DEBUG_FLAGS) -c $< -o $@
 
-memory_utilities/memory_blocks_operations.o:\
-	memory_utilities/memory_blocks_operations.c\
-	memory_utilities/memory_blocks_operations.h
+$(OBJ)sorting_algorithms.o:\
+		algorithms/sorting/sorting_algorithms.c\
+		algorithms/sorting/sorting_algorithms.h\
+		memory_utilities/memory_blocks_operations.h
+	$(COMP_CMD) $(DEBUG_FLAGS) -c $< -o $@
+
+$(OBJ)memory_blocks_operations.o:\
+		memory_utilities/memory_blocks_operations.c\
+		memory_utilities/memory_blocks_operations.h
+	$(COMP_CMD) $(DEBUG_FLAGS) -c $< -o $@
 
 clean: clean_obj
 	rm $(TARGETS)
 
 clean_obj:
-	rm $(OBJ)
+	rm $(OBJ)*.o

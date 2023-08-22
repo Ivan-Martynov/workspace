@@ -25,11 +25,11 @@ void bubble_sort_general(
 /*
 ** Merge sorting
 */
-void merge_sort_d(double[static 1], const size_t, const size_t);
+void merge_sort_d(const size_t n, double[static n]);
 
 /*
 ** Quicksort sorting
 */
-void quick_sort_d(double[static 1], const size_t left, const size_t right);
+void quick_sort_d(const size_t n, double[static n]);
 
 #endif

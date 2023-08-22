@@ -9,10 +9,18 @@ COMP_CMD = $(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS)
 SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
-TARGETS = UnionFind derivative sorting.exe
+TARGETS = UnionFind derivative sorting.exe cycle_three_pointers.exe rat_num.exe
 
 .PHONY: all
 all: $(TARGETS)
+
+rat_num.exe: rat_num.o
+	$(COMP_CMD) $^ -o $@
+rat_num.o: rat_num.c rat_num.h
+
+cycle_three_pointers.exe: cycle_three_pointers.o
+	$(COMP_CMD) $^ -o $@
+cycle_three_pointers.o: cycle_three_pointers.c
 
 sorting.exe: sorting.o sorting_algos.o
 	$(COMP_CMD) $^ -o $@

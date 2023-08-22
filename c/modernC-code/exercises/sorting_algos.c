@@ -6,6 +6,22 @@
 /*
 **  Utils
 */
+
+/**
+ * @brief Swap two block of memory given equal size.
+ *
+ * @param arg1 Pointer to the first block.
+ * @param arg2 Pointer to the second block.
+ * @param size Size of blocks.
+ *
+ * @version 0.1
+ *
+ * @author Ivan Martynov
+ *
+ * @date 2023-08-21
+ *
+ * @copyright Copyright (c) 2023
+ */
 void swap_voids(
     unsigned char* const arg1, unsigned char* const arg2, size_t size)
 {
@@ -141,20 +157,18 @@ void bubble_sort_general(void* ptr, size_t count, const size_t size,
 ** Merge sorting
 */
 
-void merge_d(double arr[static 1], const size_t left, const size_t middle,
-    const size_t right)
+static void merge_d(double arr[static 1], const size_t left,
+    const size_t middle, const size_t right)
 {
-    size_t first_n = middle - left + 1;
-    size_t second_n = right - middle;
-
+    const size_t first_n = middle - left + 1;
     double first_subarray[first_n];
-    double second_subarray[second_n];
-
     for (size_t i = 0; i < first_n; ++i)
     {
         first_subarray[i] = arr[left + i];
     }
 
+    const size_t second_n = right - middle;
+    double second_subarray[second_n];
     for (size_t j = 0; j < second_n; ++j)
     {
         second_subarray[j] = arr[middle + 1 + j];
@@ -164,8 +178,13 @@ void merge_d(double arr[static 1], const size_t left, const size_t middle,
     size_t j = 0;
     size_t k = left;
 
-    while (i < first_n && j < second_n)
+    while ((i < first_n) && (j < second_n))
     {
+#if 1
+        arr[k++] = (first_subarray[i] < second_subarray[j])
+                       ? first_subarray[i++]
+                       : second_subarray[j++];
+#else
         if (first_subarray[i] < second_subarray[j])
         {
             arr[k++] = first_subarray[i++];
@@ -174,6 +193,7 @@ void merge_d(double arr[static 1], const size_t left, const size_t middle,
         {
             arr[k++] = second_subarray[j++];
         }
+#endif
     }
 
     while (i < first_n)
@@ -187,23 +207,29 @@ void merge_d(double arr[static 1], const size_t left, const size_t middle,
     }
 }
 
-void merge_sort_d(double arr[static 1], const size_t left, const size_t right)
+static void merge_sort_d_impl(
+    const size_t left, const size_t right, double arr[static left + right + 1])
 {
     if (left < right)
     {
         size_t middle = left + ((right - left) >> 1);
 
-        merge_sort_d(arr, left, middle);
-        merge_sort_d(arr, middle + 1, right);
+        merge_sort_d_impl(left, middle, arr);
+        merge_sort_d_impl(middle + 1, right, arr);
 
         merge_d(arr, left, middle, right);
     }
 }
 
-size_t partition_d(
+void merge_sort_d(const size_t n, double arr[static n])
+{
+    merge_sort_d_impl(0, n - 1, arr);
+}
+
+static size_t partition_d(
     double array[static 1], const size_t left, const size_t right)
 {
-    double pivot = array[right];
+    const double pivot = array[right];
 
     size_t k = left;
 
@@ -224,13 +250,19 @@ size_t partition_d(
     return k;
 }
 
-void quick_sort_d(double arr[static 1], const size_t left, const size_t right)
+static void quick_sort_d_impl(
+    const size_t left, const size_t right, double arr[static left + right + 1])
 {
     if (left < right)
     {
-        size_t index = partition_d(arr, left, right);
+        const size_t index = partition_d(arr, left, right);
 
-        quick_sort_d(arr, left, index - 1);
-        quick_sort_d(arr, index + 1, right);
+        quick_sort_d_impl(left, index - 1, arr);
+        quick_sort_d_impl(index + 1, right, arr);
     }
+}
+
+void quick_sort_d(const size_t n, double arr[static n])
+{
+    quick_sort_d_impl(0, n - 1, arr);
 }

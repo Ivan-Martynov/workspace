@@ -19,15 +19,15 @@ static int compare_size_t(
     return *(const size_t*)first_ptr - *(const size_t*)second_ptr;
 }
 
-static void test_sorting_bubble_sort()
+static void test_sorting_bubble_sort(void)
 {
     size_t arr[] = {1, 5, 4, 9, 3, 2, 8};
     const size_t n = sizeof(arr) / sizeof(arr[0]);
 
     print_size_t_array(n, arr);
     mrvn_bubble_sort_generic(arr, n, sizeof(size_t), compare_size_t);
-    mrvn_bubble_sort_generic_with_order(
-        arr, n, sizeof(size_t), compare_size_t, DESCENDING_NON_STRICT);
+    //mrvn_bubble_sort_generic_with_order(
+    //    arr, n, sizeof(size_t), compare_size_t, DESCENDING_NON_STRICT);
     print_size_t_array(n, arr);
 }
 

@@ -43,13 +43,13 @@ void random_array(const size_t n)
     }
 
     clock_t start = clock();
-    merge_sort_d(array, 0, n - 1);
+    merge_sort_d(n, array);
     start = clock() - start;
 
     printf("Is random array[%zu] merge sorted? %d; time: %f\n", n,
         is_sorted_general(array, n, sizeof(double), compare_doubles),
         (double)start / CLOCKS_PER_SEC);
-    // quick_sort_d(array, 0, count - 1);
+    // quick_sort_d(count, array);
     // for (size_t i = 0; i < n; ++i)
     //{
     //	printf("%f ", array[i]);
@@ -76,8 +76,8 @@ int main()
     size_t count = sizeof(array) / sizeof(array[0]);
 
     print_array_general(array, count, sizeof(double), print_double);
-    merge_sort_d(array, 0, count - 1);
-    quick_sort_d(array, 0, count - 1);
+    merge_sort_d(count, array);
+    quick_sort_d(count, array);
     // bubble_sort(array, count);
     printf("%d\n",
         is_sorted_general(array, count, sizeof(double), compare_doubles));
