@@ -16,7 +16,9 @@ static void print_size_t_array(
 static int compare_size_t(
     const void* const first_ptr, const void* const second_ptr)
 {
-    return *(const size_t*)first_ptr - *(const size_t*)second_ptr;
+    const size_t a = *(const size_t*)first_ptr;
+    const size_t b = *(const size_t*)second_ptr;
+    return (a > b) ? 1 : (a < b) ? -1 : 0;
 }
 
 static void test_sorting_bubble_sort(void)

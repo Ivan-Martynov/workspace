@@ -22,9 +22,9 @@ bool blocks_equal(const void* const first_ptr,
 static void mrvn_swap_voids_v1(
     void* const first_ptr, void* const second_ptr, const size_t block_size)
 {
-    // Convert void pointers to pointers to unsigned char to get one byte data.
-    unsigned char* const a_ptr = (unsigned char* const)first_ptr;
-    unsigned char* const b_ptr = (unsigned char* const)second_ptr;
+    // Using unsigned char pointers to traverse data byte by byte.
+    unsigned char* const a_ptr = first_ptr;
+    unsigned char* const b_ptr = second_ptr;
 
     // Swap each byte of memory blocks.
     for (size_t i = 0; i < block_size; ++i)
