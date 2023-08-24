@@ -92,7 +92,7 @@ int main(void)
 
     double b = 827.3028;
     unsigned char* c_ptr = (unsigned char*)&b;
-    printf("Value is 0x%.16X => %g\n", b, b);
+    printf("Value is %g\n", b);
     for (size_t i = 0; i < sizeof(b); ++i)
     {
         printf("byte[%zu]: 0x%.hhX => %u\n", i, c_ptr[i], c_ptr[i]);

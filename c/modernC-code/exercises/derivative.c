@@ -33,8 +33,8 @@ int main() {
 
 	double complex b = fc(c);
 	double complex b1 = newton_c(c, fc, hc);
-	printf("%.8f + .8fi\n", creal(b), cimag(b));
-	printf("%.8f + .8fi\n", creal(b1), cimag(b1));
+	printf("%.8f + %.8fi\n", creal(b), cimag(b));
+	printf("%.8f + %.8fi\n", creal(b1), cimag(b1));
 
 	return 0;
 }
