@@ -10,17 +10,10 @@ SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
 TARGETS = UnionFind derivative sorting.exe cycle_three_pointers.exe rat_num.exe\
-		  binary_representation.exe circular_demo.exe
+		  binary_representation.exe
 
 .PHONY: all
 all: $(TARGETS)
-
-circular_demo.exe: circular_demo.o circular.o
-	$(COMP_CMD) $^ -o $@
-
-circular_demo.o:circular_demo.c circular.h
-
-circular.o: circular.c circular.h
 
 binary_representation.exe: binary_representation.o
 	$(COMP_CMD) $^ -o $@
@@ -48,7 +41,7 @@ UnionFind.o: UnionFind.c union_find_table.h
 union_find_table.o: union_find_table.c union_find_table.h
 
 derivative: derivative.o derivative_fun.o
-	$(COMP_CMD) $^ -o $@ -lm
+	$(COMP_CMD) $^ -o $@
 
 derivative.o: derivative.c derivative_fun.h
 
