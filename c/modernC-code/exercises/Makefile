@@ -10,10 +10,14 @@ SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
 TARGETS = UnionFind derivative sorting.exe cycle_three_pointers.exe rat_num.exe\
-		  binary_representation.exe
+		  binary_representation.exe exercise_39.exe
 
 .PHONY: all
 all: $(TARGETS)
+
+exercise_39.exe: exercise_39.o
+	$(COMP_CMD) $^ -o $@
+exercise_39.o: exercise_39.c
 
 binary_representation.exe: binary_representation.o
 	$(COMP_CMD) $^ -o $@
