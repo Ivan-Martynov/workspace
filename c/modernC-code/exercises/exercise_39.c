@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#if 0
 void fgoto2(const unsigned int n)
 {
     unsigned int j = 0;
@@ -22,8 +23,9 @@ AGAIN:
         goto AGAIN;
     }
 }
+#endif
 
-void fgoto(unsigned int n)
+void fgoto(const unsigned int n)
 {
     unsigned int j = 0;
     unsigned int* p = 0;
@@ -33,11 +35,13 @@ AGAIN:
     if (p)
     {
         printf("%u: p and q are %s, *p is %u\n", j,
-            (j > 1) ? "equal" : "unequal", *p);
+            (q == p) ? "equal" : "unequal", *p);
     }
 
     q = p;
-    p = &j;
+    p = &((unsigned int) {
+        j,
+    });
 
     if (++j <= n)
     {
