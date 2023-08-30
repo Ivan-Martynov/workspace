@@ -12,8 +12,8 @@
  * @return true Blocks are equal.
  * @return false Blocks are not equal.
  */
-bool blocks_equal(const void* const first_ptr,
-    const void* const second_ptr, const size_t block_size)
+bool blocks_equal(const void* const first_ptr, const void* const second_ptr,
+    const size_t block_size)
 {
     return memcmp(first_ptr, second_ptr, block_size) == 0;
 }

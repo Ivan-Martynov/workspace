@@ -13,7 +13,7 @@ void singleton_partition(const size_t count, size_t parent[static count])
     }
 }
 
-int FindRoot(size_t parent[static 1], const size_t count, const size_t index)
+size_t FindRoot(size_t parent[static 1], const size_t count, const size_t index)
 {
     if (parent[index] == SIZE_MAX)
     {

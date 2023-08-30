@@ -1,23 +1,23 @@
 #include "derivative_fun.h"
 
-double newton(const double x, const double f(const double), const double h)
+double newton(const double x, double f(const double), const double h)
 {
     return (f(x + h) - f(x)) / h;
 }
 
 double central_diff_1(
-    const double x, const double f(const double), const double h)
+    const double x, double f(const double), const double h)
 {
     return (f(x + h) - f(x - h)) / (h + h);
 }
 
-double central_diff_2(const double x, const double f(double), const double h)
+double central_diff_2(const double x, double f(double), const double h)
 {
     const double h2 = h + h;
     return ((f(x + h) - f(x - h)) * 8 + f(x - h2) - f(x + h2)) / (12 * h);
 }
 
-double central_diff_3(const double x, const double f(double), const double h)
+double central_diff_3(const double x, double f(double), const double h)
 {
     const double h2 = h + h;
     const double h3 = h2 + h;
@@ -26,7 +26,7 @@ double central_diff_3(const double x, const double f(double), const double h)
            / (60 * h);
 }
 
-double central_diff_4(const double x, const double f(double), const double h)
+double central_diff_4(const double x, double f(double), const double h)
 {
     const double h2 = h + h;
     const double h3 = h2 + h;
@@ -37,7 +37,7 @@ double central_diff_4(const double x, const double f(double), const double h)
 }
 
 double complex newton_c(const double complex x,
-    const double complex f(const double complex), const double complex h)
+    double complex f(const double complex), const double complex h)
 {
     return (f(x + h) - f(x)) / h;
 }

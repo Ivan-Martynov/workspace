@@ -15,6 +15,11 @@ TARGETS = UnionFind derivative sorting.exe cycle_three_pointers.exe rat_num.exe\
 .PHONY: all
 all: $(TARGETS)
 
+#listing_13_2.exe: listing_13_2.o
+#	$(COMP_CMD) $^ -o $@
+#listing_13_2.o: listing_13_2.c
+#	$(COMP_CMD) -c $< -o $@
+
 exercise_39.exe: exercise_39.o
 	$(COMP_CMD) $^ -o $@
 exercise_39.o: exercise_39.c
@@ -36,22 +41,28 @@ sorting.exe: sorting.o sorting_algos.o
 sorting.o: sorting.c sorting_algos.h
 
 sorting_algos.o: sorting_algos.c sorting_algos.h
+	$(COMP_CMD) -c $< -o $@
 
 UnionFind: UnionFind.o union_find_table.o
 	$(COMP_CMD) $^ -o $@
 
 UnionFind.o: UnionFind.c union_find_table.h
+	$(COMP_CMD) -c $< -o $@
 
 union_find_table.o: union_find_table.c union_find_table.h
+	$(COMP_CMD) -c $< -o $@
 
 derivative: derivative.o derivative_fun.o
 	$(COMP_CMD) $^ -o $@
 
 derivative.o: derivative.c derivative_fun.h
+	$(COMP_CMD) -c $< -o $@
 
 derivative_fun.o: derivative_fun.c derivative_fun.h
+	$(COMP_CMD) -c $< -o $@
 
 size_info.o: size_info.c size_info.h
+	$(COMP_CMD) -c $< -o $@
 
 clean: clean_obj
 	rm $(TARGETS)

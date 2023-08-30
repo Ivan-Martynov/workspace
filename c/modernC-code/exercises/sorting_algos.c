@@ -50,7 +50,7 @@ void print_array_general(const void* ptr, const size_t count, const size_t size,
     for (size_t i = 0; i < count; ++i)
     {
         print_element(ptr);
-        ptr += size;
+        ptr = (unsigned char* const)ptr + size;
     }
     printf("\n");
 }
@@ -82,7 +82,7 @@ bool is_sorted_general(void* ptr, const size_t count, const size_t size,
 {
     for (size_t i = 1; i < count; i++)
     {
-        void* next = ptr + size;
+        void* next = (unsigned char* const)ptr + size;
 
         if (compare_func(ptr, next) > 0)
         {
@@ -133,7 +133,7 @@ void bubble_sort_general(void* ptr, size_t count, const size_t size,
         void* prev = ptr;
         for (size_t i = 1; i < count; i++)
         {
-            void* next = prev + size;
+            void* next = (unsigned char* const)prev + size;
 
             if (compare_func(prev, next) > 0)
             {

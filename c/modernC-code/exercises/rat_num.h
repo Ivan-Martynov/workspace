@@ -21,8 +21,11 @@ rat rat_get_prod(rat x, rat y);
 rat rat_get_sum(rat x, rat y);
 
 /* Functions that operate on pointers to rat. */
+void rat_delete(rat* rp);
 void rat_destroy(rat* rp);
 rat* rat_init(rat* rp, long long num, unsigned long long denom);
+rat* rat_new(const long long numerator, unsigned long long denominator);
+
 rat* rat_normalize(rat* rp);
 rat* rat_extend(rat* rp, size_t f);
 rat* rat_sumup(rat* rp, rat y);

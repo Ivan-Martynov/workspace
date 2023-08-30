@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stddef.h>
 
 #include "rat_num.h"
 
@@ -89,6 +90,20 @@ rat* rat_init(rat* rp, long long num, unsigned long long denom)
     return rp;
 }
 
+rat* rat_new(const long long numerator, unsigned long long denominator)
+{
+    return rat_init(malloc(sizeof(rat)), numerator, denominator);
+}
+
+void rat_delete(rat* rp)
+{
+    if (rp)
+    {
+        free(rp);
+        rat_destroy(rp);
+    }
+}
+
 rat* rat_normalize(rat* rp)
 {
     if (rp)
@@ -145,14 +160,12 @@ rat* rat_rma(rat* rp, rat x, rat y)
 
 char const* rat_print(size_t len, char tmp[len], rat const* x)
 {
-    if (x->sign)
-    {
-        sprintf(tmp, "-%zu/%zu", x->num, x->denom);
-    }
-    else
-    {
-        sprintf(tmp, "+%zu/%zu", x->num, x->denom);
-    }
+    sprintf(tmp,
+        x->sign ? "-"
+                  "%zu/%zu"
+                : "+"
+                  "%zu/%zu",
+        x->num, x->denom);
 }
 
 rat rat_copy(const rat* const rat_ptr)
@@ -182,15 +195,18 @@ rat* rat_dotproduct(rat rp[static 1], size_t n, rat const A[n], rat const B[n])
 
 int main(void)
 {
-    rat r = rat_get(24, 57);
+    rat* rp = NULL;
+    rp = rat_new(-24, 57);
 
     const size_t len = 256;
     char temp[len];
-    rat_print(len, temp, &r);
+    rat_print(len, temp, rp);
     printf("%s\n", temp);
 
-    rat_normalize_print(len, temp, &r);
+    rat_normalize_print(len, temp, rp);
     printf("%s\n", temp);
+
+    rat_delete(rp);
 
     return EXIT_SUCCESS;
 }

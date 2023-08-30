@@ -11,7 +11,7 @@ void initialize(const size_t count, size_t parent[static count])
 
 size_t find_root(size_t parent[static 1], const size_t index)
 {
-    if (parent[index] = ROOT_VALUE)
+    if (parent[index] == ROOT_VALUE)
     {
         return index;
     }
@@ -44,6 +44,7 @@ size_t compress(size_t parent[static 1], const size_t index)
     else
     {
         parent[index] = compress(parent, parent[index]);
+        return parent[index];
     }
 }
 
