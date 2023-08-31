@@ -63,7 +63,7 @@ double square(const double x)
 }
 
 static size_t gcd_lcm_helper(
-    int a, int b, const size_t target_function(const int, const int))
+    int a, int b, size_t target_function(const int, const int))
 {
     if (!a && !b)
     {
@@ -86,7 +86,7 @@ static size_t gcd_lcm_helper(
 static size_t gcd_impl(const int a, const int b)
 {
     const int r = a % b;
-    return r ? gcd_impl(b, r) : b;
+    return r ? gcd_impl(b, r) : (size_t)b;
 }
 
 size_t gcd(int a, int b)
@@ -105,7 +105,7 @@ size_t lcm(int a, int b)
 }
 
 static size_t gcd_lcm_array_helper(
-    const size_t n, int arr[static n], const size_t target_function(int, int))
+    const size_t n, int arr[static n], size_t target_function(int, int))
 {
     if (!n || !arr)
     {
@@ -122,15 +122,15 @@ static size_t gcd_lcm_array_helper(
 
 size_t gcd_array(const size_t n, int arr[static n])
 {
-    gcd_lcm_array_helper(n, arr, gcd);
+    return gcd_lcm_array_helper(n, arr, gcd);
 }
 
 size_t lcm_array(const size_t n, int arr[static n])
 {
-    gcd_lcm_array_helper(n, arr, lcm);
+    return gcd_lcm_array_helper(n, arr, lcm);
 }
 
-double repeated(const double f(const double), size_t n, double x)
+double repeated(double f(const double), size_t n, double x)
 {
     for (; n > 0; --n)
     {
@@ -140,12 +140,12 @@ double repeated(const double f(const double), size_t n, double x)
     return x;
 }
 
-double smooth(const double f(const double), const double x, const double dx)
+double smooth(double f(const double), const double x, const double dx)
 {
     return (f(x - dx) + f(x) + f(x + dx)) / 3.0;
 }
 
-double smooth_n_fold(const double f(const double), const size_t n,
+double smooth_n_fold(double f(const double), const size_t n,
     const double x, const double dx)
 {
     if (n == 0)
@@ -167,7 +167,7 @@ double smooth_n_fold(const double f(const double), const size_t n,
     }
 }
 
-double deriv(const double f(const double), const double x, const double dx)
+double deriv(double f(const double), const double x, const double dx)
 {
     return (f(x + dx) - f(x)) / dx;
 }

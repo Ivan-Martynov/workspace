@@ -1,10 +1,4 @@
-C_COMP = gcc
-C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
-DEBUG_FLAGS = -O0 -g -D _DEBUG
-RELEASE_FLAGS = -O3 -D NDEBUG
-LIBS =
-
-COMP_CMD = $(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS)
+include ../../make_compiler_setup.mk
 
 SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
@@ -16,56 +10,49 @@ TARGETS = UnionFind derivative sorting.exe cycle_three_pointers.exe rat_num.exe\
 all: $(TARGETS)
 
 #listing_13_2.exe: listing_13_2.o
-#	$(COMP_CMD) $^ -o $@
+#	$(LINK_CMD) $^ -o $@
 #listing_13_2.o: listing_13_2.c
-#	$(COMP_CMD) -c $< -o $@
+
 
 exercise_39.exe: exercise_39.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
 exercise_39.o: exercise_39.c
 
 binary_representation.exe: binary_representation.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
 binary_representation.o: binary_representation.c
 
 rat_num.exe: rat_num.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
+
 rat_num.o: rat_num.c rat_num.h
 
 cycle_three_pointers.exe: cycle_three_pointers.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
 cycle_three_pointers.o: cycle_three_pointers.c
 
 sorting.exe: sorting.o sorting_algos.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
+
 sorting.o: sorting.c sorting_algos.h
 
 sorting_algos.o: sorting_algos.c sorting_algos.h
-	$(COMP_CMD) -c $< -o $@
 
 UnionFind: UnionFind.o union_find_table.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
 
 UnionFind.o: UnionFind.c union_find_table.h
-	$(COMP_CMD) -c $< -o $@
 
 union_find_table.o: union_find_table.c union_find_table.h
-	$(COMP_CMD) -c $< -o $@
 
 derivative: derivative.o derivative_fun.o
-	$(COMP_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@
 
 derivative.o: derivative.c derivative_fun.h
-	$(COMP_CMD) -c $< -o $@
 
 derivative_fun.o: derivative_fun.c derivative_fun.h
-	$(COMP_CMD) -c $< -o $@
 
 size_info.o: size_info.c size_info.h
-	$(COMP_CMD) -c $< -o $@
 
-clean: clean_obj
-	rm $(TARGETS)
-
-clean_obj:
-	rm $(OBJ)
+clean:
+	rm $(OBJ) $(TARGETS)

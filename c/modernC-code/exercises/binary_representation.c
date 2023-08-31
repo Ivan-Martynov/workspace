@@ -59,7 +59,7 @@ void print_uchar_array_as_bin_big_end(
 
 void test_double_ptr(const union double_ptr_inspect two_fold)
 {
-    printf("Value is %g => %p\n", *two_fold.val_ptr, two_fold.val_ptr);
+    printf("Value is %g => %p\n", *two_fold.val_ptr, (void*)two_fold.val_ptr);
     for (size_t i = 0; i < sizeof(two_fold.bytes); ++i)
     {
         printf("byte[%zu]: 0x%.02hhX\n", i, two_fold.bytes[i]);

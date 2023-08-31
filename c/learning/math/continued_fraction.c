@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-double coninued_fraction_recursive_helper(const double n_func(const size_t),
-    const double d_func(const size_t), const size_t k, const size_t i)
+double coninued_fraction_recursive_helper(double n_func(const size_t),
+    double d_func(const size_t), const size_t k, const size_t i)
 {
     if (i >= k)
     {
@@ -16,14 +16,14 @@ double coninued_fraction_recursive_helper(const double n_func(const size_t),
     }
 }
 
-double coninued_fraction_recursive(const double n_func(const size_t),
-    const double d_func(const size_t), size_t k)
+double coninued_fraction_recursive(double n_func(const size_t),
+    double d_func(const size_t), size_t k)
 {
     return coninued_fraction_recursive_helper(n_func, d_func, k, 1);
 }
 
-double coninued_fraction_iterative(const double n_func(const size_t),
-    const double d_func(const size_t), size_t k)
+double coninued_fraction_iterative(double n_func(const size_t),
+    double d_func(const size_t), size_t k)
 {
     double result = 0;
 
@@ -35,8 +35,8 @@ double coninued_fraction_iterative(const double n_func(const size_t),
     return result;
 }
 
-double coninued_fraction(const double n_func(const size_t),
-    const double d_func(const size_t), size_t k)
+double coninued_fraction(double n_func(const size_t),
+    double d_func(const size_t), size_t k)
 {
 #if 1
     return coninued_fraction_iterative(n_func, d_func, k);
@@ -47,11 +47,13 @@ double coninued_fraction(const double n_func(const size_t),
 
 double n_func_one(const size_t i)
 {
+    (void)i;
     return 1.0;
 }
 
 double d_func_one(const size_t i)
 {
+    (void)i;
     return 1.0;
 }
 

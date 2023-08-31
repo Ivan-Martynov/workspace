@@ -29,7 +29,6 @@ rat rat_get_normal(rat x)
 
 rat rat_get_extended(rat x, size_t f)
 {
-    const size_t c = gcd(x.num, x.denom);
     x.num *= f;
     x.denom *= f;
     return x;
@@ -158,7 +157,7 @@ rat* rat_rma(rat* rp, rat x, rat y)
     return rat_sumup(rp, rat_get_prod(x, y));
 }
 
-char const* rat_print(size_t len, char tmp[len], rat const* x)
+const char* rat_print(size_t len, char tmp[len], rat const* x)
 {
     sprintf(tmp,
         x->sign ? "-"
@@ -166,6 +165,8 @@ char const* rat_print(size_t len, char tmp[len], rat const* x)
                 : "+"
                   "%zu/%zu",
         x->num, x->denom);
+
+    return tmp;
 }
 
 rat rat_copy(const rat* const rat_ptr)

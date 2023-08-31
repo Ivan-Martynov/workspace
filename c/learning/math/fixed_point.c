@@ -1,7 +1,8 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <math.h>
 #include "functions.h"
+#include <math.h>
+#include <stdbool.h>
+#include <stdio.h>
+
 
 static double g_x;
 static size_t g_root;
@@ -12,8 +13,7 @@ static bool are_close_enough(
     return fabs(lhs - rhs) < tol;
 }
 
-double fixed_point(
-    const double func(const double), double guess, const double tol)
+double fixed_point(double func(const double), double guess, const double tol)
 {
     while (true)
     {
@@ -26,10 +26,10 @@ double fixed_point(
     }
 }
 
+#if 0
 static double golden_ratio_func(const double x)
 {
     return 1.0 + 1.0 / x;
-
 }
 
 static void golden_ratio()
@@ -40,9 +40,10 @@ static void golden_ratio()
 
     printf("Golden ratio approximation = %f\n", result);
 }
+#endif
 
 static double damping(
-    const double f(const double), const double x, const double alpha)
+    double f(const double), const double x, const double alpha)
 {
     return (1 - alpha) * f(x) + alpha * x;
 }
@@ -64,9 +65,10 @@ double general_root(const double x, const size_t n_th)
 
     const double tol = 0.0001;
 
-    const double result = fixed_point(general_root_helper2, 1.0, tol);
+    return fixed_point(general_root_helper2, 1.0, tol);
 }
 
+#if 0
 static double sqrt_helper(const double y)
 {
     return average(y, g_x / y);
@@ -82,13 +84,14 @@ static void square_root(const double x)
 
     printf("Square root approximation = %f\n", result);
 }
+#endif
 
 double powered_x_approx(const double x)
 {
-    return log(1000)/log(x);
+    return log(1000) / log(x);
 }
 
-//int main()
+// int main()
 //{
 //    golden_ratio();
 //

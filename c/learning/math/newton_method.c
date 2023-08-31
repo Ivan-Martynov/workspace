@@ -8,7 +8,7 @@ static double g_dx;
 static double (*g_f)(const double);
 
 double newton_transform(
-    const double f(const double), const double x, const double dx)
+    double f(const double), const double x, const double dx)
 {
     return x - f(x) / deriv(f, x, dx);
 }
@@ -19,7 +19,7 @@ static double newton_transform_helper(const double y)
 }
 
 double newton_method(
-    const double f(const double), const double guess, const double dx)
+    double f(const double), const double guess, const double dx)
 {
     const double tol = 0.001;
     g_f = f;

@@ -31,7 +31,7 @@ void vec_d_reverse(struct vec_d* const vec_ptr)
 }
 
 void for_each_list(
-    double* array, const size_t count, const void func(const double))
+    double* array, const size_t count, void func(const double))
 {
     for (size_t i = 0; i < count; ++i)
     {
@@ -40,7 +40,7 @@ void for_each_list(
 }
 
 void map_list(
-    double* array, const size_t count, const double func(const double))
+    double* array, const size_t count, double func(const double))
 {
     for (size_t i = 0; i < count; ++i)
     {
@@ -49,7 +49,7 @@ void map_list(
 }
 
 void map_linked_list(
-    struct linked_list_d* head, const double func(const double))
+    struct linked_list_d* head, double func(const double))
 {
     while (head)
     {
@@ -105,7 +105,7 @@ void linked_list_d_print(const struct linked_list_d* head_ptr)
 }
 
 static void list_of_lists_d_map_helper(
-    struct list_node_d* node_ptr, const double func(const double))
+    struct list_node_d* node_ptr, double func(const double))
 {
     if (!node_ptr)
     {
@@ -127,7 +127,7 @@ static void list_of_lists_d_map_helper(
 }
 
 void list_of_lists_d_map(
-    struct list_of_lists_d* lists_ptr, const double func(const double))
+    struct list_of_lists_d* lists_ptr, double func(const double))
 {
     while (lists_ptr)
     {
@@ -303,7 +303,7 @@ void make_sets_from_list_node_d(
 }
 
 double accumulate_list_d(struct linked_list_d* node_ptr,
-    const double op(double, double), double initial)
+    double op(double, double), double initial)
 {
     for (; node_ptr; node_ptr = node_ptr->next_ptr)
     {

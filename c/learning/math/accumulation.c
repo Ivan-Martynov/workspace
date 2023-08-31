@@ -3,10 +3,10 @@
 #include "functions.h"
 
 double filtered_accumulate(double start, const double end,
-    const double null_value, const bool filter(const double),
-    const double next_item_function(const double),
-    const double term_function(const double),
-    const double combine_function(const double, const double))
+    const double null_value, bool filter(const double),
+    double next_item_function(const double),
+    double term_function(const double),
+    double combine_function(const double, const double))
 {
     double result = null_value;
 
@@ -21,15 +21,16 @@ double filtered_accumulate(double start, const double end,
     return result;
 }
 
-bool always_true(const double _)
+bool always_true(const double unused)
 {
+    (void)unused;
     return true;
 }
 
 double accumulate(double start, const double end, const double null_value,
-    const double next_item_function(const double),
-    const double term_function(const double),
-    const double combine_function(const double, const double))
+    double next_item_function(const double),
+    double term_function(const double),
+    double combine_function(const double, const double))
 {
 
     return filtered_accumulate(start, end, null_value, always_true,
