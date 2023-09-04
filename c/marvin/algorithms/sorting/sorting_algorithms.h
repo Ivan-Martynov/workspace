@@ -1,7 +1,8 @@
-#ifndef _MRVN_SORTING_ALGORITHMS_H_
-#define _MRVN_SORTING_ALGORITHMS_H_
+#ifndef _H_MRVN_SORTING_ALGORITHMS_H_
+#define _H_MRVN_SORTING_ALGORITHMS_H_
 
 #include <stddef.h>
+#include <stdbool.h>
 
 /**
  * @brief Sorting order.
@@ -16,19 +17,70 @@ enum mrvn_sorting_order
 };
 
 /**
- * @brief Sort an array of data using bubble sort algorithm.
- * 
- */
-void mrvn_bubble_sort_generic(void*, size_t, const size_t,
-    int (*)(const void* const, const void* const));
-
-/**
  * @brief Sort an array of data using bubble sort algorithm with specified
  * sorting order.
  *
+ * @param ptr Pointer to data.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ * @param sorting_order Sorting order.
  */
-void mrvn_bubble_sort_generic_with_order(void*, size_t, const size_t,
-    int (*)(const void* const, const void* const),
-    const enum mrvn_sorting_order);
+void mrvn_bubble_sort_generic_with_order(void* const ptr, size_t element_count,
+    const size_t block_size,
+    int compare_function(const void* const, const void* const),
+    const enum mrvn_sorting_order sorting_order);
 
-#endif // _MRVN_SORTING_ALGORITHMS_H_
+/**
+ * @brief Sort an array of data using bubble sort algorithm.
+ *
+ * @param ptr Pointer to data.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ */
+void mrvn_bubble_sort_generic(void* const ptr, size_t element_count,
+    const size_t block_size,
+    int compare_function(const void* const, const void* const));
+
+/**
+ * @brief Check if array is sorted with specified sorting order.
+ *
+ * @param ptr Pointer to data.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ * @param sorting_order Sorting order.
+ *
+ * @return true Array is sorted.
+ * @return false Array is not sorted.
+ *
+ * @version 0.1
+ *
+ * @date 2023-09-04
+ */
+bool mrvn_is_array_sorted_with_order(const void* const ptr,
+    size_t element_count, const size_t block_size,
+    int compare_function(const void* const, const void* const),
+    const enum mrvn_sorting_order sorting_order);
+
+/**
+ * @brief Check if array is sorted.
+ * 
+ * @param ptr Pointer to data.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ *
+ * @return true Array is sorted.
+ * @return false Array is not sorted.
+ * 
+ * @version 0.1
+ * 
+ * @date 2023-09-04
+ */
+bool mrvn_is_array_sorted_generic(const void* const ptr, size_t element_count,
+    const size_t block_size,
+    int compare_function(const void* const, const void* const));
+
+#endif // _H_MRVN_SORTING_ALGORITHMS_H_

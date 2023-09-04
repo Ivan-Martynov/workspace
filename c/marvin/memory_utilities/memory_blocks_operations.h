@@ -1,5 +1,5 @@
-#ifndef _MRVN_MEMORY_BLOCK_OPERATIONS_H_
-#define _MRVN_MEMORY_BLOCK_OPERATIONS_H_
+#ifndef _H_MRVN_MEMORY_BLOCK_OPERATIONS_H_
+#define _H_MRVN_MEMORY_BLOCK_OPERATIONS_H_
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -16,4 +16,4 @@ bool blocks_equal(const void* const, const void* const, const size_t);
  */
 void mrvn_swap_voids(void* const, void* const, const size_t);
 
-#endif // _MRVN_MEMORY_BLOCK_OPERATIONS_H_
+#endif // _H_MRVN_MEMORY_BLOCK_OPERATIONS_H_
