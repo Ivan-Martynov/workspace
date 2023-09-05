@@ -16,6 +16,15 @@ enum mrvn_sorting_order
     DESCENDING_NON_STRICT,
 };
 
+void mrvn_merge_sort_with_order(void* const ptr, size_t element_count,
+    const size_t block_size,
+    int compare_function(const void* const, const void* const),
+    const enum mrvn_sorting_order sorting_order);
+
+void mrvn_merge_sort(void* const ptr, size_t element_count,
+    const size_t block_size,
+    int compare_function(const void* const, const void* const));
+
 /**
  * @brief Sort an array of data using bubble sort algorithm with specified
  * sorting order.

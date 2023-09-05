@@ -12,7 +12,7 @@
  *
  * @date 2023-09-04
  */
-void mrvn_free_set_null(void** ptr_ptr)
+void mrvn_free_set_null(size_t** ptr_ptr)
 {
     if (ptr_ptr && *ptr_ptr)
     {

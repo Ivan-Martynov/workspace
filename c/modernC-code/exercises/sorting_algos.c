@@ -170,7 +170,7 @@ static void merge_d(double arr[static 1], const size_t left,
     const size_t second_n = right - middle;
     double second_subarray[second_n];
     for (size_t j = 0; j < second_n; ++j)
-    {
+    
         second_subarray[j] = arr[middle + 1 + j];
     }
 

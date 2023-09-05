@@ -1,6 +1,8 @@
 #ifndef _H_MEMORY_MANAGEMENT_HELPER_H_
 #define _H_MEMORY_MANAGEMENT_HELPER_H_
 
+#include <stddef.h>
+
 /**
  * @brief Deallocate and set pointer to null.
  *
@@ -10,6 +12,6 @@
  *
  * @date 2023-09-04
  */
-void mrvn_free_set_null(void** ptr_ptr);
+void mrvn_free_set_null(size_t** ptr_ptr);
 
 #endif //_H_MEMORY_MANAGEMENT_HELPER_H_
