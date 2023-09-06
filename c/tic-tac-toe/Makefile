@@ -18,9 +18,9 @@ vpath %.o $(OBJ_DIR)
 sources = $(wildcard $(SRC_DIR)/*.c)
 objects = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(sources))
 
-target = $(BIN_DIR)/main.out
-debug_target = $(BIN_DIR)/debug/main.out
-release_target = $(BIN_DIR)/release/main.out
+target = $(BIN_DIR)/main.exe
+debug_target = $(BIN_DIR)/debug/main.exe
+release_target = $(BIN_DIR)/release/main.exe
 
 .PHONY : all
 all : $(target)

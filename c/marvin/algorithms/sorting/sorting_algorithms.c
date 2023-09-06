@@ -133,76 +133,116 @@ static local_check_function_type sort_order_function(
     }
 }
 
-static void mrvn_merge_parts_with_order_impl(void* const ptr, const size_t left,
-    const size_t middle, const size_t right, const size_t block_size,
+/**
+ * @brief Merge left and right parts into the target array.
+ * 
+ * @param ptr Pointer to the target array.
+ * @param temp_ptr Temporary pointer to keep intermediate results.
+ * @param left Index of the left element.
+ * @param middle Index of the middle element.
+ * @param right Index of the right element.
+ * @param block_size Number of bytes per element.
+ * @param compare_function Function to compare two elements.
+ * @param need_to_swap Function to check if elements are to be swapped
+ * 
+ * @version 0.1
+ * 
+ * @date 2023-09-06
+ */
+static void mrvn_merge_parts_with_order_impl(unsigned char* const ptr,
+    unsigned char* const temp_ptr, const size_t left, const size_t middle,
+    const size_t right, const size_t block_size,
     int compare_function(const void* const, const void* const),
     local_check_function_type need_to_swap)
 {
-    const size_t first_n = middle - left + 1;
-    unsigned char* const first_subarray = malloc(first_n * block_size);
-
-    if (!first_subarray)
+    // Point to the left element in memory.
+    size_t i = block_size * left;
+    // Block size for elements in the left part.
+    const size_t left_block_size = block_size * (middle - left + 1);
+    if (left_block_size)
     {
-        return;
+        memcpy(temp_ptr + i, ptr + i, left_block_size);
     }
 
-    memcpy(first_subarray, (unsigned char*)ptr + left * block_size,
-        block_size * first_n);
-
-    const size_t second_n = right - middle;
-    unsigned char* const second_subarray = malloc(second_n * block_size);
-
-    if (!second_subarray)
+    // Point to the element next after the middle element in memory.
+    size_t j = block_size * (middle + 1);
+    // Block size for elements in the right part.
+    const size_t right_block_size = block_size * (right - middle);
+    if (right_block_size)
     {
-        return;
+        memcpy(temp_ptr + j, ptr + j, right_block_size);
     }
 
-    memcpy(second_subarray, (unsigned char*)ptr + block_size * (middle + 1),
-        block_size * second_n);
-
-    size_t i = 0;
-    size_t j = 0;
-    size_t k = left;
-
-    while ((i < first_n) && (j < second_n))
+    size_t k = i;
+    const size_t left_stop = block_size * middle;
+    const size_t right_stop = block_size * right;
+    // Looping through left and right parts simultaneiously, choosing an element
+    // to put onto the left of the other using the comparison function. The main
+    // sorting part.
+    while ((i <= left_stop) && (j <= right_stop))
     {
-        const void* const prev_ptr = first_subarray + block_size * i;
-        const void* const next_ptr = second_subarray + block_size * j;
+        const unsigned char* const prev_ptr = temp_ptr + i;
+        const unsigned char* const next_ptr = temp_ptr + j;
+
+        // If the left element is 'larger', then put it to the right part and
+        // the right element is moved to the left part.
         if (need_to_swap(compare_function, prev_ptr, next_ptr))
         {
-            memcpy((unsigned char*)ptr + block_size * k, next_ptr, block_size);
-            ++j;
+            // The right element is 'smaller', thus put it into the target array
+            // and move the index onto the next element in memory.
+            memcpy(ptr + k, next_ptr, block_size);
+            j += block_size;
         }
         else
         {
-            memcpy((unsigned char*)ptr + block_size * k, prev_ptr, block_size);
-            ++i;
+            // The left element is 'smaller', thus put it into the target array
+            // and move the index onto the next element in memory.
+            memcpy(ptr + k, prev_ptr, block_size);
+            i += block_size;
         }
-        ++k;
+        // Move the index of the target array onto the next element in memory.
+        k += block_size;
     }
 
-    while (i < first_n)
+    // Place remaining elements from the left part into the target array. If
+    // there are still element, then they are 'smaller'.
+    while (i <= left_stop)
     {
-        memcpy((unsigned char*)ptr + block_size * k,
-            first_subarray + block_size * i, block_size);
-        ++i;
-        ++k;
+        memcpy(ptr + k, temp_ptr + i, block_size);
+        i += block_size;
+        k += block_size;
     }
 
-    while (j < second_n)
+    // Place remaining elements from the right part into the target array. If
+    // there are still element, then they are 'larger'.
+    while (j <= right_stop)
     {
-        memcpy((unsigned char*)ptr + block_size * k,
-            second_subarray + block_size * j, block_size);
-        ++j;
-        ++k;
+        memcpy(ptr + k, temp_ptr + j, block_size);
+        j += block_size;
+        k += block_size;
     }
-
-    free(first_subarray);
-    free(second_subarray);
 }
 
-static void mrvn_merge_sort_with_order_impl(void* const ptr, const size_t left,
-    const size_t right, const size_t block_size,
+/**
+ * @brief Merge sort an array, using temporary pointer to keep intermediate
+ * results.
+ *
+ * @param ptr Target pointer.
+ * @param temp_ptr Temporary pointer.
+ * 
+ * @param left Index of the left element.
+ * @param right Index of the right element.
+ * @param block_size Number of bytes per element.
+ * @param compare_function Function to compare two elements.
+ * @param need_to_swap Function to check if elements are to be swapped
+ *
+ * @version 0.1
+ *
+ * @date 2023-09-06
+ */
+static void mrvn_merge_sort_with_order_impl(unsigned char* const ptr,
+    unsigned char* const temp_ptr, const size_t left, const size_t right,
+    const size_t block_size,
     int compare_function(const void* const, const void* const),
     local_check_function_type need_to_swap)
 {
@@ -210,16 +250,31 @@ static void mrvn_merge_sort_with_order_impl(void* const ptr, const size_t left,
     {
         const size_t middle = left + ((right - left) >> 1);
 
-        mrvn_merge_sort_with_order_impl(
-            ptr, left, middle, block_size, compare_function, need_to_swap);
-        mrvn_merge_sort_with_order_impl(
-            ptr, middle + 1, right, block_size, compare_function, need_to_swap);
-
-        mrvn_merge_parts_with_order_impl(ptr, left, middle, right, block_size,
+        // Dividing the array into two parts.
+        mrvn_merge_sort_with_order_impl(ptr, temp_ptr, left, middle, block_size,
             compare_function, need_to_swap);
+        mrvn_merge_sort_with_order_impl(ptr, temp_ptr, middle + 1, right,
+            block_size, compare_function, need_to_swap);
+
+        // Merging (conquering) the array.
+        mrvn_merge_parts_with_order_impl(ptr, temp_ptr, left, middle, right,
+            block_size, compare_function, need_to_swap);
     }
 }
 
+/**
+ * @brief Sort an array using the merge algorithm.
+ * 
+ * @param ptr Pointer to target array.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ * @param sorting_order Sorting order.
+ * 
+ * @version 0.1
+ * 
+ * @date 2023-09-06
+ */
 void mrvn_merge_sort_with_order(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const),
@@ -232,10 +287,32 @@ void mrvn_merge_sort_with_order(void* const ptr, size_t element_count,
 
     local_check_function_type need_to_swap = sort_order_function(sorting_order);
 
-    mrvn_merge_sort_with_order_impl(
-        ptr, 0, element_count - 1, block_size, compare_function, need_to_swap);
+    // Temporary array to put elements in for merging.
+    unsigned char* const temp_ptr = malloc(element_count * block_size);
+
+    if (!temp_ptr)
+    {
+        return;
+    }
+
+    mrvn_merge_sort_with_order_impl(ptr, temp_ptr, 0, element_count - 1,
+        block_size, compare_function, need_to_swap);
+
+    free(temp_ptr);
 }
 
+/**
+ * @brief Sort an array using the merge algorithm.
+ * 
+ * @param ptr Pointer to target array.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ * 
+ * @version 0.1
+ * 
+ * @date 2023-09-06
+ */
 void mrvn_merge_sort(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const))
@@ -254,7 +331,7 @@ void mrvn_merge_sort(void* const ptr, size_t element_count,
  * @param compare_function Function to compare two elements.
  * @param sorting_order Sorting order.
  */
-void mrvn_bubble_sort_generic_with_order(void* const ptr, size_t element_count,
+void mrvn_bubble_sort_with_order(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const),
     const enum mrvn_sorting_order sorting_order)
@@ -307,11 +384,11 @@ void mrvn_bubble_sort_generic_with_order(void* const ptr, size_t element_count,
  * @param block_size Size of each element.
  * @param compare_function Function to compare two elements.
  */
-void mrvn_bubble_sort_generic(void* const ptr, size_t element_count,
+void mrvn_bubble_sort(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const))
 {
-    mrvn_bubble_sort_generic_with_order(
+    mrvn_bubble_sort_with_order(
         ptr, element_count, block_size, compare_function, ASCENDING_STRICT);
 }
 
@@ -336,6 +413,11 @@ bool mrvn_is_array_sorted_with_order(const void* const ptr,
     int compare_function(const void* const, const void* const),
     const enum mrvn_sorting_order sorting_order)
 {
+    if (!ptr)
+    {
+        return true;
+    }
+
     local_check_function_type need_to_swap = sort_order_function(sorting_order);
 
     const void* prev_ptr = ptr;
@@ -372,7 +454,7 @@ bool mrvn_is_array_sorted_with_order(const void* const ptr,
  *
  * @date 2023-09-04
  */
-bool mrvn_is_array_sorted_generic(const void* const ptr, size_t element_count,
+bool mrvn_is_array_sorted(const void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const))
 {

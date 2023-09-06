@@ -1,12 +1,13 @@
-#define _POSIX_C_SOURCE 199309L
+#define _POSIX_C_SOURCE 199309L // For clock_gettime and friends.
 
 #include <assert.h>
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include "../algorithms/sorting/sorting_algorithms.h"
-#include "../comparison_utilities/comparison_helper.h"
+#include "../numerics/comparison_utilities/comparison_helper.h"
+#include "../numerics/pseudo_random_utilities/random_generator_helper.h"
 #include "../type_utilities/type_constants.h"
 #include "../date_time_utilities/timespec_helper.h"
 #include "../memory_utilities/memory_management_helper.h"
@@ -27,122 +28,97 @@ static void fill_size_t_array_random(size_t n, size_t arr[static n])
 {
     while (n--)
     {
+#if 0
+        arr[n] = mrvn_simple_rand_size_t_between(20UL, 900UL);
+#else
         arr[n] = rand();
+#endif
     }
 }
 
-static void test_merge_sort(const size_t run_count, const size_t array_size)
+static double test_sorting_algorithm(const size_t run_count,
+    const size_t array_size,
+    void sorting_function(void* const, size_t, const size_t,
+        int compare_function(const void* const, const void* const)),
+        const char algorithm_name[static 1])
 {
     assert(run_count > 0);
     assert(array_size > 0);
 
-    srand(time(mrvn_null_ptr));
+    mrvn_seed_simple_generator_default();
 
     double average_time = 0.0;
 
     for (size_t j = 0; j < run_count; ++j)
     {
-        size_t* test_array = malloc(array_size * sizeof(size_t));
-        assert(sizeof(test_array[0]) == sizeof(size_t));
+        const size_t block_size = sizeof(size_t);
+
+        size_t* test_array = malloc(array_size * block_size);
+        assert(sizeof(test_array[0]) == block_size);
 
         struct timespec spec;
         clock_gettime(CLOCK_MONOTONIC, &spec);
 
-        double d = mrvn_timespec_to_seconds_double(&spec);
+        double d = mrvn_timespec_to_ms_double(&spec);
 
         fill_size_t_array_random(array_size, test_array);
 
-        test_array[0] = 3;
-        test_array[1] = 0;
-        test_array[2] = 1;
-        test_array[3] = 8;
-        test_array[4] = 5;
-        test_array[5] = 4;
-        test_array[6] = 7;
-        test_array[7] = 6;
-        test_array[8] = 3;
-        test_array[9] = 13;
+        sorting_function(
+            test_array, array_size, block_size, mrvn_compare_size_t);
 
-        for (size_t i = 0; i < array_size; ++i)
+        if (!mrvn_is_array_sorted(
+                test_array, array_size, block_size, mrvn_compare_size_t))
         {
-            printf("%zu ", test_array[i]);
-        }
-        printf("\n");
-
-        mrvn_merge_sort(
-            test_array, array_size, sizeof(size_t), mrvn_compare_size_t);
-
-        for (size_t i = 0; i < array_size; ++i)
-        {
-            printf("%zu ", test_array[i]);
-        }
-        printf("\n");
-
-
-        if (mrvn_is_array_sorted_generic(
-                test_array, array_size, sizeof(size_t), mrvn_compare_size_t))
-        {
-            printf("Merge sort: array sorted.\n");
-        }
-        else
-        {
-            printf("Merge sort: array not sorted.\n");
+            printf("Sort: array not sorted.\n");
         }
 
         mrvn_free_set_null(&test_array);
 
         clock_gettime(CLOCK_MONOTONIC, &spec);
 
-        const double duration = mrvn_timespec_to_seconds_double(&spec) - d;
+        const double duration = mrvn_timespec_to_ms_double(&spec) - d;
 
         average_time += duration;
     }
 
-    printf("Average time for merge sorting %zu elements ~ %g ms.\n", array_size,
+    printf("Sorting (%s) %zu elements ~ %g ms.\n", algorithm_name, array_size,
         average_time / run_count);
+
+    return average_time / run_count;
 }
 
-static void test_bubble_sort(const size_t run_count, const size_t array_size)
+static void test_merge_sort()
 {
-    assert(run_count > 0);
-    assert(array_size > 0);
+    const size_t run_count = 100;
+    const size_t sizes[] = {10, 100, 1000, 10000};
+    const size_t sizes_count = sizeof(sizes) / sizeof(sizes[0]);
 
-    srand(time(mrvn_null_ptr));
+    double n1 = sizes[0] * log(sizes[0]);
+    double t1 = test_sorting_algorithm(run_count, sizes[0], mrvn_merge_sort, "merge");
 
-    double average_time = 0.0;
-
-    for (size_t j = 0; j < run_count; ++j)
+    for (size_t i = 1; i < sizes_count; ++i)
     {
-        size_t* test_array = malloc(array_size * sizeof(size_t));
-        assert(sizeof(test_array[0]) == sizeof(size_t));
+        const double n2 = sizes[i] * log(sizes[i]);
+        const double t2 = test_sorting_algorithm(
+            run_count, sizes[i], mrvn_merge_sort, "merge");
 
-        struct timespec spec;
-        clock_gettime(CLOCK_MONOTONIC, &spec);
+        printf("Test %zu: %g; %g\n", i, n2 / n1, t2 / t1);
 
-        double d = mrvn_timespec_to_seconds_double(&spec);
-
-        fill_size_t_array_random(array_size, test_array);
-
-        mrvn_bubble_sort_generic(
-            test_array, array_size, sizeof(size_t), mrvn_compare_size_t);
-
-        mrvn_free_set_null(&test_array);
-
-        clock_gettime(CLOCK_MONOTONIC, &spec);
-
-        const double duration = mrvn_timespec_to_seconds_double(&spec) - d;
-
-        average_time += duration;
+        n1 = n2;
+        t1 = t2;
     }
+}
 
-    printf("Average time for bubble sorting %zu elements ~ %g ms.\n", array_size,
-        average_time / run_count);
+static double test_bubble_sort(const size_t run_count, const size_t array_size)
+{
+    return test_sorting_algorithm(
+        run_count, array_size, mrvn_bubble_sort, "bubble");
 }
 
 int main(void)
 {
-    test_bubble_sort(1, 1E3);
-    test_merge_sort(1, 10);
+    test_bubble_sort(1, 100);
+    test_merge_sort();
 
     return EXIT_SUCCESS;
 }

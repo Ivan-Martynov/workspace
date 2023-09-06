@@ -31,11 +31,12 @@ $(BIN_DIR)edit : $(OBJECTS)
 	$(LINK_CMD) -o $@ $^ $(LDFLAGS)
 
 $(OBJ_DIR)%.o : %.c
-	$(COMPILE_CMD) -c $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
+#	$(COMPILE_CMD) -c $< -o $@
 
 # Make the rule to create the OBJ_DIR directory if needed, without
 # rebuilding .o objects if OBJ_DIR directory's timestamp changes.
-$(OBJECTS): | $(OBJ_DIR)
+$(OBJECTS): defs.h | $(OBJ_DIR)
 $(TARGETS): | $(BIN_DIR)
 
 # Using ; to put the recipe on the same line as the target.

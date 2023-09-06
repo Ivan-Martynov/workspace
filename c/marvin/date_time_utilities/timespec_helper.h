@@ -3,10 +3,9 @@
 
 #include <time.h>
 
-double mrvn_timespec_to_seconds_double(const struct timespec* const spec_ptr);
+double mrvn_timespec_to_ms_double(const struct timespec* const spec_ptr);
 
-double mrvn_timespec_duration_seconds_double(
-    const struct timespec* const lhs,
-    const struct timespec* const rhs);
+double mrvn_timespec_duration_ms_double(
+    const struct timespec* const lhs, const struct timespec* const rhs);
 
 #endif //_H_TIMESPEC_HELPER_H_

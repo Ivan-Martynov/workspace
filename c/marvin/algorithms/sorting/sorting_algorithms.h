@@ -16,11 +16,36 @@ enum mrvn_sorting_order
     DESCENDING_NON_STRICT,
 };
 
+/**
+ * @brief Sort an array using the merge algorithm.
+ * 
+ * @param ptr Pointer to target array.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ * @param sorting_order Sorting order.
+ * 
+ * @version 0.1
+ * 
+ * @date 2023-09-06
+ */
 void mrvn_merge_sort_with_order(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const),
     const enum mrvn_sorting_order sorting_order);
 
+/**
+ * @brief Sort an array using the merge algorithm.
+ * 
+ * @param ptr Pointer to target array.
+ * @param element_count Number of elements in the array.
+ * @param block_size Size of each element.
+ * @param compare_function Function to compare two elements.
+ * 
+ * @version 0.1
+ * 
+ * @date 2023-09-06
+ */
 void mrvn_merge_sort(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const));
@@ -35,7 +60,7 @@ void mrvn_merge_sort(void* const ptr, size_t element_count,
  * @param compare_function Function to compare two elements.
  * @param sorting_order Sorting order.
  */
-void mrvn_bubble_sort_generic_with_order(void* const ptr, size_t element_count,
+void mrvn_bubble_sort_with_order(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const),
     const enum mrvn_sorting_order sorting_order);
@@ -48,7 +73,7 @@ void mrvn_bubble_sort_generic_with_order(void* const ptr, size_t element_count,
  * @param block_size Size of each element.
  * @param compare_function Function to compare two elements.
  */
-void mrvn_bubble_sort_generic(void* const ptr, size_t element_count,
+void mrvn_bubble_sort(void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const));
 
@@ -88,7 +113,7 @@ bool mrvn_is_array_sorted_with_order(const void* const ptr,
  * 
  * @date 2023-09-04
  */
-bool mrvn_is_array_sorted_generic(const void* const ptr, size_t element_count,
+bool mrvn_is_array_sorted(const void* const ptr, size_t element_count,
     const size_t block_size,
     int compare_function(const void* const, const void* const));
 
