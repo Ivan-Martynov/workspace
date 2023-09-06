@@ -148,7 +148,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
     size_t mark_indices[3] = {-1, -1, -1};
 
     // Check rows.
-    for (size_t i = 0; i < 3; i += 3)
+    for (size_t i = 0; i < 9; i += 3)
     {
         if ((symbols[i] == mark) && (symbols[i + 1] == mark) &&
             (symbols[i + 2] == mark))
