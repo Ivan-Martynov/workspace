@@ -1,3 +1,6 @@
+#ifndef _H_TIC_TAC_TOE_H_
+#define _H_TIC_TAC_TOE_H_
+
 // For drawing.
 #define TOP_LEFT "\u250c"
 #define TOP_RIGHT "\u2510"
@@ -18,3 +21,5 @@
  * @brief Game entry point.
  */
 void run_game(void);
+
+#endif //_H_TIC_TAC_TOE_H_
