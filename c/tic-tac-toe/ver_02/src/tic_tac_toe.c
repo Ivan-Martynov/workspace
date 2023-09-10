@@ -100,7 +100,7 @@ static void draw_board_check(
  * @brief Get the input from the current player.
  * @param symbols Current symbols present on the board.
  */
-void get_input(char symbols[static 9], const struct Player player)
+static void get_input(char symbols[static 9], const struct Player player)
 {
     // Draw board to show the options.
     draw_board(symbols);
@@ -217,7 +217,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
  * @return true Player wins the game.
  * @return false Game continues.
  */
-bool victorious_turn(char* const symbols, const struct Player player)
+static bool victorious_turn(char* const symbols, const struct Player player)
 {
     get_input(symbols, player);
 
@@ -233,7 +233,7 @@ bool victorious_turn(char* const symbols, const struct Player player)
  *
  * @return int Number of turns made during the game.
  */
-size_t game_loop(char symbols[static 9], const struct Player player1,
+static size_t game_loop(char symbols[static 9], const struct Player player1,
     const struct Player player2)
 {
     bool first_player_turn = true;
