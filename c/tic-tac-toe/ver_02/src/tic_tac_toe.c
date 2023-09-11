@@ -1,41 +1,60 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <wchar.h>
+#include <locale.h>
 
 #include "tic_tac_toe.h"
 
 struct Player
 {
-    char name[256];
+    wchar_t name[256];
     char mark;
 };
 
 static void draw_top_row()
 {
+#if 1
+    wprintf(L"┌───┬───┬───┐\n");
+#else
     printf(
         TOP_LEFT HORIZONTAL_3 T_DOWN HORIZONTAL_3 T_DOWN HORIZONTAL_3 TOP_RIGHT
         "\n");
+#endif
 }
 
 static void draw_middle_row()
 {
+#if 1
+    wprintf(L"├───┼───┼───┤\n");
+#else
     printf(T_RIGHT HORIZONTAL_3 INTERSECTION HORIZONTAL_3 INTERSECTION
             HORIZONTAL_3 T_LEFT "\n");
+#endif
 }
 
 static void draw_bottom_row()
 {
+#if 1
+    wprintf(L"└───┴───┴───┘\n");
+#else
     printf(BOTTOM_LEFT HORIZONTAL_3 T_UP HORIZONTAL_3 T_UP HORIZONTAL_3
             BOTTOM_RIGHT "\n");
+#endif
 }
 
 static void draw_number_row(const char symbols[static 9], const size_t start)
 {
+#if 1
+    wprintf(L"│ %Lc │ %Lc │ %Lc │\n",
+        symbols[start], symbols[start + 1], symbols[start + 2]);
+#else
     printf(VERTICAL " %c " VERTICAL " %c " VERTICAL " %c " VERTICAL "\n",
         symbols[start], symbols[start + 1], symbols[start + 2]);
+#endif
 }
 
 static void draw_number_row_check(const char symbols[static 9],
-    const size_t start, const size_t mark_indices[3])
+    const size_t start, const size_t win_indices[3])
 {
     printf(VERTICAL);
 
@@ -45,7 +64,7 @@ static void draw_number_row_check(const char symbols[static 9],
         const size_t current = start + i;
         for (size_t j = 0; j < 3; ++j)
         {
-            if (current == mark_indices[j])
+            if (current == win_indices[j])
             {
                 printf("\033[9m"); // Crossed-out text.
                 printf(" %c ", symbols[current]);
@@ -85,14 +104,14 @@ void draw_board(const char symbols[static 9])
 }
 
 static void draw_board_check(
-    const char symbols[static 9], const size_t mark_indices[3])
+    const char symbols[static 9], const size_t win_indices[3])
 {
     draw_top_row();
-    draw_number_row_check(symbols, 0, mark_indices);
+    draw_number_row_check(symbols, 0, win_indices);
     draw_middle_row();
-    draw_number_row_check(symbols, 3, mark_indices);
+    draw_number_row_check(symbols, 3, win_indices);
     draw_middle_row();
-    draw_number_row_check(symbols, 6, mark_indices);
+    draw_number_row_check(symbols, 6, win_indices);
     draw_bottom_row();
 }
 
@@ -108,18 +127,14 @@ static void get_input(char symbols[static 9], const struct Player player)
     // Ask the player to enter the cell number until a valid value is given.
     while (true)
     {
-        printf("Player: %s. Choose a cell number to place \'%c\'.\n",
+        wprintf(L"Player: %Ls. Choose a cell number to place \'%Lc\'.\n",
             player.name, player.mark);
 
         // Get the input as an integer value.
-        int num;
-        scanf("%d", &num);
-
-        // Reduce the value, as the indices in the array start from zero.
-        --num;
-
-        if ((num >= 0) && (num < 9) && (symbols[num] >= '1') &&
-            (symbols[num] <= '9'))
+        size_t num = -1;
+        // Decrement the value, as the indices in the array start from zero.
+        if (wscanf(L"%zu", &num) && (num > 0) && (--num < 9) &&
+            (symbols[num] >= '1') && (symbols[num] <= '9'))
         {
             symbols[num] = player.mark;
             break;
@@ -145,7 +160,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
 
     const char mark = player.mark;
 
-    size_t mark_indices[3] = {-1, -1, -1};
+    size_t win_indices[3] = {-1, -1, -1};
 
     // Check rows.
     for (size_t i = 0; i < 9; i += 3)
@@ -155,7 +170,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
         {
             for (size_t j = 0; j < 3; ++j)
             {
-                mark_indices[j] = i + j;
+                win_indices[j] = i + j;
             }
 
             victory = true;
@@ -171,7 +186,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
         {
             for (size_t j = 0; j < 3; ++j)
             {
-                mark_indices[j] = i + j * 3;
+                win_indices[j] = i + j * 3;
             }
 
             victory = true;
@@ -183,7 +198,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
     {
         for (size_t j = 0; j < 3; ++j)
         {
-            mark_indices[j] = j * 4;
+            win_indices[j] = j * 4;
         }
 
         victory = true;
@@ -193,7 +208,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
     {
         for (size_t j = 0; j < 3; ++j)
         {
-            mark_indices[j] = 2 + (j << 1);
+            win_indices[j] = 2 + (j << 1);
         }
 
         victory = true;
@@ -201,9 +216,9 @@ static bool check_victory(const char* const symbols, const struct Player player)
 
     if (victory)
     {
-        draw_board_check(symbols, mark_indices);
+        draw_board_check(symbols, win_indices);
         // Inform about the winner.
-        printf("Player %s has won!\n", player.name);
+        wprintf(L"Player %Ls has won!\n", player.name);
     }
 
     return victory;
@@ -272,10 +287,12 @@ static size_t game_loop(char symbols[static 9], const struct Player player1,
 
 void run_game(void)
 {
+    setlocale(LC_ALL, "");
+
     char symbols[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-    struct Player player1 = {.name = "John", .mark = 'X'};
-    struct Player player2 = {.name = "Mary", .mark = 'O'};
+    struct Player player1 = {.name = L"John", .mark = 'X'};
+    struct Player player2 = {.name = L"Mary", .mark = 'O'};
 
     size_t turn_count = game_loop(symbols, player1, player2);
 
@@ -284,6 +301,6 @@ void run_game(void)
         // Draw the board to display the final state of the game.
         draw_board(symbols);
 
-        printf("No winner, it\'s a draw.\n");
+        wprintf(L"No winner, it\'s a draw.\n");
     }
 }
