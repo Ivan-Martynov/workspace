@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "tic_tac_toe.h"
 
@@ -11,5 +12,5 @@ int main(void)
 {
     run_game();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
