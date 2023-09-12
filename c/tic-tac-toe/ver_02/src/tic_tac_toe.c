@@ -8,55 +8,34 @@
 struct Player
 {
     wchar_t name[256];
-    char mark;
+    wchar_t mark;
 };
 
 static void draw_top_row()
 {
-#if 1
     wprintf(L"┌───┬───┬───┐\n");
-#else
-    printf(
-        TOP_LEFT HORIZONTAL_3 T_DOWN HORIZONTAL_3 T_DOWN HORIZONTAL_3 TOP_RIGHT
-        "\n");
-#endif
 }
 
 static void draw_middle_row()
 {
-#if 1
     wprintf(L"├───┼───┼───┤\n");
-#else
-    printf(T_RIGHT HORIZONTAL_3 INTERSECTION HORIZONTAL_3 INTERSECTION
-            HORIZONTAL_3 T_LEFT "\n");
-#endif
 }
 
 static void draw_bottom_row()
 {
-#if 1
     wprintf(L"└───┴───┴───┘\n");
-#else
-    printf(BOTTOM_LEFT HORIZONTAL_3 T_UP HORIZONTAL_3 T_UP HORIZONTAL_3
-            BOTTOM_RIGHT "\n");
-#endif
 }
 
-static void draw_number_row(const char symbols[static 9], const size_t start)
+static void draw_number_row(const wchar_t symbols[static 9], const size_t start)
 {
-#if 1
     wprintf(L"│ %Lc │ %Lc │ %Lc │\n",
         symbols[start], symbols[start + 1], symbols[start + 2]);
-#else
-    printf(VERTICAL " %c " VERTICAL " %c " VERTICAL " %c " VERTICAL "\n",
-        symbols[start], symbols[start + 1], symbols[start + 2]);
-#endif
 }
 
-static void draw_number_row_check(const char symbols[static 9],
+static void draw_number_row_check(const wchar_t symbols[static 9],
     const size_t start, const size_t win_indices[3])
 {
-    printf(VERTICAL);
+    wprintf(L"│");
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -66,9 +45,9 @@ static void draw_number_row_check(const char symbols[static 9],
         {
             if (current == win_indices[j])
             {
-                printf("\033[9m"); // Crossed-out text.
-                printf(" %c ", symbols[current]);
-                printf("\033[0m"); // Reset.
+                wprintf(L"\033[9m"); // Crossed-out text.
+                wprintf(L" %Lc ", symbols[current]);
+                wprintf(L"\033[0m"); // Reset.
 
                 found = true;
 
@@ -78,33 +57,23 @@ static void draw_number_row_check(const char symbols[static 9],
 
         if (!found)
         {
-            printf(" %c ", symbols[start + i]);
+            wprintf(L" %Lc ", symbols[start + i]);
         }
-        printf(VERTICAL);
+        wprintf(L"│");
     }
 
-    printf("\n");
+    wprintf(L"\n");
 }
 
 /**
- * @brief Display current state of the tic-tac-toe board
- * @param symbols Current symbols present on the board.
+ * @brief Draw current board state.
+ *
+ * @param symbols Symbols to display.
+ * @param win_indices Indices representing victory state: -1s meaning no
+ * victory.
  */
-void draw_board(const char symbols[static 9])
-{
-    // printf("\033[9m"); // Crossed-out text.
-
-    draw_top_row();
-    draw_number_row(symbols, 0);
-    draw_middle_row();
-    draw_number_row(symbols, 3);
-    draw_middle_row();
-    draw_number_row(symbols, 6);
-    draw_bottom_row();
-}
-
-static void draw_board_check(
-    const char symbols[static 9], const size_t win_indices[3])
+static void draw_board(
+    const wchar_t symbols[static 9], const size_t win_indices[3])
 {
     draw_top_row();
     draw_number_row_check(symbols, 0, win_indices);
@@ -119,10 +88,11 @@ static void draw_board_check(
  * @brief Get the input from the current player.
  * @param symbols Current symbols present on the board.
  */
-static void get_input(char symbols[static 9], const struct Player player)
+static void get_input(wchar_t symbols[static 9], const struct Player player)
 {
     // Draw board to show the options.
-    draw_board(symbols);
+    //draw_board(symbols);
+    draw_board(symbols, (size_t[]){-1, -1, -1});
 
     // Ask the player to enter the cell number until a valid value is given.
     while (true)
@@ -141,7 +111,7 @@ static void get_input(char symbols[static 9], const struct Player player)
         }
         else
         {
-            printf("Cannot put the mark in the chosen cell.\n");
+            wprintf(L"Cannot put the mark in the chosen cell.\n");
         }
     }
 }
@@ -154,11 +124,11 @@ static void get_input(char symbols[static 9], const struct Player player)
  * @return true Player wins the game.
  * @return false Game continues.
  */
-static bool check_victory(const char* const symbols, const struct Player player)
+static bool check_victory(const wchar_t symbols[9], const struct Player player)
 {
     bool victory = false;
 
-    const char mark = player.mark;
+    const wchar_t mark = player.mark;
 
     size_t win_indices[3] = {-1, -1, -1};
 
@@ -216,7 +186,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
 
     if (victory)
     {
-        draw_board_check(symbols, win_indices);
+        draw_board(symbols, win_indices);
         // Inform about the winner.
         wprintf(L"Player %Ls has won!\n", player.name);
     }
@@ -232,7 +202,7 @@ static bool check_victory(const char* const symbols, const struct Player player)
  * @return true Player wins the game.
  * @return false Game continues.
  */
-static bool victorious_turn(char* const symbols, const struct Player player)
+static bool victorious_turn(wchar_t symbols[9], const struct Player player)
 {
     get_input(symbols, player);
 
@@ -248,7 +218,7 @@ static bool victorious_turn(char* const symbols, const struct Player player)
  *
  * @return int Number of turns made during the game.
  */
-static size_t game_loop(char symbols[static 9], const struct Player player1,
+static size_t game_loop(wchar_t symbols[static 9], const struct Player player1,
     const struct Player player2)
 {
     bool first_player_turn = true;
@@ -289,7 +259,7 @@ void run_game(void)
 {
     setlocale(LC_ALL, "");
 
-    char symbols[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    wchar_t symbols[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     struct Player player1 = {.name = L"John", .mark = 'X'};
     struct Player player2 = {.name = L"Mary", .mark = 'O'};
@@ -299,7 +269,8 @@ void run_game(void)
     if (turn_count == 9)
     {
         // Draw the board to display the final state of the game.
-        draw_board(symbols);
+        // draw_board(symbols);
+        draw_board(symbols, (size_t[]){-1, -1, -1});
 
         wprintf(L"No winner, it\'s a draw.\n");
     }
