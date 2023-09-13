@@ -70,7 +70,8 @@ inline static void draw_board(
  * @brief Get the input from the current player.
  * @param symbols Current symbols present on the board.
  */
-static void get_input(wchar_t symbols[static 9], const struct Player player)
+static void get_input(
+    wchar_t symbols[static 9], const struct Player* const player)
 {
     // Draw board to show the options.
     //draw_board(symbols);
@@ -80,7 +81,7 @@ static void get_input(wchar_t symbols[static 9], const struct Player player)
     while (true)
     {
         wprintf(L"Player: %ls. Choose a cell number to place \'%lc\'.\n",
-            player.name, player.mark);
+            player->name, player->mark);
 
         // Get the input as an integer value.
         size_t num = -1;
@@ -88,7 +89,7 @@ static void get_input(wchar_t symbols[static 9], const struct Player player)
         if (wscanf(L"%zu", &num) && (--num < 9) && (symbols[num] >= '1') &&
             (symbols[num] <= '9'))
         {
-            symbols[num] = player.mark;
+            symbols[num] = player->mark;
             break;
         }
         else
@@ -172,16 +173,17 @@ static bool check_diagonals(
  * @return true Player wins the game.
  * @return false Game continues.
  */
-static bool check_victory(const wchar_t symbols[9], const struct Player player)
+static bool check_victory(
+    const wchar_t symbols[9], const struct Player* const player)
 {
     size_t win_indices[3] = {-1, -1, -1};
 
-    if (check_rows(symbols, player.mark, win_indices) ||
-        check_columns(symbols, player.mark, win_indices) ||
-        check_diagonals(symbols, player.mark, win_indices))
+    if (check_rows(symbols, player->mark, win_indices) ||
+        check_columns(symbols, player->mark, win_indices) ||
+        check_diagonals(symbols, player->mark, win_indices))
     {
         draw_board(symbols, win_indices);
-        wprintf(L"Player %ls won!\n", player.name);
+        wprintf(L"Player %ls won!\n", player->name);
 
         return true;
     }
@@ -200,7 +202,7 @@ static bool check_victory(const wchar_t symbols[9], const struct Player player)
  * @return false Game continues.
  */
 inline static bool victorious_turn(
-    wchar_t symbols[9], const struct Player player)
+    wchar_t symbols[9], const struct Player* const player)
 {
     get_input(symbols, player);
 
@@ -216,38 +218,36 @@ inline static bool victorious_turn(
  *
  * @return int Number of turns made during the game.
  */
-static size_t game_loop(wchar_t symbols[static 9], const struct Player player1,
-    const struct Player player2)
+static size_t game_loop(wchar_t symbols[static 9],
+    const struct Player* const first_player_ptr,
+    const struct Player* const second_player_ptr)
 {
     bool first_player_turn = true;
+
+    const struct Player* current_player_ptr = first_player_ptr;
 
     size_t turn_count = 0;
 
     // Using fixed number, as in tic-tac-toe there are always 9 cells.
-    while (turn_count < 9)
+    while (++turn_count <= 9)
     {
+        if (victorious_turn(symbols, current_player_ptr))
+        {
+            break;
+        }
+
         // Switch player's turn af the correct input was given and if the game
         // goes on.
         if (first_player_turn)
         {
-            if (victorious_turn(symbols, player1))
-            {
-                break;
-            }
-
+            current_player_ptr = second_player_ptr;
             first_player_turn = false;
         }
         else
         {
-            if (victorious_turn(symbols, player2))
-            {
-                break;
-            }
-
+            current_player_ptr = first_player_ptr;
             first_player_turn = true;
         }
-
-        ++turn_count;
     }
 
     return turn_count;
@@ -262,7 +262,7 @@ void run_game(void)
     struct Player player1 = {.name = L"John", .mark = 'X'};
     struct Player player2 = {.name = L"Mary", .mark = 'O'};
 
-    size_t turn_count = game_loop(symbols, player1, player2);
+    size_t turn_count = game_loop(symbols, &player1, &player2);
 
     if (turn_count == 9)
     {
