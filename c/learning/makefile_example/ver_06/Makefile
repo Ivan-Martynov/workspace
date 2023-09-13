@@ -5,6 +5,7 @@
 # - Using := to assign variable.
 # - Using wildcard and patsubst to build names for object files.
 # - Placing the target into bin/ directory.
+# - Generating prerequisites automatically.
 
 # Prevent make from trying to remake the makefile.
 .PHONY: Makefile
@@ -15,6 +16,10 @@ include make_compiler_setup.mk
 BIN_DIR := bin/
 OBJ_DIR := obj/
 
+# Make objects' names in the OBJ_DIR directory from source file names.
+SOURCES := $(wildcard *.c)
+OBJECTS := $(patsubst %.c, $(OBJ_DIR)%.o, $(SOURCES))
+
 # List of targets to make.
 TARGETS := $(BIN_DIR)edit
 #TARGETS := $(addprefix $(BIN_DIR), edit)
@@ -23,16 +28,22 @@ TARGETS := $(BIN_DIR)edit
 .PHONY: all
 all: $(TARGETS)
 
-# Make objects' names in the OBJ_DIR directory from source file names.
-OBJECTS := $(patsubst %.c, $(OBJ_DIR)%.o, $(wildcard *.c))
+
+# Generaing .d files.
+%.d : %.c
+	@set -e; rm -f $@; \
+	$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,$(OBJ_DIR)\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$
+
+include $(SOURCES:.c=.d)
 
 # $@ - target, $^ - all prerequisites without duplicates.
-$(BIN_DIR)edit : $(OBJECTS)
+$(BIN_DIR)edit : $(OBJECTS) $(wildcard *.d)
 	$(LINK_CMD) -o $@ $^ $(LDFLAGS)
 
-$(OBJ_DIR)%.o : %.c
-	$(CC) -c $(CFLAGS) $< -o $@
-#	$(COMPILE_CMD) -c $< -o $@
+#$(OBJ_DIR)%.o : %.c
+#	$(CC) -c $(CFLAGS) $< -o $@
 
 # Make the rule to create the OBJ_DIR directory if needed, without
 # rebuilding .o objects if OBJ_DIR directory's timestamp changes.
@@ -51,4 +62,4 @@ $(BIN_DIR): ; mkdir $(BIN_DIR)
 
 # Using '-' character for Makefile to ignore errors.
 # Using ; to put the recipe on the same line as the target.
-clean : ; -rm $(OBJECTS) $(TARGETS)
+clean : ; -rm $(OBJECTS) $(TARGETS) $(wildcard *.d)
