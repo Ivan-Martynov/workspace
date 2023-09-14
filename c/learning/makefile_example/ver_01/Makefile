@@ -28,7 +28,7 @@ LINK_CMD = $(CC)
 TARGETS = edit
 
 # Ensure the recipe to be explicit, avoid possible conflicts with file names.
-.PHONY: all
+.PHONY: all debug
 all: $(TARGETS)
 
 OBJECTS = main.o kbd.o command.o display.o insert.o search.o files.o utils.o

@@ -6,6 +6,7 @@
 # - Using wildcard and patsubst to build names for object files.
 # - Placing the target into bin/ directory.
 # - Generating prerequisites automatically.
+#  TODO: Generating prerequisites automatically not working yet.
 
 # Prevent make from trying to remake the makefile.
 .PHONY: Makefile
