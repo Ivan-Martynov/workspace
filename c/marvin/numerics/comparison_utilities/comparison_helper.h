@@ -21,6 +21,22 @@ int mrvn_compare_size_t(
     const void* const first_ptr, const void* const second_ptr);
 
 /**
+ * @brief Compare two double values, using void pointers.
+ *
+ * @param first_ptr Pointer to first value.
+ * @param second_ptr Pointer to second value.
+ *
+ * @return int If first value is greater, then function returns 1. If it is
+ * smaller, then -1. Otherwize zero.
+ *
+ * @version 0.1
+ *
+ * @date 2023-09-04
+ */
+int mrvn_compare_double(
+    const void* const first_ptr, const void* const second_ptr);
+
+/**
  * @brief Compare two floats using precision value @eps.
  *
  * @param lhs First value.

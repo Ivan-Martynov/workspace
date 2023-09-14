@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <float.h>
 
 #include "../algorithms/sorting/sorting_algorithms.h"
 #include "../numerics/comparison_utilities/comparison_helper.h"
@@ -36,11 +37,35 @@ static void fill_size_t_array_random(size_t n, size_t arr[static n])
     }
 }
 
+static void sorting_empty(
+    void sorting_function(void* const, size_t, const size_t,
+        int (*)(const void* const, const void* const)),
+    int compare_function(const void* const, const void* const))
+{
+    sorting_function(mrvn_null_ptr, 0, 0, compare_function);
+    assert(mrvn_is_array_sorted(mrvn_null_ptr, 0, 0, compare_function));
+}
+
+static void sorting_one_element(void sorting_function(void* const, size_t,
+    const size_t, int (*)(const void* const, const void* const)),
+    int compare_function(const void* const, const void* const))
+{
+    double test_array[] = {DBL_MIN};
+    const size_t block_size = sizeof(test_array[0]);
+    const size_t array_size = sizeof(test_array) / block_size;
+
+    sorting_function(test_array, array_size, block_size, compare_function);
+
+    assert(mrvn_is_array_sorted(
+        test_array, array_size, block_size, compare_function));
+}
+
 static double test_sorting_algorithm(const size_t run_count,
     const size_t array_size,
     void sorting_function(void* const, size_t, const size_t,
-        int compare_function(const void* const, const void* const)),
-        const char algorithm_name[static 1])
+        int (*)(const void* const, const void* const)),
+    int compare_function(const void* const, const void* const),
+    const char algorithm_name[static 1])
 {
     assert(run_count > 0);
     assert(array_size > 0);
@@ -64,10 +89,10 @@ static double test_sorting_algorithm(const size_t run_count,
         fill_size_t_array_random(array_size, test_array);
 
         sorting_function(
-            test_array, array_size, block_size, mrvn_compare_size_t);
+            test_array, array_size, block_size, compare_function);
 
         if (!mrvn_is_array_sorted(
-                test_array, array_size, block_size, mrvn_compare_size_t))
+                test_array, array_size, block_size, compare_function))
         {
             printf("Sort: array not sorted.\n");
         }
@@ -94,25 +119,31 @@ static void test_merge_sort()
     const size_t sizes_count = sizeof(sizes) / sizeof(sizes[0]);
 
     double n1 = sizes[0] * log(sizes[0]);
-    double t1 = test_sorting_algorithm(run_count, sizes[0], mrvn_merge_sort, "merge");
+    double t1 = test_sorting_algorithm(
+        run_count, sizes[0], mrvn_merge_sort, mrvn_compare_size_t, "merge");
 
     for (size_t i = 1; i < sizes_count; ++i)
     {
         const double n2 = sizes[i] * log(sizes[i]);
         const double t2 = test_sorting_algorithm(
-            run_count, sizes[i], mrvn_merge_sort, "merge");
+            run_count, sizes[i], mrvn_merge_sort, mrvn_compare_size_t, "merge");
 
         printf("Test %zu: %g; %g\n", i, n2 / n1, t2 / t1);
 
         n1 = n2;
         t1 = t2;
     }
+
+    sorting_empty(mrvn_merge_sort, mrvn_compare_double);
+    sorting_one_element(mrvn_merge_sort, mrvn_compare_double);
 }
 
-static double test_bubble_sort(const size_t run_count, const size_t array_size)
+static void test_bubble_sort(const size_t run_count, const size_t array_size)
 {
-    return test_sorting_algorithm(
-        run_count, array_size, mrvn_bubble_sort, "bubble");
+    test_sorting_algorithm(
+        run_count, array_size, mrvn_bubble_sort, mrvn_compare_size_t, "bubble");
+    sorting_empty(mrvn_merge_sort, mrvn_compare_double);
+    sorting_one_element(mrvn_merge_sort, mrvn_compare_double);
 }
 
 int main(void)

@@ -1,5 +1,7 @@
 include ../make_compiler_setup.mk
 
+LIBS += -lm
+
 BIN_DIR := bin/
 OBJ_DIR := obj/
 
@@ -21,7 +23,7 @@ $(BIN_DIR)sorting_demo: $(OBJ_DIR)sorting_demo.o\
 		$(OBJ_DIR)comparison_helper.o\
 		$(OBJ_DIR)random_generator_helper.o\
 		$(OBJ_DIR)timespec_helper.o
-	$(LINK_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@ $(LIBS)
 
 # Objects
 $(OBJ_DIR)mem_util_demo.o: demos/mem_util_demo.c\
