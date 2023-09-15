@@ -17,8 +17,8 @@ static void assert_swapping(const void* const first_ptr,
 
     mrvn_swap_voids(&a, &b, block_size);
 
-    assert(blocks_equal(a, second_ptr, block_size)
-           && blocks_equal(b, first_ptr, block_size));
+    assert(mrvn_blocks_equal(a, second_ptr, block_size)
+           && mrvn_blocks_equal(b, first_ptr, block_size));
 }
 
 static void test_swapping(void)

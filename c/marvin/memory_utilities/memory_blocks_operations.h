@@ -8,7 +8,7 @@
  * @brief Check if two blocks of memory are equal.
  * 
  */
-bool blocks_equal(const void* const, const void* const, const size_t);
+bool mrvn_blocks_equal(const void* const, const void* const, const size_t);
 
 /**
  * @brief Swap two blocks of memory with equal size.
