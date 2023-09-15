@@ -29,19 +29,22 @@ TARGETS := $(BIN_DIR)edit
 .PHONY: all
 all: $(TARGETS)
 
+# $@ - target, $^ - all prerequisites without duplicates.
+$(BIN_DIR)edit : $(OBJECTS)
+	$(LINK_CMD) -o $@ $^ $(LDFLAGS)
 
 # Generaing .d files.
-%.d : %.c
-	@set -e; rm -f $@; \
-	$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,$(OBJ_DIR)\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
+# %.d : %.c
+# 	@set -e; rm -f $@; \
+# 	$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
+# 	sed 's,\($*\)\.o[ :]*,$(OBJ_DIR)\1.o : ,g' < $@.$$$$ > $@; \
+# 	rm -f $@.$$$$
 
-include $(SOURCES:.c=.d)
+make.dependencies: $(SOURCES)
+	$(CC) -MM $(CFLAGS) $(SOURCES) > make.dependencies
 
-# $@ - target, $^ - all prerequisites without duplicates.
-$(BIN_DIR)edit : $(OBJECTS) $(wildcard *.d)
-	$(LINK_CMD) -o $@ $^ $(LDFLAGS)
+
+-include make.dependencies
 
 #$(OBJ_DIR)%.o : %.c
 #	$(CC) -c $(CFLAGS) $< -o $@

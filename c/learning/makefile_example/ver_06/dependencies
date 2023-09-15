@@ -1,0 +1,8 @@
+files.o: files.c buffer.h command.h
+insert.o: insert.c buffer.h defs.h
+display.o: display.c buffer.h defs.h
+kbd.o: kbd.c command.h defs.h
+main.o: main.c defs.h
+search.o: search.c buffer.h defs.h
+command.o: command.c command.h defs.h
+utils.o: utils.c defs.h
