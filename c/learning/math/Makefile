@@ -9,10 +9,13 @@ OBJ = $(wildcard *.o)
 
 TARGETS = factorial exponentiation accumulation continued_fraction\
 	deriv newton_method interval_arithmetic_demo vec_demo list_operations_demo\
-	tree_operations_demo
+	tree_operations_demo float_demo
 
 .PHONY: all
 all: $(TARGETS)
+
+float_demo: float_demo.o binary_float.o
+	$(LINK_CMD) $^ -o $@ $(LIBS)
 
 tree_operations_demo: tree_operations_demo.o data_structures/tree_operations.o\
 	data_structures/binary_tree_d.o
@@ -22,6 +25,10 @@ list_operations_demo: list_operations_demo.o data_structures/list_operations.o\
 	data_structures/vec_d.o data_structures/linked_list_d.o functions.o\
 	data_structures/list_of_lists_d.o
 	$(LINK_CMD) $^ -o $@ $(LIBS)
+
+float_demo.o: float_demo.c binary_float.h
+
+binary_float.o: binary_float.c binary_float.h
 
 list_operations_demo.o: list_operations_demo.c data_structures/list_operations.h\
 	functions.h data_structures/linked_list_d.h data_structures/list_of_lists_d.h

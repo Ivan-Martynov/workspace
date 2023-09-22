@@ -1,6 +1,6 @@
-C_COMP = gcc
-C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
-COMP_CMD = $(C_COMP) $(C_FLAGS)
+CC = gcc
+CFLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
+COMP_CMD = $(CC) $(CFLAGS)
 DEBUG_FLAGS = -O0 -g -D _DEBUG
 RELEASE_FLAGS = -O3 -D NDEBUG
 LIBS =
@@ -11,7 +11,7 @@ OBJ = $(wildcard *.o)
 TARGET = main
 
 $(TARGET): main.o binary_representation.o
-	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $(TARGET)
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $(TARGET)
 
 main.o: main.c
 
