@@ -7,6 +7,7 @@
         "vec_d.h": "c",
         "binary_tree_d.h": "c",
         "linked_list_d.h": "c",
-        "list_operations.h": "c"
+        "list_operations.h": "c",
+        "string.h": "c"
     }
 }

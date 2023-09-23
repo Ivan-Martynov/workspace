@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <float.h>
+#include <time.h>
 
 #include "binary_float.h"
 
@@ -75,6 +76,11 @@ static int compare_float_files(const char* const first_file_path,
     return result;
 }
 
+static double timespec_to_s(const struct timespec* const spec_ptr)
+{
+    return spec_ptr->tv_sec + spec_ptr->tv_nsec * 1E-9;
+}
+
 static void test_from_files(void)
 {
 #if 0
@@ -87,6 +93,10 @@ static void test_from_files(void)
 
     for (size_t i = 1; i <= 7; ++i)
     {
+        struct timespec spec;
+        timespec_get(&spec, TIME_UTC);
+        double d = timespec_to_s(&spec);
+
         char file_path[256] = {0};
         sprintf(file_path, "%s%zu%s", init_path, i, ".in");
 
@@ -107,15 +117,21 @@ static void test_from_files(void)
             switch (compare_float_files(file_path, output_file_path, row_count))
             {
                 case 0:
-                    printf("%zu: OK!\n", i);
+                    timespec_get(&spec, TIME_UTC);
+                    d = timespec_to_s(&spec) - d;
+                    printf("%zu: OK! [%g]\n", i, d);
                     break;
 
                 case -1:
-                    printf("%zu: Failed file reading.\n", i);
+                    timespec_get(&spec, TIME_UTC);
+                    d = timespec_to_s(&spec) - d;
+                    printf("%zu: Failed file reading [%g].\n", i, d);
                     break;
 
                 case 1:
-                    printf("%zu: NOT OK!\n", i);
+                    timespec_get(&spec, TIME_UTC);
+                    d = timespec_to_s(&spec) - d;
+                    printf("%zu: NOT OK! [%g]\n", i, d);
                     break;
 
                 default:

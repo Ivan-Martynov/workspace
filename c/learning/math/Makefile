@@ -59,11 +59,11 @@ vec_demo.o: vec_demo.c data_structures/vec_d.h
 data_structures/vec_d.o: data_structures/vec_d.c data_structures/vec_d.h
 
 interval_arithmetic_demo: interval_arithmetic_demo.o interval_arithmetic.o
-	$(LINK_CMD) $^ -o $@ $(LIBS)
+	$(LINK_CMD) $^ -o $@ $(LIBS) -lm
 interval_arithmetic_demo.o: interval_arithmetic_demo.c interval_arithmetic.h
 
 newton_method: newton_method.o fixed_point.o functions.o rat_num.o
-	$(LINK_CMD) $^ -o $@ $(LIBS)
+	$(LINK_CMD) $^ -o $@ $(LIBS) -lm
 newton_method.o: newton_method.c fixed_point.h functions.h rat_num.h
 
 deriv: deriv.o functions.o

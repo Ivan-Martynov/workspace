@@ -25,6 +25,13 @@ OBJECTS := $(patsubst %.c, $(OBJ_DIR)%.o, $(SOURCES))
 TARGETS := $(BIN_DIR)edit
 #TARGETS := $(addprefix $(BIN_DIR), edit)
 
+# include command.d
+# include display.d
+# include files.d
+# include insert.d
+# include kbd.d
+# include main.d
+
 # Ensure the recipe to be explicit, avoid possible conflicts with file names.
 .PHONY: all
 all: $(TARGETS)
@@ -34,17 +41,26 @@ $(BIN_DIR)edit : $(OBJECTS)
 	$(LINK_CMD) -o $@ $^ $(LDFLAGS)
 
 # Generaing .d files.
-# %.d : %.c
-# 	@set -e; rm -f $@; \
-# 	$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
-# 	sed 's,\($*\)\.o[ :]*,$(OBJ_DIR)\1.o : ,g' < $@.$$$$ > $@; \
-# 	rm -f $@.$$$$
+%.d : %.c
+	@set -e; rm -f $@; \
+ 	$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
+ 	sed 's,\($*\)\.o[ :]*,$(OBJ_DIR)\1.o : ,g' < $@.$$$$ > $@; \
+ 	rm -f $@.$$$$
 
 make.dependencies: $(SOURCES)
 	$(CC) -MM $(CFLAGS) $(SOURCES) > make.dependencies
 
 
--include make.dependencies
+#-include make.dependencies
+-include $(SOURCES:.c=.d)
+# DEPS := $(wildcard *.d)
+# $(OBJ_DIR)%.o :
+# 	for i in $(DEPS); do \
+# 		include $$i; \
+# 		$(CC) -c $(CFLAGS) $< -o $@; \
+# 	done
+
+
 
 #$(OBJ_DIR)%.o : %.c
 #	$(CC) -c $(CFLAGS) $< -o $@
