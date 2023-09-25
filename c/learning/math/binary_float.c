@@ -43,21 +43,21 @@ static int print_bits(FILE* stream, const float value)
         fprintf(stream, "-");
     }
 
-    if (exponent_bits > exponent_bias << 1)
+    if (exponent_bits == exponent_mask)
     {
         return fprintf(stream, mantissa_bits ? "NaN\n" : "Inf\n");
     }
-    else if (exponent_bits == 0)
+    else if (exponent_bits)
+    {
+        fprintf(stream, "1.");
+    }
+    else
     {
         fprintf(stream, "0.");
         if (mantissa_bits)
         {
             ++exponent_bits;
         }
-    }
-    else
-    {
-        fprintf(stream, "1.");
     }
 
     for (size_t i = mantissa_width - 1; i < mantissa_width; --i)

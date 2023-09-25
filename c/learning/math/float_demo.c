@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 199309L // For clock_gettime and friends.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -76,9 +78,15 @@ static int compare_float_files(const char* const first_file_path,
     return result;
 }
 
-static double timespec_to_s(const struct timespec* const spec_ptr)
+static double current_time_milliseconds(void)
 {
-    return spec_ptr->tv_sec + spec_ptr->tv_nsec * 1E-9;
+    // struct timespec spec;
+    // timespec_get(&spec, TIME_UTC);
+
+    struct timespec spec;
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+
+    return spec.tv_sec * 1E3 + spec.tv_nsec * 1E-6;
 }
 
 static void test_from_files(void)
@@ -93,9 +101,7 @@ static void test_from_files(void)
 
     for (size_t i = 1; i <= 7; ++i)
     {
-        struct timespec spec;
-        timespec_get(&spec, TIME_UTC);
-        double d = timespec_to_s(&spec);
+        const double d = current_time_milliseconds();
 
         char file_path[256] = {0};
         sprintf(file_path, "%s%zu%s", init_path, i, ".in");
@@ -117,21 +123,18 @@ static void test_from_files(void)
             switch (compare_float_files(file_path, output_file_path, row_count))
             {
                 case 0:
-                    timespec_get(&spec, TIME_UTC);
-                    d = timespec_to_s(&spec) - d;
-                    printf("%zu: OK! [%g]\n", i, d);
+                    printf(
+                        "%zu: OK! [%g]\n", i, current_time_milliseconds() - d);
                     break;
 
                 case -1:
-                    timespec_get(&spec, TIME_UTC);
-                    d = timespec_to_s(&spec) - d;
-                    printf("%zu: Failed file reading [%g].\n", i, d);
+                    printf("%zu: Failed file reading [%g].\n", i,
+                        current_time_milliseconds() - d);
                     break;
 
                 case 1:
-                    timespec_get(&spec, TIME_UTC);
-                    d = timespec_to_s(&spec) - d;
-                    printf("%zu: NOT OK! [%g]\n", i, d);
+                    printf("%zu: NOT OK! [%g]\n", i,
+                        current_time_milliseconds() - d);
                     break;
 
                 default:
