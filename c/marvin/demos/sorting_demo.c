@@ -81,10 +81,7 @@ static double test_sorting_algorithm(const size_t run_count,
         size_t* test_array = malloc(array_size * block_size);
         assert(sizeof(test_array[0]) == block_size);
 
-        struct timespec spec;
-        clock_gettime(CLOCK_MONOTONIC, &spec);
-
-        double d = mrvn_timespec_to_ms_double(&spec);
+        const double d = mrvn_current_timespec_milliseconds();
 
         fill_size_t_array_random(array_size, test_array);
 
@@ -99,11 +96,7 @@ static double test_sorting_algorithm(const size_t run_count,
 
         mrvn_free_set_null(&test_array);
 
-        clock_gettime(CLOCK_MONOTONIC, &spec);
-
-        const double duration = mrvn_timespec_to_ms_double(&spec) - d;
-
-        average_time += duration;
+        average_time += mrvn_current_timespec_milliseconds() - d;
     }
 
     printf("Sorting (%s) %zu elements ~ %g ms.\n", algorithm_name, array_size,

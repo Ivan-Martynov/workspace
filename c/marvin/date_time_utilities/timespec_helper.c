@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 199309L // For clock_gettime and friends.
+
 #include "timespec_helper.h"
 
 /**
@@ -14,6 +16,19 @@
 double mrvn_timespec_to_ms_double(const struct timespec* const spec_ptr)
 {
     return 1000.0 * spec_ptr->tv_sec + 1E-6 * spec_ptr->tv_nsec;
+}
+
+/**
+ * @brief Current time in milliseconds.
+ * 
+ * @return double Time in milliseconds.
+ */
+double mrvn_current_timespec_milliseconds(void)
+{
+    struct timespec spec;
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+
+    return mrvn_timespec_to_ms_double(&spec);
 }
 
 /**
