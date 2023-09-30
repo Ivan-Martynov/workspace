@@ -3,40 +3,39 @@
 #include <assert.h>
 #include <stdint.h>
 
-#if 0
-typedef unsigned int bit_type ;
-#else
-typedef uint32_t bit_type;
-#endif
+static const uint32_t signficand_width = 23;
+static const uint32_t signficand_mask = 0x007FFFFFu;
+static const uint32_t exponent_bias = 127;
+static const uint32_t exponent_mask = 0xFFu;
 
-static const bit_type mantissa_width = 23;
-static const bit_type mantissa_mask = 0x007FFFFFu;
-static const bit_type exponent_bias = 127;
-static const bit_type exponent_mask = 0xFFu;
-
-static bit_type get_sign_bit(const float value)
+static uint32_t get_sign_bit(const float value)
 {
-    const bit_type* const bit_int = (const bit_type* const)(&value);
+    const uint32_t* const bit_int = (const uint32_t* const)(&value);
     return *bit_int >> 31;
 }
 
-static bit_type get_exponent_bits(const float value)
+static uint32_t get_exponent_bits(const float value)
 {
-    const bit_type* const bit_int = (const bit_type* const)(&value);
-    return (*bit_int >> mantissa_width) & exponent_mask;
+    const uint32_t* const bit_int = (const uint32_t* const)(&value);
+    return (*bit_int >> signficand_width) & exponent_mask;
 }
 
-static bit_type get_mantissa_bits(const float value)
+static uint32_t get_signficand_bits(const float value)
 {
-    const bit_type* const bit_int = (const bit_type* const)(&value);
-    return *bit_int & mantissa_mask;
+    const uint32_t* const bit_int = (const uint32_t* const)(&value);
+    return *bit_int & signficand_mask;
 }
 
 static int print_bits(FILE* stream, const float value)
 {
-    const bit_type sign_bit = get_sign_bit(value);
-    bit_type exponent_bits = get_exponent_bits(value);
-    const bit_type mantissa_bits = get_mantissa_bits(value);
+    const uint32_t sign_bit = get_sign_bit(value);
+    uint32_t exponent_bits = get_exponent_bits(value);
+    const uint32_t signficand_bits = get_signficand_bits(value);
+
+    if ((exponent_bits == exponent_mask) && signficand_bits)
+    {
+        return fprintf(stream, "NaN\n");
+    }
 
     if (sign_bit)
     {
@@ -45,7 +44,7 @@ static int print_bits(FILE* stream, const float value)
 
     if (exponent_bits == exponent_mask)
     {
-        return fprintf(stream, mantissa_bits ? "NaN\n" : "Inf\n");
+        return fprintf(stream, "Inf\n");
     }
     else if (exponent_bits)
     {
@@ -54,18 +53,18 @@ static int print_bits(FILE* stream, const float value)
     else
     {
         fprintf(stream, "0.");
-        if (mantissa_bits)
+        if (signficand_bits)
         {
             ++exponent_bits;
         }
     }
 
-    for (size_t i = mantissa_width - 1; i < mantissa_width; --i)
+    for (size_t i = signficand_width - 1; i < signficand_width; --i)
     {
-        fprintf(stream, "%d", (mantissa_bits >> i) & 1);
+        fprintf(stream, "%d", (signficand_bits >> i) & 1);
     }
 
-    return (exponent_bits || mantissa_bits) ? fprintf(
+    return (exponent_bits || signficand_bits) ? fprintf(
                stream, " * 2^%d\n", (int)(exponent_bits - exponent_bias))
                                             : fprintf(stream, "\n");
 }
@@ -75,7 +74,7 @@ void show_float_bits(FILE* const stream, const float value)
     //static_assert(sizeof(value) == 4, "Size of float should be 4.");
 
 #if 0
-    const bit_type* const bit_int = (const bit_type* const) & value;
+    const uint32_t* const bit_int = (const uint32_t* const) & value;
 
     fprintf(stream, "%.64f (%a) => ", value, value);
 
@@ -88,7 +87,7 @@ void show_float_bits(FILE* const stream, const float value)
         fprintf(stream, "%d", ((*bit_int >> (--i)) & 1));
     }
 
-    fprintf(stream, ", mantissa = ");
+    fprintf(stream, ", signficand = ");
     do
     {
         fprintf(stream, "%d", ((*bit_int >> (--i)) & 1));

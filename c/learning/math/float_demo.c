@@ -66,7 +66,7 @@ static int compare_float_files(const char* const first_file_path,
         {
             if (strcmp(line1, line2))
             {
-                printf("Lines are not equal => %s & %s\n", line1, line2);
+                //printf("Lines are not equal => %s & %s\n", line1, line2);
                 result = 1; // Found different lines.
             }
         }
@@ -78,6 +78,14 @@ static int compare_float_files(const char* const first_file_path,
     return result;
 }
 
+static double gettime_diff_milliseconds(
+    const struct timespec* lhs, const struct timespec* rhs)
+{
+    return (rhs->tv_sec - lhs->tv_sec) * 1E3
+           + (rhs->tv_nsec - lhs->tv_nsec) * 1E-6;
+}
+
+#if 0
 static double current_time_milliseconds(void)
 {
     // struct timespec spec;
@@ -88,6 +96,7 @@ static double current_time_milliseconds(void)
 
     return spec.tv_sec * 1E3 + spec.tv_nsec * 1E-6;
 }
+#endif
 
 static void test_from_files(void)
 {
@@ -101,7 +110,9 @@ static void test_from_files(void)
 
     for (size_t i = 1; i <= 7; ++i)
     {
-        const double d = current_time_milliseconds();
+        struct timespec start_spec;
+        clock_gettime(CLOCK_MONOTONIC, &start_spec);
+        //const double d = current_time_milliseconds();
 
         char file_path[256] = {0};
         sprintf(file_path, "%s%zu%s", init_path, i, ".in");
@@ -120,21 +131,25 @@ static void test_from_files(void)
 
             sprintf(file_path, "%s%zu%s", init_path, i, ".out");
 
-            switch (compare_float_files(file_path, output_file_path, row_count))
+            const int result
+                = compare_float_files(file_path, output_file_path, row_count);
+
+            struct timespec end_spec;
+            clock_gettime(CLOCK_MONOTONIC, &end_spec);
+            const double d = gettime_diff_milliseconds(&start_spec, &end_spec);
+
+            switch (result)
             {
                 case 0:
-                    printf(
-                        "%zu: OK! [%g]\n", i, current_time_milliseconds() - d);
+                    printf("%zu: OK! [%g]\n", i, d);
                     break;
 
                 case -1:
-                    printf("%zu: Failed file reading [%g].\n", i,
-                        current_time_milliseconds() - d);
+                    printf("%zu: Failed file reading [%g].\n", i, d);
                     break;
 
                 case 1:
-                    printf("%zu: NOT OK! [%g]\n", i,
-                        current_time_milliseconds() - d);
+                    printf("%zu: NOT OK! [%g]\n", i, d);
                     break;
 
                 default:
@@ -142,6 +157,15 @@ static void test_from_files(void)
             }
         }
     }
+}
+
+static void show_float(FILE* stream, const float value)
+{
+    fprintf(stream, "\tDecimal     %.53G\n", value);
+    fprintf(stream, "\tScientific  %.16E\n", value);
+    fprintf(stream, "\tHexadecimal %.16A\n", value);
+    fprintf(stream, "\tBits        ");
+    show_float_bits(stream, value);
 }
 
 static void test_floats(void)
@@ -160,15 +184,43 @@ static void test_floats(void)
         stdout, -0.00000000000000000000000000000000000001175494500000f);
     unsigned int i = 0x1;
     float* f = (float* const)(&i);
-    show_float_bits(stdout, *f);
+    show_float(stdout, *f);
+    //show_float_bits(stdout, *f);
     i = 0x7FFFFF;
     show_float_bits(stdout, *f);
+}
+
+static void float_examples(void)
+{
+    unsigned int i = 0x1;
+    float* const f = (float* const)(&i);
+
+    printf("Smallest subnormal:\n");
+    show_float(stdout, *f);
+
+    i = 0x7FFFFF;
+
+    printf("Largest subnormal:\n");
+    show_float(stdout, *f);
+
+    i = 1 << 23;
+
+    printf("Smallest normal:\n");
+    show_float(stdout, *f);
+
+    i = 0x7F7FFFFF;
+
+    printf("Largest normal:\n");
+    show_float(stdout, *f);
 }
 
 int main()
 {
     test_floats();
     test_from_files();
+
+    //show_float(stdout, 1.0f);
+    float_examples();
 
     return EXIT_SUCCESS;
 }
