@@ -6,8 +6,32 @@
 #include <string.h>
 #include <float.h>
 #include <time.h>
+#include <stdbool.h>
+#include <assert.h>
 
 #include "binary_float.h"
+
+static bool nearly_equal_floats(
+    const float a, const float b, const float epsilon)
+{
+    if (a == b)
+    {
+        return true;
+    }
+
+    const float a_abs = fabsf(a);
+    const float b_abs = fabsf(b);
+    const float diff = fabsf(a - b);
+
+    if ((a == 0.0f) || (b == 0.0f) || (a_abs + b_abs < FLT_MIN))
+    {
+        return diff < epsilon * FLT_MIN;
+    }
+    else
+    {
+        return diff / fmin(a_abs + b_abs, FLT_MAX) < epsilon;
+    }
+}
 
 static size_t test_floats_from_file(
     FILE* const output_stream, const char* const file_path)
@@ -214,6 +238,34 @@ static void float_examples(void)
     show_float(stdout, *f);
 }
 
+void test_pair_floats(
+    const float a, const float b, const float eps, const bool result)
+{
+    assert(nearly_equal_floats(a, b, eps) == result);
+    assert(nearly_equal_floats(b, a, eps) == result);
+    assert(nearly_equal_floats(-a, -b, eps) == result);
+    assert(nearly_equal_floats(-b, -a, eps) == result);
+}
+
+void test_float_comparison(void)
+{
+    const float eps = 0.00001f;
+    test_pair_floats(1000000.0f, 1000001.0f, eps, true);
+    test_pair_floats(-1000.0f, -1001.0f, eps, false);
+
+    test_pair_floats(1.000001f, 1.000002f, eps, true);
+    test_pair_floats(1.001f, 1.002f, eps, false);
+
+    test_pair_floats(0.000000001000001f, 0.000000001000002f, eps, true);
+    test_pair_floats(0.000000000001002f, 0.000000000001001f, eps, false);
+
+    test_pair_floats(0.3f, 0.30000003f, eps, true);
+
+    test_pair_floats(0.0f, 0.0f, eps, true);
+
+    test_pair_floats(0.0f, 0.0000001f, eps, false);
+}
+
 int main()
 {
     test_floats();
@@ -221,6 +273,7 @@ int main()
 
     //show_float(stdout, 1.0f);
     float_examples();
+    test_float_comparison();
 
     return EXIT_SUCCESS;
 }

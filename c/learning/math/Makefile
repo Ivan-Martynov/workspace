@@ -15,7 +15,7 @@ TARGETS = factorial exponentiation accumulation continued_fraction\
 all: $(TARGETS)
 
 float_demo: float_demo.o binary_float.o
-	$(LINK_CMD) $^ -o $@ $(LIBS)
+	$(LINK_CMD) $^ -o $@ $(LIBS) -lm
 
 tree_operations_demo: tree_operations_demo.o data_structures/tree_operations.o\
 	data_structures/binary_tree_d.o
