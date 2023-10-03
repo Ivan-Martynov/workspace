@@ -3,36 +3,63 @@
 #include <assert.h>
 #include <stdint.h>
 
-static const uint32_t signficand_width = 23;
-static const uint32_t signficand_mask = 0x007FFFFFu;
-static const uint32_t exponent_bias = 127;
-static const uint32_t exponent_mask = 0xFFu;
+static const uint32_t float_signficand_width = 23;
+static const uint32_t float_signficand_mask = 0x007FFFFFu;
+static const uint32_t float_exponent_bias = 127;
+static const uint32_t float_exponent_mask = 0xFFu;
 
-static uint32_t get_sign_bit(const float value)
+inline float float_from_bits(const uint32_t bits)
+{
+    return *(const float* const)(&bits);
+}
+
+inline uint32_t float_sign_bit(const float value)
 {
     const uint32_t* const bit_int = (const uint32_t* const)(&value);
     return *bit_int >> 31;
 }
 
-static uint32_t get_exponent_bits(const float value)
+inline uint32_t float_exponent_bits(const float value)
 {
     const uint32_t* const bit_int = (const uint32_t* const)(&value);
-    return (*bit_int >> signficand_width) & exponent_mask;
+    return (*bit_int >> float_signficand_width) & float_exponent_mask;
 }
 
-static uint32_t get_signficand_bits(const float value)
+inline uint32_t float_signficand_bits(const float value)
 {
     const uint32_t* const bit_int = (const uint32_t* const)(&value);
-    return *bit_int & signficand_mask;
+    return *bit_int & float_signficand_mask;
+}
+
+int print_binary(FILE* stream, const float value)
+{
+    const uint32_t* const bit_int = (const uint32_t* const)(&value);
+
+    size_t i = 31;
+    fprintf(stream, "%d ", (*bit_int >> i) & 1);
+
+    for (size_t j = 0; j < 8; ++j)
+    {
+        fprintf(stream, "%d", (*bit_int >> --i) & 1);
+    }
+
+    fprintf(stream, " ");
+
+    while (i--)
+    {
+        fprintf(stream, "%d", (*bit_int >> i) & 1);
+    }
+
+    return fprintf(stream, "\n");
 }
 
 static int print_bits(FILE* stream, const float value)
 {
-    const uint32_t sign_bit = get_sign_bit(value);
-    uint32_t exponent_bits = get_exponent_bits(value);
-    const uint32_t signficand_bits = get_signficand_bits(value);
+    const uint32_t sign_bit = float_sign_bit(value);
+    uint32_t exponent_bits = float_exponent_bits(value);
+    const uint32_t signficand_bits = float_signficand_bits(value);
 
-    if ((exponent_bits == exponent_mask) && signficand_bits)
+    if ((exponent_bits == float_exponent_mask) && signficand_bits)
     {
         return fprintf(stream, "NaN\n");
     }
@@ -42,7 +69,7 @@ static int print_bits(FILE* stream, const float value)
         fprintf(stream, "-");
     }
 
-    if (exponent_bits == exponent_mask)
+    if (exponent_bits == float_exponent_mask)
     {
         return fprintf(stream, "Inf\n");
     }
@@ -59,13 +86,13 @@ static int print_bits(FILE* stream, const float value)
         }
     }
 
-    for (size_t i = signficand_width - 1; i < signficand_width; --i)
+    for (size_t i = float_signficand_width - 1; i < float_signficand_width; --i)
     {
         fprintf(stream, "%d", (signficand_bits >> i) & 1);
     }
 
     return (exponent_bits || signficand_bits) ? fprintf(
-               stream, " * 2^%d\n", (int)(exponent_bits - exponent_bias))
+               stream, " * 2^%d\n", (int)(exponent_bits - float_exponent_bias))
                                             : fprintf(stream, "\n");
 }
 

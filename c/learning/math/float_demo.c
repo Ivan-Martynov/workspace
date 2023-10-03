@@ -183,13 +183,39 @@ static void test_from_files(void)
     }
 }
 
+static void print_float_trim_zeros(FILE* stream, const float value)
+{
+    char num_str[256] = {0};
+
+    sprintf(num_str, "%.64f", value);
+
+    size_t i = strlen(num_str);
+
+    while (i-- && (num_str[i] == '0') && (num_str[i] != '.'))
+    {
+    }
+    num_str[(num_str[i] == '.') ? i : i + 1] = '\0';
+
+    if (float_sign_bit(value))
+    {
+        fprintf(stream, "\tDecimal     %s\n", num_str);
+    }
+    else
+    {
+        fprintf(stream, "\tDecimal     +%s\n", num_str);
+    }
+}
+
 static void show_float(FILE* stream, const float value)
 {
-    fprintf(stream, "\tDecimal     %.53G\n", value);
-    fprintf(stream, "\tScientific  %.16E\n", value);
-    fprintf(stream, "\tHexadecimal %.16A\n", value);
+    //fprintf(stream, "\tDecimal     %.32F\n", value);
+    print_float_trim_zeros(stream, value);
+    fprintf(stream, "\tScientific  %+.32E\n", value);
+    fprintf(stream, "\tHexadecimal %+.8A\n", value);
     fprintf(stream, "\tBits        ");
     show_float_bits(stream, value);
+    fprintf(stream, "\tBinary      ");
+    print_binary(stream, value);
 }
 
 static void test_floats(void)
@@ -216,35 +242,71 @@ static void test_floats(void)
 
 static void float_examples(void)
 {
-    unsigned int i = 0x1;
-    float* const f = (float* const)(&i);
-
     printf("Smallest subnormal:\n");
-    show_float(stdout, *f);
-
-    i = 0x7FFFFF;
+    show_float(stdout, float_from_bits(0x1));
 
     printf("Largest subnormal:\n");
-    show_float(stdout, *f);
-
-    i = 1 << 23;
+    show_float(stdout, float_from_bits(0x7FFFFF));
 
     printf("Smallest normal:\n");
-    show_float(stdout, *f);
-
-    i = 0x7F7FFFFF;
+    show_float(stdout, float_from_bits(1 << 23));
 
     printf("Largest normal:\n");
-    show_float(stdout, *f);
+    show_float(stdout, float_from_bits(0x7F7FFFFF));
+
+    const float positive_zero = float_from_bits(0x0);
+    printf("Positive zero:\n");
+    show_float(stdout, positive_zero);
+
+    const float negative_zero = float_from_bits(1 << 31);
+    printf("Negative zero:\n");
+    show_float(stdout, negative_zero);
+
+    printf("Positive infinity:\n");
+    show_float(stdout, INFINITY);
+
+    printf("Negative infinity:\n");
+    show_float(stdout, -INFINITY);
+
+    printf("NaN from sqrtf(-1.0f):\n");
+    show_float(stdout, sqrtf(-1.0f));
+
+    printf("NaN from -0.0 / 0.0:\n");
+    show_float(stdout, negative_zero / positive_zero);
+
+    const float nan_inf_inf = INFINITY - INFINITY;
+    printf("NaN from inf - inf:\n");
+    show_float(stdout, nan_inf_inf);
 }
 
-void test_pair_floats(
+static bool report_float_pair_test(
     const float a, const float b, const float eps, const bool result)
 {
-    assert(nearly_equal_floats(a, b, eps) == result);
-    assert(nearly_equal_floats(b, a, eps) == result);
-    assert(nearly_equal_floats(-a, -b, eps) == result);
-    assert(nearly_equal_floats(-b, -a, eps) == result);
+    if (nearly_equal_floats(a, b, eps) != result)
+    {
+        const char* const expected_bool = result ? "true" : "false";
+        const char* const received_bool = result ? "false" : "true";
+
+        fprintf(stderr,
+            "Failed float comparison:\n\tFirst = %.53f\n\tSecond = "
+            "%.53f\n\tExpected %s, received %s\n",
+            a, b, expected_bool, received_bool);
+
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+static void test_pair_floats(
+    const float a, const float b, const float eps, const bool result)
+{
+    report_float_pair_test(a, b, eps, result);
+    report_float_pair_test(b, a, eps, result);
+    report_float_pair_test(-a, -b, eps, result);
+    report_float_pair_test(-b, -a, eps, result);
 }
 
 void test_float_comparison(void)
