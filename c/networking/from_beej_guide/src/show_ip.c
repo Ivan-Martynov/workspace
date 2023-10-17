@@ -1,5 +1,9 @@
 #include "platform_specific.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #if WINDOWS_PLATFORM
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -8,10 +12,6 @@
 #define _POSIX_C_SOURCE 200112L
 #define _GNU_SOURCE
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>

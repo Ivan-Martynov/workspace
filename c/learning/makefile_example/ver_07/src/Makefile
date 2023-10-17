@@ -1,0 +1,3 @@
+
+sub:
+	echo $(CURDIR)
