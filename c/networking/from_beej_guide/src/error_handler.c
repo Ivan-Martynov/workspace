@@ -5,11 +5,11 @@
 #define _GNU_SOURCE
 #endif
 
+#include "error_handler.h"
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-
-#include "error_handler.h"
 
 #if WINDOWS_PLATFORM
 #include <ws2tcpip.h>
