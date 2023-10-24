@@ -205,7 +205,7 @@ static void mrvn_merge_parts_with_order_impl(unsigned char* const ptr,
     }
 
     // Place remaining elements from the left part into the target array. If
-    // there are still element, then they are 'smaller'.
+    // there are still elements, then they are 'smaller'.
     while (i <= left_stop)
     {
         memcpy(ptr + k, temp_ptr + i, block_size);
@@ -214,7 +214,7 @@ static void mrvn_merge_parts_with_order_impl(unsigned char* const ptr,
     }
 
     // Place remaining elements from the right part into the target array. If
-    // there are still element, then they are 'larger'.
+    // there are still elements, then they are 'larger'.
     while (j <= right_stop)
     {
         memcpy(ptr + k, temp_ptr + j, block_size);
