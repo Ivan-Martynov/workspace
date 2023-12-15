@@ -19,7 +19,7 @@
 
 const char* getaddrinfo_error_code_to_string(const int error_code)
 {
-    char* result;
+    const char* result;
     switch (error_code)
     {
         case EAI_AGAIN:

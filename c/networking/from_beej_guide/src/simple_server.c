@@ -91,7 +91,7 @@ int main(void)
     // Loop and bind to the first possible.
     int socket_fd;
     struct addrinfo* current = server_info;
-    for (; current != NULL; current = current->ai_next)
+    for (; current; current = current->ai_next)
     {
         // Get a socket descriptor, referring to a created endpoint.
         socket_fd = socket(
@@ -106,9 +106,9 @@ int main(void)
         // Set socket options. SOL_SOCKET - options to be accessed to socket
         // level (not protocol level). SO_REUSEADDR - reuse of local addresses
         // is supported.
-        int yes = 1;
-        if (setsockopt(
-                socket_fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(int))
+        const int yes = 1;
+        if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes,
+                sizeof(int))
             == -1)
         {
             report_error("Server: setsocketopt error");
@@ -128,7 +128,7 @@ int main(void)
 
     freeaddrinfo(server_info);
 
-    if (current == NULL)
+    if (!current)
     {
         fprintf(stderr, "Server: failed to bind.\n");
         return BIND_FAILURE;
@@ -160,9 +160,9 @@ int main(void)
     while (true)
     {
         struct sockaddr_storage their_addr;
-        socklen_t sin_size = sizeof(their_addr);
+        socklen_t addr_size = sizeof(their_addr);
         const int fd
-            = accept(socket_fd, (struct sockaddr*)&their_addr, &sin_size);
+            = accept(socket_fd, (struct sockaddr*)&their_addr, &addr_size);
         if (fd == -1)
         {
             report_error("Server: accept error");
