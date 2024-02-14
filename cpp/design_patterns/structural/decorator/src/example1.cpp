@@ -1,4 +1,6 @@
 #include <iostream>
+#include <memory>
+#include <vector>
 
 /**
  * The base Component interface defines operations that can be altered by
@@ -7,8 +9,12 @@
 class Component
 {
   public:
-    virtual ~Component() {}
-    virtual std::string Operation() const = 0;
+    virtual ~Component()
+    {
+        std::cout << "Destructor: Interface component\n";
+    }
+
+    virtual std::string operation() const = 0;
 };
 
 /**
@@ -18,7 +24,12 @@ class Component
 class ConcreteComponent : public Component
 {
   public:
-    std::string Operation() const override
+    ~ConcreteComponent()
+    {
+        std::cout << "Destructor: ConcreteComponent\n";
+    }
+
+    std::string operation() const override
     {
         return "ConcreteComponent";
     }
@@ -40,7 +51,12 @@ class Decorator : public Component
     Component* m_component_ptr;
 
   public:
-    Decorator(Component* component) : m_component_ptr(component) {}
+    ~Decorator()
+    {
+        std::cout << "Destructor: Decorator\n";
+    }
+
+    Decorator(Component* component) : m_component_ptr {component} {}
 
     Decorator(const Decorator&) = default;
     Decorator& operator=(const Decorator&) = default;
@@ -48,9 +64,9 @@ class Decorator : public Component
     /**
      * The Decorator delegates all work to the wrapped component.
      */
-    std::string Operation() const override
+    std::string operation() const override
     {
-        return m_component_ptr->Operation();
+        return m_component_ptr->operation();
     }
 };
 
@@ -67,9 +83,14 @@ class ConcreteDecoratorA : public Decorator
   public:
     ConcreteDecoratorA(Component* component_ptr) : Decorator {component_ptr} {}
 
-    std::string Operation() const override
+    ~ConcreteDecoratorA()
     {
-        return "ConcreteDecoratorA(" + Decorator::Operation() + ")";
+        std::cout << "Destructor: ConcreteDecoratorA\n";
+    }
+
+    std::string operation() const override
+    {
+        return "ConcreteDecoratorA(" + Decorator::operation() + ")";
     }
 };
 
@@ -80,11 +101,16 @@ class ConcreteDecoratorA : public Decorator
 class ConcreteDecoratorB : public Decorator
 {
   public:
-    ConcreteDecoratorB(Component* component_ptr) : Decorator{component_ptr} {}
+    ConcreteDecoratorB(Component* component_ptr) : Decorator {component_ptr} {}
 
-    std::string Operation() const override
+    ~ConcreteDecoratorB()
     {
-        return "ConcreteDecoratorB(" + Decorator::Operation() + ")";
+        std::cout << "Destructor: ConcreteDecoratorB\n";
+    }
+
+    std::string operation() const override
+    {
+        return "ConcreteDecoratorB(" + Decorator::operation() + ")";
     }
 };
 
@@ -95,36 +121,26 @@ class ConcreteDecoratorB : public Decorator
  */
 void ClientCode(Component* component_ptr)
 {
-    std::cout << "RESULT: " << component_ptr->Operation();
+    std::cout << "RESULT: " << component_ptr->operation() << '\n';
 }
 
 int main()
 {
-    /**
-     * This way the client code can support both simple components...
-     */
-    Component* simple_ptr {new ConcreteComponent {}};
+    std::vector<std::unique_ptr<Component>> vec {};
 
-    std::cout << "Client: I've got a simple component:\n";
-    ClientCode(simple_ptr);
-    std::cout << "\n\n";
+    auto d1 {std::make_unique<ConcreteComponent>()};
+    auto d2 {std::make_unique<ConcreteDecoratorA>(d1.get())};
+    auto d3 {std::make_unique<ConcreteDecoratorB>(d2.get())};
 
-    /**
-     * ...as well as decorated ones.
-     *
-     * Note how decorators can wrap not only simple components but the other
-     * decorators as well.
-     */
-    Component* decorator1_ptr {new ConcreteDecoratorA {simple_ptr}};
-    Component* decorator2_ptr {new ConcreteDecoratorB {decorator1_ptr}};
+    vec.push_back(std::move(d1));
+    vec.push_back(std::move(d2));
+    vec.push_back(std::move(d3));
 
-    std::cout << "Client: Now I've got a decorated component:\n";
-    ClientCode(decorator2_ptr);
-    std::cout << "\n";
-
-    delete simple_ptr;
-    delete decorator1_ptr;
-    delete decorator2_ptr;
+    for (auto& p : vec)
+    {
+        ClientCode(p.get());
+    }
+    std::cout << '\n';
 
     return 0;
 }

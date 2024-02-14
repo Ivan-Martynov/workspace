@@ -35,7 +35,6 @@ class Decorator : public Widget // 4. "is a" relationship
     Decorator(const Decorator&) = default;
     Decorator& operator=(const Decorator&) = default;
 
-    /*virtual*/
     void draw()
     {
         wid_ptr->draw(); // 5. Delegation

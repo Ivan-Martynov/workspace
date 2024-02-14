@@ -14,7 +14,7 @@ class A : public I
     {
         std::cout << "A dtor" << '\n';
     }
-    /*virtual*/
+
     void do_it()
     {
         std::cout << 'A';

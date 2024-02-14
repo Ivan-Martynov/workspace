@@ -31,6 +31,7 @@ class Core : public Interface
 
 class Decorator : public Interface
 {
+  private:
     Interface* inner_ptr;
 
   public:
