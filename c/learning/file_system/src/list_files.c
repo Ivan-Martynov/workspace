@@ -1,11 +1,16 @@
+#define _GNU_SOURCE
+
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-
+#include <wchar.h>
+#include <locale.h>
+#include "ID3v2_tag_reader.h"
 
 const char* type_to_string(const unsigned char type)
 {
@@ -58,7 +63,7 @@ static size_t digits_in_filename(const char* const source)
     const size_t len = strlen(source);
 
     size_t i = 0;
-    while ((i < len) && !isdigit(source[i++]))
+    while ((i < len) && !isdigit((int)source[i++]))
     {
     }
 
@@ -68,7 +73,7 @@ static size_t digits_in_filename(const char* const source)
     }
 
     size_t digit_count = 1;
-    while ((i < len) && isdigit(source[i++]))
+    while ((i < len) && isdigit((int)source[i++]))
     {
         ++digit_count;
     }
@@ -98,7 +103,7 @@ static void prepend_zero_to_number(
     const size_t len = strlen(source);
 
     size_t i = 0;
-    while ((i < len) && !isdigit(source[i++]))
+    while ((i < len) && !isdigit((int)source[i++]))
     {
     }
 
@@ -110,7 +115,7 @@ static void prepend_zero_to_number(
     size_t digit_index = i - 1;
 
     size_t digit_count = 1;
-    while ((i < len) && isdigit(source[i++]))
+    while ((i < len) && isdigit((int)source[i++]))
     {
         ++digit_count;
     }
@@ -135,7 +140,7 @@ static void prepend_zero_to_number(
 
     printf("%s => %s\n", source, target);
 
-#if 1
+#if 0
     if (rename(source, target) != -1)
     {
         printf("Renaming %s => %s\n", source, target);
@@ -150,9 +155,42 @@ static void prepend_zero_to_number(
     // printf("String %s has %zu digits.\n", source, digit_count);
 }
 
+static bool not_rel_path(const char* const path)
+{
+    return strcmp(path, ".") && strcmp(path, "..");
+}
+
 static int dir_selector(const struct dirent* dir)
 {
-    return (strcmp(dir->d_name, ".") != 0) && (strcmp(dir->d_name, "..") != 0);
+    return not_rel_path(dir->d_name);
+    //return (strcmp(dir->d_name, ".") != 0) && (strcmp(dir->d_name, "..") != 0);
+}
+
+void list_mp3(const char* const path)
+{
+struct dirent** name_list;
+    const int scan_result = scandir(path, &name_list, dir_selector, alphasort);
+
+    if (scan_result >= 0)
+    {
+        printf("Got %d items in %s\n", scan_result, path);
+
+        for (int i = 0; i < scan_result; ++i)
+        {
+            struct dirent* dir = name_list[i];
+            char full_path[4096] = "\0";
+            strcpy(full_path, path);
+
+            if (path[strlen(path) - 1] != '/')
+            {
+                strcat(full_path, "/");
+            }
+            strcat(full_path, dir->d_name);
+
+            //show_mp3_tags_wide(full_path);
+            show_mp3_tags(full_path);
+        }
+    }
 }
 
 void scan_listing(const char* const path)
@@ -192,14 +230,32 @@ void scan_listing(const char* const path)
 
 void default_listing(const char* const path)
 {
-    DIR* directory = opendir(path);
+    DIR* const directory = opendir(path);
     if (directory)
     {
         struct dirent* dir;
-        while (dir = readdir(directory))
+        while ((dir = readdir(directory)))
         {
             const char* type = type_to_string(dir->d_type);
-            printf("%s: %s\n", type, dir->d_name);
+
+#if 1
+            size_t n = strlen(type) + 1;
+            // wchar_t* const w_type = malloc(sizeof(*w_type) * n);
+            wchar_t w_type[n];
+            mbstowcs(w_type, type, n);
+
+            n = strlen(dir->d_name) + 1;
+            //wchar_t* const w_path = malloc(sizeof(*w_path) * n);
+            wchar_t w_path[n];
+            mbstowcs(w_path, dir->d_name, n);
+
+            wprintf(L"%ls: %ls\n", w_type, w_path);
+
+            //free(w_type);
+            //free(w_path);
+#else
+            printf("%zu => %s: %s\n", dir->d_ino, type, dir->d_name);
+#endif
         }
         closedir(directory);
     }
@@ -210,25 +266,39 @@ void default_listing(const char* const path)
     }
 }
 
-void test_directory()
+void test_directory(const char* const directory_path)
 {
-    //const char* directory_path
-    //    = "C:/Users/Ivan/Downloads/books/Михаил Булгаков/";
-    const char* directory_path = "C:/Users/Ivan/Downloads/books/Папа, мама, "
-                                 "бабушка, восемь детей и грузовик/";
-    scan_listing(directory_path);
+    if (not_rel_path(directory_path))
+    {
+        //scan_listing(directory_path);
+        list_mp3(directory_path);
+    }
+    else
+    {
+        // const char* test_directory_path
+        //    = "C:/Users/Ivan/Downloads/books/Михаил Булгаков/";
+        const char* test_directory_path
+            = "C:/Users/Ivan/Downloads/books/Папа, мама, "
+              "бабушка, восемь детей и грузовик/";
+
+        list_mp3(test_directory_path);
+    }
 }
 
 int main(const int argc, const char* argv[static argc])
 {
+    //setlocale(LC_ALL, "en_US.UTF-8");
+    setlocale(LC_ALL, "");
+
 #if 1
-    test_directory();
+    const char* const directory_path = (argc > 1) ? argv[1] : ".";
+    test_directory(directory_path);
 #else
     const char* const directory_path = (argc > 1) ? argv[1] : ".";
 
-    // default_listing(directory_path);
+    default_listing(directory_path);
 
-    scan_listing(directory_path);
+    // scan_listing(directory_path);
 #endif
 
     return 0;

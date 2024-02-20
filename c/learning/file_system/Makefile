@@ -1,25 +1,49 @@
-C_COMP = gcc
-C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
-COMP_CMD = $(C_COMP) $(C_FLAGS)
-DEBUG_FLAGS = -O0 -g -D _DEBUG
-RELEASE_FLAGS = -O3 -D NDEBUG
-LIBS =
+# Prevent make from trying to remake the makefile.
+#.PHONY: Makefile
 
-SRC = $(wildcard *.c)
-OBJ = $(wildcard *.o)
+# Include makefile with setup for compiler options.
+include ../../make_compiler_setup.mk
 
-TARGETS = list_files
+BIN_DIR := bin
+OBJ_DIR := obj
+SRC_DIR := src
+INC_DIR := include
 
-.PHONY: all
-all: $(TARGETS)
+CFLAGS += -I $(INC_DIR)
 
-list_files: list_files.o
-	$(C_COMP) $(C_FLAGS) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
+# vpath variable: search for source/header files in the src/include folder.
+# That way we can omit explicit directory part for files.
+vpath %.c $(SRC_DIR)
+vpath %.h $(INC_DIR)
+vpath %.o $(OBJ_DIR)
 
-list_files.o: list_files.c
+SOURCES := $(wildcard $(SRC_DIR)/*.c)
+OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
+# TARGETS := list_files.exe
+TARGETS := $(BIN_DIR)/$(BUILD)/list_files.exe
 
-clean: clean_obj
-	rm $(TARGETS)
+.PHONY : all
+all : $(TARGETS)
 
-clean_obj:
-	rm $(OBJ)
+$(TARGETS) : $(OBJECTS)
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+# list_files.exe: list_files.o
+# 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+$(OBJECTS) : | $(OBJ_DIR)
+
+$(OBJ_DIR) : ; mkdir $(OBJ_DIR)
+
+$(TARGETS) : |$(BIN_DIR)
+
+$(BIN_DIR) : ; mkdir -p $(BIN_DIR)/$(BUILD)
+
+.PHONY : clean
+clean : ; rm $(OBJECTS) $(TARGETS)

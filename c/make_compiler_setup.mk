@@ -9,7 +9,7 @@ LIBS :=
 BUILD := debug
 
 # Flags used for either debug or release.
-compilation_flags.common := -std=c17 -Wall -Wshadow -Wpedantic -Wextra -Werror
+compilation_flags.common := -std=c2x -Wall -Wshadow -Wpedantic -Wextra -Werror
 # Debug specific flags.
 compilation_flags.debug := -O0 -g -D _DEBUG
 # Release specific flags.
