@@ -31,9 +31,6 @@ $(TARGETS) : $(OBJECTS)
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-# list_files.exe: list_files.o
-# 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
-
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	$(CC) -c $(CFLAGS) $< -o $@
 

@@ -92,7 +92,7 @@ typedef struct
 {
     char tag[ID3_HEADER_TAG];
     char major_version;
-    char minor_version;
+    char revision_number;
     char flags;
     int tag_size;
 } ID3v2_header;
@@ -167,7 +167,7 @@ ID3v2_header* new_header()
     if (tag_header != NULL)
     {
         memset(tag_header->tag, '\0', ID3_HEADER_TAG);
-        tag_header->minor_version = 0x00;
+        tag_header->revision_number = 0x00;
         tag_header->major_version = 0x00;
         tag_header->flags = 0x00;
         memset(tag_header->tag, 0, ID3_HEADER_SIZE);
@@ -397,7 +397,7 @@ ID3v2_header* get_tag_header_with_buffer(char* buffer, int length)
     int position = 0;
     memcpy(tag_header->tag, buffer, ID3_HEADER_TAG);
     tag_header->major_version = buffer[position += ID3_HEADER_TAG];
-    tag_header->minor_version = buffer[position += ID3_HEADER_VERSION];
+    tag_header->revision_number = buffer[position += ID3_HEADER_VERSION];
     tag_header->flags = buffer[position += ID3_HEADER_REVISION];
     tag_header->tag_size = syncint_decode(
         btoi(buffer, ID3_HEADER_SIZE, position += ID3_HEADER_FLAGS));
