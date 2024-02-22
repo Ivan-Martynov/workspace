@@ -131,9 +131,9 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
     }
     printf("\n");
 
-    char tag_size_str[5];
+    char tag_size_str[4];
     strncpy(tag_size_str, &buffer[++position], 4);
-    tag_size_str[5] = '\0';
+    tag_size_str[4] = '\0';
     const size_t tag_size = syncsafe_decode(bytes_to_size_t(tag_size_str, 4));
 
     printf("Size:");
@@ -151,9 +151,9 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
     // Bit 6 signs if the extended header is present.
     if ((flags >> 6) & 1)
     {
-        char extended_tag[5];
+        char extended_tag[4];
         strncpy(extended_tag, &buffer[position += 4], 4);
-        extended_tag[5] = '\0';
+        extended_tag[4] = '\0';
 
         const size_t extended_header_size
             = syncsafe_decode(bytes_to_size_t(extended_tag, 4));
@@ -166,4 +166,26 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
         return ID3v2_tag_header_new(
             major_version, revision_number, flags, tag_size, 0);
     }
+}
+
+void ID3v2_tag_header_print(
+    const struct ID3v2_tag_header* const tag_header_ptr)
+{
+    if (!tag_header_ptr)
+    {
+        return;
+    }
+
+    const char major_version
+        = ID3v2_tag_header_get_major_version(tag_header_ptr);
+    if (major_version != 4)
+    {
+        printf("Invalid v2.4 tag\n");
+        return;
+    }
+
+    printf("Version = %sv2.%d.%d\n", ID3v2_tag_header_get_id(tag_header_ptr),
+        major_version, ID3v2_tag_header_get_revision_number(tag_header_ptr));
+    printf("Flags = %d\n", ID3v2_tag_header_get_flags(tag_header_ptr));
+    printf("Tag size = %zu\n", ID3v2_tag_header_get_tag_size(tag_header_ptr));
 }

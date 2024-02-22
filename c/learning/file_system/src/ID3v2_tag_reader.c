@@ -106,23 +106,21 @@ void show_mp3_tags(const char* const file_path)
 
     if (!dot_place || strcmp(++dot_place, "mp3") != 0)
     {
-        fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
+        // fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
         return;
     }
 
-    FILE* file_ptr = fopen(file_path, "rb");
+    FILE* file_ptr = fopen(file_path, "rb, css=UTF-8");
     if (!file_ptr)
     {
         fprintf(stderr, "Error opening file %s\n", file_path);
         return;
     }
 
+    printf("Tag data for %s\n", file_path);
     struct ID3v2_tag_header* tag_header_ptr
         = ID3v2_tag_header_from_file_stream(file_ptr);
-
-    printf("Tag data for %s\n", file_path);
-
-    print_tag_header_data(tag_header_ptr);
+    ID3v2_tag_header_print(tag_header_ptr);
 
     //getc(file_ptr);
     struct ID3v2_frame_header* frame_header_ptr

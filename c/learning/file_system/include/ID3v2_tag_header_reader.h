@@ -26,4 +26,6 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const);
 
 void ID3v2_tag_header_delete(struct ID3v2_tag_header*);
 
+void ID3v2_tag_header_print(const struct ID3v2_tag_header* const);
+
 #endif //_H_ID3V2_TAG_HEADER_READER_H_

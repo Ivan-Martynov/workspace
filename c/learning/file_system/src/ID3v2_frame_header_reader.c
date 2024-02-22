@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ID3v2_frame_header_size 10
 #define ID3v2_frame_id_size 4
 #define ID3v2_frame_size_size 4
 #define ID3v2_frame_flags_size 2
@@ -50,13 +51,55 @@ void ID3v2_frame_header_delete(struct ID3v2_frame_header* frame_header_ptr)
     }
 }
 
-//static bool is_no_more_frames(const char* const buffer)
-//{
-//    return strncmp(buffer, "\0\0\0\0", ID3v2_frame_id_size) == 0;
-//}
+static bool is_no_more_frames(const char* const buffer)
+{
+    return strncmp(buffer, "\0\0\0\0", ID3v2_frame_id_size) == 0;
+}
+
+struct ID3v2_frame_header* ID3v2_frame_header_parse_buffer(char* buffer)
+{
+    char id_buffer[ID3v2_frame_id_size];
+    strncpy(id_buffer, buffer, ID3v2_frame_id_size);
+    id_buffer[ID3v2_frame_id_size] = '\0';
+
+    printf("got buffer 0:%s\n", id_buffer);
+    if (is_no_more_frames(id_buffer))
+    {
+        return NULL;
+    }
+
+    size_t position = ID3v2_frame_id_size;
+    char size_buffer[ID3v2_frame_size_size];
+    strncpy(id_buffer, buffer + position, ID3v2_frame_id_size);
+    size_buffer[ID3v2_frame_size_size] = '\0';
+    position += ID3v2_frame_size_size;
+
+    const size_t size
+        = syncsafe_decode(bytes_to_size_t(size_buffer, ID3v2_frame_size_size));
+    printf("Size = %zu\n", size);
+
+    char flags_buffer[ID3v2_frame_flags_size];
+    strncpy(id_buffer, buffer + position, ID3v2_frame_id_size);
+    flags_buffer[ID3v2_frame_flags_size] = '\0';
+
+    return ID3v2_frame_header_new(id_buffer, flags_buffer, size);
+    // return ID3v2_frame_header_new(id, flags_buffer, size);
+}
 
 struct ID3v2_frame_header* ID3v2_frame_header_from_file_stream(FILE* file_ptr)
 {
+    #if 1
+    char buffer[ID3v2_frame_header_size];
+    const size_t n = fread(buffer, ID3v2_frame_header_size, 1, file_ptr);
+
+    if (n == 0)
+    {
+        return NULL;
+    }
+
+    return ID3v2_frame_header_parse_buffer(buffer);
+    #endif
+
     char id_buffer[ID3v2_frame_id_size + 1];
     for (size_t i = 0; i < ID3v2_frame_id_size; ++i)
     {

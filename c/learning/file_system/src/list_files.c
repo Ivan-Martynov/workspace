@@ -168,7 +168,7 @@ static int dir_selector(const struct dirent* dir)
 
 void list_mp3(const char* const path)
 {
-struct dirent** name_list;
+    struct dirent** name_list;
     const int scan_result = scandir(path, &name_list, dir_selector, alphasort);
 
     if (scan_result >= 0)
