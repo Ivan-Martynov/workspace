@@ -18,18 +18,13 @@ struct ID3v2_frame_header
 };
 
 struct ID3v2_frame_header* ID3v2_frame_header_init(
-    struct ID3v2_frame_header* frame_header_ptr, const char* const id,
-    const char* const flags, const size_t size)
+    struct ID3v2_frame_header* const frame_header_ptr, const char id[static 1],
+    const char flags[static 1], const size_t size)
 {
     if (frame_header_ptr)
     {
-        printf("Copying buffer: %s %zu\n", id, strlen(id));
-        //strcpy(frame_header_ptr->id, id);
-        strncpy(frame_header_ptr->id, id, ID3v2_frame_id_size);
-        frame_header_ptr->id[ID3v2_frame_id_size + 1] = '\0';
-
-        strncpy(frame_header_ptr->flags, flags, ID3v2_frame_flags_size);
-        frame_header_ptr->flags[ID3v2_frame_flags_size + 1] = '\0';
+        strcpy(frame_header_ptr->id, id);
+        strcpy(frame_header_ptr->flags, flags);
         frame_header_ptr->frame_size = size;
     }
 
@@ -37,7 +32,7 @@ struct ID3v2_frame_header* ID3v2_frame_header_init(
 }
 
 struct ID3v2_frame_header* ID3v2_frame_header_new(
-    const char* const id, const char* const flags, const size_t size)
+    const char id[static 1], const char flags[static 1], const size_t size)
 {
     return ID3v2_frame_header_init(
         malloc(sizeof(struct ID3v2_frame_header)), id, flags, size);
@@ -51,107 +46,148 @@ void ID3v2_frame_header_delete(struct ID3v2_frame_header* frame_header_ptr)
     }
 }
 
+void ID3v2_frame_header_print(
+    const struct ID3v2_frame_header* const frame_header_ptr)
+{
+    printf("Frame id: %s\n", frame_header_ptr->id);
+    printf("Frame size: %zu\n", frame_header_ptr->frame_size);
+    printf("Frame flags: %s\n", frame_header_ptr->flags);
+}
+
+const char* ID3v2_frame_header_get_id(
+    const struct ID3v2_frame_header* const frame_header_ptr)
+{
+    return frame_header_ptr->id;
+}
+
+const char* ID3v2_frame_header_get_flags(
+    const struct ID3v2_frame_header* const frame_header_ptr)
+{
+    return frame_header_ptr->flags;
+}
+
+size_t ID3v2_frame_header_get_frame_size(
+    const struct ID3v2_frame_header* const frame_header_ptr)
+{
+    return frame_header_ptr->frame_size;
+}
+
 static bool is_no_more_frames(const char* const buffer)
 {
     return strncmp(buffer, "\0\0\0\0", ID3v2_frame_id_size) == 0;
 }
 
-struct ID3v2_frame_header* ID3v2_frame_header_parse_buffer(char* buffer)
+struct ID3v2_frame_header* ID3v2_frame_header_from_file(
+    const char* const file_path)
 {
-    char id_buffer[ID3v2_frame_id_size];
-    strncpy(id_buffer, buffer, ID3v2_frame_id_size);
-    id_buffer[ID3v2_frame_id_size] = '\0';
+    FILE* file_ptr = fopen(file_path, "rb");
+    if (!file_ptr)
+    {
+        fprintf(stderr, "Error opening file %s\n", file_path);
+        return NULL;
+    }
 
-    printf("got buffer 0:%s\n", id_buffer);
-    if (is_no_more_frames(id_buffer))
+    const fpos_t pos = 10;
+    if (fsetpos(file_ptr, &pos) != EXIT_SUCCESS)
     {
         return NULL;
     }
 
-    size_t position = ID3v2_frame_id_size;
-    char size_buffer[ID3v2_frame_size_size];
-    strncpy(id_buffer, buffer + position, ID3v2_frame_id_size);
-    size_buffer[ID3v2_frame_size_size] = '\0';
-    position += ID3v2_frame_size_size;
+    return ID3v2_frame_header_from_file_stream(file_ptr);
 
-    const size_t size
-        = syncsafe_decode(bytes_to_size_t(size_buffer, ID3v2_frame_size_size));
-    printf("Size = %zu\n", size);
-
-    char flags_buffer[ID3v2_frame_flags_size];
-    strncpy(id_buffer, buffer + position, ID3v2_frame_id_size);
-    flags_buffer[ID3v2_frame_flags_size] = '\0';
-
-    return ID3v2_frame_header_new(id_buffer, flags_buffer, size);
-    // return ID3v2_frame_header_new(id, flags_buffer, size);
-}
-
-struct ID3v2_frame_header* ID3v2_frame_header_from_file_stream(FILE* file_ptr)
-{
-    #if 1
     char buffer[ID3v2_frame_header_size];
-    const size_t n = fread(buffer, ID3v2_frame_header_size, 1, file_ptr);
+    const size_t n
+        = fread(buffer, sizeof(char), ID3v2_frame_header_size, file_ptr);
 
-    if (n == 0)
+    fclose(file_ptr);
+
+    if ((n < ID3v2_frame_header_size) || is_no_more_frames(buffer))
     {
         return NULL;
     }
 
     return ID3v2_frame_header_parse_buffer(buffer);
-    #endif
-
-    char id_buffer[ID3v2_frame_id_size + 1];
-    for (size_t i = 0; i < ID3v2_frame_id_size; ++i)
-    {
-        const unsigned char c = fgetc(file_ptr);
-        printf("%c", c);
-        id_buffer[i] = c;
-    }
-    printf("\n");
-
-    // const size_t n
-    //    = fread(id_buffer, sizeof(char), ID3v2_frame_id_size, file_ptr);
-    id_buffer[ID3v2_frame_id_size + 1] = '\0';
-    printf("got buffer 0:%s\n", id_buffer);
-
-    //if (is_no_more_frames(id_buffer))
-    //{
-    //    return NULL;
-    //}
-
-    //char id[ID3v2_frame_id_size + 1];
-    for (size_t i = 0; i < ID3v2_frame_id_size; ++i)
-    {
-        printf("%c", id_buffer[i]);
-        //id[i] = id_buffer[i];
-    }
-    printf("\n");
-
-    // strncpy(id, id_buffer, ID3v2_frame_id_size);
-    //id[ID3v2_frame_id_size + 1] = '\0';
-    printf("got buffer:%s\n", id_buffer);
-    //printf("got id: %s\n", id);
-
-    char size_buffer[ID3v2_frame_size_size + 1];
-    fread(size_buffer, ID3v2_frame_size_size, 1, file_ptr);
-    size_buffer[ID3v2_frame_size_size + 1] = '\0';
-    const size_t size
-        = syncsafe_decode(bytes_to_size_t(size_buffer, ID3v2_frame_size_size));
-    printf("Size = %zu\n", size);
-
-    char flags_buffer[ID3v2_frame_flags_size + 1];
-    fread(flags_buffer, ID3v2_frame_flags_size, 1, file_ptr);
-    flags_buffer[ID3v2_frame_flags_size + 1] = '\0';
-
-    return ID3v2_frame_header_new(id_buffer, flags_buffer, size);
-    // return ID3v2_frame_header_new(id, flags_buffer, size);
 }
 
-void ID3v2_frame_header_print(
+struct ID3v2_frame_header* ID3v2_frame_header_parse_buffer(
+    const char* const buffer)
+{
+    char id_buffer[ID3v2_frame_id_size + 1];
+    strncpy(id_buffer, buffer, ID3v2_frame_id_size);
+    id_buffer[ID3v2_frame_id_size] = '\0';
+
+    size_t position = ID3v2_frame_id_size;
+
+    char size_buffer[ID3v2_frame_size_size + 1];
+    strncpy(size_buffer, buffer + position, ID3v2_frame_size_size);
+    size_buffer[ID3v2_frame_size_size] = '\0';
+
+    position += ID3v2_frame_size_size;
+
+    printf("Size:");
+    for (size_t i = 0; i < ID3v2_frame_size_size; ++i)
+    {
+        printf(" %c", size_buffer[i]);
+    }
+
+    const size_t size
+        = syncsafe_decode(bytes_to_size_t(size_buffer, ID3v2_frame_size_size));
+    printf("=> %zu\n", size);
+
+    char flags_buffer[ID3v2_frame_flags_size + 1];
+    strncpy(flags_buffer, buffer + position, ID3v2_frame_flags_size);
+    flags_buffer[ID3v2_frame_flags_size] = '\0';
+
+    printf("Flags:");
+    for (size_t i = 0; i < ID3v2_frame_flags_size; ++i)
+    {
+        printf(" %c", flags_buffer[i]);
+    }
+    printf("\n");
+
+    return ID3v2_frame_header_new(id_buffer, flags_buffer, size);
+}
+
+struct ID3v2_frame_header* ID3v2_frame_header_from_file_stream(
+    FILE* const file_ptr)
+{
+    char id_buffer[ID3v2_frame_id_size + 1];
+    fread(id_buffer, sizeof(char), ID3v2_frame_id_size, file_ptr);
+    id_buffer[ID3v2_frame_id_size] = '\0';
+
+    if (is_no_more_frames(id_buffer))
+    {
+        return NULL;
+    }
+
+    char size_buffer[ID3v2_frame_size_size + 1];
+    fread(size_buffer, sizeof(char), ID3v2_frame_size_size, file_ptr);
+    size_buffer[ID3v2_frame_size_size] = '\0';
+    const size_t size
+        = syncsafe_decode(bytes_to_size_t(size_buffer, ID3v2_frame_size_size));
+
+
+    char flags_buffer[ID3v2_frame_flags_size + 1];
+    fread(flags_buffer, sizeof(char), ID3v2_frame_flags_size, file_ptr);
+    flags_buffer[ID3v2_frame_flags_size] = '\0';
+
+    return ID3v2_frame_header_new(id_buffer, flags_buffer, size);
+}
+
+bool ID3v2_frame_header_is_text_frame(
     const struct ID3v2_frame_header* const frame_header_ptr)
 {
-    printf("Frame id %s\n", frame_header_ptr->id);
-    printf("Frame size %zu\n", frame_header_ptr->frame_size);
-    printf("Frame flags %s\n", frame_header_ptr->flags);
+    return frame_header_ptr->id[0] == 'T';
+}
 
+bool ID3v2_frame_header_is_comment_frame(
+    const struct ID3v2_frame_header* const frame_header_ptr)
+{
+    return frame_header_ptr->id[0] == 'C';
+}
+
+bool ID3v2_frame_header_is_picture_frame(
+    const struct ID3v2_frame_header* const frame_header_ptr)
+{
+    return frame_header_ptr->id[0] == 'A';
 }

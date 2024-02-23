@@ -4,6 +4,8 @@
 
 #include "ID3v2_tag_header_reader.h"
 #include "ID3v2_frame_header_reader.h"
+#include "ID3v2_text_frame_reader.h"
+#include "ID3v2_text_frame_ids.h"
 #include "syncsafe_int_converter.h"
 
 // static const char* const file_identifer = "ID3";
@@ -19,12 +21,6 @@ void get_tag_with_buffer(const char* const buffer)
     {
         return;
     }
-
-    //size_t position = ID3v2_header_size;
-    //if (tag_header_ptr->extended_header_size > 0)
-    //{
-    //    position = tag_header_ptr->extended_header_size;
-    //}
 
     char test[5];
     memcpy(test, buffer + ID3v2_header_size + 1, 4);
@@ -110,64 +106,8 @@ void show_mp3_tags(const char* const file_path)
         return;
     }
 
-    FILE* file_ptr = fopen(file_path, "rb, css=UTF-8");
-    if (!file_ptr)
-    {
-        fprintf(stderr, "Error opening file %s\n", file_path);
-        return;
-    }
-
     printf("Tag data for %s\n", file_path);
-    struct ID3v2_tag_header* tag_header_ptr
-        = ID3v2_tag_header_from_file_stream(file_ptr);
-    ID3v2_tag_header_print(tag_header_ptr);
 
-    //getc(file_ptr);
-    struct ID3v2_frame_header* frame_header_ptr
-        = ID3v2_frame_header_from_file_stream(file_ptr);
-    ID3v2_frame_header_print(frame_header_ptr);
-
-#if 0
-    for (size_t i = 0; i < 4; ++i)
-    {
-        const char c = fgetc(file_ptr);
-        if (c != EOF)
-        {
-            printf("%c ", c);
-        }
-    }
-    printf("\n");
-
-    char buffer[5];
-    fread(buffer, 4, 1, file_ptr);
-    buffer[5] = '\0';
-    const size_t size = syncsafe_decode(bytes_to_size_t(buffer, 4));
-    printf("Size = %zu\n", size);
-
-    for (size_t i = 0; i < 2; ++i)
-    {
-        const char c = fgetc(file_ptr);
-        if (c != EOF)
-        {
-            printf("%c ", c);
-        }
-    }
-    printf("\n");
-#endif
-
-    fclose(file_ptr);
-
-#if 0
-    struct ID3v2_tag_header* tag_header_ptr = get_tag_header(file_path);
-    if (!tag_header_ptr)
-    {
-        return;
-    }
-
-    print_tag_header_data(tag_header_ptr);
-
-    const size_t major_version
-        = ID3v2_tag_header_get_major_version(tag_header_ptr);
     FILE* file_ptr = fopen(file_path, "rb");
     if (!file_ptr)
     {
@@ -175,21 +115,53 @@ void show_mp3_tags(const char* const file_path)
         return;
     }
 
-    printf("Reading buffer.\n");
-    const size_t buffer_length
-        = ID3v2_tag_header_get_tag_size(tag_header_ptr) + ID3v2_header_size;
-    char tag_buffer[buffer_length];
-    fread(tag_buffer, buffer_length, 1, file_ptr);
-    printf("Done.\n");
+    struct ID3v2_tag_header* tag_header_ptr
+        = ID3v2_tag_header_from_file_stream(file_ptr);
+    const fpos_t tag_size
+        = (fpos_t)ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
 
-    if (major_version == 4)
+    ID3v2_tag_header_print(tag_header_ptr);
+    ID3v2_tag_header_delete(tag_header_ptr);
+
+#if 1
+    while (ftell(file_ptr) < tag_size)
+#else
+    for (fpos_t pos = ftell(file_ptr); pos < tag_size; fgetpos(file_ptr, &pos))
+#endif
     {
-        get_tag_with_buffer(tag_buffer);
+        struct ID3v2_frame_header* frame_header_ptr
+            = ID3v2_frame_header_from_file_stream(file_ptr);
+
+        if (!frame_header_ptr)
+        {
+            break;
+        }
+
+        ID3v2_frame_header_print(frame_header_ptr);
+
+        const size_t frame_size
+            = ID3v2_frame_header_get_frame_size(frame_header_ptr);
+        if (ID3v2_frame_header_is_text_frame(frame_header_ptr))
+        {
+            if (strcmp(ID3v2_frame_header_get_id(frame_header_ptr),
+                    ID3v2_title_frame)
+                == 0)
+            {
+                printf("Found title\n");
+            }
+            struct ID3v2_text_frame* text_frame_ptr
+                = ID3v2_text_frame_from_file_stream(file_ptr, frame_size);
+            ID3v2_text_frame_print(text_frame_ptr);
+            ID3v2_text_frame_delete(text_frame_ptr);
+        }
+        else
+        {
+            char buffer[frame_size];
+            fread(buffer, sizeof(char), frame_size, file_ptr);
+        }
+
+        ID3v2_frame_header_delete(frame_header_ptr);
     }
 
     fclose(file_ptr);
-#endif
-
-    ID3v2_tag_header_delete(tag_header_ptr);
-    ID3v2_frame_header_delete(frame_header_ptr);
 }

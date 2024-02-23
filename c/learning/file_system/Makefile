@@ -28,10 +28,14 @@ all : $(TARGETS)
 $(TARGETS) : $(OBJECTS)
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+#$(OBJ_DIR)/ID3v2_tag_header_reader.o : $(SRC_DIR)/ID3v2_tag_header_reader.c \
+#	$(INC_DIR)/ID3v2_tag_header_reader.h
+#	$(CC) -c $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/list_files.o : $(SRC_DIR)/list_files.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
-$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(OBJECTS) : | $(OBJ_DIR)

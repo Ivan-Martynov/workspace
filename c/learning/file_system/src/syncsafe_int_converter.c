@@ -68,6 +68,7 @@ static size_t syncsafe_decode_impl1(const size_t value)
     return result;
 }
 
+[[maybe_unused]]
 static size_t syncsafe_decode_impl2(const size_t value)
 {
     const unsigned int a = value & 0xFF;
@@ -97,10 +98,9 @@ static size_t syncsafe_decode_impl2(const size_t value)
  */
 size_t syncsafe_decode(const size_t value)
 {
-#if 0
-    syncsafe_decode_impl1(value);
+#if 1
+    return syncsafe_decode_impl1(value);
 #else
-    syncsafe_decode_impl1(value);
     return syncsafe_decode_impl2(value);
 #endif
 }
