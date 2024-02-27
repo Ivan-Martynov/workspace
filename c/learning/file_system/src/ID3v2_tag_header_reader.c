@@ -7,9 +7,9 @@
 
 static const char* const file_identifer = "ID3";
 
-static const size_t ID3v2_tag_header_size = 10;
 #define ID3V2_FILE_IDENTIFER_SIZE 3
 
+static const size_t ID3v2_tag_header_size = 10;
 static const size_t ID3v2_tag_size_size = 4;
 static const size_t ID3v2_extended_tag_size = 4;
 
@@ -153,6 +153,7 @@ struct ID3v2_tag_header* ID3v2_tag_header_from_file(const char* const file_path)
 
 struct ID3v2_tag_header* ID3v2_tag_header_from_file_stream(FILE* const file_ptr)
 {
+#if 1
     char id_buffer[ID3V2_FILE_IDENTIFER_SIZE + 1];
     fread(id_buffer, sizeof(char), ID3V2_FILE_IDENTIFER_SIZE, file_ptr);
     id_buffer[ID3V2_FILE_IDENTIFER_SIZE] = '\0';
@@ -185,32 +186,47 @@ struct ID3v2_tag_header* ID3v2_tag_header_from_file_stream(FILE* const file_ptr)
     }
     else
     {
-        return ID3v2_tag_header_new(major_version, revision_number, flags,
-            tag_size, 0);
+        return ID3v2_tag_header_new(
+            major_version, revision_number, flags, tag_size, 0);
     }
+#else
+    char buffer[ID3v2_tag_header_size + 1];
+    const size_t n
+        = fread(buffer, sizeof(char), ID3v2_tag_header_size, file_ptr);
+    buffer[ID3v2_tag_header_size] = '\0';
 
-    char buffer[ID3v2_tag_header_size];
-    const size_t n = fread(buffer, ID3v2_tag_header_size, 1, file_ptr);
-
-    if ((n == 0) || !is_ID3v2_header_buffer(buffer))
+    if ((n < ID3v2_tag_header_size) || !is_ID3v2_header_buffer(buffer))
     {
         return NULL;
     }
 
+    printf("Buffer:");
+    size_t i = 0;
+    for (; i < ID3V2_FILE_IDENTIFER_SIZE; ++i)
+    {
+        printf(" %c", buffer[i]);
+    }
+    for (; i < ID3v2_tag_header_size; ++i)
+    {
+        printf(" %d", buffer[i]);
+    }
+    printf("\n");
+
     return ID3v2_tag_header_parse_buffer(buffer);
+#endif
 }
 
 struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
 {
     int position = ID3V2_FILE_IDENTIFER_SIZE;
-    const char major_version = buffer[position];
+    const char major_version = buffer[position++];
 
     if (major_version != 4)
     {
         return NULL;
     }
-    const char revision_number = buffer[++position];
-    const char flags = buffer[++position];
+    const char revision_number = buffer[position++];
+    const char flags = buffer[position++];
 
     printf("Major = %d; ", major_version);
     printf("revision = %d\n", revision_number);
@@ -223,12 +239,22 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
     printf("\n");
 
     char tag_size_str[ID3v2_tag_size_size + 1];
-    strncpy(tag_size_str, &buffer[++position], 4);
-    tag_size_str[4] = '\0';
-    const size_t tag_size = syncsafe_decode(bytes_to_size_t(tag_size_str, 4));
+#if 0
+    for (size_t i = 0; i < ID3v2_tag_size_size; ++i)
+    {
+        tag_size_str[i] = buffer[position++];
+    }
+#else
+    strncpy(tag_size_str, buffer + position, ID3v2_tag_size_size);
+    ++position;
+    //strncpy(tag_size_str, &buffer[position++], ID3v2_tag_size_size);
+#endif
+    tag_size_str[ID3v2_tag_size_size] = '\0';
+    const size_t tag_size
+        = syncsafe_decode(bytes_to_size_t(tag_size_str, ID3v2_tag_size_size));
 
     printf("Size:");
-    for (size_t j = 0; j < 4; ++j)
+    for (size_t j = 0; j < ID3v2_tag_size_size; ++j)
     {
         const size_t temp_int = (size_t)tag_size_str[j];
         for (size_t i = 0; i < 8; ++i)
@@ -236,8 +262,7 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
             printf(" %zu", ((temp_int >> i) & 1));
         }
     }
-    printf("\n");
-    printf("Size = %zu\n", tag_size);
+    printf("\nSize = %zu\n", tag_size);
 
     // Bit 6 signs if the extended header is present.
     if ((flags >> 6) & 1)
@@ -247,8 +272,8 @@ struct ID3v2_tag_header* ID3v2_tag_header_parse_buffer(const char* const buffer)
             ID3v2_extended_tag_size);
         extended_tag[ID3v2_extended_tag_size] = '\0';
 
-        const size_t extended_header_size
-            = syncsafe_decode(bytes_to_size_t(extended_tag, 4));
+        const size_t extended_header_size = syncsafe_decode(
+            bytes_to_size_t(extended_tag, ID3v2_extended_tag_size));
 
         return ID3v2_tag_header_new(major_version, revision_number, flags,
             tag_size, extended_header_size);

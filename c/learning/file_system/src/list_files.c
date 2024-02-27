@@ -187,11 +187,7 @@ void list_mp3(const char* const path)
             }
             strcat(full_path, dir->d_name);
 
-#if 0
-            show_mp3_tags_wide(full_path);
-#else
             show_mp3_tags(full_path);
-#endif
         }
     }
 }

@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.mc": "c",
+        ".h": "c",
+        "*.h": "cpp",
+        "chrono": "c"
+    }
+}

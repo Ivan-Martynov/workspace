@@ -1,5 +1,6 @@
 #include "ID3v2_text_frame_reader.h"
 #include "syncsafe_int_converter.h"
+#include "mrvn_string_helper.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -18,8 +19,9 @@ struct ID3v2_text_frame* ID3v2_text_frame_init(
     {
         text_frame_ptr->encoding = encoding;
 
-        text_frame_ptr->text = malloc(strlen(text) * sizeof(*text));
-        strcpy(text_frame_ptr->text, text);
+        mrvn_allocate_and_copy_char(&text_frame_ptr->text, text);
+        //text_frame_ptr->text = malloc(strlen(text) * sizeof(*text));
+        //strcpy(text_frame_ptr->text, text);
     }
 
     return text_frame_ptr;
