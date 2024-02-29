@@ -4,4 +4,7 @@
 void mrvn_allocate_and_copy_char(
     char** restrict const, const char* restrict const);
 
+void mrvn_reallocate_if_needed_and_copy_char(
+    char** restrict const, const char* restrict const);
+
 #endif //_H_MRVN_STRING_HELPER_H_

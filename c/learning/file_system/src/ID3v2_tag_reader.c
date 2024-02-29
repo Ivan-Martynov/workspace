@@ -143,12 +143,14 @@ void show_mp3_tags(const char* const file_path)
             = ID3v2_frame_header_get_frame_size(frame_header_ptr);
         if (ID3v2_frame_header_is_text_frame(frame_header_ptr))
         {
+            #if 0
             if (strcmp(ID3v2_frame_header_get_id(frame_header_ptr),
                     ID3v2_title_frame)
                 == 0)
             {
                 printf("Found title\n");
             }
+            #endif
             struct ID3v2_text_frame* text_frame_ptr
                 = ID3v2_text_frame_from_file_stream(file_ptr, frame_size);
             ID3v2_text_frame_print(text_frame_ptr);

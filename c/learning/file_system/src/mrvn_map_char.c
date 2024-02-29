@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-static const size_t mrvn_map_default_capacity_step = 8;
+static const size_t mrvn_map_default_capacity_step = 4;
 
 struct mrvn_pair_char
 {
@@ -16,7 +16,7 @@ struct mrvn_pair_char
 
 struct mrvn_map_char
 {
-    struct mrvn_pair_char* pairs;
+    struct mrvn_pair_char** pairs;
     size_t size;
     size_t capacity;
 };
@@ -37,8 +37,20 @@ struct mrvn_pair_char* mrvn_map_char_pair_init(
 struct mrvn_pair_char* mrvn_map_char_pair_new(
     const char key[static 1], const char value[static 1])
 {
-    return mrvn_map_char_pair_init(
-        malloc(sizeof(struct mrvn_pair_char)), key, value);
+    struct mrvn_pair_char* pair_ptr = malloc(sizeof(struct mrvn_pair_char));
+    if (pair_ptr)
+    {
+        pair_ptr->key = NULL;
+        pair_ptr->value = NULL;
+    }
+
+    return mrvn_map_char_pair_init(pair_ptr, key, value);
+}
+
+struct mrvn_pair_char* mrvn_map_char_pair_new_copy(
+    const struct mrvn_pair_char* const pair_ptr)
+{
+    return mrvn_map_char_pair_new(pair_ptr->key, pair_ptr->value);
 }
 
 void mrvn_map_char_pair_delete(struct mrvn_pair_char* pair_ptr)
@@ -51,13 +63,19 @@ void mrvn_map_char_pair_delete(struct mrvn_pair_char* pair_ptr)
     }
 }
 
-struct mrvn_pair_char mrvn_map_char_pair_make(
-    const char key[static 1], const char value[static 1])
+static void mrvn_pair_char_replace_key_and_value(
+    struct mrvn_pair_char* target_ptr, const char* const key,
+    const char* const value)
 {
-    struct mrvn_pair_char pair = {0};
-    mrvn_map_char_pair_init(&pair, key, value);
+    mrvn_reallocate_if_needed_and_copy_char(&target_ptr->key, key);
+    mrvn_reallocate_if_needed_and_copy_char(&target_ptr->value, value);
+}
 
-    return pair;
+static void mrvn_pair_char_replace(
+    struct mrvn_pair_char* target_ptr, struct mrvn_pair_char* source_ptr)
+{
+    mrvn_pair_char_replace_key_and_value(
+        target_ptr, source_ptr->key, source_ptr->value);
 }
 
 struct mrvn_map_char* mrvn_map_char_init(
@@ -90,8 +108,7 @@ void mrvn_map_char_delete(struct mrvn_map_char* map_ptr)
     {
         for (size_t i = 0; i < map_ptr->size; ++i)
         {
-            free(map_ptr->pairs[i].key);
-            free(map_ptr->pairs[i].value);
+            mrvn_map_char_pair_delete(map_ptr->pairs[i]);
         }
 
         free(map_ptr->pairs);
@@ -131,7 +148,7 @@ bool mrvn_map_char_resize_default(struct mrvn_map_char* const map_ptr)
         map_ptr, (size > map_ptr->size) ? size : map_ptr->size + 1);
 }
 
-const struct mrvn_pair_char* mrvn_map_char_get_pairs_ptr(
+struct mrvn_pair_char** mrvn_map_char_get_pairs_ptr(
     const struct mrvn_map_char* const map_ptr)
 {
     return map_ptr->pairs;
@@ -140,7 +157,7 @@ const struct mrvn_pair_char* mrvn_map_char_get_pairs_ptr(
 const struct mrvn_pair_char* mrvn_map_char_get_at(
     const struct mrvn_map_char* const map_ptr, const size_t i)
 {
-    return (i < map_ptr->size) ? &map_ptr->pairs[i] : NULL;
+    return (i < map_ptr->size) ? map_ptr->pairs[i] : NULL;
 }
 
 const char* mrvn_map_char_get_key_at(
@@ -159,22 +176,9 @@ const char* mrvn_map_char_get_value_at(
     return pair_ptr ? pair_ptr->value : NULL;
 }
 
-const char* mrvn_map_char_get_value(
-    const struct mrvn_map_char* const map_ptr, const char* const key)
-{
-    for (size_t i = 0; i < map_ptr->size; ++i)
-    {
-        if (strcmp(map_ptr->pairs[i].key, key) == 0)
-        {
-            return map_ptr->pairs[i].value;
-        }
-    }
-
-    return NULL;
-}
-
 static long long get_index_to_insert_at(
-    struct mrvn_map_char* const map_ptr, const char key[static 1])
+    const struct mrvn_map_char* const map_ptr, const char key[static 1],
+    bool* key_present)
 {
     long long left = 0;
     long long right = map_ptr->size - 1;
@@ -196,40 +200,67 @@ static long long get_index_to_insert_at(
         }
         else
         {
-            return -1;
+            *key_present = true;
+            return middle;
         }
     }
 
+    *key_present = false;
     return left;
 }
 
-bool mrvn_map_char_insert(struct mrvn_map_char* const map_ptr,
+const char* mrvn_map_char_get_value(
+    const struct mrvn_map_char* const map_ptr, const char* const key)
+{
+    bool key_present;
+    const long long index = get_index_to_insert_at(map_ptr, key, &key_present);
+
+    return key_present ? map_ptr->pairs[index]->value : NULL;
+}
+
+struct mrvn_pair_char* mrvn_map_char_insert(struct mrvn_map_char* const map_ptr,
     const char key[static 1], const char value[static 1])
 {
     if ((map_ptr->size >= map_ptr->capacity)
         && !mrvn_map_char_resize_default(map_ptr))
     {
-        return false;
+        return NULL;
     }
 
-    const long long index = get_index_to_insert_at(map_ptr, key);
-    if (index == -1)
+    if (map_ptr->size == 0)
     {
-        return false;
+        map_ptr->pairs[map_ptr->size++] = mrvn_map_char_pair_new(key, value);
+        return map_ptr->pairs[0];
     }
 
-    // Copy (shift) elements on the right to place the new pair.
-    for (long long i = map_ptr->size; i > index; --i)
+    bool key_present;
+    const long long index = get_index_to_insert_at(map_ptr, key, &key_present);
+
+    if (key_present)
     {
-        map_ptr->pairs[i] = map_ptr->pairs[i - 1];
+        // Replace value.
+        mrvn_reallocate_if_needed_and_copy_char(
+            &map_ptr->pairs[index]->value, value);
     }
-    mrvn_map_char_pair_init(&(map_ptr->pairs[index]), key, value);
-    ++map_ptr->size;
+    else
+    {
+        // Copy (shift) elements on the right to place the new pair.
+        map_ptr->pairs[map_ptr->size]
+            = mrvn_map_char_pair_new_copy(map_ptr->pairs[map_ptr->size - 1]);
 
-    return true;
+        for (long long i = map_ptr->size - 1; i > index; --i)
+        {
+            mrvn_pair_char_replace(map_ptr->pairs[i], map_ptr->pairs[i - 1]);
+        }
+
+        ++map_ptr->size;
+        mrvn_pair_char_replace_key_and_value(map_ptr->pairs[index], key, value);
+    }
+
+    return map_ptr->pairs[index];
 }
 
-void mrvn_map_char_delete_at(
+void mrvn_map_char_remove_at(
     struct mrvn_map_char* const map_ptr, const size_t index)
 {
     if (index >= map_ptr->size)
@@ -237,15 +268,24 @@ void mrvn_map_char_delete_at(
         return;
     }
 
+    --map_ptr->size;
+
+    // Shift elements to the left.
     for (size_t i = index; i < map_ptr->size; ++i)
     {
-        map_ptr->pairs[i] = map_ptr->pairs[i + 1];
+        mrvn_pair_char_replace(map_ptr->pairs[i], map_ptr->pairs[i + 1]);
     }
-
-    mrvn_map_char_pair_delete(&map_ptr->pairs[--map_ptr->size]);
+    mrvn_map_char_pair_delete(map_ptr->pairs[map_ptr->size]);
 }
 
-//void mrvn_map_char_delete(
-//    struct mrvn_map_char* const map_ptr, const char key[static 1])
-//{
-//}
+void mrvn_map_char_remove(
+    struct mrvn_map_char* const map_ptr, const char key[static 1])
+{
+    bool key_present;
+    const long long index = get_index_to_insert_at(map_ptr, key, &key_present);
+
+    if (key_present)
+    {
+        mrvn_map_char_remove_at(map_ptr, index);
+    }
+}
