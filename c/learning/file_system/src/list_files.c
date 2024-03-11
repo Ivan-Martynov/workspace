@@ -183,7 +183,7 @@ static size_t number_width(size_t number)
 //    printf("Number width test %zu => %zu\n", number, number_width(number));
 //}
 
-[[maybe_unused]]
+//[[maybe_unused]]
 static void rename_mp3_by_title(const char* const path)
 {
     struct dirent** name_list;
@@ -236,7 +236,7 @@ static void rename_mp3_by_title(const char* const path)
 
             char format[20];
             sprintf(format, "%%s%%0%zud %%s%%s", width);
-            // printf("Got format %s\n", format);
+            printf("Got format %s\n", format);
 
             const char* ext_pos = strrchr(dir->d_name, '.');
 
@@ -306,7 +306,7 @@ void list_mp3(const char* const path)
             }
             strcat(full_path, dir->d_name);
 
-#if 0
+#if 1
             show_mp3_tags(full_path);
 #else
             const char* title = ID3v2_tag_get_title(full_path);
@@ -393,8 +393,8 @@ void test_directory(const char* const directory_path)
     if (not_rel_path(directory_path))
     {
         // scan_listing(directory_path);
-        rename_mp3_by_title(directory_path);
-        // list_mp3(directory_path);
+        // rename_mp3_by_title(directory_path);
+        list_mp3(directory_path);
     }
     else
     {
@@ -404,6 +404,8 @@ void test_directory(const char* const directory_path)
             = "C:/Users/Ivan/Downloads/books/Папа, мама, "
               "бабушка, восемь детей и грузовик/";
 
+        rename_mp3_by_title(test_directory_path);
+        // list_mp3(directory_path);
         list_mp3(test_directory_path);
     }
 }

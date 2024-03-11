@@ -110,8 +110,8 @@ const char* ID3v2_tag_get_title(const char* const file_path)
 
     struct ID3v2_tag_header* tag_header_ptr
         = ID3v2_tag_header_from_file_stream(file_ptr);
-    const fpos_t tag_size
-        = (fpos_t)ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
+    const long int tag_size
+        = ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
 
     ID3v2_tag_header_delete(tag_header_ptr);
 
@@ -129,7 +129,7 @@ const char* ID3v2_tag_get_title(const char* const file_path)
             break;
         }
 
-        // ID3v2_frame_header_print(frame_header_ptr);
+        ID3v2_frame_header_print(frame_header_ptr);
 
         const size_t frame_size
             = ID3v2_frame_header_get_frame_size(frame_header_ptr);
@@ -194,8 +194,15 @@ void show_mp3_tags(const char* const file_path)
 
     struct ID3v2_tag_header* tag_header_ptr
         = ID3v2_tag_header_from_file_stream(file_ptr);
-    const fpos_t tag_size
-        = (fpos_t)ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
+    if (!tag_header_ptr)
+    {
+        printf("Failed to extract header.\n");
+        fclose(file_ptr);
+        return;
+    }
+
+    const long int tag_size
+        = ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
 
     ID3v2_tag_header_print(tag_header_ptr);
     ID3v2_tag_header_delete(tag_header_ptr);

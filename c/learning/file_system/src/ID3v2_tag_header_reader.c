@@ -157,6 +157,7 @@ struct ID3v2_tag_header* ID3v2_tag_header_from_file_stream(FILE* const file_ptr)
     char id_buffer[ID3V2_FILE_IDENTIFER_SIZE + 1];
     fread(id_buffer, sizeof(char), ID3V2_FILE_IDENTIFER_SIZE, file_ptr);
     id_buffer[ID3V2_FILE_IDENTIFER_SIZE] = '\0';
+    //printf("Got buffer %s\n", id_buffer);
     if (!is_ID3v2_header_buffer(id_buffer))
     {
         return NULL;

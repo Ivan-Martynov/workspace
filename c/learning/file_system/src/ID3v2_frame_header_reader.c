@@ -86,12 +86,13 @@ struct ID3v2_frame_header* ID3v2_frame_header_from_file(
         fprintf(stderr, "Error opening file %s\n", file_path);
         return NULL;
     }
+    fread(NULL, 10, sizeof(char), file_ptr);
 
-    const fpos_t pos = 10;
-    if (fsetpos(file_ptr, &pos) != EXIT_SUCCESS)
-    {
-        return NULL;
-    }
+    //fpos_t pos = 10;
+    //if (fsetpos(file_ptr, &pos) != EXIT_SUCCESS)
+    //{
+    //    return NULL;
+    //}
 
     return ID3v2_frame_header_from_file_stream(file_ptr);
 
