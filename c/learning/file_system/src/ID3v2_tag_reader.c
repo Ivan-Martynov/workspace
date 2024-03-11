@@ -8,6 +8,7 @@
 #include "ID3v2_text_frame_ids.h"
 #include "syncsafe_int_converter.h"
 
+
 // static const char* const file_identifer = "ID3";
 
 #define ID3v2_header_size 10
@@ -89,6 +90,83 @@ void test_unsyncsafe(const size_t value)
         syncsafe_decode(encoded_value));
 }
 
+const char* ID3v2_tag_get_title(const char* const file_path)
+{
+    setlocale(LC_ALL, "");
+
+    const char* dot_place = strrchr(file_path, '.');
+    if (!dot_place || strcmp(++dot_place, "mp3") != 0)
+    {
+        // fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
+        return NULL;
+    }
+
+    FILE* file_ptr = fopen(file_path, "rb");
+    if (!file_ptr)
+    {
+        fprintf(stderr, "Error opening file %s\n", file_path);
+        return NULL;
+    }
+
+    struct ID3v2_tag_header* tag_header_ptr
+        = ID3v2_tag_header_from_file_stream(file_ptr);
+    const fpos_t tag_size
+        = (fpos_t)ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
+
+    ID3v2_tag_header_delete(tag_header_ptr);
+
+    const char* result = NULL;
+
+    while (ftell(file_ptr) < tag_size)
+    {
+        bool found_title = false;
+
+        struct ID3v2_frame_header* frame_header_ptr
+            = ID3v2_frame_header_from_file_stream(file_ptr);
+
+        if (!frame_header_ptr)
+        {
+            break;
+        }
+
+        // ID3v2_frame_header_print(frame_header_ptr);
+
+        const size_t frame_size
+            = ID3v2_frame_header_get_frame_size(frame_header_ptr);
+        if (ID3v2_frame_header_is_text_frame(frame_header_ptr))
+        {
+            struct ID3v2_text_frame* text_frame_ptr
+                = ID3v2_text_frame_from_file_stream(file_ptr, frame_size);
+
+            if (strcmp(ID3v2_frame_header_get_id(frame_header_ptr),
+                    ID3v2_title_frame)
+                == 0)
+            {
+                result = ID3v2_text_frame_get_text(text_frame_ptr);
+                found_title = true;
+            }
+
+            ID3v2_text_frame_delete(text_frame_ptr);
+        }
+        else
+        {
+            char buffer[frame_size];
+            fread(buffer, sizeof(char), frame_size, file_ptr);
+        }
+
+        ID3v2_frame_header_delete(frame_header_ptr);
+
+        if (found_title)
+        {
+            break;
+        }
+    }
+
+    fclose(file_ptr);
+
+    return result;
+}
+
 void show_mp3_tags(const char* const file_path)
 {
     setlocale(LC_ALL, "");
@@ -99,7 +177,6 @@ void show_mp3_tags(const char* const file_path)
     // test_unsyncsafe(0XFFFF);
 
     const char* dot_place = strrchr(file_path, '.');
-
     if (!dot_place || strcmp(++dot_place, "mp3") != 0)
     {
         // fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
@@ -143,14 +220,14 @@ void show_mp3_tags(const char* const file_path)
             = ID3v2_frame_header_get_frame_size(frame_header_ptr);
         if (ID3v2_frame_header_is_text_frame(frame_header_ptr))
         {
-            #if 0
+#if 0
             if (strcmp(ID3v2_frame_header_get_id(frame_header_ptr),
                     ID3v2_title_frame)
                 == 0)
             {
                 printf("Found title\n");
             }
-            #endif
+#endif
             struct ID3v2_text_frame* text_frame_ptr
                 = ID3v2_text_frame_from_file_stream(file_ptr, frame_size);
             ID3v2_text_frame_print(text_frame_ptr);

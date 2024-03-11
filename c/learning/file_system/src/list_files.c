@@ -166,6 +166,125 @@ static int dir_selector(const struct dirent* dir)
     //return (strcmp(dir->d_name, ".") != 0) && (strcmp(dir->d_name, "..") != 0);
 }
 
+static size_t number_width(size_t number)
+{
+    size_t width = 0;
+    do
+    {
+        number /= 10;
+        ++width;
+    } while (number > 0);
+
+    return width;
+}
+
+//static void test_number_width(size_t number)
+//{
+//    printf("Number width test %zu => %zu\n", number, number_width(number));
+//}
+
+[[maybe_unused]]
+static void rename_mp3_by_title(const char* const path)
+{
+    struct dirent** name_list;
+    const int scan_result = scandir(path, &name_list, dir_selector, alphasort);
+
+#if 0
+    struct stat path_stat;
+    stat(path, &path_stat);
+
+    if (S_ISDIR(path_stat.st_mode))
+    {
+        printf("Path %s is directory.\n", path);
+    }
+    else if (S_ISREG(path_stat.st_mode))
+    {
+        printf("Path %s is regular file.\n", path);
+    }
+#endif
+
+    if (scan_result >= 0)
+    {
+        const size_t width = number_width(scan_result);
+        printf("Got %d items in %s\n", scan_result, path);
+
+        for (int i = 0; i < scan_result; ++i)
+        {
+            struct dirent* dir = name_list[i];
+            char full_path[4096] = "\0";
+            strcpy(full_path, path);
+
+            if (path[strlen(path) - 1] != '/')
+            {
+                strcat(full_path, "/");
+            }
+
+            char dir_path[4096] = "\0";
+            char target_name[4096] = "\0";
+            strcpy(dir_path, full_path);
+            strcpy(target_name, full_path);
+
+            strcat(full_path, dir->d_name);
+
+            if (dir->d_type == DT_DIR)
+            {
+                rename_mp3_by_title(full_path);
+                continue;
+            }
+
+            const char* title = ID3v2_tag_get_title(full_path);
+
+            char format[20];
+            sprintf(format, "%%s%%0%zud %%s%%s", width);
+            // printf("Got format %s\n", format);
+
+            const char* ext_pos = strrchr(dir->d_name, '.');
+
+            char fmt[20];
+            sprintf(fmt, "%%0%zud ", width);
+
+            char prepend_number[20];
+            sprintf(prepend_number, fmt, (i + 1));
+
+            strcat(target_name, prepend_number);
+            strcat(target_name, title);
+            strcat(target_name, ext_pos);
+
+#if 1
+            printf("%s => %s\n", full_path, target_name);
+#else
+            if (rename(full_path, target_name) != -1)
+            {
+                printf("Renaming %s => %s\n", full_path, target_name);
+            }
+#endif
+#if 0
+            // Length of the title + the terminating characgter + prepending
+            // number and one space + extension.
+            char* modified_name = malloc((strlen(dir_path) + strlen(title) + 1
+                                             + width + 1 + strlen(ext_pos))
+                                         * sizeof(char));
+            sprintf(modified_name, format, dir_path, (i + 1), title, ext_pos);
+
+#if 1
+            printf("%s => %s%s\n", full_path, dir_path, modified_name);
+#else
+            if (rename(full_path, modified_name) != -1)
+            {
+                printf("Renaming %s => %s\n", full_path, modified_name);
+            }
+#endif
+
+            free(modified_name);
+#endif
+        }
+    }
+    else
+    {
+        printf("Failed to scan directory %s => %d\n", path, scan_result);
+    }
+}
+
 void list_mp3(const char* const path)
 {
     struct dirent** name_list;
@@ -187,7 +306,12 @@ void list_mp3(const char* const path)
             }
             strcat(full_path, dir->d_name);
 
+#if 0
             show_mp3_tags(full_path);
+#else
+            const char* title = ID3v2_tag_get_title(full_path);
+            printf("%s => %s\n", full_path, title);
+#endif
         }
     }
 }
@@ -212,6 +336,7 @@ void scan_listing(const char* const path)
             {
                 strcat(full_path, "/");
             }
+
             strcat(full_path, dir->d_name);
 
             if (dir->d_type == DT_DIR)
@@ -219,10 +344,8 @@ void scan_listing(const char* const path)
                 scan_listing(full_path);
                 continue;
             }
-            else
-            {
-                prepend_zero_to_number(full_path, zero_limit);
-            }
+
+            prepend_zero_to_number(full_path, zero_limit);
         }
     }
 }
@@ -269,8 +392,9 @@ void test_directory(const char* const directory_path)
 {
     if (not_rel_path(directory_path))
     {
-        //scan_listing(directory_path);
-        list_mp3(directory_path);
+        // scan_listing(directory_path);
+        rename_mp3_by_title(directory_path);
+        // list_mp3(directory_path);
     }
     else
     {

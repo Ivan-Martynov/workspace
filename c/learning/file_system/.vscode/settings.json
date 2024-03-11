@@ -3,6 +3,7 @@
         "*.mc": "c",
         ".h": "c",
         "*.h": "cpp",
-        "chrono": "c"
+        "chrono": "c",
+        "filesystem": "c"
     }
 }

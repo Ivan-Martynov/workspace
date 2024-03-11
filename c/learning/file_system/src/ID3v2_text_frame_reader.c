@@ -20,8 +20,6 @@ struct ID3v2_text_frame* ID3v2_text_frame_init(
         text_frame_ptr->encoding = encoding;
 
         mrvn_allocate_and_copy_char(&text_frame_ptr->text, text);
-        //text_frame_ptr->text = malloc(strlen(text) * sizeof(*text));
-        //strcpy(text_frame_ptr->text, text);
     }
 
     return text_frame_ptr;
@@ -45,6 +43,12 @@ void ID3v2_text_frame_delete(struct ID3v2_text_frame* text_frame_ptr)
 
         free(text_frame_ptr);
     }
+}
+
+const char* ID3v2_text_frame_get_text(
+    const struct ID3v2_text_frame* const text_frame_ptr)
+{
+    return text_frame_ptr->text;
 }
 
 void ID3v2_text_frame_print(const struct ID3v2_text_frame* const text_frame_ptr)

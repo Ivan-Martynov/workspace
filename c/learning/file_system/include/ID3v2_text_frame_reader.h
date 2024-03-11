@@ -16,6 +16,8 @@ void ID3v2_text_frame_print(const struct ID3v2_text_frame* const);
 
 void ID3v2_text_frame_delete(struct ID3v2_text_frame*);
 
+const char* ID3v2_text_frame_get_text(const struct ID3v2_text_frame* const);
+
 struct ID3v2_text_frame* ID3v2_text_frame_from_file_stream(
     FILE* const, const size_t);
 
