@@ -157,7 +157,7 @@ static void prepend_zero_to_number(
 
 static bool not_rel_path(const char* const path)
 {
-    return strcmp(path, ".") && strcmp(path, "..");
+    return (strcmp(path, ".") != 0) && (strcmp(path, "..") != 0);
 }
 
 static int dir_selector(const struct dirent* dir)
@@ -176,6 +176,70 @@ static size_t number_width(size_t number)
     } while (number > 0);
 
     return width;
+}
+
+static void print_size(const long int size)
+{
+    const long int kb_threshold = 1024;
+    const long int mb_threshold = kb_threshold << 10;
+    const long int gb_threshold = mb_threshold << 10;
+    const long int tb_threshold = gb_threshold << 10;
+
+    if (size > tb_threshold)
+    {
+        printf("%.2f TB\n", (double)size / tb_threshold);
+    }
+    else if (size > gb_threshold)
+    {
+        printf("%.2f GB\n", (double)size / gb_threshold);
+    }
+    else if (size > mb_threshold)
+    {
+        printf("%.2f MB\n", (double)size / mb_threshold);
+    }
+    else if (size > kb_threshold)
+    {
+        printf("%.2f KB\n", (double)size / kb_threshold);
+    }
+    else
+    {
+        printf("%ld B\n", size);
+    }
+}
+
+static void print_path_stat(const char* const path)
+{
+    struct stat path_stat;
+    stat(path, &path_stat);
+
+    printf("Path %s:\n", path);
+
+    if (S_ISDIR(path_stat.st_mode))
+    {
+        printf("\tIs a directory\n");
+    }
+    else if (S_ISREG(path_stat.st_mode))
+    {
+        printf("\tIs a regular file\n");
+    }
+
+    printf("\tSerial number: %lu\n", path_stat.st_ino);
+    printf("\tUser id of the file's owner: %u\n", path_stat.st_uid);
+    printf("\tGroup id: %u\n", path_stat.st_gid);
+
+    printf("\tSize: ");
+    print_size(path_stat.st_size);
+    printf("\tAmout of disk space: %ld\n", path_stat.st_blocks);
+    printf("\tOptimal block size: ");
+    print_size(path_stat.st_blksize);
+
+    char time_buf[256];
+    strftime(time_buf, 256, "%c", gmtime(&path_stat.st_atime));
+    printf("\tAccess time: %s\n", time_buf);
+    strftime(time_buf, 256, "%c", gmtime(&path_stat.st_mtime));
+    printf("\tModification time: %s\n", time_buf);
+    strftime(time_buf, 256, "%c", gmtime(&path_stat.st_ctime));
+    printf("\tAttribute modification time: %s\n", time_buf);
 }
 
 //static void test_number_width(size_t number)
@@ -231,6 +295,8 @@ static void rename_mp3_by_title(const char* const path)
                 rename_mp3_by_title(full_path);
                 continue;
             }
+
+            print_path_stat(full_path);
 
             const char* title = ID3v2_tag_get_title(full_path);
 
@@ -305,6 +371,15 @@ void list_mp3(const char* const path)
                 strcat(full_path, "/");
             }
             strcat(full_path, dir->d_name);
+
+            if (dir->d_type == DT_DIR)
+            {
+                print_path_stat(full_path);
+                list_mp3(full_path);
+                continue;
+            }
+
+            print_path_stat(full_path);
 
 #if 1
             show_mp3_tags(full_path);
