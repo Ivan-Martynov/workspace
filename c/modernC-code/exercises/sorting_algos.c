@@ -160,17 +160,37 @@ void bubble_sort_general(void* ptr, size_t count, const size_t size,
 static void merge_d(double arr[static 1], const size_t left,
     const size_t middle, const size_t right)
 {
+#define USE_MALLOC 0
+
     const size_t first_n = middle - left + 1;
+#if USE_MALLOC
+    double* first_subarray = malloc(first_n * sizeof(*first_subarray));
+    if (!first_subarray)
+    {
+        return;
+    }
+#else
     double first_subarray[first_n];
+#endif
+
+    const size_t second_n = right - middle;
+#if USE_MALLOC
+    double* second_subarray = malloc(second_n * sizeof(*second_subarray));
+    if (!second_subarray)
+    {
+        return;
+    }
+#else
+    double second_subarray[second_n];
+#endif
+
     for (size_t i = 0; i < first_n; ++i)
     {
         first_subarray[i] = arr[left + i];
     }
 
-    const size_t second_n = right - middle;
-    double second_subarray[second_n];
     for (size_t j = 0; j < second_n; ++j)
-    
+    {
         second_subarray[j] = arr[middle + 1 + j];
     }
 
@@ -201,10 +221,19 @@ static void merge_d(double arr[static 1], const size_t left,
         arr[k++] = first_subarray[i++];
     }
 
+#if USE_MALLOC
+    free(first_subarray);
+#endif
+
     while (j < second_n)
     {
         arr[k++] = second_subarray[j++];
     }
+
+#if USE_MALLOC
+    free(second_subarray);
+#endif
+
 }
 
 static void merge_sort_d_impl(

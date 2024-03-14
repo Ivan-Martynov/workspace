@@ -7,7 +7,8 @@
 struct ID3v2_text_frame;
 
 struct ID3v2_text_frame* ID3v2_text_frame_init(
-    struct ID3v2_text_frame* const, const size_t, const char[static 1]);
+    struct ID3v2_text_frame* const restrict, const size_t,
+    const char[restrict static 1]);
 
 struct ID3v2_text_frame* ID3v2_text_frame_new(
     const size_t, const char[static 1]);

@@ -15,17 +15,22 @@
 #if 0
 static int fseekmax(FILE* stream, intmax_t offset, int origin)
 {
-    while (offset >= LONG_MAX)
+    int result = fseek(stream, offset % LONG_MAX, origin);
+    if (result != 0)
     {
-        const int result = fseek(stream, offset % LONG_MAX, origin);
+        return result;
+    }
+
+    for (intmax_t i = 0; i < offset / LONG_MAX; ++i)
+    {
+        result = fseek(stream, LONG_MAX, SEEK_CUR);
         if (result != 0)
         {
             return result;
         }
-        offset /= LONG_MAX;
     }
 
-    return 0;
+    return result;
 }
 #endif
 
@@ -509,7 +514,12 @@ int main(const int argc, const char* argv[static argc])
 
     size_t a = 38;
     size_t b = 10;
-    printf("%zu %zu\n", a / b, a % b);
+    printf("%zu = ", a);
+    for (size_t i = 0; i < a / b; ++i)
+    {
+        printf("%zu + ", b);
+    }
+    printf("%zu\n", a % b);
 
 #if 1
     const char* const directory_path = (argc > 1) ? argv[1] : ".";

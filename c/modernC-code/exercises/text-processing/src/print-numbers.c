@@ -1,6 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+#include <errno.h>
+
+#ifndef EFAULT
+#define EFAULT EDOM
+#endif
+
+#ifndef EOVERFLOW
+#define EOVERFLOW (EFAULT - EOF)
+#if EOVERFLOW > INT_MAX
+#error EOVERFLOW constant is too large
+#endif
+#endif
+
+#ifndef ENOMEM
+#define ENOMEM (EOVERFLOW + EFAULT - EOF)
+#if ENOMEM > INT_MAX
+#error ENOMEM constant is too large
+#endif
+#endif
+
+static inline int error_cleanup(int err, int prev)
+{
+    errno = prev;
+    return -err;
+}
 
 /**
  * @brief Print a series of numbers @numbers in @buffer, using printf format
@@ -47,6 +73,149 @@ static int sprintnumbers(size_t total, char buffer[restrict total],
     memcpy(p, "\n", 2);
 
     return (p - buffer) + 1;
+}
+
+int fprintnumbers_opt(FILE* restrict stream, const char form[restrict static 1],
+    const char sep[restrict static 1], size_t len, size_t numbers[restrict len])
+{
+    if (!stream || (len && !numbers))
+    {
+        return -EFAULT;
+    }
+    else if (len > INT_MAX)
+    {
+        return -EOVERFLOW;
+    }
+
+    int err = errno;
+    const size_t seplen = strlen(sep);
+
+    size_t total = 0;
+    size_t mtot = len * (seplen + 10);
+
+    char* buffer = malloc(mtot);
+    if (!buffer)
+    {
+        return error_cleanup(ENOMEM, err);
+    }
+
+    // Count the chars for the numbers.
+    for (size_t i = 0; i < len; ++i)
+    {
+        total += snprintf(&buffer[total], 0, form, numbers[i]);
+        if (++i >= len)
+        {
+            break;
+        }
+
+        if (total > mtot - 20)
+        {
+            mtot <<= 1;
+
+            char* rep_buf = realloc(buffer, mtot);
+
+            if (rep_buf)
+            {
+                buffer = rep_buf;
+            }
+            else
+            {
+                total = error_cleanup(ENOMEM, err);
+                goto CLEANUP_LABEL;
+            }
+        }
+
+        memcpy(&buffer[total], sep, seplen);
+        total += seplen;
+
+        if (total > INT_MAX)
+        {
+            total = error_cleanup(EOVERFLOW, err);
+            goto CLEANUP_LABEL;
+        }
+    }
+
+    buffer[total] = '\0';
+
+    // Print the entire line in one go.
+    if (fputs(buffer, stream) == EOF)
+    {
+        total = EOF;
+    }
+
+CLEANUP_LABEL:
+    free(buffer);
+
+    return total;
+}
+
+/**
+ * @brief Print a series of numbers @numbers on @stream, using printf format
+ * @form separated by @sep characters and terminated with a newline character.
+ *
+ * @param stream
+ * @param format
+ * @param sep
+ * @param len
+ * @param numbers
+ *
+ * @return int Number of characters printed to @stream, or a negative error
+ * value on error. If @len is 0 an empty line is printed and 1 is returned.
+ * Possible error returns are:
+ *      - EOF (which is negative) if @stream was not ready to be written to.
+ *      - EOVERFLOW if more than INT_MAX characters would have to be written,
+ *        including the case than @len is greater than INT_MAX.
+ *      - EFAULT if @stream or @numbers are 0.
+ *      - ENOMEM if a memory error occured.
+ * This function leaves errno to the same value as occurred on entry.
+ *
+ * @version 0.1
+ *
+ * @date 2024-03-14
+ */
+int fprintnumbers(FILE* restrict stream, const char form[restrict static 1],
+    const char sep[restrict static 1], size_t len, size_t numbers[restrict len])
+{
+    if (!stream || (len && !numbers))
+    {
+        return -EFAULT;
+    }
+    else if (len > INT_MAX)
+    {
+        return -EOVERFLOW;
+    }
+
+    size_t total = (len > 0 ? len : 1) * strlen(sep);
+    int err = errno;
+
+    // Count the chars for the numbers.
+    for (size_t i = 0; i < len; ++i)
+    {
+        total += snprintf(NULL, 0, form, numbers[i]);
+    }
+
+    // We return int so we have to constrain the max size.
+    if (total > INT_MAX)
+    {
+        return error_cleanup(EOVERFLOW, err);
+    }
+
+    char* buffer = malloc(total + 1);
+    if (!buffer)
+    {
+        return error_cleanup(ENOMEM, err);
+    }
+
+    sprintnumbers(total, buffer, form, sep, len, numbers);
+    // Print the entire line in one go.
+    if (fputs(buffer, stream) == EOF)
+    {
+        total = EOF;
+    }
+
+    free(buffer);
+
+    return total;
 }
 
 /**
@@ -164,7 +333,12 @@ static int input_to_normalized()
             size_t n;
             size_t* numbers = numberline(strlen(buffer) + 1, buffer, &n, 0);
 
+#if 1
+            const int result
+                = fprintnumbers_opt(stdout, "%#zX", ",\t", n, numbers);
+#else
             const int result = fprintnumbers(stdout, "%#zX", ",\t", n, numbers);
+#endif
 
             if (result < 0)
             {
@@ -193,6 +367,8 @@ static int input_to_normalized()
             break;
         }
     }
+
+    return EXIT_SUCCESS;
 }
 
 int main()

@@ -89,10 +89,14 @@ rat* rat_init(rat* rp, long long num, unsigned long long denom)
     return rp;
 }
 
+#if 0
 rat* rat_new(const long long numerator, unsigned long long denominator)
 {
     return rat_init(malloc(sizeof(rat)), numerator, denominator);
 }
+#else
+rat* rat_new(const long long, unsigned long long);
+#endif
 
 void rat_delete(rat* rp)
 {

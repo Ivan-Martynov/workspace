@@ -19,8 +19,8 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
 OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := $(BIN_DIR)/$(BUILD)/extended-sets.exe
-#	$(BIN_DIR)/$(BUILD)/print-numbers.exe 
+TARGETS := $(BIN_DIR)/$(BUILD)/extended-sets.exe \
+	$(BIN_DIR)/$(BUILD)/print-numbers.exe 
 
 .PHONY : all
 all : $(TARGETS)

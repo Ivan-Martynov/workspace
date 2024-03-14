@@ -12,8 +12,8 @@ struct ID3v2_text_frame
 };
 
 struct ID3v2_text_frame* ID3v2_text_frame_init(
-    struct ID3v2_text_frame* const text_frame_ptr, const size_t encoding,
-    const char text[static 1])
+    struct ID3v2_text_frame* const restrict text_frame_ptr,
+    const size_t encoding, const char text[restrict static 1])
 {
     if (text_frame_ptr)
     {

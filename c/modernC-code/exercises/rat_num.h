@@ -24,7 +24,11 @@ rat rat_get_sum(rat x, rat y);
 void rat_delete(rat* rp);
 void rat_destroy(rat* rp);
 rat* rat_init(rat* rp, long long num, unsigned long long denom);
-rat* rat_new(const long long numerator, unsigned long long denominator);
+
+inline rat* rat_new(const long long numerator, unsigned long long denominator)
+{
+    return rat_init(malloc(sizeof(rat)), numerator, denominator);
+}
 
 rat* rat_normalize(rat* rp);
 rat* rat_extend(rat* rp, size_t f);
