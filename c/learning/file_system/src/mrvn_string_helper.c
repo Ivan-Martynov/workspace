@@ -2,7 +2,7 @@
 
 #include <malloc.h>
 #include <string.h>
-
+#include <ctype.h>
 
 /**
  * @brief Allocate space for target based on the source's size.
@@ -64,4 +64,67 @@ void mrvn_reallocate_if_needed_and_copy_char(
     {
         memcpy(*target_ptr, source_ptr, byte_size);
     }
+}
+
+/**
+ * @brief Check whether string is a null pointer or empty.
+ * 
+ * @param text String to check.
+ * 
+ * @return true If string is a null pointer or empty.
+ * @return false String is not null and has characters.
+ * 
+ * @version 0.1
+ * 
+ * @date 2024-03-15
+ */
+bool mrvn_null_or_empty(const char* const text)
+{
+    return !text || (strlen(text) == 0);
+}
+
+/**
+ * @brief Check whether string is a null pointer, empty or consists of
+ * whitespace characters.
+ *
+ * @param text String to check.
+ *
+ * @return true If string is a null pointer, empty or consists of whitespace
+ * characters.
+ * @return false String is not null and has non-whitespace characters.
+ *
+ * @version 0.1
+ *
+ * @date 2024-03-15
+ */
+/**
+ * @brief
+ *
+ * @param text
+ *
+ * @return true
+ * @return false
+ *
+ * @version 0.1
+ *
+ * @date 2024-03-15
+ */
+bool mrvn_null_empty_or_spaces(const char* const text)
+{
+    if (!text)
+    {
+        return true;
+    }
+
+    const size_t len = strlen(text);
+
+    for (size_t i = 0; i < len; ++i)
+    {
+        if (!isspace((int)text[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }

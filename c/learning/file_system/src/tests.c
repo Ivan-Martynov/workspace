@@ -1,8 +1,57 @@
 #include "mrvn_map_char.h"
+#include "mrvn_string_helper.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+
+static bool create_file(const char* const file_path, const char* const content)
+{
+    FILE* stream = fopen(file_path, "w");
+    if (stream)
+    {
+        fprintf(stream, "File named with %s.\n", file_path);
+        if (!mrvn_null_or_empty(content))
+        {
+            fprintf(stream, "%s\n", content);
+        }
+
+        fclose(stream);
+
+        return true;
+    }
+    else
+    {
+        printf("Failed to create file %s\n", file_path);
+        return false;
+    }
+}
+
+static void create_filenames_with_end_of_line(void)
+{
+    create_file("\n",
+        "Creating a file with file name as the end of line is likely to "
+        "have a weird symbol instead of the end of line symbol.");
+    create_file("\nFile_name_with_end_of_line_at_the_beginning_of_it",
+        "Creating a file with file name starting with the end of line is "
+        "likely to "
+        "have a weird symbol instead of the end of line symbol.");
+    create_file("File_name_with_end_of_line_at_the_end_of_it\n",
+        "Creating a file with file name ending with the end of line is likely "
+        "to "
+        "have a weird symbol instead of the end of line symbol.");
+    create_file("File_name_with_end_of_line\nin_the_middle_of_it",
+        "Creating a file with file name having the end of line is likely to "
+        "have a weird symbol instead of the end of line symbol.");
+}
+
+void create_dangerous_filenames(void)
+{
+    create_file(
+        "-n", "Might have problems with terminal commands having options.");
+
+    create_filenames_with_end_of_line();
+}
 
 void print_map_char(const struct mrvn_map_char* const map_ptr)
 {
@@ -26,7 +75,7 @@ void print_map_char(const struct mrvn_map_char* const map_ptr)
     }
 }
 
-void test_1()
+void test_1(void)
 {
     const char* keys[] = {"B", "D", "F", "K", "M", "R"};
     const char* values[]
@@ -87,7 +136,7 @@ void test_1()
     mrvn_map_char_delete(map_ptr);
 }
 
-void test_2()
+void test_2(void)
 {
     const struct
     {
@@ -108,11 +157,13 @@ void test_2()
     mrvn_map_char_delete(map_ptr);
 }
 
-int main()
+int main(void)
 {
     printf("Running tests.\n");
     test_1();
     test_2();
+
+    create_dangerous_filenames();
 
     return 0;
 }
