@@ -235,6 +235,43 @@ static inline void trace_values(FILE* stream,
 #define TRACE_VALUES(...)                                                      \
     TRACE_VALUES_0(ALEN(__VA_ARGS__), #__VA_ARGS__, __VA_ARGS__, 0)
 
+#define TRACE_FORMAT(F, X)                                                     \
+    _Generic((X) + 0LL,                                                        \
+        unsigned long long: "" F " %llu\n",                                    \
+        long long: "" F " %lld\n",                                             \
+        float: "" F " %.8f\n",                                                 \
+        double: "" F " %.12f\n",                                               \
+        long double: "" F " %.20Lf\n",                                         \
+        default: "" F " %p\n")
+
+#define TRACE_POINTER(X)                                                       \
+    _Generic((X) + 0LL,                                                        \
+        unsigned long long: 0                                                  \
+        long long: 0                                                           \
+        float: 0                                                               \
+        double: 0                                                              \
+        long double: 0                                                         \
+        default: (X))
+
+#define TRACE_CONVERT(X)                                                       \
+    _Generic((X) + 0LL,                                                        \
+        unsigned long long: (X) + 0LL,                                         \
+        long long: (X) + 0LL,                                                  \
+        float: (X) + 0LL,                                                      \
+        double: (X) + 0LL,                                                     \
+        long double: (X) + 0LL,                                                \
+        default: ((void*) {0} = TRACE_POINTER(X)))
+
+#define TRACE_VALUE_1(F, X)                                                    \
+    do                                                                         \
+    {                                                                          \
+        if (TRACE_ON)                                                          \
+        {                                                                      \
+            fprintf(stderr, TRACE_FORMAT("%s:" STRGY(__LINE__) ": " F, X),     \
+                __func__, TRACE_CONVERT(X));                                   \
+        }                                                                      \
+    } while (false)
+
 static inline double sum_array(const size_t n, const double arr[static n])
 {
     double result = 0.0;
