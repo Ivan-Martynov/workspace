@@ -5,7 +5,7 @@ OBJ = $(wildcard *.o)
 
 TARGETS = UnionFind derivative sorting.exe cycle_three_pointers.exe rat_num.exe\
 		  binary_representation.exe exercise_39.exe test_time.exe \
-		  macros_examples.exe
+		  macros_examples.exe generic_examples.exe
 
 .PHONY: all
 all: $(TARGETS)
@@ -13,6 +13,11 @@ all: $(TARGETS)
 #listing_13_2.exe: listing_13_2.o
 #	$(LINK_CMD) $^ -o $@
 #listing_13_2.o: listing_13_2.c
+
+generic_examples.exe: generic_examples.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+generic_examples.o: generic_examples.c
+	$(CC) -c $(CFLAGS) $< -o $@
 
 macros_examples.exe: macros_examples.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
