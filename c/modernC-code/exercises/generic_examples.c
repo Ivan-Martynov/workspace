@@ -34,7 +34,6 @@ static inline float minf(const float a, const float b)
 
 static inline size_t min_size_t(const size_t a, const size_t b)
 {
-    printf("Calling min_size_t\n");
     return a < b ? a : b;
 }
 
