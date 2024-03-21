@@ -11,6 +11,7 @@
 #include <wchar.h>
 #include <locale.h>
 #include "ID3v2_tag_reader.h"
+#include "mrvn_string_helper.h"
 
 #if 0
 static int fseekmax(FILE* stream, intmax_t offset, int origin)
@@ -33,6 +34,73 @@ static int fseekmax(FILE* stream, intmax_t offset, int origin)
     return result;
 }
 #endif
+
+#if 0
+static bool is_valid_windows_name(const char file_path[restrict static 1])
+{
+
+}
+#endif
+
+static bool has_invalid_characters(const char file_path[restrict static 1],
+    const char invalid_chars[restrict static 1])
+{
+    return strpbrk(file_path, invalid_chars) != NULL;
+}
+
+static void replace_invalid_characters(char file_path[restrict static 1],
+    const char invalid_chars[restrict static 1], const char replacement)
+{
+    if (!file_path || !invalid_chars)
+    {
+        return;
+    }
+
+    char* next_char = strpbrk(file_path, invalid_chars);
+    while (next_char)
+    {
+        *next_char = replacement;
+        next_char = strpbrk(next_char + 1, invalid_chars);
+    }
+}
+
+static void remove_invalid_characters(char file_path[restrict static 1],
+    const char invalid_chars[restrict static 1])
+{
+    if (!file_path || !invalid_chars)
+    {
+        return;
+    }
+
+    size_t file_path_length = strlen(file_path);
+    const char* end = &file_path[file_path_length];
+
+    char* next_char = strpbrk(file_path, invalid_chars);
+    while (next_char)
+    {
+        memmove(next_char, next_char + 1, (end - next_char) * sizeof(*end));
+        next_char = strpbrk(next_char, invalid_chars);
+    }
+}
+
+static void replace_default_invalid_characters(
+    char file_path[restrict static 1], const char replacement)
+{
+    const char invalid_characters[] = "\"#@;:<>*^|?\\/";
+    replace_invalid_characters(file_path, invalid_characters, replacement);
+}
+
+static void remove_default_invalid_characters(char file_path[restrict static 1])
+{
+    const char invalid_characters[] = "\"#@;:<>*^|?\\/";
+    remove_invalid_characters(file_path, invalid_characters);
+}
+
+static bool is_valid_string_for_filename(const char file_path[static 1])
+{
+    const char invalid_characters[] = "\"#@;:\n<>*^|?\\/";
+    return !has_invalid_characters(file_path, invalid_characters);
+}
 
 const char* type_to_string(const unsigned char type)
 {
@@ -269,6 +337,48 @@ static void print_path_stat(const char* const path)
 //    printf("Number width test %zu => %zu\n", number, number_width(number));
 //}
 
+static void check_file_names(const char* const path)
+{
+    struct dirent** name_list;
+    const int scan_result = scandir(path, &name_list, dir_selector, alphasort);
+    if (scan_result >= 0)
+    {
+        printf("Got %d items in %s\n", scan_result, path);
+        for (int i = 0; i < scan_result; ++i)
+        {
+            struct dirent* dir = name_list[i];
+
+            char full_path[4096] = "\0";
+            strcpy(full_path, path);
+
+            if ((path[strlen(path) - 1] != '/')
+                && (path[strlen(path) - 1] != '\\'))
+            {
+                strcat(full_path, "/");
+            }
+
+            strcat(full_path, dir->d_name);
+
+            if (dir->d_type == DT_DIR)
+            {
+                check_file_names(full_path);
+                continue;
+            }
+
+            if (is_valid_string_for_filename(dir->d_name))
+            {
+                //printf("%s => valid name %s\n", full_path, target_name);
+            }
+            else
+            {
+                replace_default_invalid_characters(dir->d_name, '_');
+                remove_default_invalid_characters(dir->d_name);
+                printf("Invalid name: %s\n", dir->d_name);
+            }
+        }
+    }
+}
+
 //[[maybe_unused]]
 static void rename_mp3_by_title(const char* const path)
 {
@@ -318,13 +428,20 @@ static void rename_mp3_by_title(const char* const path)
                 continue;
             }
 
-            print_path_stat(full_path);
+            // print_path_stat(full_path);
 
-            const char* title = ID3v2_tag_get_title(full_path);
+            const char* mp3_title = ID3v2_tag_get_title(full_path);
+            if (!mp3_title)
+            {
+                continue;
+            }
+
+            char title[256] = "\0";
+            strcpy(title, mp3_title);
 
             char format[20];
             sprintf(format, "%%s%%0%zud %%s%%s", width);
-            printf("Got format %s\n", format);
+            //printf("Got format %s\n", format);
 
             const char* ext_pos = strrchr(dir->d_name, '.');
 
@@ -334,12 +451,20 @@ static void rename_mp3_by_title(const char* const path)
             char prepend_number[20];
             sprintf(prepend_number, fmt, (i + 1));
 
+            if (!is_valid_string_for_filename(title))
+            {
+                remove_default_invalid_characters(title);
+            }
+
+            //mrvn_replace_all_occurrences(title, '_', ' ');
+
             strcat(target_name, prepend_number);
             strcat(target_name, title);
             strcat(target_name, ext_pos);
 
 #if 1
-            printf("%s => %s\n", full_path, target_name);
+            printf("%s => %s\n", title, target_name);
+            // replace_default_invalid_characters(title, '_');
 #else
             if (rename(full_path, target_name) != -1)
             {
@@ -490,8 +615,9 @@ void test_directory(const char* const directory_path)
     if (not_rel_path(directory_path))
     {
         // scan_listing(directory_path);
-        // rename_mp3_by_title(directory_path);
-        list_mp3(directory_path);
+        rename_mp3_by_title(directory_path);
+        //check_file_names(directory_path);
+        //list_mp3(directory_path);
     }
     else
     {
@@ -501,6 +627,7 @@ void test_directory(const char* const directory_path)
             = "C:/Users/Ivan/Downloads/books/Папа, мама, "
               "бабушка, восемь детей и грузовик/";
 
+        check_file_names(directory_path);
         rename_mp3_by_title(test_directory_path);
         // list_mp3(directory_path);
         list_mp3(test_directory_path);
@@ -511,15 +638,6 @@ int main(const int argc, const char* argv[static argc])
 {
     //setlocale(LC_ALL, "en_US.UTF-8");
     setlocale(LC_ALL, "");
-
-    size_t a = 38;
-    size_t b = 10;
-    printf("%zu = ", a);
-    for (size_t i = 0; i < a / b; ++i)
-    {
-        printf("%zu + ", b);
-    }
-    printf("%zu\n", a % b);
 
 #if 1
     const char* const directory_path = (argc > 1) ? argv[1] : ".";

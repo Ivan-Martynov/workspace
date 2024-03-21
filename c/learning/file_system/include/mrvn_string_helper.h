@@ -13,4 +13,6 @@ bool mrvn_null_or_empty(const char* const);
 
 bool mrvn_null_empty_or_spaces(const char* const);
 
+void mrvn_replace_all_occurrences(char[static 1], const char, const char);
+
 #endif //_H_MRVN_STRING_HELPER_H_

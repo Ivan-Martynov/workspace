@@ -84,20 +84,6 @@ bool mrvn_null_or_empty(const char* const text)
 }
 
 /**
- * @brief Check whether string is a null pointer, empty or consists of
- * whitespace characters.
- *
- * @param text String to check.
- *
- * @return true If string is a null pointer, empty or consists of whitespace
- * characters.
- * @return false String is not null and has non-whitespace characters.
- *
- * @version 0.1
- *
- * @date 2024-03-15
- */
-/**
  * @brief
  *
  * @param text
@@ -127,4 +113,22 @@ bool mrvn_null_empty_or_spaces(const char* const text)
     }
 
     return true;
+}
+
+void mrvn_replace_all_occurrences(
+    char text[static 1], const char to_replace, const char replacement)
+{
+    if (!text)
+    {
+        return;
+    }
+
+    size_t i = strlen(text) - 1;
+    do
+    {
+        if (text[i] == to_replace)
+        {
+            text[i] = replacement;
+        }
+    } while (i--);
 }
