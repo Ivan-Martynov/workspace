@@ -15,7 +15,7 @@ all: $(TARGETS)
 #listing_13_2.o: listing_13_2.c
 
 generic_examples.exe: generic_examples.o
-	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS) -lm
 generic_examples.o: generic_examples.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -61,7 +61,7 @@ UnionFind.o: UnionFind.c union_find_table.h
 union_find_table.o: union_find_table.c union_find_table.h
 
 derivative: derivative.o derivative_fun.o
-	$(LINK_CMD) $^ -o $@
+	$(LINK_CMD) $^ -o $@ -lm
 
 derivative.o: derivative.c derivative_fun.h
 
