@@ -12,6 +12,7 @@
 #include <locale.h>
 #include "ID3v2_tag_reader.h"
 #include "mrvn_string_helper.h"
+#include "file_name_validator.h"
 
 #if 0
 static int fseekmax(FILE* stream, intmax_t offset, int origin)

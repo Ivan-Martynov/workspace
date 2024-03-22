@@ -47,6 +47,7 @@ static void create_filenames_with_end_of_line(void)
 
 void create_dangerous_filenames(void)
 {
+    return;
     create_file(
         "-n", "Might have problems with terminal commands having options.");
 
@@ -136,6 +137,57 @@ void test_1(void)
     mrvn_map_char_delete(map_ptr);
 }
 
+static void compare_two_strings(
+    const char first[restrict static 1], const char second[restrict static 1])
+{
+    if (strcmp(first, second) == 0)
+    {
+        printf(
+            "Strings \"%s\" and \"%s\" are strictly equal.\n", first, second);
+    }
+    else
+    {
+        printf("Strings \"%s\" and \"%s\" are not strictly equal.\n", first,
+            second);
+    }
+
+    if (mrvn_equals_case_insensitive(first, second))
+    {
+        printf("Strings \"%s\" and \"%s\" are equal with case ignored.\n",
+            first, second);
+    }
+    else
+    {
+        printf("Strings \"%s\" and \"%s\" are not equal.\n", first, second);
+    }
+}
+
+static void trim_two_strings_and_compare(
+    char first[restrict static 1], char second[restrict static 1])
+{
+    mrvn_trim_string_with(first, " .");
+    mrvn_trim_string_with(second, " .");
+
+    compare_two_strings(first, second);
+}
+
+void test_text_comparison()
+{
+    compare_two_strings("AUX.", "Aux.");
+    compare_two_strings("", "");
+    compare_two_strings("ONE\nL I N E", "one\nl i n e");
+    compare_two_strings("ONELINE    ", "    oneline");
+    char first[] = "  ONELINE . . ";
+    char second[] = " ..    oneline";
+    trim_two_strings_and_compare(first, second);
+    char lhs[] = "   ab   ";
+    char rhs[] = " ..Ab.  ";
+    trim_two_strings_and_compare(lhs, rhs);
+    char one[] = "       ";
+    char two[] = " .. .  ";
+    trim_two_strings_and_compare(one, two);
+}
+
 void test_2(void)
 {
     const struct
@@ -164,6 +216,7 @@ int main(void)
     test_2();
 
     create_dangerous_filenames();
+    test_text_comparison();
 
     return 0;
 }

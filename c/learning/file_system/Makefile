@@ -30,6 +30,7 @@ $(BIN_DIR)/$(BUILD)/list_files.exe: $(OBJ_DIR)/list_files.o \
 	$(OBJ_DIR)/ID3v2_frame_header_reader.o \
 	$(OBJ_DIR)/ID3v2_text_frame_reader.o \
 	$(OBJ_DIR)/mrvn_string_helper.o \
+	$(OBJ_DIR)/file_name_validator.o \
 	$(OBJ_DIR)/syncsafe_int_converter.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
@@ -45,7 +46,8 @@ $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
 #	$(INC_DIR)/ID3v2_tag_header_reader.h
 #	$(CC) -c $(CFLAGS) $< -o $@
 
-$(OBJ_DIR)/list_files.o : $(SRC_DIR)/list_files.c $(INC_DIR)/ID3v2_tag_reader.h
+$(OBJ_DIR)/list_files.o : $(SRC_DIR)/list_files.c $(INC_DIR)/ID3v2_tag_reader.h \
+	$(INC_DIR)/file_name_validator.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/tests.o : $(SRC_DIR)/tests.c $(INC_DIR)/mrvn_map_char.h
@@ -83,6 +85,10 @@ $(OBJ_DIR)/mrvn_map_char.o : $(SRC_DIR)/mrvn_map_char.c \
 
 $(OBJ_DIR)/mrvn_string_helper.o : $(SRC_DIR)/mrvn_string_helper.c \
 	$(INC_DIR)/mrvn_string_helper.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/file_name_validator.o : $(SRC_DIR)/file_name_validator.c \
+	$(INC_DIR)/file_name_validator.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/syncsafe_int_converter.o : $(SRC_DIR)/syncsafe_int_converter.c \

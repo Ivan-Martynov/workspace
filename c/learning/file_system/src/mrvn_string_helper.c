@@ -132,3 +132,97 @@ void mrvn_replace_all_occurrences(
         }
     } while (i--);
 }
+
+int mrvn_compare_case_insensitive(const char text[restrict static 1],
+    const char text_in_uppercase[restrict static 1])
+{
+    const unsigned char* lhs = (const unsigned char*)text;
+    const unsigned char* rhs = (const unsigned char*)text_in_uppercase;
+
+    while ((*lhs != '\0') && (tolower(*lhs) == tolower(*rhs)))
+    {
+        ++lhs;
+        ++rhs;
+    }
+
+    return tolower(*lhs) - tolower(*rhs);
+}
+
+bool mrvn_equals_case_insensitive(
+    const char lhs[restrict static 1], const char rhs[restrict static 1])
+{
+    return mrvn_compare_case_insensitive(lhs, rhs) == 0;
+}
+
+void mrvn_trim_string_from_left_with(char text[restrict static 1],
+    const char characters_to_trim[restrict static 1])
+{
+    char* start = text;
+
+    while (*text && strchr(characters_to_trim, *text))
+    {
+        ++text;
+    }
+
+    const char* current = text;
+    if (start != current)
+    {
+        while (*text)
+        {
+            ++text;
+        }
+
+        memmove(start, current, text - current + sizeof(*text));
+    }
+}
+
+void mrvn_trim_string_from_right_with(char text[restrict static 1],
+    const char characters_to_trim[restrict static 1])
+{
+    size_t i = strlen(text);
+    text += i;
+
+    while (i-- && strchr(characters_to_trim, *--text))
+    {
+        *text = '\0';
+    }
+}
+
+void mrvn_trim_string_with(char text[restrict static 1],
+    const char characters_to_trim[restrict static 1])
+{
+    char* start = text;
+
+    while (*text && strchr(characters_to_trim, *text))
+    {
+        ++text;
+    }
+
+    // If reached the end of the string, the all characters are to be removed.
+    if (!*text)
+    {
+        *start = '\0';
+        return;
+    }
+
+    // Current cannot be null nor a character to trim.
+    const char* current = text;
+
+    // Continue to the end of the string.
+    while (*text)
+    {
+        ++text;
+    }
+
+    // Trim the right side of the string.
+    while (strchr(characters_to_trim, *--text))
+    {
+        *text = '\0';
+    }
+
+    // Move only if to be trimmed from the left.
+    if (start != current)
+    {
+        memmove(start, current, text - current + 2 * sizeof(*text));
+    }
+}
