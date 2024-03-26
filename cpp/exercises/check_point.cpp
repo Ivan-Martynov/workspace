@@ -103,7 +103,7 @@ bool are_collinear(
 
     constexpr double tol = 0.0001;
     const bool collinear
-        = (cross.X() < tol) && (cross.X() < tol) && (cross.X() < tol);
+        = (cross.X() < tol) && (cross.Y() < tol) && (cross.Z() < tol);
 
     std::cout << std::fixed;
     std::cout << "Points " << first.to_str() << ", " << second.to_str()
