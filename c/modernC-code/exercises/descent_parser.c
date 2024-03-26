@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <setjmp.h>
-#include <signal.h>
+#include "sighandler.h"
 
 #define LEFT '{'
 #define RIGHT '}'
@@ -41,6 +41,8 @@ static const char* end_line(const char* s, jmp_buf jump_target)
     return skipspace(s);
 }
 
+static volatile sig_atomic_t interrupt = 0;
+
 static void signal_handler(int sig)
 {
     sh_count(sig);
@@ -63,8 +65,6 @@ static void signal_handler(int sig)
             return;
     }
 }
-
-static volatile sig_atomic_t interrupt = 0;
 
 static const char* descent(const char* act, volatile unsigned dp, size_t len,
     char buffer[static len], jmp_buf jmp_target)
@@ -179,7 +179,7 @@ void basic_blocks(void)
     fflush(stdout);
     fprintf(stderr, format, depth, LEFT, RIGHT);
 
-#if 0
+#if 1
     if (interrupt)
     {
         SH_PRINT(stderr, interrupt, "Is somebody interrupting us?");
@@ -190,5 +190,10 @@ void basic_blocks(void)
 
 int main(void)
 {
+    for (unsigned int i = 1; i < sh_known; ++i)
+    {
+        sh_enable(i, signal_handler);
+    }
+
     return 0;
 }
