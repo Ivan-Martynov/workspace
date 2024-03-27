@@ -11,7 +11,7 @@ static const char head[] = ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>| ";
 
 static const char* skipspace(const char* s)
 {
-    while (s && isspace(*s))
+    while (s && isspace((const unsigned char)*s))
     {
         ++s;
     }
