@@ -18,13 +18,13 @@ enum
 typedef struct life life;
 struct life
 {
-    mtx_t mtx;
-    cnd_t draw;
-    cnd_t acco;
-    cnd_t upda;
+    mtx_t mtx;  // Mutex to protect Mv.
+    cnd_t draw; // cnd to control drawing.
+    cnd_t acco; // cnd to control accounting.
+    cnd_t upda; // cnd to control updating.
 
-    void* restrict Mv;
-    bool (*visited)[life_maxit];
+    void* restrict Mv; // bool M[n0][n1];
+    bool (*visited)[life_maxit]; // Hash constellations.
 
     size_t n0;
     size_t n1;
