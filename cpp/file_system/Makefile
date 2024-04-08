@@ -19,7 +19,7 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := example1.exe
+TARGETS := example1.exe example2.exe
 
 .PHONY : all
 all : $(TARGETS)
@@ -27,9 +27,9 @@ all : $(TARGETS)
 example1.exe: example1.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
-# example2.exe: example2.o
-# 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
-# 
+example2.exe: example2.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+ 
 # example3.exe: example3.o
 # 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 # 
