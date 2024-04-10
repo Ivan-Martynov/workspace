@@ -1,39 +1,7 @@
-#include <codecvt>
 #include <filesystem>
 #include <iostream>
 #include <cstring>
 #include <string>
-
-static void display_file_names_wide(const std::filesystem::path& dir_path,
-    const bool recursive = false, size_t depth = 0)
-{
-    for (size_t i {0}; i < depth; ++i)
-    {
-        std::wcout << L" ";
-    }
-    std::wcout << L"┌" << dir_path << L"\n";
-    ++depth;
-
-    for (const std::filesystem::directory_entry& item :
-        std::filesystem::directory_iterator {dir_path})
-    {
-        if (item.is_directory())
-        {
-            if (recursive)
-            {
-                display_file_names_wide(item.path(), recursive, depth);
-            }
-        }
-        else
-        {
-            for (size_t i {0}; i < depth; ++i)
-            {
-                std::wcout << L" ";
-            }
-            std::wcout << L"├" << item.path() << L"\n";
-        }
-    }
-}
 
 static void display_file_names(const std::filesystem::path& dir_path,
     const bool recursive = false, size_t depth = 0)
@@ -90,12 +58,13 @@ static void test_size_multibyte_string(const std::string& src)
     {
         if (c & 0x80)
         {
-            std::cout << "Multibyte => " << static_cast<int>(c) << " ";
+            std::cout << "Multibyte => ";
         }
         else
         {
-            std::cout << "Byte => " << c << '(' << static_cast<int>(c) << ") ";
+            std::cout << "Byte => ";
         }
+        std::cout << c << '(' << static_cast<int>(c) << ") ";
     }
     std::cout << std::dec << '\n';
 }
