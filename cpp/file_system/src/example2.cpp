@@ -68,76 +68,46 @@ static void display_file_names(const std::filesystem::path& dir_path,
 
 static void process_directory(const std::string& directory_path)
 {
-    auto p {std::filesystem::path {directory_path}};
+    const auto p {std::filesystem::path {directory_path}.make_preferred()};
     if (!std::filesystem::exists(p))
     {
         std::cerr << "Given path " << directory_path << " doesn't exist\n";
     }
     else
     {
-        p.make_preferred();
         display_file_names(p, true);
     }
 }
 
-std::wstring str_to_wstr(const std::string& file_path)
+static void test_size_multibyte_string(const std::string& src)
 {
-    const size_t n {file_path.length()};
-    std::wstring result {};
-    result.reserve(n);
-    for (size_t i {0}; i < n; ++i)
+    const size_t n {src.size()};
+    const size_t len {std::mbstowcs(nullptr, src.c_str(), n)};
+    std::cout << "Size of src: " << src << ": " << n << ", " << len << ", "
+              << src.length() << '\n';
+    std::cout << std::hex << std::uppercase;
+    for (const unsigned char c : src)
     {
-        result.push_back(file_path[i] & 0xFF);
-    }
-    return result;
-}
-
-static void test_wide(const std::string& file_path)
-{
-    for (size_t i {0}; i < file_path.size(); ++i)
-    {
-        if (file_path[i] & 0x80)
+        if (c & 0x80)
         {
-            std::cout << file_path[i] << "\n";
+            std::cout << "Multibyte => " << static_cast<int>(c) << " ";
+        }
+        else
+        {
+            std::cout << "Byte => " << c << '(' << static_cast<int>(c) << ") ";
         }
     }
-
-    //size_t len {file_path.size()};
-    //std::wstring s(len, L' ');
-    //mbstowcs(s.data(), file_path.c_str(), len);
-    mbstate_t state {};
-    memset(&state, 0, sizeof(state));
-
-    const char* src {file_path.c_str()};
-    const size_t len {1 + std::mbsrtowcs(nullptr, &src, 0, &state)};
-    wchar_t* target = static_cast<wchar_t*>(std::malloc(len * sizeof(wchar_t)));
-    std::mbsrtowcs(&target[0], &src, len, &state);
-
-    // std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter {};
-    // s = converter.from_bytes(file_path);
-
-    // std::wstring s {str_to_wstr(file_path)};
-    //std::cout << file_path;
-    //std::wcout << L" => " << target << L"\n";
-    process_directory(file_path);
-
-    std::free(target);
+    std::cout << std::dec << '\n';
 }
 
 int main(const int argc, const char* argv[])
 {
     std::setlocale(LC_ALL, "");
 
-    if (argc > 1)
-    {
-        //process_directory(argv[1]);
-        test_wide(argv[1]);
-    }
-    else
-    {
-        process_directory(".");
-        //test_wide(".");
-    }
+    std::string item_path {argc > 1 ? argv[1] : "."};
+
+    process_directory(item_path);
+    test_size_multibyte_string(item_path);
 
     return 0;
 }
