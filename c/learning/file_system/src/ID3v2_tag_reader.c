@@ -151,7 +151,7 @@ const char* ID3v2_tag_get_title(const char* const file_path)
         else
         {
             char buffer[frame_size];
-            fread(buffer, sizeof(char), frame_size, file_ptr);
+            if (fread(buffer, sizeof(char), frame_size, file_ptr)){}
         }
 
         ID3v2_frame_header_delete(frame_header_ptr);
@@ -243,7 +243,7 @@ void show_mp3_tags(const char* const file_path)
         else
         {
             char buffer[frame_size];
-            fread(buffer, sizeof(char), frame_size, file_ptr);
+            if (fread(buffer, sizeof(char), frame_size, file_ptr)){}
         }
 
         ID3v2_frame_header_delete(frame_header_ptr);

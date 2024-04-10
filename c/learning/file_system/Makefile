@@ -19,7 +19,9 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
 OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := $(BIN_DIR)/$(BUILD)/list_files.exe $(BIN_DIR)/$(BUILD)/tests.exe
+TARGETS := $(BIN_DIR)/$(BUILD)/list_files.exe \
+	$(BIN_DIR)/$(BUILD)/display_files.exe \
+	$(BIN_DIR)/$(BUILD)/tests.exe
 
 .PHONY : all
 all : $(TARGETS)
@@ -34,6 +36,9 @@ $(BIN_DIR)/$(BUILD)/list_files.exe: $(OBJ_DIR)/list_files.o \
 	$(OBJ_DIR)/syncsafe_int_converter.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
+$(BIN_DIR)/$(BUILD)/display_files.exe: $(OBJ_DIR)/display_files.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
 $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
 	$(OBJ_DIR)/mrvn_string_helper.o \
 	$(OBJ_DIR)/mrvn_map_char.o
@@ -45,6 +50,9 @@ $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
 #$(OBJ_DIR)/ID3v2_tag_header_reader.o : $(SRC_DIR)/ID3v2_tag_header_reader.c \
 #	$(INC_DIR)/ID3v2_tag_header_reader.h
 #	$(CC) -c $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/display_files.o: $(SRC_DIR)/display_files.c
+	$(CC) -c $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/list_files.o : $(SRC_DIR)/list_files.c $(INC_DIR)/ID3v2_tag_reader.h \
 	$(INC_DIR)/file_name_validator.h

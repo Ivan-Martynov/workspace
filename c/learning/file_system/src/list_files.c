@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <wchar.h>
 #include <locale.h>
+#include <time.h>
 #include "ID3v2_tag_reader.h"
 #include "mrvn_string_helper.h"
 #include "file_name_validator.h"

@@ -69,7 +69,7 @@ struct ID3v2_text_frame* ID3v2_text_frame_from_file_stream(
     const size_t encoding = syncsafe_decode(bytes_to_size_t(encoding_str, 1));
 
     char buffer[size];
-    fread(buffer, sizeof(char), size - 1, file_ptr);
+    if (fread(buffer, sizeof(char), size - 1, file_ptr)){}
     buffer[size - 1] = '\0';
 
     return ID3v2_text_frame_new(encoding, buffer);
