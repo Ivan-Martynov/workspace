@@ -3,6 +3,8 @@
         "*.mc": "c",
         ".h": "c",
         "*.h": "cpp",
-        "istream": "cpp"
+        "istream": "cpp",
+        "iosfwd": "cpp",
+        "xlocbuf": "cpp"
     }
 }

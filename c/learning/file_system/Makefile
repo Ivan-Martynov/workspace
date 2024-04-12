@@ -36,7 +36,8 @@ $(BIN_DIR)/$(BUILD)/list_files.exe: $(OBJ_DIR)/list_files.o \
 	$(OBJ_DIR)/syncsafe_int_converter.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
-$(BIN_DIR)/$(BUILD)/display_files.exe: $(OBJ_DIR)/display_files.o
+$(BIN_DIR)/$(BUILD)/display_files.exe: $(OBJ_DIR)/display_files.o \
+	$(OBJ_DIR)/mrvn_string_helper.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
