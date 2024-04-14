@@ -101,7 +101,7 @@ static void read_txt_file(const std::filesystem::path& file_path)
     }
 
     std::wifstream stream {file_path, std::ios::in};
-    stream.imbue(std::locale(""));
+    //stream.imbue(std::locale(""));
 
     while (true)
     {
