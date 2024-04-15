@@ -88,8 +88,7 @@ static int wrename_path(const wchar_t old_name_wide[static 1],
 static void check_mp3_file_header(const char file_path[static 1])
 {
     const char* dot_place = strrchr(file_path, '.');
-
-    if (!dot_place || (mrvn_compare_case_insensitive(++dot_place, "mp3") != 0))
+    if (!dot_place || (mrvn_compare_case_insensitive(dot_place, ".mp3") != 0))
     {
         // fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
         return;
@@ -112,7 +111,7 @@ static void check_mp3_file_header(const char file_path[static 1])
     }
 
     char header_id[4];
-    memcpy(header_id, buffer, 4);
+    memcpy(header_id, buffer, 3);
     header_id[4] = '\0';
 
     printf("Testing mp3 header: %s for %s\n", header_id, file_path);
