@@ -101,7 +101,7 @@ static void check_mp3_file_header(const char file_path[static 1])
         return;
     }
 
-    char buffer[10];
+    unsigned char buffer[10];
     const size_t n
         = fread(buffer, sizeof(char), 10, file_ptr);
     if (n != 10)
@@ -110,11 +110,12 @@ static void check_mp3_file_header(const char file_path[static 1])
         return;
     }
 
-    char header_id[4];
+    unsigned char header_id[4];
     memcpy(header_id, buffer, 3);
-    header_id[4] = '\0';
+    header_id[3] = '\0';
 
     printf("Testing mp3 header: %s for %s\n", header_id, file_path);
+    //printf("Version: %d.%d\n", buffer[4], buffer[5]);
 
     fclose(file_ptr);
 }
