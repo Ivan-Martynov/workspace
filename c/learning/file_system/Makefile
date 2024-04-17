@@ -37,7 +37,11 @@ $(BIN_DIR)/$(BUILD)/list_files.exe: $(OBJ_DIR)/list_files.o \
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 $(BIN_DIR)/$(BUILD)/display_files.exe: $(OBJ_DIR)/display_files.o \
-	$(OBJ_DIR)/mrvn_string_helper.o
+	$(OBJ_DIR)/mrvn_string_helper.o $(OBJ_DIR)/ID3v2_tag_reader.o \
+	$(OBJ_DIR)/ID3v2_tag_header_reader.o \
+	$(OBJ_DIR)/ID3v2_frame_header_reader.o \
+	$(OBJ_DIR)/ID3v2_text_frame_reader.o \
+	$(OBJ_DIR)/syncsafe_int_converter.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
@@ -52,7 +56,9 @@ $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
 #	$(INC_DIR)/ID3v2_tag_header_reader.h
 #	$(CC) -c $(CFLAGS) $< -o $@
 
-$(OBJ_DIR)/display_files.o: $(SRC_DIR)/display_files.c
+$(OBJ_DIR)/display_files.o: $(SRC_DIR)/display_files.c \
+	$(INC_DIR)/ID3v2_tag_reader.h \
+	$(INC_DIR)/mrvn_string_helper.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(OBJ_DIR)/list_files.o : $(SRC_DIR)/list_files.c $(INC_DIR)/ID3v2_tag_reader.h \

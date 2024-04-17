@@ -201,6 +201,13 @@ void show_mp3_tags(const char* const file_path)
         return;
     }
 
+    if (ID3v2_tag_header_get_major_version(tag_header_ptr) != 4)
+    {
+        printf("Not a 2.4 header.\n");
+        fclose(file_ptr);
+        return;
+    }
+
     const long int tag_size
         = ID3v2_tag_header_get_tag_full_size(tag_header_ptr);
 

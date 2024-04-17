@@ -9,6 +9,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include "mrvn_string_helper.h"
+#include "ID3v2_tag_reader.h"
+#include "ID3v2_tag_header_reader.h"
 
 #ifndef __STDC_ISO_10646__
 #error "Wide characters have to be Unicode code points"
@@ -85,39 +87,56 @@ static int wrename_path(const wchar_t old_name_wide[static 1],
     return 0;
 }
 
-static void check_mp3_file_header(const char file_path[static 1])
+static bool check_mp3_file_header(const char file_path[static 1])
 {
-    const char* dot_place = strrchr(file_path, '.');
-    if (!dot_place || (mrvn_compare_case_insensitive(dot_place, ".mp3") != 0))
+    const char* const dot_place = strrchr(file_path, '.');
+    if (!dot_place || (mrvn_compare_case_insensitive(dot_place + 1, "mp3") != 0))
     {
         // fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
-        return;
+        return false;
     }
 
     FILE* file_ptr = fopen(file_path, "rb");
     if (!file_ptr)
     {
         fprintf(stderr, "Error opening file %s\n", file_path);
-        return;
+        return false;
     }
 
-    unsigned char buffer[10];
-    const size_t n
-        = fread(buffer, sizeof(char), 10, file_ptr);
+    char buffer[10];
+#if 1
+    const size_t n = fread(buffer, sizeof(*buffer), 10, file_ptr);
+#else
+    const size_t n = fread(buffer, 1, sizeof(buffer), file_ptr);
+#endif
+    fclose(file_ptr);
+
+    struct ID3v2_tag_header* tag_header_ptr
+        = ID3v2_tag_header_parse_buffer(buffer);
+
+    if (!tag_header_ptr)
+    {
+        return false;
+    }
+
     if (n != 10)
     {
         fprintf(stderr, "Error reading file's header: %s\n", file_path);
-        return;
+        return false;
     }
 
-    unsigned char header_id[4];
+    char header_id[4];
     memcpy(header_id, buffer, 3);
     header_id[3] = '\0';
+    if (memcmp(header_id, "ID3", 3) != 0)
+    {
+        return false;
+    }
 
-    printf("Testing mp3 header: %s for %s\n", header_id, file_path);
-    //printf("Version: %d.%d\n", buffer[4], buffer[5]);
+    printf("Mp3 header: %sv2.%d.%d for %s ", header_id, buffer[3], buffer[4],
+        file_path);
 
-    fclose(file_ptr);
+    return true;
 }
 
 static void test_size_multibyte_string(const char src[static 1])
@@ -130,7 +149,24 @@ static void test_size_multibyte_string(const char src[static 1])
         printf("\"%s\": size = %zu, len = %zu\n", src, n, len);
     }
 
-    check_mp3_file_header(src);
+    if (check_mp3_file_header(src))
+    {
+#if 0
+        FILE* file_ptr = fopen(src, "rb");
+        struct ID3v2_tag_header* tag_header_ptr
+            = ID3v2_tag_header_from_file_stream(file_ptr);
+        ID3v2_tag_header_print(tag_header_ptr);
+        ID3v2_tag_header_delete(tag_header_ptr);
+        fclose(file_ptr);
+        printf("Valid ID3 tag\n");
+#else
+        show_mp3_tags(src);
+#endif
+    }
+    else
+    {
+        //printf("Invalid ID3 v2.4 tag\n");
+    }
     wrename_path(L"Один", L"Два", false);
 
 #if 0
