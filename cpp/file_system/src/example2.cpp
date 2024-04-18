@@ -101,7 +101,6 @@ static void read_txt_file(const std::filesystem::path& file_path)
     }
 
     std::wifstream stream {file_path, std::ios::in};
-    //stream.imbue(std::locale(""));
 
     while (true)
     {
@@ -113,7 +112,8 @@ static void read_txt_file(const std::filesystem::path& file_path)
         }
 
         std::string line {wstring_to_string(str)};
-        std::cout << "Got line: " << line << "; size = " << line.size() << "\n";
+        std::cout << "Got line: " << line << "; length = " << str.length()
+                  << "; size = " << line.size() << "\n";
     }
 }
 

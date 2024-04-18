@@ -5,6 +5,7 @@
         "*.h": "cpp",
         "istream": "cpp",
         "iosfwd": "cpp",
-        "xlocbuf": "cpp"
+        "xlocbuf": "cpp",
+        "xstring": "cpp"
     }
 }
