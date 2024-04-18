@@ -1,9 +1,12 @@
 #define _GNU_SOURCE
 
+#define __STDC_WANT_LIB_EXT2__ 1
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <wchar.h>
+#include <wctype.h>
 #include <string.h>
 #include <dirent.h>
 #include <errno.h>
@@ -126,7 +129,7 @@ static bool check_mp3_file_header(const char file_path[static 1])
     }
 
     char header_id[4];
-    memcpy(header_id, buffer, 3);
+    memcpy(header_id, buffer, 4);
     header_id[3] = '\0';
     if (memcmp(header_id, "ID3", 3) != 0)
     {
@@ -137,6 +140,91 @@ static bool check_mp3_file_header(const char file_path[static 1])
         file_path);
 
     return true;
+}
+
+static size_t get_wide_char_line(
+    wchar_t** target_ptr, size_t* count_ptr, FILE* file_stream)
+{
+    if (!target_ptr || !count_ptr)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    if (ferror(file_stream) || feof(file_stream))
+    {
+        return -1;
+    }
+
+    size_t result = 0;
+    const size_t chunk_size = 256;
+    wchar_t line[chunk_size];
+    while (fgetws(line, chunk_size, file_stream))
+    {
+        wchar_t* ptr = wcschr(line, L'\n');
+        if (ptr)
+        {
+            *ptr = L'\0';
+            ptr = wcschr(line, L'\r');
+            if (ptr)
+            {
+                *ptr = L'\0';
+            }
+        }
+
+        const size_t len = wcslen(line);
+        const size_t target_len = *target_ptr ? wcslen(*target_ptr) : 0;
+
+        ptr = realloc(
+            *target_ptr, (target_len + len + 1) * sizeof(**target_ptr));
+        if (!ptr)
+        {
+            return -1;
+        }
+        wcscat(*target_ptr, line);
+        result += len;
+    }
+
+    return result;
+}
+
+static void read_multibyte_text_file(const char file_path[static 1])
+{
+    FILE* file_stream = fopen(file_path, "r");
+    if (!file_stream)
+    {
+        fprintf(stderr, "Error opening file %s\n", file_path);
+        return;
+    }
+
+    size_t word_count = 0;
+    size_t symbol_count = 0;
+
+#if defined __STDC_ALLOC_LIB__ && (__STDC_WANT_LIB_EXT2__ == 1)
+    wchar_t* str = NULL;
+    size_t n = 0;
+    while (getwline(&str, &n, file_stream) != -1)
+    {
+        bool found_graphic_symbol = false;
+        for (size_t i = 0; i < n; ++i)
+        {
+            if (iswgraph(str[i]))
+            {
+                ++symbol_count;
+                found_graphic_symbol = true;
+            }
+            else
+            {
+                if (found_graphic_symbol)
+                {
+                    ++word_count;
+                }
+                found_graphic_symbol = false;
+            }
+        }
+    }
+    free(str);
+#endif
 }
 
 static void test_size_multibyte_string(const char src[static 1])
@@ -160,12 +248,14 @@ static void test_size_multibyte_string(const char src[static 1])
         fclose(file_ptr);
         printf("Valid ID3 tag\n");
 #else
-        show_mp3_tags(src);
+        //show_mp3_tags(src);
 #endif
+        printf("\n");
     }
     else
     {
         //printf("Invalid ID3 v2.4 tag\n");
+        read_multibyte_text_file(src);
     }
     wrename_path(L"Один", L"Два", false);
 
