@@ -21,6 +21,7 @@ SOURCES := $(wildcard $(SRC_DIR)/*.c)
 OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
 TARGETS := $(BIN_DIR)/$(BUILD)/list_files.exe \
 	$(BIN_DIR)/$(BUILD)/display_files.exe \
+	$(BIN_DIR)/$(BUILD)/directory_creator.exe \
 	$(BIN_DIR)/$(BUILD)/tests.exe
 
 .PHONY : all
@@ -44,6 +45,10 @@ $(BIN_DIR)/$(BUILD)/display_files.exe: $(OBJ_DIR)/display_files.o \
 	$(OBJ_DIR)/syncsafe_int_converter.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
+$(BIN_DIR)/$(BUILD)/directory_creator.exe: $(OBJ_DIR)/directory_creator.o \
+	$(OBJ_DIR)/mrvn_string_helper.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
 $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
 	$(OBJ_DIR)/mrvn_string_helper.o \
 	$(OBJ_DIR)/mrvn_map_char.o
@@ -58,6 +63,10 @@ $(BIN_DIR)/$(BUILD)/tests.exe: $(OBJ_DIR)/tests.o \
 
 $(OBJ_DIR)/display_files.o: $(SRC_DIR)/display_files.c \
 	$(INC_DIR)/ID3v2_tag_reader.h \
+	$(INC_DIR)/mrvn_string_helper.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/directory_creator.o: $(SRC_DIR)/directory_creator.c \
 	$(INC_DIR)/mrvn_string_helper.h
 	$(CC) -c $(CFLAGS) $< -o $@
 

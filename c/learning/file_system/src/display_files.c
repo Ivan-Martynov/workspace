@@ -287,7 +287,9 @@ static void read_multibyte_text_file(const char file_path[static 1])
             {
                 if (verbose)
                 {
-                    wctomb(NULL, wide_char);
+                    if (wctomb(NULL, wide_char))
+                    {
+                    }
                     char symbol_string[MB_CUR_MAX];
                     const int m = wctomb(symbol_string, wide_char);
                     if (m > 0)
