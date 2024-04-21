@@ -22,6 +22,61 @@
 #error "Basic character codes must agree on char and wchar_t"
 #endif
 
+static void copy_file(
+    const char target[restrict static 1], const char source[restrict static 1])
+{
+    if (!target || !source)
+    {
+        printf("Wrong paths\n");
+        return;
+    }
+
+    FILE* source_stream = fopen(source, "r");
+    if (!source_stream)
+    {
+        printf("Couldn't open file %s for reading\n", source);
+        return;
+    }
+
+    FILE* target_stream = fopen(target, "w");
+    if (!target_stream)
+    {
+        fclose(source_stream);
+        printf("Couldn't open file %s for writing\n", target);
+        return;
+    }
+
+#if 0
+    while (true)
+    {
+        const char c = fgetc(source_stream);
+
+        if (c == EOF)
+        {
+            break;
+        }
+
+        fputc(c, target_stream);
+    }
+#else
+    const size_t n = 256;
+    char buffer[n];
+    while (true)
+    {
+        const size_t bytes = fread(buffer, 1, n, source_stream);
+        if (bytes == 0)
+        {
+            break;
+        }
+        fwrite(buffer, 1, bytes, target_stream);
+    }
+#endif
+
+    fclose(source_stream);
+    fclose(target_stream);
+}
+
+
 static void backup_file(const char file_path[static 1])
 {
     const char* const dot_place = strrchr(file_path, '/');
@@ -30,11 +85,21 @@ static void backup_file(const char file_path[static 1])
         return;
     }
 
+    const size_t n = dot_place - file_path;
     char backup_path[1024];
-    strncpy(backup_path, file_path, dot_place - file_path);
-    strcat(backup_path, "/backup");
+    strcpy(backup_path, "\0");
+    //backup_path[dot_place - file_path] = '\0';
+    //printf("Length = %s; %zu\n", file_path, dot_place - file_path);
+    strncpy(backup_path, file_path, n);
+    backup_path[n] = '\0';
+    strcat(backup_path, "/backup/");
+    mkdir(backup_path, 0700);
+    strcat(backup_path, dot_place + 1);
+
     printf("Backup path = %s\n", backup_path);
-    //mkdir("", 0700);
+
+    if (5 < 2)
+        copy_file(backup_path, file_path);
 }
 
 static void show_file_info(const char path[static 1])
