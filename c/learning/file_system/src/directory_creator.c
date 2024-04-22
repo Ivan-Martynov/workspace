@@ -2,6 +2,7 @@
 
 #define __STDC_WANT_LIB_EXT2__ 1
 
+#include "platform_specific.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
@@ -22,15 +23,17 @@
 #error "Basic character codes must agree on char and wchar_t"
 #endif
 
+#if WINDOWS_PLATFORM
+const char mrvn_directory_separator = '\\';
+const char mrvn_directory_separator_wide = L'\\';
+#else
+const char mrvn_directory_separator = '/';
+const char mrvn_directory_separator_wide = L'/';
+#endif
+
 static void copy_file(
     const char target[restrict static 1], const char source[restrict static 1])
 {
-    if (!target || !source)
-    {
-        printf("Wrong paths\n");
-        return;
-    }
-
     FILE* source_stream = fopen(source, "r");
     if (!source_stream)
     {
@@ -59,16 +62,16 @@ static void copy_file(
         fputc(c, target_stream);
     }
 #else
-    const size_t n = 256;
-    char buffer[n];
     while (true)
     {
+        const size_t n = 256;
+        char buffer[n];
         const size_t bytes = fread(buffer, 1, n, source_stream);
         if (bytes == 0)
         {
             break;
         }
-        fwrite(buffer, 1, bytes, target_stream);
+    //    fwrite(buffer, 1, bytes, target_stream);
     }
 #endif
 
@@ -79,27 +82,40 @@ static void copy_file(
 
 static void backup_file(const char file_path[static 1])
 {
-    const char* const dot_place = strrchr(file_path, '/');
+    const char* const dot_place = strrchr(file_path, mrvn_directory_separator);
     if (!dot_place)
     {
         return;
     }
 
+    const size_t file_path_length = strlen(file_path);
     const size_t n = dot_place - file_path;
-    char backup_path[1024];
+    const char* const backup_directory_appendix = "backup";
+    const size_t shift = strlen(backup_directory_appendix) + 2;
+    char* backup_path = malloc(file_path_length + shift + 1);
+    if (!backup_path)
+    {
+        return;
+    }
     strcpy(backup_path, "\0");
     //backup_path[dot_place - file_path] = '\0';
     //printf("Length = %s; %zu\n", file_path, dot_place - file_path);
-    strncpy(backup_path, file_path, n);
-    backup_path[n] = '\0';
-    strcat(backup_path, "/backup/");
+    memcpy(backup_path, file_path, n);
+    memcpy(backup_path + n, "/backup/", shift);
+    backup_path[n + shift] = '\0';
     mkdir(backup_path, 0700);
-    strcat(backup_path, dot_place + 1);
+    memcpy(backup_path + n + shift, dot_place + 1, file_path_length - n - 1);
+    backup_path[n + shift + file_path_length - n - 1] = '\0';
+    //strcat(backup_path, dot_place + 1);
 
+    printf(
+        "File path length = %zu; parent length = %zu, file name length = %zu\n",
+        file_path_length, n, file_path_length - n);
     printf("Backup path = %s\n", backup_path);
 
-    if (5 < 2)
-        copy_file(backup_path, file_path);
+    copy_file(backup_path, file_path);
+
+    free(backup_path);
 }
 
 static void show_file_info(const char path[static 1])
@@ -115,13 +131,18 @@ static void show_file_info(const char path[static 1])
 
     printf("File %s\n", path);
 
-    char time_buf[256];
-    //strftime(time_buf, 256, "%c", gmtime(&path_stat.st_atime));
-    //printf("\tAccess time: %s\n", time_buf);
-    strftime(time_buf, 256, "%Y %B", gmtime(&path_stat.st_mtime));
-    printf("\tModification time: %s\n", time_buf);
-    //strftime(time_buf, 256, "%c", gmtime(&path_stat.st_ctime));
-    //printf("\tAttribute modification time: %s\n", time_buf);
+    const struct tm* const mod_time = gmtime(&path_stat.st_mtime);
+
+    const size_t year_str_size = 5;
+    const size_t month_str_size = 10;
+    char year_str[year_str_size];
+    char month_str_english[month_str_size];
+    if (!strftime(year_str, year_str_size, "%Y", mod_time)
+        || !strftime(month_str_english, month_str_size, "%B", mod_time))
+    {
+        return;
+    }
+    printf("\tYear/month: %s/%s\n", year_str, month_str_english);
 }
 
 static bool not_rel_path(const char path[static 1])
