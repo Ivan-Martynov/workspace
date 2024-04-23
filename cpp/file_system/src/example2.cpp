@@ -166,7 +166,7 @@ static void process_directory(const std::string& directory_path)
     }
     else
     {
-        display_file_names(p, true);
+        display_file_names(p, false);
     }
 }
 

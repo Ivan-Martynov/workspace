@@ -338,7 +338,7 @@ static void read_multibyte_text_file(const char file_path[static 1])
 static void test_size_multibyte_string(const char src[static 1])
 {
     const size_t n = strlen(src);
-    size_t len = multibyte_string_length(src);
+    size_t len = mrvn_multibyte_string_length(src);
 
     if (len == 0)
     {

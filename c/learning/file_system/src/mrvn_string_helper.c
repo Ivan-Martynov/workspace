@@ -69,6 +69,18 @@ void mrvn_reallocate_if_needed_and_copy_char(
     }
 }
 
+char* mrvn_allocate_char_from_another(const char* const other)
+{
+    char* target = mrvn_null_ptr;
+
+    if (other)
+    {
+        mrvn_allocate_and_copy_char(&target, other);
+    }
+
+    return target;
+}
+
 /**
  * @brief Check whether string is a null pointer or empty.
  * 
@@ -241,7 +253,7 @@ void mrvn_trim_string_with(char text[restrict static 1],
  * 
  * @date 2024-04-23
  */
-size_t multibyte_string_length(const char src[static 1])
+size_t mrvn_multibyte_string_length(const char src[static 1])
 {
     mbstate_t state;
     memset(&state, 0, sizeof(state));

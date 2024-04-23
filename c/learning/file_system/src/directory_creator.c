@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <wchar.h>
+#include <ctype.h>
 #include <wctype.h>
 #include <string.h>
 #include <dirent.h>
@@ -15,6 +16,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include "mrvn_string_helper.h"
+#include "mrvn_type_constants.h"
 
 #ifndef __STDC_ISO_10646__
 #error "Wide characters have to be Unicode code points"
@@ -34,7 +36,7 @@ const char mrvn_directory_separator_wide = L'/';
 static void copy_file(
     const char target[restrict static 1], const char source[restrict static 1])
 {
-    return;
+    return; // Disable for not overwriting.
 
     FILE* source_stream = fopen(source, "r");
     if (!source_stream)
@@ -90,7 +92,7 @@ static size_t mrvn_get_parent_directory(
         return 0;
     }
 
-    const size_t parent_dir_length = dot_place - file_path;
+    const size_t parent_dir_length = dot_place + 1 - file_path;
     memcpy(target, file_path, parent_dir_length);
     target[parent_dir_length] = '\0';
     return parent_dir_length;
@@ -108,10 +110,10 @@ static void backup_file(const char file_path[static 1], const bool do_backup)
         return;
     }
 
-    const size_t file_path_length = strlen(file_path);
+    const size_t file_path_length = mrvn_multibyte_string_length(file_path);
     size_t n = dot_place - file_path;
     const char* const backup_directory_appendix = "backup";
-    const size_t shift = strlen(backup_directory_appendix) + 2;
+    const size_t shift = strlen(backup_directory_appendix) + 1;
     char* backup_path = malloc(file_path_length + shift + 1);
     if (!backup_path)
     {
@@ -122,7 +124,7 @@ static void backup_file(const char file_path[static 1], const bool do_backup)
     //printf("Length = %s; %zu\n", file_path, dot_place - file_path);
     //memcpy(backup_path, file_path, n);
     mrvn_get_parent_directory(backup_path, file_path);
-    memcpy(backup_path + n, "/backup/", shift);
+    memcpy(backup_path + n, "backup/", shift);
     backup_path[n + shift] = '\0';
     if (mkdir(backup_path, 0700) != EXIT_SUCCESS)
     {
@@ -145,10 +147,19 @@ static void backup_file(const char file_path[static 1], const bool do_backup)
 static void move_file_to_year_month_folder(
     const char file_path[static 1], const bool do_move)
 {
+    char* current_locale = setlocale(LC_TIME, mrvn_null_ptr);
+    char* locale_backup = mrvn_allocate_char_from_another(current_locale);
+    if (!locale_backup)
+    {
+        return;
+    }
+
     // For missing locales run $sudo locale-gen 'name_of_locale'.
     if (!setlocale(LC_TIME, "en_US.UTF-8") && !setlocale(LC_TIME, ""))
     {
         printf("Failed to set locale\n");
+        setlocale(LC_TIME, locale_backup);
+        free(locale_backup);
         return;
     }
 
@@ -159,14 +170,22 @@ static void move_file_to_year_month_folder(
 
     const struct tm* const mod_time = gmtime(&path_stat.st_mtime);
 
-    size_t year_str_size = 7;
-    char year_str[year_str_size];
-    year_str_size = strftime(year_str, year_str_size, "/%Y/", mod_time);
+    printf("Length of year output %zu\n", strftime(NULL, 100, "/%Y/", mod_time));
 
-    size_t month_str_size = 11;
+    size_t year_str_size = 32;
+    char year_str[year_str_size];
+    year_str_size = strftime(year_str, year_str_size, "%Y/", mod_time);
+
+    size_t month_str_size = 128;
     char month_str_english[month_str_size];
     month_str_size
         = strftime(month_str_english, month_str_size, "%B/", mod_time);
+
+    // Will not work with multibyte string.
+    month_str_english[0] = toupper(month_str_english[0]);
+
+    setlocale(LC_TIME, locale_backup);
+    free(locale_backup);
 
     if ((year_str_size == 0) || (month_str_size == 0))
     {
@@ -212,8 +231,9 @@ static void move_file_to_year_month_folder(
     printf("With month = %s\n", target_path);
 
     // strcat(target_directory, file_path + n + 1);
-    memcpy(target_path + n + year_str_size + month_str_size,
-        file_path + n + 1, file_path_length - n + 1);
+    memcpy(target_path + n + year_str_size + month_str_size, file_path + n,
+        file_path_length - n);
+    target_path[year_str_size + month_str_size + file_path_length] = '\0';
     if (do_move)
     {
         if (rename(file_path, target_path) != EXIT_SUCCESS)
@@ -225,7 +245,8 @@ static void move_file_to_year_month_folder(
     else
     {
         printf("Final path = %s; %zu vs %zu\n", target_path,
-            n + year_str_size + month_str_size - 3, strlen(target_path));
+            year_str_size + month_str_size + file_path_length,
+            strlen(target_path));
     }
 cleanup_label:
     free(target_path);

@@ -7,6 +7,8 @@
 void mrvn_allocate_and_copy_char(
     char** restrict const, const char* restrict const);
 
+char* mrvn_allocate_char_from_another(const char* const);
+
 void mrvn_reallocate_if_needed_and_copy_char(
     char** restrict const, const char* restrict const);
 
@@ -28,6 +30,6 @@ void mrvn_trim_string_from_right_with(
 void mrvn_trim_string_with(
     char[restrict static 1], const char[restrict static 1]);
 
-size_t multibyte_string_length(const char[static 1]);
+size_t mrvn_multibyte_string_length(const char[static 1]);
 
 #endif //_H_MRVN_STRING_HELPER_H_
