@@ -22,22 +22,6 @@
 #error "Basic character codes must agree on char and wchar_t"
 #endif
 
-static size_t multibyte_string_length(const char src[1])
-{
-    mbstate_t state;
-    memset(&state, 0, sizeof(state));
-
-    size_t len = mbsrtowcs(NULL, &src, 0, &state);
-
-    // Restore errno on error.
-    if (len == (size_t)-1)
-    {
-        errno = 0;
-    }
-
-    return len;
-}
-
 static int wrename_path(const wchar_t old_name_wide[static 1],
     const wchar_t new_name_wide[static 1], const bool do_rename)
 {

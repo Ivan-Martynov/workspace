@@ -1,8 +1,11 @@
 #include "mrvn_string_helper.h"
+#include "mrvn_type_constants.h"
 
 #include <malloc.h>
 #include <string.h>
 #include <ctype.h>
+#include <wchar.h>
+#include <errno.h>
 
 /**
  * @brief Allocate space for target based on the source's size.
@@ -225,4 +228,31 @@ void mrvn_trim_string_with(char text[restrict static 1],
     {
         memmove(start, current, text - current + 2 * sizeof(*text));
     }
+}
+
+/**
+ * @brief Calculate length of a null terminated multibyte string.
+ * 
+ * @param src Null terminated multibyte string.
+ * 
+ * @return size_t Number of character in the string.
+ * 
+ * @version 0.1
+ * 
+ * @date 2024-04-23
+ */
+size_t multibyte_string_length(const char src[static 1])
+{
+    mbstate_t state;
+    memset(&state, 0, sizeof(state));
+
+    size_t len = mbsrtowcs(mrvn_null_ptr, &src, 0, &state);
+
+    // Restore errno on error.
+    if (len == (size_t)-1)
+    {
+        errno = 0;
+    }
+
+    return len;
 }

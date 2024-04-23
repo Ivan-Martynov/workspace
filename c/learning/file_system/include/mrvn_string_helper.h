@@ -2,6 +2,7 @@
 #define _H_MRVN_STRING_HELPER_H_
 
 #include <stdbool.h>
+#include <stddef.h>
 
 void mrvn_allocate_and_copy_char(
     char** restrict const, const char* restrict const);
@@ -26,5 +27,7 @@ void mrvn_trim_string_from_right_with(
     char[restrict static 1], const char[restrict static 1]);
 void mrvn_trim_string_with(
     char[restrict static 1], const char[restrict static 1]);
+
+size_t multibyte_string_length(const char[static 1]);
 
 #endif //_H_MRVN_STRING_HELPER_H_

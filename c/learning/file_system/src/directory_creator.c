@@ -24,8 +24,8 @@
 #endif
 
 #if WINDOWS_PLATFORM
-const char mrvn_directory_separator = '\\';
-const char mrvn_directory_separator_wide = L'\\';
+const char mrvn_directory_separator = '/';
+const char mrvn_directory_separator_wide = L'/';
 #else
 const char mrvn_directory_separator = '/';
 const char mrvn_directory_separator_wide = L'/';
@@ -34,6 +34,8 @@ const char mrvn_directory_separator_wide = L'/';
 static void copy_file(
     const char target[restrict static 1], const char source[restrict static 1])
 {
+    return;
+
     FILE* source_stream = fopen(source, "r");
     if (!source_stream)
     {
@@ -71,7 +73,7 @@ static void copy_file(
         {
             break;
         }
-    //    fwrite(buffer, 1, bytes, target_stream);
+        fwrite(buffer, 1, bytes, target_stream);
     }
 #endif
 
@@ -79,9 +81,27 @@ static void copy_file(
     fclose(target_stream);
 }
 
-
-static void backup_file(const char file_path[static 1])
+static size_t mrvn_get_parent_directory(
+    char target[restrict static 1], const char file_path[restrict static 1])
 {
+    const char* const dot_place = strrchr(file_path, mrvn_directory_separator);
+    if (!dot_place)
+    {
+        return 0;
+    }
+
+    const size_t parent_dir_length = dot_place - file_path;
+    memcpy(target, file_path, parent_dir_length);
+    target[parent_dir_length] = '\0';
+    return parent_dir_length;
+}
+
+static void backup_file(const char file_path[static 1], const bool do_backup)
+{
+    if (!do_backup)
+    {
+        return;
+    }
     const char* const dot_place = strrchr(file_path, mrvn_directory_separator);
     if (!dot_place)
     {
@@ -89,7 +109,7 @@ static void backup_file(const char file_path[static 1])
     }
 
     const size_t file_path_length = strlen(file_path);
-    const size_t n = dot_place - file_path;
+    size_t n = dot_place - file_path;
     const char* const backup_directory_appendix = "backup";
     const size_t shift = strlen(backup_directory_appendix) + 2;
     char* backup_path = malloc(file_path_length + shift + 1);
@@ -97,13 +117,17 @@ static void backup_file(const char file_path[static 1])
     {
         return;
     }
-    strcpy(backup_path, "\0");
+    //strcpy(backup_path, "\0");
     //backup_path[dot_place - file_path] = '\0';
     //printf("Length = %s; %zu\n", file_path, dot_place - file_path);
-    memcpy(backup_path, file_path, n);
+    //memcpy(backup_path, file_path, n);
+    mrvn_get_parent_directory(backup_path, file_path);
     memcpy(backup_path + n, "/backup/", shift);
     backup_path[n + shift] = '\0';
-    mkdir(backup_path, 0700);
+    if (mkdir(backup_path, 0700) != EXIT_SUCCESS)
+    {
+        printf("Cannot create folder: %s\n", strerror(errno));
+    }
     memcpy(backup_path + n + shift, dot_place + 1, file_path_length - n - 1);
     backup_path[n + shift + file_path_length - n - 1] = '\0';
     //strcat(backup_path, dot_place + 1);
@@ -118,31 +142,93 @@ static void backup_file(const char file_path[static 1])
     free(backup_path);
 }
 
-static void show_file_info(const char path[static 1])
+static void move_file_to_year_month_folder(
+    const char file_path[static 1], const bool do_move)
 {
     // For missing locales run $sudo locale-gen 'name_of_locale'.
-    if (!setlocale(LC_TIME, "en_US.UTF-8"))
+    if (!setlocale(LC_TIME, "en_US.UTF-8") && !setlocale(LC_TIME, ""))
     {
         printf("Failed to set locale\n");
+        return;
     }
 
     struct stat path_stat;
-    stat(path, &path_stat);
+    stat(file_path, &path_stat);
 
-    printf("File %s\n", path);
+    printf("File %s\n", file_path);
 
     const struct tm* const mod_time = gmtime(&path_stat.st_mtime);
 
-    const size_t year_str_size = 5;
-    const size_t month_str_size = 10;
+    size_t year_str_size = 7;
     char year_str[year_str_size];
+    year_str_size = strftime(year_str, year_str_size, "/%Y/", mod_time);
+
+    size_t month_str_size = 11;
     char month_str_english[month_str_size];
-    if (!strftime(year_str, year_str_size, "%Y", mod_time)
-        || !strftime(month_str_english, month_str_size, "%B", mod_time))
+    month_str_size
+        = strftime(month_str_english, month_str_size, "%B/", mod_time);
+
+    if ((year_str_size == 0) || (month_str_size == 0))
     {
         return;
     }
-    printf("\tYear/month: %s/%s\n", year_str, month_str_english);
+    printf("\tYear/month: %s%s\n", year_str, month_str_english);
+
+    const size_t file_path_length = strlen(file_path);
+    char* target_path
+        = malloc(file_path_length + year_str_size + month_str_size + 1);
+    if (!target_path)
+    {
+        return;
+    }
+
+    const size_t n = mrvn_get_parent_directory(target_path, file_path);
+    if (n == 0)
+    {
+        goto cleanup_label;
+    }
+
+    printf("Current = %s\n", target_path);
+
+    // Year string already contains the terminating character
+    memcpy(target_path + n, year_str, year_str_size + 1);
+    //target_directory[n + year_str_size - 1] = '\0';
+    if (mkdir(target_path, 0700) != EXIT_SUCCESS)
+    {
+        printf("Cannot create folder: %s\n", strerror(errno));
+        errno = 0;
+    }
+
+    printf("With year = %s\n", target_path);
+
+    memcpy(target_path + n + year_str_size, month_str_english,
+        month_str_size + 1);
+
+    if (mkdir(target_path, 0700) != EXIT_SUCCESS)
+    {
+        printf("Cannot create folder: %s\n", strerror(errno));
+        errno = 0;
+    }
+    printf("With month = %s\n", target_path);
+
+    // strcat(target_directory, file_path + n + 1);
+    memcpy(target_path + n + year_str_size + month_str_size,
+        file_path + n + 1, file_path_length - n + 1);
+    if (do_move)
+    {
+        if (rename(file_path, target_path) != EXIT_SUCCESS)
+        {
+            printf("Cannot copy file: %s\n", strerror(errno));
+            errno = 0;
+        }
+    }
+    else
+    {
+        printf("Final path = %s; %zu vs %zu\n", target_path,
+            n + year_str_size + month_str_size - 3, strlen(target_path));
+    }
+cleanup_label:
+    free(target_path);
 }
 
 static bool not_rel_path(const char path[static 1])
@@ -187,8 +273,8 @@ static void show_files(const char path[static 1], const bool is_recursive)
             }
             else if (dir->d_type == DT_REG)
             {
-                show_file_info(full_path);
-                backup_file(full_path);
+                move_file_to_year_month_folder(full_path, false);
+                backup_file(full_path, false);
             }
         }
     }
