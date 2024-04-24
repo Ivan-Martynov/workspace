@@ -153,7 +153,7 @@ struct ID3v2_tag_header* ID3v2_tag_header_from_file(const char* const file_path)
 
 struct ID3v2_tag_header* ID3v2_tag_header_from_file_stream(FILE* const file_ptr)
 {
-#if 0
+#if 1
     char id_buffer[ID3V2_FILE_IDENTIFER_SIZE + 1];
     if (fread(id_buffer, sizeof(char), ID3V2_FILE_IDENTIFER_SIZE, file_ptr)
         < ID3V2_FILE_IDENTIFER_SIZE)

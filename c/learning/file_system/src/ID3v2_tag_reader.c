@@ -90,7 +90,7 @@ void test_unsyncsafe(const size_t value)
         syncsafe_decode(encoded_value));
 }
 
-const char* ID3v2_tag_get_title(const char* const file_path)
+char* ID3v2_tag_get_title(const char* const file_path)
 {
     setlocale(LC_ALL, "");
 
@@ -115,7 +115,9 @@ const char* ID3v2_tag_get_title(const char* const file_path)
 
     ID3v2_tag_header_delete(tag_header_ptr);
 
-    const char* result = NULL;
+    //const char* result = NULL;
+    //char result[256];
+    char* result = malloc(256);
 
     while (ftell(file_ptr) < tag_size)
     {
@@ -142,7 +144,8 @@ const char* ID3v2_tag_get_title(const char* const file_path)
                     ID3v2_title_frame)
                 == 0)
             {
-                result = ID3v2_text_frame_get_text(text_frame_ptr);
+                //result = ID3v2_text_frame_get_text(text_frame_ptr);
+                strcpy(result, ID3v2_text_frame_get_text(text_frame_ptr));
                 found_title = true;
             }
 
