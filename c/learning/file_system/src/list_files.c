@@ -430,11 +430,12 @@ static void rename_mp3_by_title(const char* const path)
                 continue;
             }
 
-            // print_path_stat(full_path);
+             print_path_stat(full_path);
 
             const char* mp3_title = ID3v2_tag_get_title(full_path);
             if (!mp3_title)
             {
+                printf("Not an mp3 file.\n");
                 continue;
             }
 
@@ -443,7 +444,7 @@ static void rename_mp3_by_title(const char* const path)
 
             char format[20];
             sprintf(format, "%%s%%0%zud %%s%%s", width);
-            //printf("Got format %s\n", format);
+            printf("Got format %s\n", format);
 
             const char* ext_pos = strrchr(dir->d_name, '.');
 
@@ -452,6 +453,7 @@ static void rename_mp3_by_title(const char* const path)
 
             char prepend_number[20];
             sprintf(prepend_number, fmt, (i + 1));
+            printf("Prepend number %s\n",prepend_number);
 
             if (!is_valid_string_for_filename(title))
             {

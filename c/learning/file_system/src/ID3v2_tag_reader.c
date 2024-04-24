@@ -95,7 +95,7 @@ const char* ID3v2_tag_get_title(const char* const file_path)
     setlocale(LC_ALL, "");
 
     const char* dot_place = strrchr(file_path, '.');
-    if (!dot_place || strcmp(++dot_place, "mp3") != 0)
+    if (!dot_place || strcmp(dot_place, ".mp3") != 0)
     {
         // fprintf(stderr, "File %s doesn't have mp3 extension.\n", file_path);
         return NULL;
@@ -129,7 +129,7 @@ const char* ID3v2_tag_get_title(const char* const file_path)
             break;
         }
 
-        // ID3v2_frame_header_print(frame_header_ptr);
+        //ID3v2_frame_header_print(frame_header_ptr);
 
         const size_t frame_size
             = ID3v2_frame_header_get_frame_size(frame_header_ptr);
