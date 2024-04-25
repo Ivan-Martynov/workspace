@@ -441,10 +441,10 @@ static void rename_mp3_by_title(const char* const path)
 
             char title[256] = "\0";
             strcpy(title, mp3_title);
-            free(mp3_title);
+            //free(mp3_title);
 
-            char format[20];
-            sprintf(format, "%%s%%0%zud %%s%%s", width);
+            //char format[20];
+            //sprintf(format, "%%s%%0%zud %%s%%s", width);
             //printf("Got format %s\n", format);
 
             const char* ext_pos = strrchr(dir->d_name, '.');
@@ -456,7 +456,7 @@ static void rename_mp3_by_title(const char* const path)
             sprintf(prepend_number, fmt, (i + 1));
             //printf("Prepend number %s\n",prepend_number);
 
-            if (!is_valid_string_for_filename(title))
+            //if (!is_valid_string_for_filename(title))
             {
                 remove_default_invalid_characters(title);
             }
@@ -476,6 +476,7 @@ static void rename_mp3_by_title(const char* const path)
                 printf("Renaming %s => %s\n", full_path, target_name);
             }
 #endif
+            free(mp3_title);
 #if 0
             // Length of the title + the terminating characgter + prepending
             // number and one space + extension.

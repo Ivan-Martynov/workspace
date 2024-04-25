@@ -167,6 +167,8 @@ char* ID3v2_tag_get_title(const char* const file_path)
 
     fclose(file_ptr);
 
+    //printf("Result = %s\n", result);
+
     return result;
 }
 
