@@ -1,3 +1,9 @@
+include ../make_compiler_setup.mk
+
+BIN_DIR := bin
+OBJ_DIR := obj
+SRC_DIR := src
+
 
 C_COMP = gcc
 C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
@@ -9,26 +15,26 @@ LIBS =
 SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
-TARGETS = largest_prime even_fibonacci colour_output
-#TARGETS = $(patsubst %.c, %, $(SRC))
+TARGETS = largest_prime.exe even_fibonacci.exe colour_output.exe \
+	check_compiler.exe
 
 .PHONY: all
 all: $(TARGETS)
 
-largest_prime: largest_prime.o
-	$(C_COMP) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
+check_compiler.exe: check_compiler.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
-even_fibonacci: even_fibonacci.o
-	$(C_COMP) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
+largest_prime.exe: largest_prime.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
-colour_output: colour_output.o
-	$(C_COMP) $(DEBUG_FLAGS) $(LIBS) $^ -o $@
+even_fibonacci.exe: even_fibonacci.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
-#$(OBJ): %.o: %.c
-#	$(COMP_CMD) -c $< -o $@
+colour_output.exe: colour_output.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 %.o: %.c
-	$(COMP_CMD) -c $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 .PHONY : show_c_files clean clean_obj
 
