@@ -1,17 +1,5 @@
 include ../make_compiler_setup.mk
 
-BIN_DIR := bin
-OBJ_DIR := obj
-SRC_DIR := src
-
-
-C_COMP = gcc
-C_FLAGS = -std=c17 -Wall -Wextra -Wshadow -pedantic -Werror -I include
-COMP_CMD = $(C_COMP) $(C_FLAGS)
-DEBUG_FLAGS = -O0 -g -D _DEBUG
-RELEASE_FLAGS = -O3 -D NDEBUG
-LIBS =
-
 SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
@@ -25,7 +13,7 @@ check_compiler.exe: check_compiler.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 largest_prime.exe: largest_prime.o
-	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS) -lm
 
 even_fibonacci.exe: even_fibonacci.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)

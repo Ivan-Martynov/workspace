@@ -22,3 +22,4 @@ CFLAGS := ${compilation_flags.common} ${compilation_flags.${BUILD}}
 # Specifying explicitly compilation and linking commands.
 COMPILE_CMD := $(CC) $(CFLAGS)
 LINK_CMD := $(CC)
+
