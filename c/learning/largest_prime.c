@@ -12,6 +12,11 @@ What is the largest prime factor of the number 600851475143 ?
 #include <assert.h>
 
 #include <math.h>
+
+#if __STDC_NO_THREADS__
+#error "No threads support provided."
+#endif
+
 #include <threads.h>
 
 #include <sys/time.h>

@@ -3,8 +3,11 @@ include ../make_compiler_setup.mk
 SRC = $(wildcard *.c)
 OBJ = $(wildcard *.o)
 
-TARGETS = largest_prime.exe even_fibonacci.exe colour_output.exe \
-	check_compiler.exe
+TARGETS = \
+		  even_fibonacci.exe \
+		  colour_output.exe \
+		  check_compiler.exe \
+		  largest_prime.exe
 
 .PHONY: all
 all: $(TARGETS)
@@ -13,7 +16,7 @@ check_compiler.exe: check_compiler.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 largest_prime.exe: largest_prime.o
-	$(LINK_CMD) $^ -o $@ $(LDFLAGS) -lm
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS) -lm -pthread
 
 even_fibonacci.exe: even_fibonacci.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
