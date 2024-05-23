@@ -1,17 +1,16 @@
-Rectangle = Object.extend(Object)
+local Shape = require "shape"
 
-function Rectangle.new(self, x, y)
-    self.x = x
-    self.y = y
-    self.width = 200
-    self.height = 150
-    self.speed = 100
+local Rectangle = Shape:extend()
+
+function Rectangle:new(x, y, width, height)
+    Rectangle.super.new(self, x, y)
+    self.width = width
+    self.height = height
+    self.dx = 100
 end
 
-function Rectangle:update(dt)
-    self.x = self.x + self.speed * dt
-end
-
-function Rectangle.draw(self)
+function Rectangle:draw()
     love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
 end
+
+return Rectangle
