@@ -1,17 +1,13 @@
-local world = love.physics.newWorld(0, 9.81 * 10)
+local world = require("world")
+local triangle = require("triangle")
+local bar = require("bar")
 
-local triangle = {}
-triangle.body = love.physics.newBody(world, 200, 0, "dynamic")
-triangle.body:setMass(32)
-triangle.shape = love.physics.newPolygonShape(100, 100, 200, 100, 200, 200)
-triangle.fixture = love.physics.newFixture(triangle.body, triangle.shape)
-
-local bar = {}
-bar.body = love.physics.newBody(world, 200, 450, "static")
-bar.shape = love.physics.newPolygonShape(0, 0, 0, 20, 400, 20, 400, 0)
-bar.fixture = love.physics.newFixture(bar.body, bar.shape)
+local paused = false
 
 local key_map = {
+    space = function ()
+        paused = not paused
+    end,
     escape = function()
         love.event.quit()
     end
@@ -25,7 +21,17 @@ love.keypressed = function (key)
     end
 end
 
+love.focus = function (f)
+    if not f then
+        paused = true
+    end
+end
+
 love.update = function (dt)
+    if paused then
+        return
+    end
+
     world:update(dt)
 end
 
@@ -34,4 +40,18 @@ love.draw = function ()
         triangle.shape:getPoints()))
     love.graphics.polygon("line", bar.body:getWorldPoints(
         bar.shape:getPoints()))
+
+    local center_x = love.graphics.getWidth() / 2
+    local center_y = love.graphics.getHeight() / 2
+
+    if paused then
+        local font_size = 36
+        local font = love.graphics.newFont(font_size)
+        love.graphics.setFont(font)
+        love.graphics.setColor(1, 1, 1, 0.9)
+        local text = "Paused"
+        love.graphics.print("Paused", center_x, center_y, 0, 1, 1,
+            font:getWidth(text) / 2, font:getHeight() / 2)
+        love.graphics.setColor(1, 1, 1, 1)
+    end
 end
