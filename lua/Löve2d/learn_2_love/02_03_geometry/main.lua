@@ -21,7 +21,9 @@ love.draw = function ()
     love.graphics.polygon("fill", { 300, 300, 300, 400, 400, 400, 400, 300 })
     love.graphics.polygon("line", { 100, 100, 100, 200, 200, 100, 200, 200 })
 
-    love.graphics.polygon("line", make_polygon({ x = 500, y = 200 }, 75, 5))
+    local n = 5
+    local polygon = make_polygon({ x = 500, y = 200 }, 75, n)
+    love.graphics.polygon("line", polygon)
     love.graphics.polygon("line", make_polygon({ x = 300, y = 100 }, 35, 7))
 end
 
