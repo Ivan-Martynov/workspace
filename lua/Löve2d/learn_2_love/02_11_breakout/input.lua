@@ -1,53 +1,61 @@
-local input = {}
+local state = require("state")
 
-local press_functions = {}
-local release_functions = {}
+local press_functions = {
+    left = function()
+        state.button_left = true
+    end,
 
-input.left = false
-input.right = false
+    right = function()
+        state.button_right = true
+    end,
 
-input.paused = false
+    escape = function()
+        love.event.quit()
+    end,
 
-input.press = function(key)
-    if press_functions[key] then
-        press_functions[key]()
+    space = function()
+        if state.game_over or state.stage_cleared then
+            return
+        else
+            state.paused = not state.paused
+        end
+    end,
+
+    enter = function()
+        if state.game_over or state.stage_cleared then
+            love.event.quit("restart")
+        end
     end
-end
+}
 
-input.release = function(key)
-    if release_functions[key] then
-        release_functions[key]()
+press_functions["return"] = press_functions.enter
+
+local release_functions = {
+    left = function()
+        state.button_left = false
+    end,
+
+    right = function()
+        state.button_right = false
     end
-end
+}
 
-input.toggle_focus = function(focused)
-    if not focused then
-        input.paused = true
+return {
+    press = function(key)
+        if press_functions[key] then
+            press_functions[key]()
+        end
+    end,
+
+    release = function(key)
+        if release_functions[key] then
+            release_functions[key]()
+        end
+    end,
+
+    toggle_focus = function(focused)
+        if not focused then
+            state.paused = true
+        end
     end
-end
-
-press_functions.left = function()
-    input.left = true
-end
-
-press_functions.right = function()
-    input.right = true
-end
-
-press_functions.escape = function()
-    love.event.quit()
-end
-
-press_functions.space = function()
-    input.paused = not input.paused
-end
-
-release_functions.left = function()
-    input.left = false
-end
-
-release_functions.right = function()
-    input.right = false
-end
-
-return input
+}

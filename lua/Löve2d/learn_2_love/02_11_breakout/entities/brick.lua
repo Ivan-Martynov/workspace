@@ -1,3 +1,4 @@
+local state = require("state")
 local world = require("world")
 
 return function(x_pos, y_pos)
@@ -9,20 +10,16 @@ return function(x_pos, y_pos)
     entity.fixture = love.physics.newFixture(entity.body, entity.shape)
     entity.fixture:setUserData(entity)
 
+    entity.type = "brick"
     entity.health = 2
 
-    entity.colors = {
-        { 1, 0, 0, 1 },
-        { 0, 1, 0, 1 }
-    }
-
     entity.draw = function(self)
-        love.graphics.setColor(self.colors[math.max(1, entity.health)])
+        love.graphics.setColor(state.palette[entity.health] or state.palette[1])
 
         love.graphics.polygon("fill",
             self.body:getWorldPoints(self.shape:getPoints()))
 
-        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.setColor(state.palette[5])
     end
 
     entity.end_contact = function(self)

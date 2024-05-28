@@ -15,13 +15,17 @@ return function(pos_x, pos_y)
     entity.fixture:setRestitution(1)
     entity.fixture:setUserData(entity)
 
+    local font = love.graphics.newFont(12)
     entity.draw = function(self)
         local x, y = self.body:getWorldCenter()
         love.graphics.circle("fill", x, y, self.shape:getRadius())
 
         local vel_x, vel_y = self.body:getLinearVelocity()
         local speed = math.abs(vel_x) + math.abs(vel_y)
-        love.graphics.print("Speed = " .. speed, 10, 10)
+        local window_width = love.window.getMode()
+        love.graphics.setFont(font)
+        love.graphics.printf("Speed = " .. speed, 10, 10,
+            window_width, "left")
     end
 
     entity.update = function(self, _)

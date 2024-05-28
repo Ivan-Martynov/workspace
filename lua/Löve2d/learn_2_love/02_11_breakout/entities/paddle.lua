@@ -1,8 +1,8 @@
-local input = require("input")
+local state = require("state")
 local world = require("world")
 
 return function(pos_x, pos_y)
-    local window_width, window_height = love.window.getMode()
+    local window_width = love.window.getMode()
 
     local entity_width = 180
     local entity_height = 20
@@ -19,16 +19,16 @@ return function(pos_x, pos_y)
     entity.fixture:setUserData(entity)
 
     entity.update = function(self, _)
-        if input.left and input.right then
+        if state.button_left and state.button_right then
             return
         end
 
         --local self_x, self_y = self.body:getPosition()
         local self_x = self.body:getX()
 
-        if input.left and (self_x > left_boundary) then
+        if state.button_left and (self_x > left_boundary) then
             self.body:setLinearVelocity(-entity_speed, 0)
-        elseif input.right and (self_x < right_boundary) then
+        elseif state.button_right and (self_x < right_boundary) then
             self.body:setLinearVelocity(entity_speed, 0)
         else
             self.body:setLinearVelocity(0, 0)

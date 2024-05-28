@@ -1,6 +1,6 @@
-
 local entities = require("entities")
 local input = require("input")
+local state = require("state")
 local world = require("world")
 
 love.keypressed = function(key)
@@ -16,13 +16,16 @@ love.focus = function(focused)
 end
 
 love.update = function(dt)
-    if input.paused then
+    if state.game_over or state.stage_cleared or state.paused then
         return
     end
+
+    local no_bricks = true
 
     local index = 1
     while index <= #entities do
         local entity = entities[index]
+
         if entity.update then
             entity:update(dt)
         end
@@ -31,9 +34,14 @@ love.update = function(dt)
             table.remove(entities, index)
             entity.fixture:destroy()
         else
+            if entity.type == "brick" then
+                no_bricks = false
+            end
             index = index + 1
         end
     end
+
+    state.stage_cleared = no_bricks
 
     world:update(dt)
 end
