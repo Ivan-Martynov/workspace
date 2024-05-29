@@ -31,7 +31,17 @@ end
 
 local permutations = make_permutations(N)
 
+local function print_board_line(start_symbol, middle_symbol, end_symbol)
+    io.write(start_symbol, "───")
+    for _ = 1, N - 1 do
+        io.write(middle_symbol, "───")
+    end
+    io.write(end_symbol, "\n")
+end
+
 local function print_board(a)
+    print_board_line("┌", "┬", "┐")
+
     for i = 1, N do
         io.write("│")
         for j = 1, N do
@@ -40,26 +50,18 @@ local function print_board(a)
         io.write("\n")
 
         if i ~= N then
-            io.write("├───")
-            for _ = 1, N - 1 do
-                io.write("┼───")
-            end
-            io.write("┤\n")
+            print_board_line("├", "┼", "┤")
         end
     end
-    io.write("└───")
-    for _ = 1, N - 1 do
-        io.write("┴───")
-    end
-    io.write("┘\n")
 
-
-    io.write("\n")
+    print_board_line("└", "┴", "┘")
 end
 
+local check_count = 0
 local function is_solution(v)
     for i = 1, N do
         for j = i + 1, N do
+            check_count = check_count + 1
             if (math.abs(v[j] - v[i]) == math.abs(i - j)) then
                 return false
             end
@@ -79,3 +81,4 @@ end
 
 print("Permutation count = " .. #permutations)
 print("Solution count = " .. solution_count)
+print("Check performed " .. check_count .. " times.")
