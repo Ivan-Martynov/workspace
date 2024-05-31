@@ -2,14 +2,17 @@
 #.PHONY: Makefile
 
 # Include makefile with setup for compiler options.
-include ../../../make_compiler_setup.mk
+include ../../make_compiler_setup.mk
 
 BIN_DIR := bin
+LIB_DIR := lib
 OBJ_DIR := obj
 SRC_DIR := src
 INC_DIR := include
 
 CXXFLAGS += -I $(INC_DIR)
+
+LDLIBS += -L./$(LIB_DIR)/ -lglfw3
 
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
@@ -19,24 +22,22 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := example1.exe example2.exe example3.exe example4.exe
+TARGETS := $(BIN_DIR)/$(BUILD)/hello_window \
+	$(BIN_DIR)/$(BUILD)/hello_triangle
 
 .PHONY : all
 all : $(TARGETS)
 
-example1.exe: example1.o
+$(BIN_DIR)/$(BUILD)/hello_window: hello_window.o glad.o
 	$(LINK_CMD) $^ -o $@ $(LDLIBS)
 
-example2.exe: example2.o
-	$(LINK_CMD) $^ -o $@ $(LDLIBS)
-
-example3.exe: example3.o
-	$(LINK_CMD) $^ -o $@ $(LDLIBS)
-
-example4.exe: example4.o
+$(BIN_DIR)/$(BUILD)/hello_triangle: hello_triangle.o glad.o
 	$(LINK_CMD) $^ -o $@ $(LDLIBS)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
+$(OBJ_DIR)/glad.o : $(SRC_DIR)/glad.c
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 $(OBJECTS) : | $(OBJ_DIR)
