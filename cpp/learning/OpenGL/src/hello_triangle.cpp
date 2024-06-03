@@ -2,8 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-void framebuffer_size_callback([[maybe_unused]] GLFWwindow* window_ptr,
-    int width, int height)
+void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
 #if _DEBUG
     std::cout << "Window resized to " << width << ", " << height << ".\n";
@@ -12,6 +11,20 @@ void framebuffer_size_callback([[maybe_unused]] GLFWwindow* window_ptr,
 }
 
 static GLenum current_mode {GL_FILL};
+
+void key_callback(GLFWwindow* window_ptr, const int key, const int,
+        const int action, const int)
+{
+    if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+    {
+        glfwSetWindowShouldClose(window_ptr, GLFW_TRUE);
+    }
+    else if ((key == GLFW_KEY_SPACE) && (action == GLFW_PRESS))
+    {
+        current_mode = (current_mode == GL_FILL) ? GL_LINE : GL_FILL;
+        glPolygonMode(GL_FRONT_AND_BACK, current_mode);
+    }
+}
 
 // Process inputs.
 void process_input(GLFWwindow* window_ptr)
@@ -80,13 +93,18 @@ bool load_window(struct WindowLoader& window_loader)
     }
 
     window_loader.state = load_codes::SUCCESS;
+
+    glfwSetKeyCallback(window_loader.window_ptr, key_callback);
+
+    glfwSwapInterval(1);
+
     return true;
 }
 
-void update_window(GLFWwindow* window_ptr)
-{
-    process_input(window_ptr);
-}
+//void update_window(GLFWwindow* window_ptr)
+//{
+//    process_input(window_ptr);
+//}
 
 void render_window_start()
 {
@@ -117,7 +135,6 @@ int main()
         return static_cast<int>(window_loader.state);
     }
 
-#if 1
     constexpr float vertices[] = {
          0.5f,  0.5f,
          0.5f, -0.5f,
@@ -128,19 +145,12 @@ int main()
         0, 1, 3, // First triangle.
         1, 2, 3, // Second triangle.
     };
-#else
-    constexpr float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f,
-    };
-#endif
 
     const char* vertex_shader_src = "#version 330 core\n"
         "layout (location = 0) in vec2 pos;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(pos.x, pos.y, 0.0, 1.0);\n"
+        "   gl_Position = vec4(pos.xy, 0.0, 1.0);\n"
         "}\n";
     const char* fragment_shader_src = "#version 330 core\n"
         "out vec4 color;\n"
@@ -205,7 +215,7 @@ int main()
 
     while(!glfwWindowShouldClose(window_loader.window_ptr))
     {
-        update_window(window_loader.window_ptr);
+        //update_window(window_loader.window_ptr);
 
         render_window_start();
 

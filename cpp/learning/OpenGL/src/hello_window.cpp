@@ -11,6 +11,15 @@ void framebuffer_size_callback([[maybe_unused]] GLFWwindow* window_ptr,
     glViewport(0, 0, width, height);
 }
 
+void key_callback(GLFWwindow* window_ptr, const int key, const int,
+        const int action, const int)
+{
+    if ((key == GLFW_KEY_ESCAPE) && (action == GLFW_PRESS))
+    {
+        glfwSetWindowShouldClose(window_ptr, GLFW_TRUE);
+    }
+}
+
 // Process inputs.
 void process_input(GLFWwindow* window_ptr)
 {
@@ -73,21 +82,26 @@ bool load_window(struct WindowLoader& window_loader)
     }
 
     window_loader.state = load_codes::SUCCESS;
+
+    glfwSetKeyCallback(window_loader.window_ptr, key_callback);
+
+    glfwSwapInterval(1);
+
     return true;
 }
 
-void update_window(GLFWwindow* window_ptr)
-{
-    process_input(window_ptr);
-}
+//void update_window(GLFWwindow* window_ptr)
+//{
+    //process_input(window_ptr);
+//}
 
-void render_window(GLFWwindow* window_ptr)
+void render_window([[maybe_unused]]GLFWwindow* window_ptr)
 {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    static constexpr GLfloat bg_color[] = {0.2f, 0.3f, 0.3f, 1.0f};
 
-    glfwSwapBuffers(window_ptr);
-    glfwPollEvents();    
+    glClearBufferfv(GL_COLOR, 0, bg_color);
+    //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    // glClear(GL_COLOR_BUFFER_BIT);
 }
 
 int main()
@@ -100,10 +114,15 @@ int main()
     
     while(!glfwWindowShouldClose(window_loader.window_ptr))
     {
-        update_window(window_loader.window_ptr);
+        glfwPollEvents();    
+
+        //update_window(window_loader.window_ptr);
         render_window(window_loader.window_ptr);
+
+        glfwSwapBuffers(window_loader.window_ptr);
     }
 
+    glfwDestroyWindow(window_loader.window_ptr);
     glfwTerminate();
 
     return 0;
