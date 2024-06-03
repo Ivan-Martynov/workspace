@@ -1,6 +1,11 @@
+//#include <glad/glad.h>
+//#include <GLFW/glfw3.h>
+
+#include "window_tools/WindowLoader.h"
+#include "shader_tools/ShaderCreator.h"
+#include "shader_tools/ShaderProgram.h"
+
 #include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
@@ -40,67 +45,6 @@ void process_input(GLFWwindow* window_ptr)
     }
 }
 
-enum class load_codes {
-    SUCCESS,
-    FAIL_GLFW_INIT,
-    FAIL_GLFW_WINDOW_CREATE,
-    FAIL_GLAD_INIT,
-};
-
-struct WindowLoader
-{
-    load_codes state;
-    GLFWwindow* window_ptr;
-};
-
-bool load_window(struct WindowLoader& window_loader)
-{
-    // Initialize glfw.
-    if (!glfwInit())
-    {
-        std::cout << "Failed to initialize GLFW.\n";
-        window_loader.state = load_codes::FAIL_GLFW_INIT;
-        return false;
-    }
-
-    // Configure glfw.
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    // Create a window.
-    window_loader.window_ptr = glfwCreateWindow(800, 600, "Hello, Window",
-        nullptr, nullptr);
-    if (!window_loader.window_ptr)
-    {
-        std::cout << "Failed to create a GLFW window.\n";
-        window_loader.state = load_codes::FAIL_GLFW_WINDOW_CREATE;
-        return false;
-    }
-    glfwMakeContextCurrent(window_loader.window_ptr);
-    glfwSetFramebufferSizeCallback(window_loader.window_ptr,
-        framebuffer_size_callback);
-
-    // Load all OpenGL function pointers.
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-    {
-        std::cout << "Failed to initialize GLAD.\n";
-        window_loader.state = load_codes::FAIL_GLAD_INIT;
-        return false;
-    }
-
-    window_loader.state = load_codes::SUCCESS;
-
-    glfwSetKeyCallback(window_loader.window_ptr, key_callback);
-
-    glfwSwapInterval(1);
-
-    return true;
-}
-
 //void update_window(GLFWwindow* window_ptr)
 //{
 //    process_input(window_ptr);
@@ -118,39 +62,46 @@ void render_window_end(GLFWwindow* window_ptr)
     glfwPollEvents();    
 }
 
-void render_window(GLFWwindow* window_ptr)
-{
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glfwSwapBuffers(window_ptr);
-    glfwPollEvents();    
-}
-
 int main()
 {
-    struct WindowLoader window_loader {};
-    if (!load_window(window_loader))
+    Marvin::WindowLoader window_loader {};
+    if (!window_loader.loaded())
     {
-        return static_cast<int>(window_loader.state);
+        return 1;
     }
 
+    window_loader.set_resize_callback(framebuffer_size_callback);
+    window_loader.set_key_callback(key_callback);
+
+#if 1
     constexpr float vertices[] = {
          0.5f,  0.5f,
          0.5f, -0.5f,
         -0.5f, -0.5f,
         -0.5f,  0.5f,
+         0.5f,  0.5f,
     };
+#else
+    constexpr GLfloat vertices[] =
+    {
+        0.02f, 0.5f, 0.0f, 1.0f,
+        1.0f, 0.5f, 0.0f, 1.0f,
+        0.9f, 0.6f, 0.0f, 1.0f
+    };
+#endif
+
+#if 1
     constexpr int indices[] = {
         0, 1, 3, // First triangle.
         1, 2, 3, // Second triangle.
     };
+#endif
 
     const char* vertex_shader_src = "#version 330 core\n"
         "layout (location = 0) in vec2 pos;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(pos.xy, 0.0, 1.0);\n"
+        "   gl_Position = vec4(pos, 0.0, 1.0);\n"
         "}\n";
     const char* fragment_shader_src = "#version 330 core\n"
         "out vec4 color;\n"
@@ -159,35 +110,13 @@ int main()
         "   color = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
         "}\n";
 
-    unsigned int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_src, nullptr);
-    glCompileShader(vertex_shader);
+    const GLuint vertex_shader {Marvin::ShaderCreator::create_shader(
+        GL_VERTEX_SHADER, &vertex_shader_src)};
+    const GLuint fragment_shader {Marvin::ShaderCreator::create_shader(
+        GL_FRAGMENT_SHADER, &fragment_shader_src)};
 
-    int success{};
-    char info_log[512];
-    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertex_shader, 512, nullptr, info_log);
-        std::cout << "Failed to compile a vertex shader\n";
-    }
-
-    unsigned int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_src, nullptr);
-    glCompileShader(fragment_shader);
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
-        std::cout << "Failed to compile a fragment shader\n";
-    }
-
-    unsigned int shader_program = glCreateProgram();
-    glAttachShader(shader_program, vertex_shader);
-    glAttachShader(shader_program, fragment_shader);
-    glLinkProgram(shader_program);
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
+    const Marvin::ShaderProgram shader_program { vertex_shader,
+        fragment_shader };
 
     unsigned int vbo {};
     glGenBuffers(1, &vbo);
@@ -196,42 +125,49 @@ int main()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    unsigned int ebo {};
-    glGenBuffers(1, &ebo);
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+#if 1
+    unsigned int ebo {};
+    glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
         GL_STATIC_DRAW);
+#endif
 
+#if 1
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float),
         (void*)0);
+#else
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+        (void*)0);
+#endif
+
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //glBindVertexArray(0);
 
-    while(!glfwWindowShouldClose(window_loader.window_ptr))
+    while(!glfwWindowShouldClose(window_loader.get_pointer()))
     {
-        //update_window(window_loader.window_ptr);
-
         render_window_start();
 
-        glUseProgram(shader_program);
+        shader_program.use();
         //glBindVertexArray(vao);
+        //glDrawArrays(GL_LINE_STRIP_ADJACENCY, 0, 3);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glDrawArrays(GL_LINE_STRIP, 0, 5);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, 0);
 
-        render_window_end(window_loader.window_ptr);
+        render_window_end(window_loader.get_pointer());
+        //glFlush();
     }
 
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ebo);
-    glDeleteProgram(shader_program);
+    //glDeleteBuffers(1, &ebo);
 
     glfwTerminate();
 

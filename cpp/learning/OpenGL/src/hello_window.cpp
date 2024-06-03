@@ -70,22 +70,22 @@ bool load_window(struct WindowLoader& window_loader)
         return false;
     }
     glfwMakeContextCurrent(window_loader.window_ptr);
-    glfwSetFramebufferSizeCallback(window_loader.window_ptr,
-        framebuffer_size_callback);
+//    glfwSetFramebufferSizeCallback(window_loader.window_ptr,
+ //       framebuffer_size_callback);
 
     // Load all OpenGL function pointers.
-    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-    {
-        std::cout << "Failed to initialize GLAD.\n";
-        window_loader.state = load_codes::FAIL_GLAD_INIT;
-        return false;
-    }
+    //if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+    //{
+    //    std::cout << "Failed to initialize GLAD.\n";
+    //    window_loader.state = load_codes::FAIL_GLAD_INIT;
+    //    return false;
+    //}
 
     window_loader.state = load_codes::SUCCESS;
 
-    glfwSetKeyCallback(window_loader.window_ptr, key_callback);
+    //glfwSetKeyCallback(window_loader.window_ptr, key_callback);
 
-    glfwSwapInterval(1);
+    //glfwSwapInterval(1);
 
     return true;
 }
@@ -117,7 +117,7 @@ int main()
         glfwPollEvents();    
 
         //update_window(window_loader.window_ptr);
-        render_window(window_loader.window_ptr);
+        //render_window(window_loader.window_ptr);
 
         glfwSwapBuffers(window_loader.window_ptr);
     }

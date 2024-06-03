@@ -12,7 +12,7 @@ INC_DIR := include
 
 CXXFLAGS += -I $(INC_DIR)
 
-LDLIBS += -L./$(LIB_DIR)/ -lglfw
+LDLIBS += -L./$(LIB_DIR)/ -lglfw3
 
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
@@ -31,10 +31,23 @@ all : $(TARGETS)
 $(BIN_DIR)/$(BUILD)/hello_window: hello_window.o glad.o
 	$(LINK_CMD) $^ -o $@ $(LDLIBS)
 
-$(BIN_DIR)/$(BUILD)/hello_triangle: hello_triangle.o glad.o
+$(BIN_DIR)/$(BUILD)/hello_triangle: hello_triangle.o \
+	$(OBJ_DIR)/WindowLoader.o \
+	$(OBJ_DIR)/ShaderCreator.o \
+	$(OBJ_DIR)/ShaderProgram.o \
+	glad.o
 	$(LINK_CMD) $^ -o $@ $(LDLIBS)
 
+$(OBJ_DIR)/hello_triangle.o : $(SRC_DIR)/hello_triangle.cpp
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/window_tools/%.cpp
+	$(CXX) -c $(CXXFLAGS) $< -o $@
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/shader_tools/%.cpp
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 $(OBJ_DIR)/glad.o : $(SRC_DIR)/glad.c
