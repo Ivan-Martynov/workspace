@@ -23,6 +23,12 @@ class WindowLoader
 
   public:
     explicit WindowLoader();
+    explicit WindowLoader(const WindowLoader&) = delete;
+    explicit WindowLoader(WindowLoader&&) = delete;
+    WindowLoader& operator=(const WindowLoader&) = delete;
+    WindowLoader& operator=(WindowLoader&&) = delete;
+
+    ~WindowLoader();
 
     GLFWwindow* get_pointer();
 

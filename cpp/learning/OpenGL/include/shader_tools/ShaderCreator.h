@@ -13,7 +13,8 @@ class ShaderCreator
     ShaderCreator() = delete;
 
   public:
-    static GLuint create_shader(GLenum, const GLchar**);
+    static GLuint create_from_string(GLenum, const GLchar**);
+    static GLuint create_from_file(GLenum, const GLchar*);
 };
     
 } // namespace Marvin

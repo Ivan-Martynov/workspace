@@ -60,6 +60,14 @@ WindowLoader::WindowLoader(): m_window_ptr {nullptr}
     }
 }
 
+WindowLoader::~WindowLoader()
+{
+    if (m_window_ptr)
+    {
+        glfwDestroyWindow(m_window_ptr);
+    }
+}
+
 GLFWwindow* WindowLoader::get_pointer()
 {
     return m_window_ptr;
