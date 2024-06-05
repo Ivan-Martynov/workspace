@@ -39,7 +39,18 @@ void key_callback(GLFWwindow* window_ptr, const int key, const int,
                 break;
 
             case GLFW_KEY_SPACE:
-                current_mode = (current_mode == GL_FILL) ? GL_LINE : GL_FILL;
+                if (current_mode == GL_FILL)
+                {
+                    current_mode = GL_LINE;
+                }
+                else if (current_mode == GL_LINE)
+                {
+                    current_mode = GL_POINT;
+                }
+                else
+                {
+                    current_mode = GL_FILL;
+                }
                 glPolygonMode(GL_FRONT_AND_BACK, current_mode);
                 break;
 

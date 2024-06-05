@@ -24,7 +24,8 @@ SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
 TARGETS := $(BIN_DIR)/$(BUILD)/hello_window \
 	$(BIN_DIR)/$(BUILD)/hello_triangle \
-	$(BIN_DIR)/$(BUILD)/hello_shaders
+	$(BIN_DIR)/$(BUILD)/hello_shaders \
+	$(BIN_DIR)/$(BUILD)/hello_texture
 
 .PHONY : all
 all : $(TARGETS)
@@ -40,6 +41,13 @@ $(BIN_DIR)/$(BUILD)/hello_triangle: hello_triangle.o \
 	$(LINK_CMD) $^ -o $@ $(LDLIBS)
 
 $(BIN_DIR)/$(BUILD)/hello_shaders: hello_shaders.o \
+	$(OBJ_DIR)/WindowLoader.o \
+	$(OBJ_DIR)/ShaderCreator.o \
+	$(OBJ_DIR)/ShaderProgram.o \
+	glad.o
+	$(LINK_CMD) $^ -o $@ $(LDLIBS)
+
+$(BIN_DIR)/$(BUILD)/hello_texture: hello_texture.o \
 	$(OBJ_DIR)/WindowLoader.o \
 	$(OBJ_DIR)/ShaderCreator.o \
 	$(OBJ_DIR)/ShaderProgram.o \

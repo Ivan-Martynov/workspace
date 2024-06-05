@@ -40,7 +40,18 @@ void key_callback(GLFWwindow* window_ptr, const int key, const int,
                 break;
 
             case GLFW_KEY_SPACE:
-                current_mode = (current_mode == GL_FILL) ? GL_LINE : GL_FILL;
+                if (current_mode == GL_FILL)
+                {
+                    current_mode = GL_LINE;
+                }
+                else if (current_mode == GL_LINE)
+                {
+                    current_mode = GL_POINT;
+                }
+                else
+                {
+                    current_mode = GL_FILL;
+                }
                 glPolygonMode(GL_FRONT_AND_BACK, current_mode);
                 break;
 
@@ -204,6 +215,8 @@ static void draw_simple_triangles(Marvin::WindowLoader& window_loader,
 
 static void draw_two_triangles(Marvin::WindowLoader& window_loader)
 {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     struct SimpleTriangle first_triangle {};
     create_simple_triangle(first_triangle, std::vector<GLfloat>  {
             -0.5f, 0.75f,
@@ -225,7 +238,7 @@ static void draw_two_triangles(Marvin::WindowLoader& window_loader)
         "out vec4 color;\n"
         "void main()\n"
         "{\n"
-        "   color = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
+        "   color = vec4(1.0f, 0.5f, 0.2f, 0.75f);"
         "}\n"};
     const char* fragment_shader_src2 {"#version 330 core\n"
         "out vec4 color;\n"
@@ -257,10 +270,14 @@ static void draw_two_triangles(Marvin::WindowLoader& window_loader)
         shader_program.use();
         //glBindVertexArray(vao);
         glBindVertexArray(first_triangle.vao);
+
+        glPointSize(15);
         glDrawArrays(style, 0, 3);
 
         shader_program2.use();
         glBindVertexArray(second_triangle.vao);
+
+        glPointSize(5);
         glDrawArrays(style, 0, 3);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         //glDrawElements(GL_TRIANGLE_FAN, 6, GL_UNSIGNED_INT, nullptr);
@@ -284,7 +301,6 @@ int main()
 
     window_loader.set_resize_callback(framebuffer_size_callback);
     window_loader.set_key_callback(key_callback);
-
     glPointSize(5);
 
 #if 0

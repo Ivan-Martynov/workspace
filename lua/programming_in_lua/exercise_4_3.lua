@@ -47,3 +47,4 @@ end
 debug_palindrom("step, on; ! no ... pets?")
 debug_palindrom("banana")
 debug_palindrom("açãёo,;.ж.?! oёãça")
+debug_palindrom("а роза упала на лапу азора.")
