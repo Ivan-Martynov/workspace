@@ -430,6 +430,11 @@ static void rename_mp3_by_title(const char* const path)
                 continue;
             }
 
+            // Concept.
+            // struct MP3_tag_data mp3_tag_data = MP3_tag_data_new(full_path);
+            // char* frame = MP3_get_frame(mp3_tag_data, frame_name);
+            // char* mp3_title = MP3_get_title(mp3_tag_data);
+
             // print_path_stat(full_path);
 
             char* mp3_title = ID3v2_tag_get_title(full_path);
