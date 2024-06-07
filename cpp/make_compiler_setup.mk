@@ -9,7 +9,7 @@ LDLIBS :=
 BUILD := debug
 
 # Flags used for either debug or release.
-compilation_flags.common := -std=c++17 -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++
+compilation_flags.common := -std=c++20 -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++
 # Debug specific flags.
 compilation_flags.debug := -O0 -g -D _DEBUG
 # Release specific flags.

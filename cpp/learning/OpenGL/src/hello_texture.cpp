@@ -14,6 +14,9 @@
 #include <cmath>
 #include <filesystem>
 
+static std::filesystem::path assets_path {};
+static std::filesystem::path graphics_path {};
+
 static GLfloat ratio {0.25f};
 static bool flip_texture {false};
 static size_t example {1};
@@ -283,7 +286,8 @@ static void load_texture_example()
 
     stbi_set_flip_vertically_on_load(flip_texture);
 
-    std::filesystem::path file_path {"assets/graphics/brick_wall.jpg"};
+    //std::filesystem::path file_path {"assets/graphics/brick_wall.jpg"};
+    std::filesystem::path file_path {graphics_path / "brick_wall.jpg"};
     int width {};
     int height {};
     int channel_count {};
@@ -396,7 +400,7 @@ static void load_disco_container()
 
     stbi_set_flip_vertically_on_load(flip_texture);
 
-    std::filesystem::path file_path {"assets/graphics/container.jpg"};
+    std::filesystem::path file_path {graphics_path / "container.jpg"};
     int width {};
     int height {};
     int channel_count {};
@@ -512,7 +516,7 @@ static void load_texture_with_face()
 
     stbi_set_flip_vertically_on_load(flip_texture);
 
-    std::filesystem::path file_path {"assets/graphics/brick_wall.jpg"};
+    std::filesystem::path file_path {graphics_path / "brick_wall.jpg"};
     int width {};
     int height {};
     int channel_count {};
@@ -542,7 +546,7 @@ static void load_texture_with_face()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-    std::filesystem::path file_path2 {"assets/graphics/awesomeface.png"};
+    std::filesystem::path file_path2 {graphics_path / "awesomeface.png"};
     unsigned char* image_data2 {stbi_load(file_path2.string().c_str(),
         &width, &height, &channel_count, 0)};
 
@@ -661,7 +665,7 @@ static void load_texture_with_face_looking_other_way()
 
     stbi_set_flip_vertically_on_load(flip_texture);
 
-    std::filesystem::path file_path {"assets/graphics/brick_wall.jpg"};
+    std::filesystem::path file_path {graphics_path / "brick_wall.jpg"};
     int width {};
     int height {};
     int channel_count {};
@@ -689,7 +693,7 @@ static void load_texture_with_face_looking_other_way()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    std::filesystem::path file_path2 {"assets/graphics/awesomeface.png"};
+    std::filesystem::path file_path2 {graphics_path / "awesomeface.png"};
     unsigned char* image_data2 {stbi_load(file_path2.string().c_str(),
         &width, &height, &channel_count, 0)};
 
@@ -812,7 +816,7 @@ static void load_texture_different_options()
 
     stbi_set_flip_vertically_on_load(flip_texture);
 
-    std::filesystem::path file_path {"assets/graphics/brick_wall.jpg"};
+    std::filesystem::path file_path {graphics_path / "brick_wall.jpg"};
     int width {};
     int height {};
     int channel_count {};
@@ -842,7 +846,7 @@ static void load_texture_different_options()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    std::filesystem::path file_path2 {"assets/graphics/awesomeface.png"};
+    std::filesystem::path file_path2 {graphics_path / "awesomeface.png"};
     unsigned char* image_data2 {stbi_load(file_path2.string().c_str(),
         &width, &height, &channel_count, 0)};
 
@@ -960,7 +964,7 @@ static void load_pixelated_texture()
 
     stbi_set_flip_vertically_on_load(flip_texture);
 
-    std::filesystem::path file_path {"assets/graphics/brick_wall.jpg"};
+    std::filesystem::path file_path {graphics_path / "brick_wall.jpg"};
     int width {};
     int height {};
     int channel_count {};
@@ -988,7 +992,7 @@ static void load_pixelated_texture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    std::filesystem::path file_path2 {"assets/graphics/awesomeface.png"};
+    std::filesystem::path file_path2 {graphics_path / "awesomeface.png"};
     unsigned char* image_data2 {stbi_load(file_path2.string().c_str(),
         &width, &height, &channel_count, 0)};
 
@@ -1018,13 +1022,25 @@ static void load_pixelated_texture()
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-int main()
+int main(int, char* argv[])
 {
     Marvin::WindowLoader window_loader {};
     if (!window_loader.loaded())
     {
         return 1;
     }
+
+    // Full path of the executable.
+    assets_path = std::filesystem::canonical(argv[0]);
+    // We know the location is in ./bin/debug/ or ./bin/release/ which is given
+    // via parent_path. Therefore, two more calls to parent_path are needed in
+    // order to get to the root directory.
+    for (size_t i {0}; i < 3; ++i)
+    {
+        assets_path = assets_path.parent_path();
+    }
+    assets_path /= "assets";
+    graphics_path = assets_path / "graphics";
 
     window_loader.set_resize_callback(framebuffer_size_callback);
     window_loader.set_key_callback(key_callback);
