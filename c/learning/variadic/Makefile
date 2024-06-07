@@ -13,7 +13,7 @@ TARGETS = stddev_demo
 all: $(TARGETS)
 
 stddev_demo: stddev_demo.o
-	$(LINK_CMD) $^ -o $@ $(LIBS) -lm
+	$(LINK_CMD) $^ -o $@ $(LDLIBS) -lm
 
 stddev_demo.o: stddev_demo.c
 	$(CC) -c $(CFLAGS) $< -o $@
