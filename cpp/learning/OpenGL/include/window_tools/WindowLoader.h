@@ -12,7 +12,7 @@ class WindowLoader
   private:
     GLFWwindow* m_window_ptr;
 
-    bool load_window();
+    bool load_window(const int, const int, const char*);
 
     enum class load_codes {
         SUCCESS,
@@ -23,6 +23,8 @@ class WindowLoader
 
   public:
     explicit WindowLoader();
+    explicit WindowLoader(const int, const int, const char*);
+
     explicit WindowLoader(const WindowLoader&) = delete;
     explicit WindowLoader(WindowLoader&&) = delete;
     WindowLoader& operator=(const WindowLoader&) = delete;

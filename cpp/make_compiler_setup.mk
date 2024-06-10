@@ -9,7 +9,7 @@ LDLIBS :=
 BUILD := debug
 
 # Flags used for either debug or release.
-compilation_flags.common := -std=c++20 -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++
+compilation_flags.common := -std=c++23 -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++
 # Debug specific flags.
 compilation_flags.debug := -O0 -g -D _DEBUG
 # Release specific flags.
@@ -21,3 +21,4 @@ CXXFLAGS := ${compilation_flags.common} ${compilation_flags.${BUILD}}
 # Specifying explicitly compilation and linking commands.
 COMPILE_CMD := $(CXX) $(CFLAGS)
 LINK_CMD := $(CXX)
+MKLIB_CMD := ar rsc

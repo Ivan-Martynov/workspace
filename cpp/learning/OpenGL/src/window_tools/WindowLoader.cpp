@@ -5,7 +5,8 @@
 namespace Marvin
 {
 
-bool WindowLoader::load_window()
+bool WindowLoader::load_window(const int width, const int height,
+    const char* title)
 {
     // Initialize glfw.
     if (!glfwInit())
@@ -23,8 +24,7 @@ bool WindowLoader::load_window()
 #endif
 
     // Create a window.
-    m_window_ptr = glfwCreateWindow(800, 600, "Hello, Window",
-        nullptr, nullptr);
+    m_window_ptr = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if (!m_window_ptr)
     {
         std::cerr << "Failed to create a GLFW window.\n";
@@ -46,18 +46,35 @@ bool WindowLoader::load_window()
 }
 
 /**
- * @brief Construct a new Window Loader::Window Loader object
+ * @brief Construct a new Window Loader:: Window Loader object.
+ * 
+ * @param width Window width.
+ * @param height Window height.
+ * @param title Window title.
+ * 
+ * @version 0.1
+ * 
+ * @date 2024-06-10
+ */
+WindowLoader::WindowLoader(const int width, const int height,
+    const char* title): m_window_ptr {nullptr}
+{
+    if (!load_window(width, height, title))
+    {
+        m_window_ptr = nullptr;
+    }
+}
+
+/**
+ * @brief Construct a new Window Loader::Window Loader object with default
+ * values.
  * 
  * @version 0.1
  * 
  * @date 2024-06-03
  */
-WindowLoader::WindowLoader(): m_window_ptr {nullptr}
+WindowLoader::WindowLoader(): WindowLoader(400, 300, "")
 {
-    if (!load_window())
-    {
-        m_window_ptr = nullptr;
-    }
 }
 
 WindowLoader::~WindowLoader()

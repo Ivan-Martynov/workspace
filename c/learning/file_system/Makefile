@@ -19,10 +19,10 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
 OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := $(BIN_DIR)/$(BUILD)/list_files.exe \
-	$(BIN_DIR)/$(BUILD)/display_files.exe \
-	$(BIN_DIR)/$(BUILD)/directory_creator.exe \
-	$(BIN_DIR)/$(BUILD)/tests.exe
+TARGETS := $(BIN_DIR)/$(BUILD)/directory_creator.exe
+# $(BIN_DIR)/$(BUILD)/list_files.exe
+# $(BIN_DIR)/$(BUILD)/display_files.exe
+# $(BIN_DIR)/$(BUILD)/tests.exe
 
 .PHONY : all
 all : $(TARGETS)

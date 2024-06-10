@@ -1024,7 +1024,7 @@ static void load_pixelated_texture()
 
 int main(int, char* argv[])
 {
-    Marvin::WindowLoader window_loader {};
+    Marvin::WindowLoader window_loader {900, 600, "Hello, texture."};
     if (!window_loader.loaded())
     {
         return 1;
@@ -1039,6 +1039,7 @@ int main(int, char* argv[])
     {
         assets_path = assets_path.parent_path();
     }
+
     assets_path /= "assets";
     graphics_path = assets_path / "graphics";
 
