@@ -95,7 +95,7 @@ bool load_window(struct WindowLoader& window_loader)
     //process_input(window_ptr);
 //}
 
-void render_window([[maybe_unused]]GLFWwindow* window_ptr)
+void render_window(GLFWwindow*)
 {
     static constexpr GLfloat bg_color[] = {0.2f, 0.3f, 0.3f, 1.0f};
 
