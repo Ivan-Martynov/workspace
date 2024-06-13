@@ -93,6 +93,28 @@ function love.keypressed(key)
     end
 end
 
+local touch_text = ""
+function love.touchpressed(_, x, y, dx, dy, pressure)
+    touch_text = "Pressed => [" ..
+        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
+        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
+        "] => " .. pressure
+end
+
+function love.touchreleased(_, x, y, dx, dy, pressure)
+    touch_text = "Released => [" ..
+        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
+        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
+        "] => " .. pressure
+end
+
+function love.touchmoved(_, x, y, dx, dy, pressure)
+    touch_text = "Moved => [" ..
+        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
+        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
+        "] => " .. pressure
+end
+
 --! @brief Helper function to move a paddle up or down.
 --! @param paddle Paddle to move.
 --! @param up_dir Flag to move the paddle: true => up, otherwise down.
@@ -223,4 +245,6 @@ function love.draw()
             (window_height - current_font:getHeight()) / 2,
             window_width, "center")
     end
+
+    love.graphics.print(touch_text, 20, 20)
 end
