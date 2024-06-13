@@ -21,10 +21,16 @@ return {
     {
         "neovim/nvim-lspconfig",
         config = function()
+            local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
             local lsp_config = require("lspconfig")
 
-            lsp_config.lua_ls.setup({})
-            lsp_config.clangd.setup({})
+            lsp_config.lua_ls.setup({
+                capabilities = capabilities,
+            })
+            lsp_config.clangd.setup({
+                capabilities = capabilities,
+            })
 
             vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
             vim.keymap.set("n", "<F12>", vim.lsp.buf.definition, {})
