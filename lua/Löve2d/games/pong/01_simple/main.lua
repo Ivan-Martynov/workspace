@@ -9,6 +9,8 @@
     - Left paddle can be moved up and down using 'w' and 's' keys, respectively.
     - Right paddle can be moved up and down using 'up' and 'down' keys,
     respectively.
+    - Alternatively, touch on a touchscreen allows to move paddles if the touch
+    is more or less aligned with the paddle.
     - Paddles represent players, having scores. A player's score in incremented
     when the ball flies behind opponent's paddle.
     - Pressing 'p' pauses or unpauses the game.
@@ -95,24 +97,24 @@ end
 
 local touch_text = ""
 function love.touchpressed(_, x, y, dx, dy, pressure)
-    touch_text = "Pressed => [" ..
-        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
-        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
-        "] => " .. pressure
+--    touch_text = "Pressed => [" ..
+--        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
+--        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
+--        "] => " .. pressure
 end
 
 function love.touchreleased(_, x, y, dx, dy, pressure)
-    touch_text = "Released => [" ..
-        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
-        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
-        "] => " .. pressure
+--    touch_text = "Released => [" ..
+--        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
+--        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
+--        "] => " .. pressure
 end
 
 function love.touchmoved(_, x, y, dx, dy, pressure)
-    touch_text = "Moved => [" ..
-        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
-        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
-        "] => " .. pressure
+-----    touch_text = "Moved => [" ..
+-----        string.format("%.0f", x) .. ", " .. string.format("%.0f", y) .. "], ["
+-----        .. string.format("%.0f", dx) .. ", " .. string.format("%.0f", dy) ..
+-----        "] => " .. pressure
 end
 
 --! @brief Helper function to move a paddle up or down.
@@ -140,6 +142,21 @@ button has been pressed.
 --! @param down_key Key name for the down movement.
 --! @param dt Delta time.
 local function check_paddle_key(paddle, up_key, down_key, dt)
+    local touches = love.touch.getTouches()
+    for _, id in ipairs(touches) do
+        local x, y = love.touch.getPosition(id)
+
+        -- Make touch area bigger than the paddle.
+        if (x >= paddle.x - paddle.width) and
+            (x <= paddle.x + paddle.width * 2) then
+            if y < paddle.y + paddle.height / 2 then
+                update_paddle(paddle, true, dt)
+            else
+                update_paddle(paddle, false, dt)
+            end
+        end
+    end
+
     if love.keyboard.isDown(up_key) then
         update_paddle(paddle, true, dt)
     elseif love.keyboard.isDown(down_key) then

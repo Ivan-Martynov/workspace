@@ -17,6 +17,14 @@ function love.keypressed(key)
     input.press(key)
 end
 
+function love.touchpressed(id, x, y, dx, dy, pressure)
+    input.touch_press(id, x, y, dx, dy, pressure)
+end
+
+function love.touchreleased(id, x, y, dx, dy, pressure)
+    input.touch_release(id, x, y, dx, dy, pressure)
+end
+
 -- Keyreleased callback.
 function love.keyreleased(key)
     input.release(key)

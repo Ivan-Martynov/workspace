@@ -37,9 +37,9 @@ function entities.update(dt)
     end
 
     left_paddle:move(control.move_left_paddle_up,
-        control.move_left_paddle_down)
+        control.move_left_paddle_down, control.touchpad_x, control.touchpad_y)
     right_paddle:move(control.move_right_paddle_up,
-        control.move_right_paddle_down)
+        control.move_right_paddle_down, control.touchpad_x, control.touchpad_y)
 
     left_paddle.y = math.max(left_paddle.y, upper_bar.y + upper_bar.height)
     left_paddle.y = math.min(left_paddle.y - left_paddle.height, lower_bar.y)

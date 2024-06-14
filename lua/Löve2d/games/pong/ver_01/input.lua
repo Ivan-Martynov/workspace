@@ -45,6 +45,16 @@ return {
         end
     end,
 
+    touch_press = function(_, x, y, _, _, _)
+        control.touchpad_x = x
+        control.touchpad_y = y
+    end,
+
+    touch_release = function(_, _, _, _, _, _)
+        control.touchpad_x = nil
+        control.touchpad_y = nil
+    end,
+
     release = function(key)
         if release_functions[key] then
             release_functions[key]()
