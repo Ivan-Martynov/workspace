@@ -1,3 +1,11 @@
+local function string_to_table(str)
+    local t = {}
+    str:gsub(".", function(b)
+        t[#t + 1] = b
+    end)
+    return t
+end
+
 local function file_as_array(file_path)
     local proxy = {}
     --local input = assert(io.open(file_path, "rb"))
@@ -15,46 +23,41 @@ local function file_as_array(file_path)
         end,
 
         __newindex = function(_, k, v)
-            local input = assert(io.open(file_path, "wb"))
+            local input = assert(io.open(file_path, "rb"))
+            local bytes = input:read("a")
+            assert(input:close())
+            local s = bytes:sub(1, k - 1) .. v .. bytes:sub(k + 1, -1)
+            input = assert(io.open(file_path, "wb"))
 
-            assert(input:seek("set", k))
-            assert(input:write(v))
+            --assert(input:seek("set", k))
+            assert(input:write(s))
 
             assert(input:close())
         end,
 
         __next = function(_, k)
-           local input = assert(io.open(file_path, "rb"))
+            local input = assert(io.open(file_path, "rb"))
             print("* calling next" .. tostring(k))
             assert(input:seek("set", k - 1))
             local bytes = input:read(1)
-            assert(input:close()) 
+            assert(input:close())
+
             return k, bytes
         end,
 
         __pairs = function()
             local input = assert(io.open(file_path, "rb"))
-            local k = 1
-            return function(_, _)
+            local bytes = string_to_table(input:read("a"))
+            assert(input:close())
 
-                assert(input:seek("set", k - 1))
-                local next_value = input:read(1)
-                if next_value ~= nil then
-                    print("*traversing element " .. tostring(k) .. " => " .. next_value)
-                end
-
-                --local next_key, next_value = next(t, k)
-                --if next_key ~= nil then
-                --    print("*traversing element " .. tostring(next_key))
-                --end
-                --return next_key, next_value
-                return k + 1, next_value
+            return function(_, k)
+                local next_key, next_value = next(bytes, k)
+                return next_key, next_value
             end
         end,
 
         __len = function()
             local input = assert(io.open(file_path, "rb"))
-
             local size = assert(input:seek("end"))
             assert(input:close())
 
@@ -67,18 +70,19 @@ local function file_as_array(file_path)
 end
 
 local file_path = "files/sample.txt"
---local input = assert(io.open(file_path, "wb"))
+--local file_path = "files/test.bmp"
 
---local t = input:read("a")
 --print(t)
 local t = file_as_array(file_path)
-print(t[1])
---t[2] = 'u'
-print(t[2])
-print(t[3])
-print(t[4])
+io.write(string.format("0x%X\n", string.byte(t[1])))
 print(#t)
 
-for _ in pairs(t) do end
+local i = 0
+for _, v in pairs(t) do
+    io.write(string.format("0x%X ", string.byte(v)))
+    if v == "1" then
+        i = i + 1
+    end
+end
+io.write("\n", i, "\n")
 
---assert(input:close())
