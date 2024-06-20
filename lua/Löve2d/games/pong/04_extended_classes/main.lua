@@ -4,6 +4,9 @@
 
     Next version of pong, using extended version of classes.
     Features:
+    - Objects can be created in the constructor style.
+
+    - Audio files are now in a separate folder.
 ]]
 
 -- Classes for paddles and a ball.

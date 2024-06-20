@@ -2,7 +2,7 @@
 #.PHONY: Makefile
 
 # Include makefile with setup for compiler options.
-include ../../../make_compiler_setup.mk
+include ../../../../make_compiler_setup.mk
 
 BIN_DIR := bin
 OBJ_DIR := obj
