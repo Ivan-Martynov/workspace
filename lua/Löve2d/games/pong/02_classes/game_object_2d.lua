@@ -1,21 +1,26 @@
-local Game_object_2d = {}
-Game_object_2d.__index = Game_object_2d
+-- Simple 2d object class, having x, y coordinates.
+local GameObject2d = {}
+GameObject2d.__index = GameObject2d
 
-function Game_object_2d:init(x, y)
+-- Initialize the coordinates.
+function GameObject2d:init(x, y)
     self.x = x or 0
     self.y = y or 0
 end
 
-function Game_object_2d.new(x, y)
-    local instance = setmetatable({}, Game_object_2d)
+-- Create new object.
+function GameObject2d.new(x, y)
+    local instance = setmetatable({}, GameObject2d)
     instance:init(x, y)
     return instance
 end
 
-function Game_object_2d:update(_)
+-- Function to update an object, usually having a time parameter (dt).
+function GameObject2d:update(_)
 end
 
-function Game_object_2d:draw(_)
+-- Function to draw an object, optionally having mode parameter.
+function GameObject2d:draw(_)
 end
 
-return Game_object_2d
+return GameObject2d

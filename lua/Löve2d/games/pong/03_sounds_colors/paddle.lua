@@ -1,4 +1,5 @@
 local MovableObject2d = require "movable_object_2d"
+local ColorSchemeHelper = require "color_scheme_helper"
 
 -- Make a paddle class from MovableObject2d class.
 local Paddle = setmetatable({}, MovableObject2d)
@@ -6,8 +7,9 @@ Paddle.__index = Paddle
 
 -- Create a new paddle using top-left corner coordinates, width, height and
 -- keys, which determing paddle movement up and down.
-function Paddle.new(x, y, width, height, keys)
-    local instance = setmetatable(MovableObject2d.new(x, y, 0, 0), Paddle)
+function Paddle.new(x, y, width, height, keys, color)
+    local instance = setmetatable(MovableObject2d.new(x, y, 0, 0, color),
+        Paddle)
     instance.width = width
     instance.height = height
     instance.score = 0
@@ -72,6 +74,7 @@ end
 -- Draw a paddle and its score. Optionally can provide a drawing mode.
 function Paddle:draw(mode)
     -- Draw the paddle itself as a rectangle.
+    love.graphics.setColor(self.color)
     love.graphics.rectangle(mode or "fill", self.x, self.y,
         self.width, self.height)
 
@@ -80,6 +83,8 @@ function Paddle:draw(mode)
     -- Determine the half of the screen. Then printf function uses this value
     -- to position the text in the middle of the corresponding half.
     local x = math.min(self.x, center_x)
+
+    love.graphics.setColor(ColorSchemeHelper.current["white"])
 
     local font = love.graphics.newFont(32)
     love.graphics.printf(self.score, font, x, font:getHeight(self.score),

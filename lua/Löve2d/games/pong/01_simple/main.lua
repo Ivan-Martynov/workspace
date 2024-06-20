@@ -36,7 +36,7 @@ local function get_paddle(x)
 
     return {
         x = x,
-        y = window_height / 2 - paddle_height,
+        y = (window_height - paddle_height) / 2,
         width = 10,
         height = paddle_height,
         dy = 0,
@@ -230,7 +230,7 @@ function love.update(dt)
 end
 
 local function draw_paddle(paddle, x)
-    local window_width, window_height = love.window.getMode()
+    local window_width= love.window.getMode()
     local current_font = love.graphics.getFont()
     love.graphics.rectangle("fill", paddle.x, paddle.y,
         paddle.width, paddle.height)
@@ -259,7 +259,7 @@ function love.draw()
     -- Inform about paused game.
     if game_paused then
         love.graphics.printf("PAUSED", 0,
-            (window_height - current_font:getHeight()) / 2,
+            window_height / 2 - current_font:getHeight() / 2,
             window_width, "center")
     end
 

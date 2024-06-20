@@ -2,24 +2,26 @@
     --! @file
     --! @brief Simple version of Pong.
 
-    Next version of pong, introducing simple idea of classes.
+    Next version of pong, introducing sounds and colours.
     Features:
-    - Ball and paddles are now instances of respective classes.
-    - They have either own update/draw methods or derived from the base class.
+    - Window has a title.
 
-    - Paddle class has keys representing up/down keys.
-    - Paddles can be moved up and down using keys set in their instances.
-    - Alternatively, touch on a screen or left mouse button click allow to move
-    - paddles if the touch/click is more or less aligned with the paddle.
+    - Sound when a ball hits a paddle or wall.
+    - Sound when score a point.
+    - Background sound.
 
-    - Now printf function gets a font as an argument.
-
-    - Ball collisions resolutions are moved into the ball's class.
+    - Colorschemes to set colours for background and objects.
 ]]
 
 -- Classes for paddles and a ball.
 local PaddleClass = require "paddle"
 local BallClass = require "ball"
+
+-- Sound helper.
+local SoundHelper = require "sound_helper"
+
+-- Color scheme helper.
+local ColorSchemeHelper = require "color_scheme_helper"
 
 --! Flag to track whether the game is paused.
 local game_paused
@@ -32,21 +34,31 @@ local right_paddle
 local ball
 
 function love.load()
+    -- Set title.
+    love.window.setTitle("Pong")
+
     local window_width, window_height = love.window.getMode()
 
+    -- Initialize color scheme and background color.
+    ColorSchemeHelper:set_scheme(ColorSchemeHelper.solarized_light)
+    love.graphics.setBackgroundColor(ColorSchemeHelper.current[1])
+
     -- Using ball class to instantiate a ball.
---    ball = BallClass.new(window_width / 2, window_height / 2, 5)
-    ball = BallClass.new(window_width / 2, window_height / 2, 5)
+    ball = BallClass.new(window_width / 2, window_height / 2, 5,
+        ColorSchemeHelper.current[5])
 
     -- Using paddle class to instantiate paddles.
     local paddle_width = 10
     local paddle_height = 75
     local paddle_y = (window_height - paddle_height) / 2
     left_paddle = PaddleClass.new(0, paddle_y, paddle_width, paddle_height,
-        { up = "w", down = "s" })
+        { up = "w", down = "s" }, ColorSchemeHelper.current[2])
     right_paddle = PaddleClass.new(window_width - paddle_width, paddle_y,
         paddle_width, paddle_height,
-        { up = "up", down = "down" })
+        { up = "up", down = "down" }, ColorSchemeHelper.current[2])
+
+    -- Initialize background sound.
+    SoundHelper.backbround:play()
 
     game_paused = false
 end
@@ -73,8 +85,10 @@ end
 --! @param dt Delta time.
 function love.update(dt)
     if game_paused then
+        SoundHelper.backbround:pause()
         return
     end
+    SoundHelper.backbround:play()
 
     ball:update(dt)
     left_paddle:update(dt)
@@ -85,6 +99,8 @@ end
 
 -- Main rendering function.
 function love.draw()
+    love.graphics.setColor(ColorSchemeHelper.current["white"])
+
     local window_width, window_height = love.window.getMode()
 
     -- Draw vertical centre line.
@@ -100,4 +116,6 @@ function love.draw()
         love.graphics.printf("PAUSED", font, 0,
             (window_height - font:getHeight()) / 2, window_width, "center")
     end
+
+    love.graphics.setColor(ColorSchemeHelper.current["white"])
 end

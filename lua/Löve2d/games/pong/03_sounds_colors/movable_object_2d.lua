@@ -10,8 +10,9 @@ function MovableObject2d:set_velocity(dx, dy)
 end
 
 -- Create new instance with the help of the parent class.
-function MovableObject2d.new(x, y, dx, dy)
-    local instance = setmetatable(GameObject2d.new(x, y), MovableObject2d)
+function MovableObject2d.new(x, y, dx, dy, color)
+    local instance = setmetatable(GameObject2d.new(x, y, color),
+        MovableObject2d)
     instance:set_velocity(dx or 0, dy or 0)
     return instance
 end
