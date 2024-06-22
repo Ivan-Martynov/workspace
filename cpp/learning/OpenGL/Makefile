@@ -13,10 +13,10 @@ INC_DIR := include
 CXXFLAGS += -I $(INC_DIR)
 
 # Windows
-LDLIBS += -L./$(LIB_DIR)/ -lglfw3dll
+#LDLIBS += -L./$(LIB_DIR)/ -lglfw3dll
 
 # Linux
-# LDLIBS += -L./$(LIB_DIR)/ -lglfw
+LDLIBS += -L./$(LIB_DIR)/ -lglfw
 
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
