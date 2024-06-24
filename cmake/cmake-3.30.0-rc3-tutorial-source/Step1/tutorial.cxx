@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         // TODO 12: Create a print statement using Tutorial_VERSION_MAJOR
         //          and Tutorial_VERSION_MINOR
         std::cout << argv[0] << " Version " << Tutorial_VERSION_MAJOR <<
-            "." << Tutorial_VERSION_MAJOR  << "\n";
+            "." << Tutorial_VERSION_MINOR  << "\n";
         std::cout << "Usage: " << argv[0] << " number\n";
         return 1;
     }

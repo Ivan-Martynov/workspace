@@ -19,12 +19,15 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := example1.exe
+TARGETS := example1.exe giant.exe
 
 .PHONY : all
 all : $(TARGETS)
 
 example1.exe: example1.o
+	$(LINK_CMD) $^ -o $@ $(LDLIBS)
+
+giant.exe: giant.o
 	$(LINK_CMD) $^ -o $@ $(LDLIBS)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp

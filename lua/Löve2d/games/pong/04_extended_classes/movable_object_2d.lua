@@ -1,9 +1,7 @@
 local GameObject2d = require "game_object_2d"
 
 -- Make a class for movable objects from GameObject2d class.
-local MovableObject2d = setmetatable({}, GameObject2d)
-MovableObject2d.__index = MovableObject2d
-MovableObject2d.__call = GameObject2d.__call
+local MovableObject2d = GameObject2d:extend()
 
 -- Set object's velocity.
 function MovableObject2d:set_velocity(dx, dy)

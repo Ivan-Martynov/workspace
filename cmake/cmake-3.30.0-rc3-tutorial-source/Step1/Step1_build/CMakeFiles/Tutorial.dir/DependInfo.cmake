@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step1/tutorial.cxx" "CMakeFiles/Tutorial.dir/tutorial.cxx.o" "gcc" "CMakeFiles/Tutorial.dir/tutorial.cxx.o.d"
+  "/c/Users/Ivan/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step1/tutorial.cxx" "CMakeFiles/Tutorial.dir/tutorial.cxx.o" "gcc" "CMakeFiles/Tutorial.dir/tutorial.cxx.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

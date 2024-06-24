@@ -2,14 +2,12 @@ local MovableObject2d = require "movable_object_2d"
 local ColorSchemeHelper = require "color_scheme_helper"
 
 -- Make a paddle class from MovableObject2d class.
-local Paddle = setmetatable({}, MovableObject2d)
-Paddle.__index = Paddle
-Paddle.__call = MovableObject2d.__call
+local Paddle = MovableObject2d:extend()
 
 -- Create a new paddle using top-left corner coordinates, width, height and
 -- keys, which determing paddle movement up and down.
 function Paddle:init(x, y, width, height, keys, color)
-    MovableObject2d.init(self, x, y, 0, 0, color)
+    self.parent.init(self, x, y, 0, 0, color)
     self.width = width
     self.height = height
     self.score = 0

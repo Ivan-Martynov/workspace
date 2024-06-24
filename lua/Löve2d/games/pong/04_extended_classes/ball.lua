@@ -3,9 +3,7 @@ local SoundHelper = require("sound_helper")
 local ColorSchemeHelper = require("color_scheme_helper")
 
 -- Make a ball class from MovableObject2d class.
-local Ball = setmetatable({}, MovableObject2d)
-Ball.__index = Ball
-Ball.__call = MovableObject2d.__call
+local Ball = MovableObject2d:extend()
 
 -- Generate ball's initial velocity, randomly choosing its direction and having
 -- its value within given limits.
@@ -40,7 +38,7 @@ end
 function Ball:init(x, y, radius, color)
 	local dx, dy = generate_initial_velocity()
 
-	MovableObject2d.init(self, x, y, dx, dy, color)
+	self.parent.init(self, x, y, dx, dy, color)
 	self.radius = radius
 end
 

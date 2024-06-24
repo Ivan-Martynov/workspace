@@ -1,8 +1,9 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Tutorial.dir/tutorial.cxx.o"
   "CMakeFiles/Tutorial.dir/tutorial.cxx.o.d"
-  "Tutorial"
+  "Tutorial.exe"
   "Tutorial.pdb"
+  "libTutorial.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.
