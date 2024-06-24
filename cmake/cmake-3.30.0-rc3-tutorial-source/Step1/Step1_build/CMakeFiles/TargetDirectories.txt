@@ -1,3 +1,0 @@
-/c/Users/Ivan/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step1/Step1_build/CMakeFiles/Tutorial.dir
-/c/Users/Ivan/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step1/Step1_build/CMakeFiles/edit_cache.dir
-/c/Users/Ivan/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step1/Step1_build/CMakeFiles/rebuild_cache.dir

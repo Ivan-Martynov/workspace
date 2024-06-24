@@ -1,7 +1,0 @@
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/CMakeFiles/Tutorial.dir
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/CMakeFiles/edit_cache.dir
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/CMakeFiles/rebuild_cache.dir
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/MathFunctions/CMakeFiles/MathFunctions.dir
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/MathFunctions/CMakeFiles/SqrtLibrary.dir
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/MathFunctions/CMakeFiles/edit_cache.dir
-/home/samsung/workspace/cmake/cmake-3.30.0-rc3-tutorial-source/Step2/Step2_build/MathFunctions/CMakeFiles/rebuild_cache.dir
