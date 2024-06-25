@@ -9,4 +9,8 @@ local sounds = {
 sounds.backbround:setVolume(0.1)
 sounds.backbround:setLooping(true)
 
+sounds.hit_paddle:setVolume(0.5)
+sounds.hit_wall:setVolume(0.3)
+sounds.score:setVolume(0.2)
+
 return sounds

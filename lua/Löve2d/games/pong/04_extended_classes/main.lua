@@ -7,12 +7,17 @@
     - Objects can be created in the constructor style.
 
     - Audio files are now in a separate folder.
+
+    - Added commands to use command design pattern to react on user's input.
+
+    - Setting game state to control when the game starts and ends.
 ]]
 
 -- Classes for paddles and a ball.
 local PaddleClass = require "paddle"
 local BallClass = require "ball"
 
+local InputController = require "input_controller"
 -- Sound helper.
 local SoundHelper = require "sound_helper"
 
@@ -20,7 +25,17 @@ local SoundHelper = require "sound_helper"
 local ColorSchemeHelper = require "color_scheme_helper"
 
 --! Flag to track whether the game is paused.
-local game_paused
+local GameState = require "game_state"
+local StartGameCommand = require "start_game_command"
+local GameOverCommand = require "game_over_command"
+local QuitGameCommand = require "quit_game_command"
+local PauseCommand = require "pause_command"
+local pause_game = PauseCommand(false)
+local pause_toggle_game = PauseCommand(true)
+
+local commands = {}
+
+local start_game_command
 
 --! Paddles.
 local left_paddle
@@ -53,50 +68,58 @@ function love.load()
         paddle_width, paddle_height,
         { up = "up", down = "down" }, ColorSchemeHelper.current[2])
 
+    -- start_game_command = StartGameCommand({ left_paddle, right_paddle })
+    commands["start_game"] = StartGameCommand({ left_paddle, right_paddle })
+    --table.insert(commands, "start_game",
+    --  StartGameCommand({ left_paddle, right_paddle }))
+
     -- Initialize background sound.
     SoundHelper.backbround:play()
-
-    game_paused = false
 end
 
 --! @brief Callback to check whether the window is focused.
 --! @param focused Flag, informing if the window is focused.
 function love.focus(focused)
-    if not focused then
-        game_paused = true
+    if not focused and GameState.game_started then
+        pause_game:execute()
     end
 end
 
 --! @brief Callback to observe if a certain key was pressed.
 --! @param key Name of the pressed key.
 function love.keypressed(key)
-    if key == "p" then
-        game_paused = not game_paused
+    if InputController.key_pressed("return", "enter") and
+        (not GameState.game_started or GameState.game_over) then
+        commands["start_game"]:execute()
+    elseif key == "p" and GameState.game_started then
+        pause_toggle_game:execute()
     elseif key == "escape" then
-        love.event.quit()
+        QuitGameCommand():execute()
     end
 end
 
 --! @brief Main game loop function.
 --! @param dt Delta time.
 function love.update(dt)
-    if game_paused then
-        SoundHelper.backbround:pause()
+    if not GameState.game_started or GameState.game_paused or
+        GameState.game_over then
         return
     end
-    SoundHelper.backbround:play()
 
     ball:update(dt)
     left_paddle:update(dt)
     right_paddle:update(dt)
 
     ball:resolve_collisions(left_paddle, right_paddle)
+
+    if (left_paddle.score == GameState.score_to_win) or
+        (right_paddle.score == GameState.score_to_win) then
+        GameOverCommand(left_paddle.score == GameState.score_to_win):execute()
+    end
 end
 
 -- Main rendering function.
 function love.draw()
-    love.graphics.setColor(ColorSchemeHelper.current["white"])
-
     local window_width, window_height = love.window.getMode()
 
     -- Draw vertical centre line.
@@ -107,11 +130,7 @@ function love.draw()
     left_paddle:draw()
     right_paddle:draw()
 
-    if game_paused then
-        local font = love.graphics.newFont(36)
-        love.graphics.printf("PAUSED", font, 0,
-            (window_height - font:getHeight()) / 2, window_width, "center")
-    end
+    GameState:draw()
 
     love.graphics.setColor(ColorSchemeHelper.current["white"])
 end
