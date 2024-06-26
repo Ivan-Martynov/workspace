@@ -1,13 +1,11 @@
-local InputController = {}
+local TouchScreenController = require "touch_screen_controller"
+local MouseController = require "mouse_controller"
+local KeyboardController = require "keyboard_controller"
 
-function InputController.key_pressed(...)
-    for _, key in ipairs { ... } do
-        if love.keyboard.isDown(key) then
-            return true
-        end
-    end
-
-    return false
-end
+local InputController = {
+    KeyboardController = KeyboardController,
+    MouseController = MouseController,
+    TouchScreenController = TouchScreenController,
+}
 
 return InputController

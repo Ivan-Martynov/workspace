@@ -3,7 +3,6 @@ local ColorSchemeHelper = require "color_scheme_helper"
 local MovePaddleCommand = require "move_paddle_command"
 
 local InputController = require "input_controller"
-local MouseController = require "mouse_controller"
 
 -- Make a paddle class from MovableObject2d class.
 local Paddle = MovableObject2d:extend()
@@ -31,7 +30,7 @@ function Paddle:update(dt)
     local move_paddle_down_command = MovePaddleCommand(self, paddle_speed, dt)
 
     -- Check if the touch/click was eligible for paddle movement.
-    local function check_click(x, y)
+    local function check_coordinates(x, y)
         if (x >= self.x - self.width) and
             (x <= self.x + self.width * 2) then
             if y < self.y + self.height / 2 then
@@ -43,22 +42,21 @@ function Paddle:update(dt)
     end
 
     -- Get all touches on the screen.
-    for _, id in ipairs(love.touch.getTouches()) do
-        local x, y = love.touch.getPosition(id)
-        check_click(x, y)
+    for _, id in
+    ipairs(InputController.TouchScreenController.get_all_touches()) do
+        check_coordinates(
+            InputController.TouchScreenController.get_touch_coordinates(id))
     end
 
     -- Check mouse left button clicks.
---    if MouseController.clicked_point(1) then end
-    if love.mouse.isDown(1) then
-        local x, y = love.mouse.getPosition()
-        check_click(x, y)
+    if InputController.MouseController.button_pressed(1) then
+        check_coordinates(InputController.MouseController.get_coordinates())
     end
 
     -- Check if one of the assigned keys was pressed.
-    if InputController.key_pressed(self.keys.up) then
+    if InputController.KeyboardController.key_pressed(self.keys.up) then
         move_paddle_up_command:execute()
-    elseif InputController.key_pressed(self.keys.down) then
+    elseif InputController.KeyboardController.key_pressed(self.keys.down) then
         move_paddle_down_command:execute()
     end
 
@@ -80,7 +78,7 @@ function Paddle:draw(mode)
     -- to position the text in the middle of the corresponding half.
     local x = math.min(self.x, center_x)
 
-    love.graphics.setColor(ColorSchemeHelper.current["white"])
+    love.graphics.setColor(ColorSchemeHelper.current.white)
 
     local font = love.graphics.newFont(32)
     love.graphics.printf(self.score, font, x, font:getHeight(self.score),

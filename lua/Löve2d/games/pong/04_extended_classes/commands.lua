@@ -5,5 +5,8 @@ local PauseCommand = require "pause_command"
 
 local commands = {}
 
+function commands.add_command(key, command)
+    commands[key] = command
+end
 
 return commands

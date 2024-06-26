@@ -30,12 +30,9 @@ local StartGameCommand = require "start_game_command"
 local GameOverCommand = require "game_over_command"
 local QuitGameCommand = require "quit_game_command"
 local PauseCommand = require "pause_command"
-local pause_game = PauseCommand(false)
-local pause_toggle_game = PauseCommand(true)
 
-local commands = {}
-
-local start_game_command
+local commands = require "commands"
+--local commands = {}
 
 --! Paddles.
 local left_paddle
@@ -68,10 +65,11 @@ function love.load()
         paddle_width, paddle_height,
         { up = "up", down = "down" }, ColorSchemeHelper.current[2])
 
-    -- start_game_command = StartGameCommand({ left_paddle, right_paddle })
-    commands["start_game"] = StartGameCommand({ left_paddle, right_paddle })
-    --table.insert(commands, "start_game",
-    --  StartGameCommand({ left_paddle, right_paddle }))
+    commands.start_game = StartGameCommand({ left_paddle, right_paddle })
+    commands.quit_game = QuitGameCommand()
+    commands.game_over = GameOverCommand(left_paddle)
+    commands.pause_game = PauseCommand(false)
+    commands.pause_toggle_game = PauseCommand(true)
 
     -- Initialize background sound.
     SoundHelper.backbround:play()
@@ -81,21 +79,22 @@ end
 --! @param focused Flag, informing if the window is focused.
 function love.focus(focused)
     if not focused and GameState.game_started then
-        pause_game:execute()
+        commands.pause_game:execute()
     end
+end
+
+function love.touchpressed()
+    InputController.TouchScreenController.update()
+end
+
+function love.mousepressed()
+    InputController.MouseController.update()
 end
 
 --! @brief Callback to observe if a certain key was pressed.
 --! @param key Name of the pressed key.
-function love.keypressed(key)
-    if InputController.key_pressed("return", "enter") and
-        (not GameState.game_started or GameState.game_over) then
-        commands["start_game"]:execute()
-    elseif key == "p" and GameState.game_started then
-        pause_toggle_game:execute()
-    elseif key == "escape" then
-        QuitGameCommand():execute()
-    end
+function love.keypressed(_)
+    InputController.KeyboardController.update()
 end
 
 --! @brief Main game loop function.
@@ -114,7 +113,7 @@ function love.update(dt)
 
     if (left_paddle.score == GameState.score_to_win) or
         (right_paddle.score == GameState.score_to_win) then
-        GameOverCommand(left_paddle.score == GameState.score_to_win):execute()
+        commands.game_over:execute()
     end
 end
 
@@ -132,5 +131,5 @@ function love.draw()
 
     GameState:draw()
 
-    love.graphics.setColor(ColorSchemeHelper.current["white"])
+    love.graphics.setColor(ColorSchemeHelper.current.white)
 end

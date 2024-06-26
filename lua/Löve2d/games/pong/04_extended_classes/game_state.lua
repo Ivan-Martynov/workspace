@@ -1,18 +1,14 @@
---local InputController = require "input_controller"
-
-local game_state = {
+local GameState = {
     game_started = false,
     game_paused = false,
     game_over = false,
     focused = true,
     score_to_win = 3,
+    start_message = "Press return or double tap/click to start",
     win_message = nil,
 }
 
-function game_state.update(_)
-end
-
-function game_state.draw()
+function GameState.draw()
     local font = love.graphics.newFont(36)
     local text = love.graphics.newText(font)
     local window_width, window_height = love.window.getMode()
@@ -21,16 +17,16 @@ function game_state.draw()
         return (window_height - text:getHeight()) / 2
     end
 
-    if not game_state.game_started then
-        text:setf("Press enter/return to start", window_width, "center")
+    if not GameState.game_started then
+        text:setf(GameState.start_message, window_width, "center")
         love.graphics.draw(text, 0, text_y())
-    elseif game_state.game_over then
-        text:setf(game_state.win_message, window_width, "center")
+    elseif GameState.game_over then
+        text:setf(GameState.win_message, window_width, "center")
         love.graphics.draw(text, 0, text_y())
-    elseif game_state.game_paused then
+    elseif GameState.game_paused then
         text:setf("PAUSED", window_width, "center")
         love.graphics.draw(text, 0, text_y())
     end
 end
 
-return game_state
+return GameState
