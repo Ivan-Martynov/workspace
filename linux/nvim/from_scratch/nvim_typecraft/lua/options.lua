@@ -5,6 +5,7 @@ local options = {
     shiftwidth = 4,
     hlsearch = false,
     colorcolumn = "80",
+    updatetime = 100,
 }
 
 for k, v in pairs(options) do

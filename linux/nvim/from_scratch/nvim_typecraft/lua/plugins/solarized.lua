@@ -1,9 +1,44 @@
 return {
-    "maxmx03/solarized.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-        vim.o.background = "light"
-        vim.cmd.colorscheme "solarized"
-    end,
+    {
+        "Tsuzat/NeoSolarized.nvim",
+
+        -- Make sure we load this during startup.
+        lazy = false,
+
+        -- Make sure to load this before all the other start plugins.
+        priority = 1000,
+
+        config = function()
+            local status_ok, NeoSolarized = pcall(require, "NeoSolarized")
+
+            if not status_ok then
+                return
+            end
+
+            NeoSolarized.setup({
+                style = "light", -- "dark" or "light"
+                transparent = false, -- true/false; Enable this to disable setting the background color
+                terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
+                enable_italics = true, -- Italics for different hightlight groups (eg. Statement, Condition, Comment, Include, etc.)
+                styles = {
+                    -- Style to be applied to different syntax groups
+                    comments = { italic = true },
+                    keywords = { italic = true },
+                    functions = { bold = true },
+                    variables = {},
+                    string = { italic = true },
+                    underline = true, -- true/false; for global underline
+                    undercurl = true, -- true/false; for global undercurl
+                },
+
+                -- Add specific hightlight groups
+                on_highlights = function(highlights, colors)
+                    highlights.Include.fg = colors.red -- Using `red` foreground for Includes
+                end,
+            })
+            -- Set colorscheme to NeoSolarized
+            vim.cmd([[ colorscheme NeoSolarized ]])
+        end,
+    },
 }
+

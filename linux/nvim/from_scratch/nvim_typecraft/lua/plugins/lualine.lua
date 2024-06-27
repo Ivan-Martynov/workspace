@@ -1,12 +1,16 @@
 return {
     "nvim-lualine/lualine.nvim",
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-        require("lualine").setup()
-        --require("lualine").setup({
-            --options = {
-            ----    theme = "solarized-light",
-            --}
-        --})
-    end
+        local status_ok, lualine = pcall(require, "lualine")
+        if not status_ok then
+            return
+        end
+
+        lualine.setup({
+            options = {
+                theme = "NeoSolarized",
+            }
+        })
+    end,
 }

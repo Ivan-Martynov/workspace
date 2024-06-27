@@ -13,11 +13,16 @@ return {
 
 	{
 		"hrsh7th/nvim-cmp",
+		dependencies = {
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-cmdline",
+		},
 		config = function()
-            local status_ok, cmp = pcall(require, "cmp")
-            if not status_ok then
-                return
-            end
+			local status_ok, cmp = pcall(require, "cmp")
+			if not status_ok then
+				return
+			end
 
 			require("luasnip.loaders.from_vscode").lazy_load()
 
