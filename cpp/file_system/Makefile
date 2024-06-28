@@ -19,7 +19,7 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := show_files_in_directory.exe
+TARGETS := show_files_in_directory.exe show_disk_usage.exe
 
 .PHONY : all
 all : $(TARGETS)
@@ -31,6 +31,9 @@ example2.exe: example2.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 show_files_in_directory.exe: show_files_in_directory.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
+show_disk_usage.exe: show_disk_usage.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp

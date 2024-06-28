@@ -1,53 +1,130 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
 #include <filesystem>
+#include <format>
+#include <functional>
+#include <locale>
 
-/**
- * @brief Display names of items in the given directory.
- * 
- * @param dir_path Path to the directory/folder.
- * @param recursive Flag whether inner directories should be scanned too.
- * 
- * @version 0.1
- * 
- * @date 2024-06-27
- */
-static void display_file_names(const std::filesystem::path& dir_path,
+static std::string locale_name {};
+
+static std::wstring string_to_wstring(const std::string& src)
+{
+    std::wstring result (src.length() + 1, L'\0');
+    std::mbstowcs(result.data(), src.c_str(), result.length());
+
+    return result;
+}
+
+static std::time_t get_last_modification_time(
+    const std::filesystem::path& target_path)
+{
+    const auto last_modification_time {std::filesystem::last_write_time(
+        target_path)};
+
+    return std::chrono::system_clock::to_time_t(
+        std::chrono::file_clock::to_sys(last_modification_time));
+}
+
+[[maybe_unused]]
+static void print_last_write_time(const std::filesystem::path& target_path)
+{
+    try
+    {
+        if (!std::setlocale(LC_TIME, locale_name.c_str()))
+        {
+            std::wcout << L"Failed to set locale " << locale_name.c_str()
+                << '\n';
+        }
+        //std::wcout << L"Locale name: " << std::locale().name().c_str() << "\n";
+        //std::locale::global(std::locale(locale_name));
+    }
+    catch(const std::exception& e)
+    {
+        std::wcerr << L"Failed to set locale " << locale_name.c_str() << ": "
+            << e.what() << "\n";
+    }
+    
+
+    //const auto current_locale {setlocale(LC_TIME, nullptr)};
+    //std::locale::global(std::locale("ru_RU.UTF-8"));
+    //const auto loc {std::setlocale(LC_TIME, "ru_RU.UTF-8")};
+    //if (!loc)
+    //{
+    //    std::setlocale(LC_TIME, current_locale);
+    //    std::wcout << L"Failed to set locale\n";
+    //}
+
+    //std::string prev_loc = std::setlocale(LC_ALL, nullptr);
+    //// Restore the previous locale.
+    //if (const char* temp = std::setlocale(LC_ALL, prev_loc.c_str()))
+    //    std::wprintf(L"Restorred LC_ALL locale: %s\n", temp);
+    
+    //std::wcout.imbue(std::locale(locale_name));
+    //const std::locale l2 {"fi_FI.UTF-8"};
+    const auto t {std::filesystem::last_write_time(target_path)};
+    const auto system_time {std::chrono::clock_cast<std::chrono::system_clock>(t)};
+    const std::wstring year {std::format(L"{:%Y}", t)};
+    const std::wstring month {std::format(L"{:%B}", t)};
+
+    const std::time_t t2 {get_last_modification_time(target_path)};
+    char mbstr[128]{};
+    if (std::strftime(mbstr, sizeof(mbstr), "%Y/%m_%B", std::localtime(&t2)))
+    {
+        const std::wstring str {string_to_wstring(mbstr)};
+        std::wcout << str << L'\n';
+        //std::tm tm = *std::localtime(&t2);
+        //std::cout << std::put_time(&tm, "%c %Z") << '\n';
+        //std::wcout << std::strftime(nullptr, 100, "%Y/%m_%B",
+        //    std::localtime(&t2))<< L'\n';
+    }
+
+    std::wcout << target_path << L": last modified" << std::format(L": {}\n", t);
+    std::wcout << target_path << L": last modified" << std::format(L": {:%c}\n", t);
+    //std::wprintf(L"Text %ls\n", month);
+    std::wcout << L"Year = " << year << L"; month = " << month << "\n";
+}
+
+static void print_target_path(const std::filesystem::path& dir_path)
+{
+    std::wcout << dir_path << "\n";
+}
+
+static void process_path_items(const std::filesystem::path& dir_path,
+    const std::function<void(const std::filesystem::path&)>& process_function,
     const bool recursive = false)
 {
     // Loop through items in the given directory.
     for (const std::filesystem::directory_entry& item :
         std::filesystem::directory_iterator {dir_path})
     {
-        // Displaying items.
-        if (item.is_directory())
-        {
-            std::cout << "Directory: " << item.path() << "\n";
+        process_function(item.path());
 
+        // Displaying items.
+        if (item.is_directory() && recursive)
+        {
             // If scanning recursively, then process the directory item.
             if (recursive)
             {
-                display_file_names(item.path(), recursive);
+                process_path_items(item.path(), process_function, recursive);
             }
-        }
-        else
-        {
-            std::cout << "File: " << item.path() << "\n";
         }
     }
 }
 
-static void show_files_in_directory(const std::string& directory_path,
+static void show_files_in_directory(const std::string& target_path_name,
     const bool recursive = false)
 {
-    const auto p {std::filesystem::path {directory_path}.make_preferred()};
-    if (!std::filesystem::exists(p))
+    const auto target_path {
+        std::filesystem::path {target_path_name}.make_preferred()};
+    if (!std::filesystem::exists(target_path))
     {
-        std::cerr << "Given path " << directory_path << " doesn't exist\n";
+        std::cerr << "Given path " << target_path_name << " doesn't exist\n";
     }
     else
     {
-        display_file_names(p, recursive);
+        process_path_items(target_path, print_target_path, recursive);
+        process_path_items(target_path, print_last_write_time, recursive);
     }
 }
 
@@ -75,17 +152,51 @@ int main(const int argc, const char* argv[])
     bool recursive {false};
     for (std::string &option : options)
     {
-        // Flag for recursion.
-        if (option == "-r")
+        switch (option[1])
         {
-            recursive = true;
+            // Flag for recursion.
+            case 'r':
+                recursive = true;
+                break;
+
+            // Flags for locale.
+            case 'l':
+            case 'L':
+                if (option.length() > 3)
+                {
+                    locale_name = option.substr(3);
+                }
+                break;
+            
+            default:
+                break;
         }
     }
 
-    for (const std::string& p : paths)
+    for (const std::string& target_path_name : paths)
     {
-        show_files_in_directory(p, recursive);
+        show_files_in_directory(target_path_name, recursive);
     }
  
+ /*
+    std::time_t t = std::time(nullptr);
+    char mbstr[100];
+    std::setlocale(LC_ALL, "ru_RU.utf8");
+    if (std::strftime(mbstr, sizeof(mbstr), "%m_%B", std::localtime(&t)))
+    {
+        std::cout << mbstr << '\n';
+        std::wprintf(L"Text %s\n", mbstr);
+    }
+ */
+
+
+const std::chrono::time_point now{std::chrono::system_clock::now()};
+ 
+    const std::chrono::year_month_day ymd{std::chrono::floor<std::chrono::days>(now)};
+ 
+    std::cout << "Current Year: " << ymd.year() << ", "
+                 "Month: " << ymd.month() << ", "
+                 "Day: " << ymd.day() << "\n"
+                 "ymd: " << ymd << '\n';
     return 0;
 }
