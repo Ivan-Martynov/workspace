@@ -9,7 +9,7 @@ OBJ_DIR := obj
 SRC_DIR := src
 INC_DIR := include
 
-CFLAGS += -I $(INC_DIR)
+CXXFLAGS += -I $(INC_DIR)
 
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
@@ -19,7 +19,7 @@ vpath %.o $(OBJ_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SOURCES))
-TARGETS := example1.exe example2.exe
+TARGETS := show_files_in_directory.exe show_disk_usage.exe
 
 .PHONY : all
 all : $(TARGETS)
@@ -29,15 +29,15 @@ example1.exe: example1.o
 
 example2.exe: example2.o
 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
- 
-# example3.exe: example3.o
-# 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
-# 
-# example4.exe: example4.o
-# 	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
+show_files_in_directory.exe: show_files_in_directory.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
+
+show_disk_usage.exe: show_disk_usage.o
+	$(LINK_CMD) $^ -o $@ $(LDFLAGS)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CXX) -c $(CXXFLAGS) $< -o $@
 
 $(OBJECTS) : | $(OBJ_DIR)
 

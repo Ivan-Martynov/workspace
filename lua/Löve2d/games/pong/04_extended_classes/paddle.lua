@@ -1,8 +1,17 @@
 local MovableObject2d = require "movable_object_2d"
 local ColorSchemeHelper = require "color_scheme_helper"
+local MovePaddleCommand = require "move_paddle_command"
+
+local InputController = require "input_controller"
 
 -- Make a paddle class from MovableObject2d class.
 local Paddle = MovableObject2d:extend()
+
+function Paddle:reset()
+    local _, window_height = love.window.getMode()
+    self.y = (window_height - self.height) / 2
+    self.score = 0
+end
 
 -- Create a new paddle using top-left corner coordinates, width, height and
 -- keys, which determing paddle movement up and down.
@@ -15,53 +24,41 @@ function Paddle:init(x, y, width, height, keys, color)
 end
 
 function Paddle:update(dt)
+    -- Using commands for paddle movement.
     local paddle_speed = 280
-    -- Flags to determine if a paddle is to be moved up or down.
-    local move_up, move_down = false, false
+    local move_paddle_up_command = MovePaddleCommand(self, -paddle_speed, dt)
+    local move_paddle_down_command = MovePaddleCommand(self, paddle_speed, dt)
 
     -- Check if the touch/click was eligible for paddle movement.
-    local function check_click(x, y)
+    local function check_coordinates(x, y)
         if (x >= self.x - self.width) and
             (x <= self.x + self.width * 2) then
             if y < self.y + self.height / 2 then
-                move_up = true
+                move_paddle_up_command:execute()
             elseif y > self.y + self.height / 2 then
-                move_down = true
+                move_paddle_down_command:execute()
             end
         end
     end
 
     -- Get all touches on the screen.
-    for _, id in ipairs(love.touch.getTouches()) do
-        local x, y = love.touch.getPosition(id)
-        check_click(x, y)
+    for _, id in
+    ipairs(InputController.TouchScreenController.get_all_touches()) do
+        check_coordinates(
+            InputController.TouchScreenController.get_touch_coordinates(id))
     end
 
     -- Check mouse left button clicks.
-    if love.mouse.isDown(1) then
-        local x, y = love.mouse.getPosition()
-        check_click(x, y)
+    if InputController.MouseController.button_pressed(1) then
+        check_coordinates(InputController.MouseController.get_coordinates())
     end
 
     -- Check if one of the assigned keys was pressed.
-    if love.keyboard.isDown(self.keys.up) then
-        move_up = true
-    elseif love.keyboard.isDown(self.keys.down) then
-        move_down = true
+    if InputController.KeyboardController.key_pressed(self.keys.up) then
+        move_paddle_up_command:execute()
+    elseif InputController.KeyboardController.key_pressed(self.keys.down) then
+        move_paddle_down_command:execute()
     end
-
-    -- Change paddles speed depending whether it is moving up or down, or is
-    -- remaining in place.
-    if move_up then
-        self:set_velocity(0, -paddle_speed)
-    elseif move_down then
-        self:set_velocity(0, paddle_speed)
-    else
-        self:set_velocity(0, 0)
-    end
-
-    -- Update paddle using movable object class.
-    MovableObject2d.update(self, dt)
 
     -- Make sure the paddle doesn't go beyoned the screen.
     local _, window_height = love.window.getMode()
@@ -81,7 +78,7 @@ function Paddle:draw(mode)
     -- to position the text in the middle of the corresponding half.
     local x = math.min(self.x, center_x)
 
-    love.graphics.setColor(ColorSchemeHelper.current["white"])
+    love.graphics.setColor(ColorSchemeHelper.current.white)
 
     local font = love.graphics.newFont(32)
     love.graphics.printf(self.score, font, x, font:getHeight(self.score),

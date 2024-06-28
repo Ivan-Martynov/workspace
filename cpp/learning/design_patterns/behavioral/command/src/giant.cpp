@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 
 class Giant
 {
@@ -35,31 +36,6 @@ class Command
     Action m_method;
 };
 
-template <typename T> class Queue
-{
-  private:
-    enum { SIZE = 8 };
-    T* m_array[SIZE];
-    int m_add;
-    int m_remove;
-
-  public:
-    Queue(): m_add {0}, m_remove {0} {}
-
-    void enque(T* c)
-    {
-        m_array[m_add] = c;
-        m_add = (m_add + 1) % SIZE;
-    }
-
-    T* deque()
-    {
-        int temp = m_remove;
-        m_remove = (m_remove + 1) % SIZE;
-        return m_array[temp];
-    }
-};
-
 int main()
 {
     Command* input[] {
@@ -71,14 +47,14 @@ int main()
         new Command(new Giant, &Giant::pheaux),
     };
 
-    Queue<Command> que{};
+    std::queue<Command*> que {};
     for (int i = 0; i < 6; ++i)
     {
-        que.enque(input[i]);
+        que.push(input[i]);
     }
-    for (int i = 0; i < 6; ++i)
+    for (; !que.empty(); que.pop())
     {
-        que.deque()->execute();
+        que.front()->execute();
     }
 
     std::cout << "\n";
