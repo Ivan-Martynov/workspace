@@ -17,6 +17,7 @@ return {
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-cmdline",
+			"hrsh7th/vim-vsnip",
 		},
 		config = function()
 			local status_ok, cmp = pcall(require, "cmp")
@@ -46,10 +47,10 @@ return {
 					["<CR>"] = cmp.mapping.confirm({ select = true }),
 					["<TAB>"] = cmp.mapping.confirm({ select = true }),
 				}),
+
 				sources = cmp.config.sources({
 					{ name = "nvim_lsp" },
 					{ name = "luasnip" },
-				}, {
 					{ name = "buffer" },
 				}),
 			})

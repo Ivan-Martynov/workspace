@@ -14,6 +14,8 @@ return {
 				-- auto_install = true,
 				highlight = { enable = true },
 				indent = { enable = true },
+				autotag = { enable = true },
+				rainbow = { enable = true },
 			})
 		end,
 	},
@@ -40,6 +42,44 @@ return {
 					},
 				},
 			})
+		end,
+	},
+
+	-- Rainbow delimiters.
+	{
+		"HiPhish/rainbow-delimiters.nvim",
+
+		config = function()
+			local status_ok, rainbow_delimiters =
+                pcall(require, "rainbow-delimiters")
+
+			if not status_ok then
+				return
+			end
+
+			vim.g.rainbow_delimiters = {
+				strategy = {
+					[""] = rainbow_delimiters.strategy["global"],
+					vim = rainbow_delimiters.strategy["local"],
+				},
+				query = {
+					[""] = "rainbow-delimiters",
+					lua = "rainbow-blocks",
+				},
+				priority = {
+					[""] = 110,
+					lua = 210,
+				},
+				highlight = {
+					"RainbowDelimiterRed",
+					"RainbowDelimiterYellow",
+					"RainbowDelimiterBlue",
+					"RainbowDelimiterOrange",
+					"RainbowDelimiterGreen",
+					"RainbowDelimiterViolet",
+					"RainbowDelimiterCyan",
+				},
+			}
 		end,
 	},
 }

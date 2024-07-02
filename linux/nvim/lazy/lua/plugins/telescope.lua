@@ -2,7 +2,9 @@ return {
     -- Telescope.
     {
         'nvim-telescope/telescope.nvim', tag = '0.1.6',
+
         dependencies = { 'nvim-lua/plenary.nvim' },
+
         config = function()
             local status_ok, builtin = pcall(require, "telescope.builtin")
             if not status_ok then
