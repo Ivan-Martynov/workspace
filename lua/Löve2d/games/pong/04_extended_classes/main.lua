@@ -131,5 +131,5 @@ function love.draw()
 
     GameState:draw()
 
-    love.graphics.setColor(ColorSchemeHelper.current.white)
+    love.graphics.setColor(ColorSchemeHelper.current.foreground)
 end
