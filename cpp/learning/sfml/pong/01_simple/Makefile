@@ -11,6 +11,8 @@ INC_DIR := include
 
 CXXFLAGS += -I $(INC_DIR)
 
+LDLIBS += -lsfml-graphics -lsfml-window -lsfml-system
+
 # vpath variable: search for source/header files in the src/include folder.
 # That way we can omit explicit directory part for files.
 vpath %.c $(SRC_DIR)

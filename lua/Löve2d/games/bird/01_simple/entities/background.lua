@@ -46,9 +46,9 @@ end
 
 local window_width = love.window.getMode()
 local background = {
-    left_part = BackgroundClass(0, 0, ColorSchemeHelper.current.background),
+    left_part = BackgroundClass(0, 0, ColorSchemeHelper.current.blue),
     right_part = BackgroundClass(window_width, 0,
-        ColorSchemeHelper.current.background),
+        ColorSchemeHelper.current.blue),
     cloud_x = 0,
     clouds = {},
 }

@@ -7,14 +7,14 @@ local SoundHelper = require "audio_tools.sound_helper"
 local background = require "entities.background"
 local ground = require "entities.ground"
 local pipes = require "entities.pipes"
-local bird = require "entities.bird"
+local bee = require "entities.bee"
 
 local GameoverState = IGameState:extend()
 
 function GameoverState:init()
     self.text = love.graphics.newText(love.graphics.newFont(32))
     local window_width = love.window.getMode()
-    self.text:addf("Final score: " .. bird.score, window_width, "center")
+    self.text:addf("Final score: " .. bee.score, window_width, "center")
     self.text:addf("\nPress return to go to the main menu", window_width,
         "center")
 end
@@ -43,7 +43,7 @@ function GameoverState:draw()
     background:draw()
     ground:draw()
     pipes:draw()
-    bird:draw()
+    bee:draw()
 
     local window_width, window_height = love.window.getMode()
     love.graphics.setColor(0, 0, 0, 0.5)

@@ -7,7 +7,7 @@ local SoundHelper = require "audio_tools.sound_helper"
 local background = require "entities.background"
 local ground = require "entities.ground"
 local pipes = require "entities.pipes"
-local bird = require "entities.bird"
+local bee = require "entities.bee"
 
 local PauseState = IGameState:extend()
 
@@ -33,7 +33,7 @@ function PauseState:draw()
     background:draw()
     ground:draw()
     pipes:draw()
-    bird:draw()
+    bee:draw()
 
     local window_width, window_height = love.window.getMode()
     love.graphics.setColor(0, 0, 0, 0.5)
