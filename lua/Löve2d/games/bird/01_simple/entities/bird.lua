@@ -1,6 +1,8 @@
 local MovableObject2d = require "structures.movable_object_2d"
 local ColorSchemeHelper = require "color_tools.color_scheme_helper"
 local KeyboardController = require "input.keyboard_controller"
+local MouseController = require "input.mouse_controller"
+local TouchScreenController = require "input.touch_screen_controller"
 
 local ground = require "entities.ground"
 
@@ -22,7 +24,9 @@ end
 
 function BirdClass:update(dt)
     self.parent.update(self, dt)
-    if KeyboardController.key_pressed("space") then
+    if KeyboardController.key_pressed("space")
+        or MouseController.button_pressed(1)
+        or (#TouchScreenController.get_all_touches() > 0) then
         self.dy = -200
     else
         self.dy = 200

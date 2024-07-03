@@ -31,8 +31,6 @@ function MenuState:keypressed()
 end
 
 function MenuState:update(dt)
-    --SoundHelper:play("background")
-
     background:update(dt)
     ground:update(dt)
 end
