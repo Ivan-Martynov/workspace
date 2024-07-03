@@ -1,6 +1,8 @@
 local IGameState = require "states.state_interface"
+local StateController = require "states.state_controller"
 local ColorSchemeHelper = require "color_tools.color_scheme_helper"
 local KeyboardController = require "input.keyboard_controller"
+local SoundHelper = require "audio_tools.sound_helper"
 
 local background = require "entities.background"
 local ground = require "entities.ground"
@@ -12,11 +14,27 @@ function MenuState:init()
     self.text:add("Press return to start")
 end
 
+function MenuState:focus(is_focused)
+    if not is_focused then
+        SoundHelper:pause("background")
+    else
+        SoundHelper:play("background")
+    end
+end
+
+function MenuState:keypressed()
+    if KeyboardController.key_pressed("escape") then
+        love.event.quit()
+    elseif KeyboardController.key_pressed("return") then
+        StateController:set_state("game", true)
+    end
+end
+
 function MenuState:update(dt)
+    --SoundHelper:play("background")
+
     background:update(dt)
     ground:update(dt)
-    if KeyboardController.key_pressed("return") then
-    end
 end
 
 function MenuState:draw()
@@ -34,4 +52,4 @@ function MenuState:draw()
         (window_height - self.text:getHeight()) / 2)
 end
 
-return MenuState()
+return MenuState

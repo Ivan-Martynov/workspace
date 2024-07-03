@@ -23,7 +23,7 @@ local function set_color_indices(scheme)
     scheme.foreground = scheme.white
 end
 
-local function create_default(is_dark)
+local function create_default(_)
     local default = {
         black = { 0, 0, 0, 1 },    -- black
         white = { 1, 1, 1, 1 },    -- white
@@ -31,9 +31,10 @@ local function create_default(is_dark)
         green = { 0, 1, 0, 1 },    -- green
         blue = { 0, 0, 1, 1 },     -- blue
         yellow = { 1, 1, 0, 1 }, -- blue
-        magenta = { 1, 0, 1, 1 },  -- violet
-        cyan = { 0, 1, 1, 1 },     -- violet
+        magenta = { 1, 0, 1, 1 },  -- magenta
+        cyan = { 0, 1, 1, 1 },     -- cyan
         orange = { 1, 0.5, 0, 1 },   -- orange
+        violet = { 0.5, 0, 1, 1 },   -- violet
     }
 
     set_color_indices(default)

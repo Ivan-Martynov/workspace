@@ -2,15 +2,6 @@ local gamestates = require "gamestates"
 
 local menu = {}
 
-function menu.load()
-end
-
-function menu.enter()
-end
-
-function menu.update(_)
-end
-
 function menu.draw()
     love.graphics.print("Menu gamestate. Press Enter to continue.", 280, 250)
 end

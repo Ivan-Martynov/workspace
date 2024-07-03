@@ -13,7 +13,7 @@ local function get_key_for_value(t, value)
 end
 
 function gamestates.state_event(function_name, ...)
-    if current_state and type(current_state[function_name] == "function") then
+    if current_state and (type(current_state[function_name]) == "function") then
         --print("Found " .. function_name)
         current_state[function_name](...)
     end

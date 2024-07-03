@@ -2,6 +2,12 @@ local ClassTemplate = require "structures.class_template"
 
 local IGameState = ClassTemplate:extend()
 
+function IGameState:focus(_)
+end
+
+function IGameState:keypressed(_, ...)
+end
+
 function IGameState:load(...)
 end
 

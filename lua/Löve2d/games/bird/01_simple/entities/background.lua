@@ -4,10 +4,14 @@ local ColorSchemeHelper = require "color_tools.color_scheme_helper"
 local BackgroundClass = MovableObject2d:extend()
 local CloudClass = MovableObject2d:extend()
 
-local dx = -50
+local cloud_min_speed = 30
+local cloud_max_speed = 50
+local dx = -30
 
 function CloudClass:init(x, y, main_radius)
-    self.parent.init(self, x, y, dx, 0, ColorSchemeHelper.current.foreground)
+    self.parent.init(self, x, y,
+        -love.math.random(cloud_min_speed, cloud_max_speed),
+        0, ColorSchemeHelper.current.foreground)
     self.main_radius = main_radius
     local min_ratio = 0.6
     self.left_radius = main_radius * (min_ratio + love.math.random() * 0.2)
@@ -76,11 +80,14 @@ function background:update(dt)
         cloud:update(dt)
     end
 
-    if self.clouds[1].x < -self.clouds[1].width * 0.5 then
-        table.remove(self.clouds, 1)
+    for i = #self.clouds, 1, -1 do
+        local cloud = self.clouds[i]
+        if cloud.x < -cloud.width * 0.5 then
+            table.remove(self.clouds, i)
+        end
     end
 
-    self.cloud_x = self.cloud_x + dx * dt
+    self.cloud_x = self.cloud_x - cloud_max_speed * dt
 end
 
 function background:draw()
