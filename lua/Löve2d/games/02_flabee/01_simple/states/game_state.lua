@@ -11,16 +11,19 @@ local ground = require "entities.ground"
 local pipes = require "entities.pipes"
 local bee = require "entities.bee"
 
+local entities = { background, ground, pipes, bee }
+
 local PauseState = require "states.pause_state"
 local GameState = IGameState:extend()
 
 function GameState:load()
+    self.entities = entities
     SoundHelper:play("background")
 end
 
 function GameState:focus(is_focused)
     if not is_focused then
-        StateController:set_state("pause")
+        StateController:set_state("pause", self)
     end
 end
 
@@ -28,7 +31,7 @@ function GameState:keypressed()
     if KeyboardController.key_pressed("escape") then
         QuitGameCommand():execute()
     elseif KeyboardController.one_of_keys_pressed(PauseState.keys) then
-        StateController:set_state("pause")
+        StateController:set_state("pause", self)
     end
 end
 

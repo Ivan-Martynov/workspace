@@ -28,16 +28,16 @@ function MenuState:keypressed()
     if KeyboardController.key_pressed("escape") then
         QuitGameCommand():execute()
     elseif KeyboardController.key_pressed("return") then
-        StateController:set_state("countdown")
+        StateController:set_state("countdown", true)
     end
 end
 
 function MenuState:touchpressed()
-    StateController:set_state("countdown")
+    StateController:set_state("countdown", true)
 end
 
 function MenuState:mousepressed()
-    StateController:set_state("countdown")
+    StateController:set_state("countdown", true)
 end
 
 
