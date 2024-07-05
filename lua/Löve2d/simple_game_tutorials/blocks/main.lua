@@ -1,5 +1,6 @@
 local grid_x_count
 local grid_y_count
+local block_size
 
 local inert
 
@@ -170,9 +171,7 @@ local function init_pieces()
     }
 end
 
-function love.load()
-    grid_x_count = 10
-    grid_y_count = 18
+local function reset()
     inert = {}
 
     for y = 1, grid_y_count do
@@ -181,6 +180,16 @@ function love.load()
             inert[y][x] = " "
         end
     end
+
+    new_sequence()
+    new_piece()
+    fall_timer = 0
+end
+
+function love.load()
+    grid_x_count = 10
+    grid_y_count = 18
+    block_size = 20
 
     colors = {
         [' '] = { 0.87, 0.87, 0.87 },
@@ -195,13 +204,11 @@ function love.load()
     }
 
     init_pieces()
-    new_sequence()
-    new_piece()
 
     piece_x_count = 4
     piece_y_count = 4
 
-    fall_timer = 0
+    reset()
 end
 
 local function can_move_piece(test_x, test_y, test_rotation)
@@ -221,7 +228,7 @@ local function can_move_piece(test_x, test_y, test_rotation)
 end
 
 function love.keypressed(key)
-    if key == "x" then
+    if key == "up" then
         local test_rotation = piece_rotation + 1
         if test_rotation > #piece_structures[piece_type] then
             test_rotation = 1
@@ -230,7 +237,7 @@ function love.keypressed(key)
         if can_move_piece(piece_x, piece_y, test_rotation) then
             piece_rotation = test_rotation
         end
-    elseif key == "z" then
+    elseif key == "down" then
         local test_rotation = piece_rotation - 1
         if test_rotation < 1 then
             test_rotation = #piece_structures[piece_type]
@@ -249,23 +256,11 @@ function love.keypressed(key)
         if can_move_piece(test_x, piece_y, piece_rotation) then
             piece_x = test_x
         end
-    elseif key == "c" then
-        while can_move_piece(piece_x, piece_y + 1, piece_rotation) do
+    elseif key == "return" then
+        if can_move_piece(piece_x, piece_y + 1, piece_rotation) then
             piece_y = piece_y + 1
             fall_timer = fall_timer_limit
         end
-    elseif key == "down" then
-        piece_type = piece_type + 1
-        if piece_type > #piece_structures then
-            piece_type = 1
-        end
-        piece_rotation = 1
-    elseif key == "up" then
-        piece_type = piece_type - 1
-        if piece_type < 1 then
-            piece_type = #piece_structures
-        end
-        piece_rotation = 1
     elseif key == "escape" then
         love.event.quit()
     end
@@ -314,7 +309,7 @@ function love.update(dt)
 
             new_piece()
             if not can_move_piece(piece_x, piece_y, piece_rotation) then
-                love.load()
+                reset()
             end
         end
     end
@@ -324,7 +319,6 @@ function love.draw()
     local shift_x = 2
     local shift_y = 5
     local function draw_block(block, x, y)
-        local block_size = 20
         love.graphics.setColor(colors[block])
         love.graphics.rectangle("fill", (x - 1) * block_size,
             (y - 1) * block_size, block_size - 1, block_size - 1)
