@@ -5,13 +5,12 @@ local KeyboardController = require "input.keyboard_controller"
 local SoundHelper = require "audio_tools.sound_helper"
 local QuitGameCommand = require "commands.quit_game_command"
 
-local background = require "entities.background"
-local ground = require "entities.ground"
-local pipes = require "entities.pipes"
-local bee = require "entities.bee"
-
 local PauseState = IGameState:extend()
 PauseState.keys = { "p" }
+
+function PauseState:load(state)
+    self.from_state = state
+end
 
 function PauseState:init()
     self.keys = PauseState.keys
@@ -24,7 +23,7 @@ function PauseState:keypressed()
     if KeyboardController.key_pressed("escape") then
         QuitGameCommand():execute()
     elseif KeyboardController.one_of_keys_pressed(self.keys) then
-        StateController:set_state("game")
+        StateController:set_state(self.from_state.name)
     end
 end
 
@@ -42,10 +41,9 @@ function PauseState:update(_)
 end
 
 function PauseState:draw()
-    background:draw()
-    ground:draw()
-    pipes:draw()
-    bee:draw()
+    for _, entity in ipairs(self.from_state.entities) do
+        entity:draw()
+    end
 
     local window_width, window_height = love.window.getMode()
     love.graphics.setColor(0, 0, 0, 0.5)

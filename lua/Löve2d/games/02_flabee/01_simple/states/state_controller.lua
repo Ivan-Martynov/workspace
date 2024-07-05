@@ -12,6 +12,7 @@ function StateController:set_state(name, ...)
     end
 
     StateController.current = StateController[name]()
+    StateController.current.name = name
     StateController.current:load(...)
 end
 
