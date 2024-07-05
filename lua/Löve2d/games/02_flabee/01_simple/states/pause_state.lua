@@ -41,9 +41,7 @@ function PauseState:update(_)
 end
 
 function PauseState:draw()
-    for _, entity in ipairs(self.from_state.entities) do
-        entity:draw()
-    end
+    self.from_state:draw()
 
     local window_width, window_height = love.window.getMode()
     love.graphics.setColor(0, 0, 0, 0.5)
