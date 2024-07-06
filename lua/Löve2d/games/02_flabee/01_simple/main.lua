@@ -9,10 +9,7 @@ local GameState = require "states.game_state"
 local PauseState = require "states.pause_state"
 local GameoverState = require "states.gameover_state"
 
-local window_width, window_height
 function love.load()
-    window_width, window_height = love.window.getMode()
-
     StateController:init({
         menu = function() return MenuState() end,
         countdown = function() return CountdownState() end,
@@ -45,14 +42,4 @@ end
 
 function love.draw()
     StateController.current:draw()
-end
-
-function love.resize(w, h)
-    print(window_width .. ", " .. window_height .. ", " .. w .. "," .. h)
-    print(window_width / w .. ", " .. window_height / h)
-
-    --local scale = math.min(window_width / w, window_height / h)
-
-    window_width = w
-    window_height = h
 end

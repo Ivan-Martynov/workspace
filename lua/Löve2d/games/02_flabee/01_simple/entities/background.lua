@@ -11,7 +11,7 @@ local dx = -30
 function CloudClass:init(x, y, main_radius)
     self.parent.init(self, x, y,
         -love.math.random(cloud_min_speed, cloud_max_speed),
-        0, ColorSchemeHelper.current.foreground)
+        0, ColorSchemeHelper.current.white)
     self.main_radius = main_radius
     local min_ratio = 0.6
     self.left_radius = main_radius * (min_ratio + love.math.random() * 0.2)

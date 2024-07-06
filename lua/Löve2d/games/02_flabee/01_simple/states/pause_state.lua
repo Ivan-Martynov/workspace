@@ -27,15 +27,6 @@ function PauseState:keypressed()
     end
 end
 
-function PauseState:touchpressed()
-    StateController:set_state("game")
-end
-
-function PauseState:mousepressed()
-    StateController:set_state("game")
-end
-
-
 function PauseState:update(_)
     SoundHelper:pause("background")
 end

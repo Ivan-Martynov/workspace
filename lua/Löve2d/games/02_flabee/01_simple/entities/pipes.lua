@@ -53,11 +53,25 @@ end
 function PipeClass:draw()
     local r, g, b, a = love.graphics.getColor()
 
+    -- Draw pipe's parts.
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", self.tube.x, self.tube.y,
         self.tube.width, self.tube.height)
     love.graphics.rectangle("fill", self.collar.x, self.collar.y,
         self.collar.width, self.collar.height)
+
+    -- Add a stripe of light for visual effect.
+    local light_stripe_color = ColorSchemeHelper.current.white
+    -- Make the color a bit transparent so that it does not look too bright.
+    love.graphics.setColor(light_stripe_color[1], light_stripe_color[2],
+        light_stripe_color[3], 0.3)
+
+    local light_stripe_x = self.tube.x + self.tube.width * 0.7
+    local light_stripe_width = self.tube.width * 0.1
+    love.graphics.rectangle("fill", light_stripe_x,
+        self.tube.y, light_stripe_width, self.tube.height)
+    love.graphics.rectangle("fill", light_stripe_x + light_stripe_width * 0.25,
+        self.collar.y, light_stripe_width, self.collar.height)
 
     love.graphics.setColor(r, g, b, a)
 end

@@ -66,15 +66,18 @@ end
 local function create_solarized(is_dark)
     local solarized = create_solarized_base()
 
-    if is_dark then
-        solarized.black = solarized.base03
-        solarized.white = solarized.base3
-    else
-        solarized.white = solarized.base03
-        solarized.black = solarized.base3
-    end
+    solarized.black = solarized.base03
+    solarized.white = solarized.base3
 
     set_color_indices(solarized)
+
+    if is_dark then
+        solarized.background = solarized.black
+        solarized.foreground = solarized.white
+    else
+        solarized.background = solarized.white
+        solarized.foreground = solarized.black
+    end
 
     return solarized
 end
