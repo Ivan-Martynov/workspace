@@ -39,7 +39,7 @@ bool WindowLoader::load_window(const int width, const int height,
         return false;
     }
 
-
+    // Set the minimum number of screen update before buffers are swapped.
     glfwSwapInterval(1);
 
     return true;
