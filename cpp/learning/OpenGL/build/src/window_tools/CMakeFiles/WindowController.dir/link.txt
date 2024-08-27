@@ -1,0 +1,2 @@
+/usr/bin/ar qc libWindowController.a CMakeFiles/WindowController.dir/WindowController.cpp.o
+/usr/bin/ranlib libWindowController.a

@@ -7,6 +7,12 @@
 namespace Marvin
 {
 
+/**
+ * @brief Get the shader type name based on the shader's type.
+ * 
+ * @param shader_type Shader type.
+ * @return std::string Name of the shader type.
+ */
 static std::string get_shader_type_name(const GLenum shader_type)
 {
     switch (shader_type)
@@ -25,6 +31,12 @@ static std::string get_shader_type_name(const GLenum shader_type)
     }
 }
 
+/**
+ * @brief Output the log description for failed shaders.
+ * 
+ * @param shader_id Shader id.
+ * @param shader_type Shader type.
+ */
 static void handle_shader_failure(GLuint shader_id, GLenum shader_type)
 {
     std::cerr << "Failed to compile a " <<
@@ -45,6 +57,13 @@ static void handle_shader_failure(GLuint shader_id, GLenum shader_type)
     }
 }
 
+/**
+ * @brief Create shader from a text.
+ * 
+ * @param shader_type Type of shader.
+ * @param source Pointer to the text source.
+ * @return GLuint Shader id.
+ */
 GLuint ShaderCreator::create_from_string(GLenum shader_type,
     const GLchar** source)
 {
@@ -63,6 +82,13 @@ GLuint ShaderCreator::create_from_string(GLenum shader_type,
     return shader_id;
 }
 
+/**
+ * @brief Create shader from a file.
+ * 
+ * @param shader_type Type of shader.
+ * @param file_path Path to the shader file.
+ * @return GLuint Shader id.
+ */
 GLuint ShaderCreator::create_from_file(GLenum shader_type,
     const GLchar* file_path)
 {

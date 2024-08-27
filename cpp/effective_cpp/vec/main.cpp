@@ -5,10 +5,10 @@
 using namespace Algebra_lib;
 
 // manual instantiation: might be useful to reduce compliation time
-template class Vec<3, int>;
-template class Vec<3, double>;
-template class Vec<4, int>;
-template class Vec<4, double>;
+template class Algebra_lib::Vec<3, int>;
+template class Algebra_lib::Vec<3, double>;
+template class Algebra_lib::Vec<4, int>;
+template class Algebra_lib::Vec<4, double>;
 
 // shorthand names for common types
 using Vec3i = Vec<3, int>;

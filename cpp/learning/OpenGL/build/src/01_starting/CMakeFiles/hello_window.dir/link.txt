@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/hello_window.dir/hello_window.cpp.o -o /home/samsung/workspace/cpp/learning/OpenGL/bin/hello_window  ../glad/libglad.a -lglfw

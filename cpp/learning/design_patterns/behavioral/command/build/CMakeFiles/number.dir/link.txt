@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/number.dir/src/number.cpp.o -o /home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/bin/number

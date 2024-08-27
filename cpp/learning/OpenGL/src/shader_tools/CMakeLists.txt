@@ -1,0 +1,5 @@
+add_library(ShaderCreator ShaderCreator.cpp)
+add_library(ShaderProgram ShaderProgram.cpp)
+
+target_link_libraries(ShaderCreator PUBLIC tutorial_compiler_flags)
+target_link_libraries(ShaderProgram PUBLIC tutorial_compiler_flags)

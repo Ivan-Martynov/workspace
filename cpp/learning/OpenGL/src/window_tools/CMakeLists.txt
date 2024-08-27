@@ -1,0 +1,3 @@
+add_library(WindowController WindowController.cpp)
+
+target_link_libraries(WindowController PUBLIC tutorial_compiler_flags)

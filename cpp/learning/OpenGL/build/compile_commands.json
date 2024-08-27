@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/glad",
+  "command": "/usr/bin/cc  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -o CMakeFiles/glad.dir/glad.c.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/glad/glad.c",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/glad/glad.c",
+  "output": "src/glad/CMakeFiles/glad.dir/glad.c.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/window_tools",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/WindowController.dir/WindowController.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/window_tools/WindowController.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/window_tools/WindowController.cpp",
+  "output": "src/window_tools/CMakeFiles/WindowController.dir/WindowController.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/shader_tools",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/ShaderCreator.dir/ShaderCreator.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/shader_tools/ShaderCreator.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/shader_tools/ShaderCreator.cpp",
+  "output": "src/shader_tools/CMakeFiles/ShaderCreator.dir/ShaderCreator.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/shader_tools",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/ShaderProgram.dir/ShaderProgram.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/shader_tools/ShaderProgram.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/shader_tools/ShaderProgram.cpp",
+  "output": "src/shader_tools/CMakeFiles/ShaderProgram.dir/ShaderProgram.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/01_starting",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/hello_window.dir/hello_window.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_window.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_window.cpp",
+  "output": "src/01_starting/CMakeFiles/hello_window.dir/hello_window.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/01_starting",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/hello_triangle.dir/hello_triangle.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_triangle.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_triangle.cpp",
+  "output": "src/01_starting/CMakeFiles/hello_triangle.dir/hello_triangle.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/01_starting",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/hello_shaders.dir/hello_shaders.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_shaders.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_shaders.cpp",
+  "output": "src/01_starting/CMakeFiles/hello_shaders.dir/hello_shaders.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/learning/OpenGL/build/src/01_starting",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/learning/OpenGL/include -g -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -o CMakeFiles/hello_texture.dir/hello_texture.cpp.o -c /home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_texture.cpp",
+  "file": "/home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_texture.cpp",
+  "output": "src/01_starting/CMakeFiles/hello_texture.dir/hello_texture.cpp.o"
+}
+]

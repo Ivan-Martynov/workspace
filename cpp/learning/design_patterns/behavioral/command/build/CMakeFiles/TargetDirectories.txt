@@ -1,6 +1,0 @@
-/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/build/CMakeFiles/example1.exe.dir
-/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/build/CMakeFiles/giant.exe.dir
-/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/build/CMakeFiles/number.exe.dir
-/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/build/CMakeFiles/person.exe.dir
-/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/build/CMakeFiles/edit_cache.dir
-/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/hello_texture.dir/hello_texture.cpp.o -o /home/samsung/workspace/cpp/learning/OpenGL/bin/hello_texture  ../glad/libglad.a -lglfw ../window_tools/libWindowController.a ../shader_tools/libShaderCreator.a ../shader_tools/libShaderProgram.a

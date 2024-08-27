@@ -1,12 +1,14 @@
 #ifndef _GEOMETRY_H_
 #define _GEOMETRY_H_
 
+#include <cmath>
+
 #include "PPM_Image.h"
 
-constexpr double dist(const Point&, const Point&);
-
-class Shape {
-public:
+class Shape
+{
+  public:
+    virtual ~Shape() = 0;
     virtual double area() const = 0;
     virtual void draw(PPM_Image&, const PPM_Color&) const = 0;
     virtual void draw(PPM_Image&, const Color_name) const = 0;
@@ -19,8 +21,6 @@ public:
     Point(const Point&);
     Point &operator=(const Point&);
 
-    ~Point() = default;
-
     int x() const { return x_; }
     int y() const { return y_; }
 
@@ -32,14 +32,14 @@ private:
     int y_;
 };
 
+double dist(const Point&, const Point&);
+
 class Line: public Shape {
 public:
     Line(const int, const int, const int, const int);
     Line(const Point&, const Point&);
     Line(const Line&);
     Line &operator=(const Line&);
-
-    ~Line() = default;
 
     double length() const { return dist(p1_, p2_); }
     double area() const override { return 0.0; }
@@ -51,8 +51,13 @@ private:
     Point p2_;
 };
 
-constexpr double dist(const Point &p1, const Point &p1) {
-    return sqrt(pow(p1.x() - p2.x(), 2) + pow(p1.y() - p2.y(), 2));
+constexpr double sqr(const int x)
+{
+    return x * x;
+}
+
+double dist(const Point &p1, const Point &p2) {
+    return std::sqrt(sqr(p1.x() - p2.x()) + sqr(p1.y() - p2.y()));
 }
 
 #endif
