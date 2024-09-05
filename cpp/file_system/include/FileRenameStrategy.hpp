@@ -9,7 +9,11 @@ namespace Marvin
 
 class FileRenameStrategy
 {
-  //private:
+  private:
+    bool m_recursive {false};
+    bool m_verbose {false};
+    bool do_modify {false};
+
   protected:
     std::string_view m_path;
     std::vector<std::string_view> m_options;
@@ -19,6 +23,21 @@ class FileRenameStrategy
         const std::vector<std::string_view>& options)
         : m_path {path}, m_options {options}
     {
+        for (const auto& option : m_options)
+        {
+            if ((option == "-r") || (option == "-recursive"))
+            {
+                m_recursive = true;
+            }
+            else if ((option == "-v") || (option == "-verbose"))
+            {
+                m_verbose = true;
+            }
+            else if ((option == "-dm") || (option == "-do-modify"))
+            {
+                do_modify = true;
+            }
+        }
     }
 
     virtual ~FileRenameStrategy() = default;
