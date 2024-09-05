@@ -3,6 +3,7 @@
 #include <functional>
 #include <iostream>
 #include <vector>
+#include <format>
 
 static std::string locale_name {};
 
@@ -128,7 +129,7 @@ static void show_files_in_directory(
     else
     {
         process_path_items(target_path, print_target_path, recursive);
-        process_path_items(target_path, print_last_write_time, recursive);
+        //process_path_items(target_path, print_last_write_time, recursive);
     }
 }
 
@@ -181,6 +182,25 @@ int main(const int argc, const char* argv[])
     {
         show_files_in_directory(target_path_name, recursive);
     }
+
+    // Replacing spaces with undrescores.
+    //for (std::string& target_path_name : paths)
+    //{
+    //    for (const std::filesystem::directory_entry& item :
+    //        std::filesystem::directory_iterator {
+    //            std::filesystem::path {target_path_name}.make_preferred()})
+    //    {
+    //        std::wstring file_name = item.path().filename().wstring();
+    //        std::replace(file_name.begin(), file_name.end(), L' ', L'_');
+
+    //        std::wcout << L"Full path = "
+    //                   << item.path().parent_path() / item.path().filename()
+    //                   << L"\n";
+    //        // target_path.replace_filename(file_name);
+    //        auto p = item.path().parent_path() / file_name;
+    //        std::rename(item.path().string().c_str(), p.string().c_str());
+    //    }
+    //}
 
     return 0;
 }

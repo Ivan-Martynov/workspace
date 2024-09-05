@@ -117,67 +117,67 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-command/CMakeFiles/command_example1.exe.dir/rule:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_example1.exe.dir/rule
-.PHONY : command/CMakeFiles/command_example1.exe.dir/rule
+command/CMakeFiles/command_example1.dir/rule:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_example1.dir/rule
+.PHONY : command/CMakeFiles/command_example1.dir/rule
 
 # Convenience name for target.
-command_example1.exe: command/CMakeFiles/command_example1.exe.dir/rule
-.PHONY : command_example1.exe
+command_example1: command/CMakeFiles/command_example1.dir/rule
+.PHONY : command_example1
 
 # fast build rule for target.
-command_example1.exe/fast:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/build
-.PHONY : command_example1.exe/fast
+command_example1/fast:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/build
+.PHONY : command_example1/fast
 
 # Convenience name for target.
-command/CMakeFiles/command_giant.exe.dir/rule:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_giant.exe.dir/rule
-.PHONY : command/CMakeFiles/command_giant.exe.dir/rule
+command/CMakeFiles/command_giant.dir/rule:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_giant.dir/rule
+.PHONY : command/CMakeFiles/command_giant.dir/rule
 
 # Convenience name for target.
-command_giant.exe: command/CMakeFiles/command_giant.exe.dir/rule
-.PHONY : command_giant.exe
+command_giant: command/CMakeFiles/command_giant.dir/rule
+.PHONY : command_giant
 
 # fast build rule for target.
-command_giant.exe/fast:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/build
-.PHONY : command_giant.exe/fast
+command_giant/fast:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/build
+.PHONY : command_giant/fast
 
 # Convenience name for target.
-command/CMakeFiles/command_number.exe.dir/rule:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_number.exe.dir/rule
-.PHONY : command/CMakeFiles/command_number.exe.dir/rule
+command/CMakeFiles/command_number.dir/rule:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_number.dir/rule
+.PHONY : command/CMakeFiles/command_number.dir/rule
 
 # Convenience name for target.
-command_number.exe: command/CMakeFiles/command_number.exe.dir/rule
-.PHONY : command_number.exe
+command_number: command/CMakeFiles/command_number.dir/rule
+.PHONY : command_number
 
 # fast build rule for target.
-command_number.exe/fast:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/build
-.PHONY : command_number.exe/fast
+command_number/fast:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/build
+.PHONY : command_number/fast
 
 # Convenience name for target.
-command/CMakeFiles/command_person.exe.dir/rule:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_person.exe.dir/rule
-.PHONY : command/CMakeFiles/command_person.exe.dir/rule
+command/CMakeFiles/command_person.dir/rule:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_person.dir/rule
+.PHONY : command/CMakeFiles/command_person.dir/rule
 
 # Convenience name for target.
-command_person.exe: command/CMakeFiles/command_person.exe.dir/rule
-.PHONY : command_person.exe
+command_person: command/CMakeFiles/command_person.dir/rule
+.PHONY : command_person
 
 # fast build rule for target.
-command_person.exe/fast:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/build
-.PHONY : command_person.exe/fast
+command_person/fast:
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/build
+.PHONY : command_person/fast
 
 src/example1.o: src/example1.cpp.o
 .PHONY : src/example1.o
 
 # target to build an object file
 src/example1.cpp.o:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/src/example1.cpp.o
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/src/example1.cpp.o
 .PHONY : src/example1.cpp.o
 
 src/example1.i: src/example1.cpp.i
@@ -185,7 +185,7 @@ src/example1.i: src/example1.cpp.i
 
 # target to preprocess a source file
 src/example1.cpp.i:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/src/example1.cpp.i
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/src/example1.cpp.i
 .PHONY : src/example1.cpp.i
 
 src/example1.s: src/example1.cpp.s
@@ -193,7 +193,7 @@ src/example1.s: src/example1.cpp.s
 
 # target to generate assembly for a file
 src/example1.cpp.s:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/src/example1.cpp.s
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/src/example1.cpp.s
 .PHONY : src/example1.cpp.s
 
 src/giant.o: src/giant.cpp.o
@@ -201,7 +201,7 @@ src/giant.o: src/giant.cpp.o
 
 # target to build an object file
 src/giant.cpp.o:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/src/giant.cpp.o
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/src/giant.cpp.o
 .PHONY : src/giant.cpp.o
 
 src/giant.i: src/giant.cpp.i
@@ -209,7 +209,7 @@ src/giant.i: src/giant.cpp.i
 
 # target to preprocess a source file
 src/giant.cpp.i:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/src/giant.cpp.i
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/src/giant.cpp.i
 .PHONY : src/giant.cpp.i
 
 src/giant.s: src/giant.cpp.s
@@ -217,7 +217,7 @@ src/giant.s: src/giant.cpp.s
 
 # target to generate assembly for a file
 src/giant.cpp.s:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/src/giant.cpp.s
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/src/giant.cpp.s
 .PHONY : src/giant.cpp.s
 
 src/number.o: src/number.cpp.o
@@ -225,7 +225,7 @@ src/number.o: src/number.cpp.o
 
 # target to build an object file
 src/number.cpp.o:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/src/number.cpp.o
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/src/number.cpp.o
 .PHONY : src/number.cpp.o
 
 src/number.i: src/number.cpp.i
@@ -233,7 +233,7 @@ src/number.i: src/number.cpp.i
 
 # target to preprocess a source file
 src/number.cpp.i:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/src/number.cpp.i
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/src/number.cpp.i
 .PHONY : src/number.cpp.i
 
 src/number.s: src/number.cpp.s
@@ -241,7 +241,7 @@ src/number.s: src/number.cpp.s
 
 # target to generate assembly for a file
 src/number.cpp.s:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/src/number.cpp.s
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/src/number.cpp.s
 .PHONY : src/number.cpp.s
 
 src/person.o: src/person.cpp.o
@@ -249,7 +249,7 @@ src/person.o: src/person.cpp.o
 
 # target to build an object file
 src/person.cpp.o:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/src/person.cpp.o
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/src/person.cpp.o
 .PHONY : src/person.cpp.o
 
 src/person.i: src/person.cpp.i
@@ -257,7 +257,7 @@ src/person.i: src/person.cpp.i
 
 # target to preprocess a source file
 src/person.cpp.i:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/src/person.cpp.i
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/src/person.cpp.i
 .PHONY : src/person.cpp.i
 
 src/person.s: src/person.cpp.s
@@ -265,7 +265,7 @@ src/person.s: src/person.cpp.s
 
 # target to generate assembly for a file
 src/person.cpp.s:
-	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/src/person.cpp.s
+	cd /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build && $(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/src/person.cpp.s
 .PHONY : src/person.cpp.s
 
 # Help Target
@@ -276,10 +276,10 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... command_example1.exe"
-	@echo "... command_giant.exe"
-	@echo "... command_number.exe"
-	@echo "... command_person.exe"
+	@echo "... command_example1"
+	@echo "... command_giant"
+	@echo "... command_number"
+	@echo "... command_person"
 	@echo "... src/example1.o"
 	@echo "... src/example1.i"
 	@echo "... src/example1.s"

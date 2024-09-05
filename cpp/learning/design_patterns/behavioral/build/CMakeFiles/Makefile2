@@ -64,24 +64,27 @@ CMAKE_BINARY_DIR = /home/samsung/workspace/cpp/learning/design_patterns/behavior
 
 # The main recursive "all" target.
 all: command/all
+all: strategy/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
 preinstall: command/preinstall
+preinstall: strategy/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: command/clean
+clean: strategy/clean
 .PHONY : clean
 
 #=============================================================================
 # Directory level rules for directory command
 
 # Recursive "all" directory target.
-command/all: command/CMakeFiles/command_example1.exe.dir/all
-command/all: command/CMakeFiles/command_giant.exe.dir/all
-command/all: command/CMakeFiles/command_number.exe.dir/all
-command/all: command/CMakeFiles/command_person.exe.dir/all
+command/all: command/CMakeFiles/command_example1.dir/all
+command/all: command/CMakeFiles/command_giant.dir/all
+command/all: command/CMakeFiles/command_number.dir/all
+command/all: command/CMakeFiles/command_person.dir/all
 .PHONY : command/all
 
 # Recursive "preinstall" directory target.
@@ -89,115 +92,184 @@ command/preinstall:
 .PHONY : command/preinstall
 
 # Recursive "clean" directory target.
-command/clean: command/CMakeFiles/command_example1.exe.dir/clean
-command/clean: command/CMakeFiles/command_giant.exe.dir/clean
-command/clean: command/CMakeFiles/command_number.exe.dir/clean
-command/clean: command/CMakeFiles/command_person.exe.dir/clean
+command/clean: command/CMakeFiles/command_example1.dir/clean
+command/clean: command/CMakeFiles/command_giant.dir/clean
+command/clean: command/CMakeFiles/command_number.dir/clean
+command/clean: command/CMakeFiles/command_person.dir/clean
 .PHONY : command/clean
 
 #=============================================================================
-# Target rules for target command/CMakeFiles/command_example1.exe.dir
+# Directory level rules for directory strategy
 
-# All Build rule for target.
-command/CMakeFiles/command_example1.exe.dir/all:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/depend
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=1,2 "Built target command_example1.exe"
-.PHONY : command/CMakeFiles/command_example1.exe.dir/all
+# Recursive "all" directory target.
+strategy/all: strategy/CMakeFiles/strategy_concept.dir/all
+strategy/all: strategy/CMakeFiles/strategy_justify.dir/all
+.PHONY : strategy/all
 
-# Build rule for subdir invocation for target.
-command/CMakeFiles/command_example1.exe.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_example1.exe.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
-.PHONY : command/CMakeFiles/command_example1.exe.dir/rule
+# Recursive "preinstall" directory target.
+strategy/preinstall:
+.PHONY : strategy/preinstall
 
-# Convenience name for target.
-command_example1.exe: command/CMakeFiles/command_example1.exe.dir/rule
-.PHONY : command_example1.exe
-
-# clean rule for target.
-command/CMakeFiles/command_example1.exe.dir/clean:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/clean
-.PHONY : command/CMakeFiles/command_example1.exe.dir/clean
+# Recursive "clean" directory target.
+strategy/clean: strategy/CMakeFiles/strategy_concept.dir/clean
+strategy/clean: strategy/CMakeFiles/strategy_justify.dir/clean
+.PHONY : strategy/clean
 
 #=============================================================================
-# Target rules for target command/CMakeFiles/command_giant.exe.dir
+# Target rules for target command/CMakeFiles/command_example1.dir
 
 # All Build rule for target.
-command/CMakeFiles/command_giant.exe.dir/all:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/depend
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=3,4 "Built target command_giant.exe"
-.PHONY : command/CMakeFiles/command_giant.exe.dir/all
+command/CMakeFiles/command_example1.dir/all:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/depend
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=1,2 "Built target command_example1"
+.PHONY : command/CMakeFiles/command_example1.dir/all
 
 # Build rule for subdir invocation for target.
-command/CMakeFiles/command_giant.exe.dir/rule: cmake_check_build_system
+command/CMakeFiles/command_example1.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_giant.exe.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_example1.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
-.PHONY : command/CMakeFiles/command_giant.exe.dir/rule
+.PHONY : command/CMakeFiles/command_example1.dir/rule
 
 # Convenience name for target.
-command_giant.exe: command/CMakeFiles/command_giant.exe.dir/rule
-.PHONY : command_giant.exe
+command_example1: command/CMakeFiles/command_example1.dir/rule
+.PHONY : command_example1
 
 # clean rule for target.
-command/CMakeFiles/command_giant.exe.dir/clean:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/clean
-.PHONY : command/CMakeFiles/command_giant.exe.dir/clean
+command/CMakeFiles/command_example1.dir/clean:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/clean
+.PHONY : command/CMakeFiles/command_example1.dir/clean
 
 #=============================================================================
-# Target rules for target command/CMakeFiles/command_number.exe.dir
+# Target rules for target command/CMakeFiles/command_giant.dir
 
 # All Build rule for target.
-command/CMakeFiles/command_number.exe.dir/all:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/depend
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=5,6 "Built target command_number.exe"
-.PHONY : command/CMakeFiles/command_number.exe.dir/all
+command/CMakeFiles/command_giant.dir/all:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/depend
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=3,4 "Built target command_giant"
+.PHONY : command/CMakeFiles/command_giant.dir/all
 
 # Build rule for subdir invocation for target.
-command/CMakeFiles/command_number.exe.dir/rule: cmake_check_build_system
+command/CMakeFiles/command_giant.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_number.exe.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_giant.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
-.PHONY : command/CMakeFiles/command_number.exe.dir/rule
+.PHONY : command/CMakeFiles/command_giant.dir/rule
 
 # Convenience name for target.
-command_number.exe: command/CMakeFiles/command_number.exe.dir/rule
-.PHONY : command_number.exe
+command_giant: command/CMakeFiles/command_giant.dir/rule
+.PHONY : command_giant
 
 # clean rule for target.
-command/CMakeFiles/command_number.exe.dir/clean:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/clean
-.PHONY : command/CMakeFiles/command_number.exe.dir/clean
+command/CMakeFiles/command_giant.dir/clean:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/clean
+.PHONY : command/CMakeFiles/command_giant.dir/clean
 
 #=============================================================================
-# Target rules for target command/CMakeFiles/command_person.exe.dir
+# Target rules for target command/CMakeFiles/command_number.dir
 
 # All Build rule for target.
-command/CMakeFiles/command_person.exe.dir/all:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/depend
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=7,8 "Built target command_person.exe"
-.PHONY : command/CMakeFiles/command_person.exe.dir/all
+command/CMakeFiles/command_number.dir/all:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/depend
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=5,6 "Built target command_number"
+.PHONY : command/CMakeFiles/command_number.dir/all
 
 # Build rule for subdir invocation for target.
-command/CMakeFiles/command_person.exe.dir/rule: cmake_check_build_system
+command/CMakeFiles/command_number.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_person.exe.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_number.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
-.PHONY : command/CMakeFiles/command_person.exe.dir/rule
+.PHONY : command/CMakeFiles/command_number.dir/rule
 
 # Convenience name for target.
-command_person.exe: command/CMakeFiles/command_person.exe.dir/rule
-.PHONY : command_person.exe
+command_number: command/CMakeFiles/command_number.dir/rule
+.PHONY : command_number
 
 # clean rule for target.
-command/CMakeFiles/command_person.exe.dir/clean:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/clean
-.PHONY : command/CMakeFiles/command_person.exe.dir/clean
+command/CMakeFiles/command_number.dir/clean:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/clean
+.PHONY : command/CMakeFiles/command_number.dir/clean
+
+#=============================================================================
+# Target rules for target command/CMakeFiles/command_person.dir
+
+# All Build rule for target.
+command/CMakeFiles/command_person.dir/all:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/depend
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=7,8 "Built target command_person"
+.PHONY : command/CMakeFiles/command_person.dir/all
+
+# Build rule for subdir invocation for target.
+command/CMakeFiles/command_person.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command/CMakeFiles/command_person.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
+.PHONY : command/CMakeFiles/command_person.dir/rule
+
+# Convenience name for target.
+command_person: command/CMakeFiles/command_person.dir/rule
+.PHONY : command_person
+
+# clean rule for target.
+command/CMakeFiles/command_person.dir/clean:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/clean
+.PHONY : command/CMakeFiles/command_person.dir/clean
+
+#=============================================================================
+# Target rules for target strategy/CMakeFiles/strategy_concept.dir
+
+# All Build rule for target.
+strategy/CMakeFiles/strategy_concept.dir/all:
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_concept.dir/build.make strategy/CMakeFiles/strategy_concept.dir/depend
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_concept.dir/build.make strategy/CMakeFiles/strategy_concept.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=9,10 "Built target strategy_concept"
+.PHONY : strategy/CMakeFiles/strategy_concept.dir/all
+
+# Build rule for subdir invocation for target.
+strategy/CMakeFiles/strategy_concept.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 strategy/CMakeFiles/strategy_concept.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
+.PHONY : strategy/CMakeFiles/strategy_concept.dir/rule
+
+# Convenience name for target.
+strategy_concept: strategy/CMakeFiles/strategy_concept.dir/rule
+.PHONY : strategy_concept
+
+# clean rule for target.
+strategy/CMakeFiles/strategy_concept.dir/clean:
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_concept.dir/build.make strategy/CMakeFiles/strategy_concept.dir/clean
+.PHONY : strategy/CMakeFiles/strategy_concept.dir/clean
+
+#=============================================================================
+# Target rules for target strategy/CMakeFiles/strategy_justify.dir
+
+# All Build rule for target.
+strategy/CMakeFiles/strategy_justify.dir/all:
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_justify.dir/build.make strategy/CMakeFiles/strategy_justify.dir/depend
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_justify.dir/build.make strategy/CMakeFiles/strategy_justify.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles --progress-num=11,12 "Built target strategy_justify"
+.PHONY : strategy/CMakeFiles/strategy_justify.dir/all
+
+# Build rule for subdir invocation for target.
+strategy/CMakeFiles/strategy_justify.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 strategy/CMakeFiles/strategy_justify.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/samsung/workspace/cpp/learning/design_patterns/behavioral/build/CMakeFiles 0
+.PHONY : strategy/CMakeFiles/strategy_justify.dir/rule
+
+# Convenience name for target.
+strategy_justify: strategy/CMakeFiles/strategy_justify.dir/rule
+.PHONY : strategy_justify
+
+# clean rule for target.
+strategy/CMakeFiles/strategy_justify.dir/clean:
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_justify.dir/build.make strategy/CMakeFiles/strategy_justify.dir/clean
+.PHONY : strategy/CMakeFiles/strategy_justify.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

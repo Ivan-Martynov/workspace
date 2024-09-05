@@ -1,0 +1,6 @@
+/home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/build/CMakeFiles/concept.dir
+/home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/build/CMakeFiles/string_wrapper.dir
+/home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/build/CMakeFiles/text_widget.dir
+/home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/build/CMakeFiles/xyz.dir
+/home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/build/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/build/CMakeFiles/rebuild_cache.dir

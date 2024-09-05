@@ -1,0 +1,3 @@
+A file contating some quote information.
+We can quote whatever we actually like.
+Or not.

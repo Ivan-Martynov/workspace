@@ -12,6 +12,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.30.0-rc3/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.30.0-rc3/CMakeSystem.cmake"
   "/home/samsung/workspace/cpp/learning/design_patterns/behavioral/command/CMakeLists.txt"
+  "/home/samsung/workspace/cpp/learning/design_patterns/behavioral/strategy/CMakeLists.txt"
   "/usr/local/share/cmake-3.30/Modules/CMakeCInformation.cmake"
   "/usr/local/share/cmake-3.30/Modules/CMakeCXXInformation.cmake"
   "/usr/local/share/cmake-3.30/Modules/CMakeCommonLanguageInclude.cmake"
@@ -42,12 +43,15 @@ set(CMAKE_MAKEFILE_OUTPUTS
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "command/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "strategy/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "command/CMakeFiles/command_example1.exe.dir/DependInfo.cmake"
-  "command/CMakeFiles/command_giant.exe.dir/DependInfo.cmake"
-  "command/CMakeFiles/command_number.exe.dir/DependInfo.cmake"
-  "command/CMakeFiles/command_person.exe.dir/DependInfo.cmake"
+  "command/CMakeFiles/command_example1.dir/DependInfo.cmake"
+  "command/CMakeFiles/command_giant.dir/DependInfo.cmake"
+  "command/CMakeFiles/command_number.dir/DependInfo.cmake"
+  "command/CMakeFiles/command_person.dir/DependInfo.cmake"
+  "strategy/CMakeFiles/strategy_concept.dir/DependInfo.cmake"
+  "strategy/CMakeFiles/strategy_justify.dir/DependInfo.cmake"
   )

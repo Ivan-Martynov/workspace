@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/strategy_concept.dir/src/concept.cpp.o -o /home/samsung/workspace/cpp/learning/design_patterns/behavioral/bin/strategy_concept

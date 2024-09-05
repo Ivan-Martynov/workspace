@@ -1,0 +1,2 @@
+/usr/bin/ar qc libBatchFileRenamer.a CMakeFiles/BatchFileRenamer.dir/src/BatchFileRenamer.cpp.o
+/usr/bin/ranlib libBatchFileRenamer.a

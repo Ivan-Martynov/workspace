@@ -2,14 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(OpenGLTutorial VERSION 1.1)
 
-#set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED True)
-
 add_library(tutorial_compiler_flags INTERFACE)
 target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_17)
-
-#set(CMAKE_CXX_FLAGS
-#    "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++")
 
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")

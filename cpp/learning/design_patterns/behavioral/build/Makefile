@@ -117,56 +117,82 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named command_example1.exe
+# Target rules for targets named command_example1
 
 # Build rule for target.
-command_example1.exe: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_example1.exe
-.PHONY : command_example1.exe
+command_example1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_example1
+.PHONY : command_example1
 
 # fast build rule for target.
-command_example1.exe/fast:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.exe.dir/build.make command/CMakeFiles/command_example1.exe.dir/build
-.PHONY : command_example1.exe/fast
+command_example1/fast:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_example1.dir/build.make command/CMakeFiles/command_example1.dir/build
+.PHONY : command_example1/fast
 
 #=============================================================================
-# Target rules for targets named command_giant.exe
+# Target rules for targets named command_giant
 
 # Build rule for target.
-command_giant.exe: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_giant.exe
-.PHONY : command_giant.exe
+command_giant: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_giant
+.PHONY : command_giant
 
 # fast build rule for target.
-command_giant.exe/fast:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.exe.dir/build.make command/CMakeFiles/command_giant.exe.dir/build
-.PHONY : command_giant.exe/fast
+command_giant/fast:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_giant.dir/build.make command/CMakeFiles/command_giant.dir/build
+.PHONY : command_giant/fast
 
 #=============================================================================
-# Target rules for targets named command_number.exe
+# Target rules for targets named command_number
 
 # Build rule for target.
-command_number.exe: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_number.exe
-.PHONY : command_number.exe
+command_number: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_number
+.PHONY : command_number
 
 # fast build rule for target.
-command_number.exe/fast:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.exe.dir/build.make command/CMakeFiles/command_number.exe.dir/build
-.PHONY : command_number.exe/fast
+command_number/fast:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_number.dir/build.make command/CMakeFiles/command_number.dir/build
+.PHONY : command_number/fast
 
 #=============================================================================
-# Target rules for targets named command_person.exe
+# Target rules for targets named command_person
 
 # Build rule for target.
-command_person.exe: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_person.exe
-.PHONY : command_person.exe
+command_person: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 command_person
+.PHONY : command_person
 
 # fast build rule for target.
-command_person.exe/fast:
-	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.exe.dir/build.make command/CMakeFiles/command_person.exe.dir/build
-.PHONY : command_person.exe/fast
+command_person/fast:
+	$(MAKE) $(MAKESILENT) -f command/CMakeFiles/command_person.dir/build.make command/CMakeFiles/command_person.dir/build
+.PHONY : command_person/fast
+
+#=============================================================================
+# Target rules for targets named strategy_concept
+
+# Build rule for target.
+strategy_concept: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 strategy_concept
+.PHONY : strategy_concept
+
+# fast build rule for target.
+strategy_concept/fast:
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_concept.dir/build.make strategy/CMakeFiles/strategy_concept.dir/build
+.PHONY : strategy_concept/fast
+
+#=============================================================================
+# Target rules for targets named strategy_justify
+
+# Build rule for target.
+strategy_justify: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 strategy_justify
+.PHONY : strategy_justify
+
+# fast build rule for target.
+strategy_justify/fast:
+	$(MAKE) $(MAKESILENT) -f strategy/CMakeFiles/strategy_justify.dir/build.make strategy/CMakeFiles/strategy_justify.dir/build
+.PHONY : strategy_justify/fast
 
 # Help Target
 help:
@@ -176,10 +202,12 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... command_example1.exe"
-	@echo "... command_giant.exe"
-	@echo "... command_number.exe"
-	@echo "... command_person.exe"
+	@echo "... command_example1"
+	@echo "... command_giant"
+	@echo "... command_number"
+	@echo "... command_person"
+	@echo "... strategy_concept"
+	@echo "... strategy_justify"
 .PHONY : help
 
 

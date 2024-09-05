@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/concept.dir/src/concept.cpp.o -o /home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/bin/concept

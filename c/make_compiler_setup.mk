@@ -23,3 +23,4 @@ CFLAGS := ${compilation_flags.common} ${compilation_flags.${BUILD}}
 COMPILE_CMD := $(CC) $(CFLAGS)
 LINK_CMD := $(CC)
 MKLIB_CMD := ar rsc
+MKSHARED_CMD = $(CC) $(CFLAGS) -fPIC -shared

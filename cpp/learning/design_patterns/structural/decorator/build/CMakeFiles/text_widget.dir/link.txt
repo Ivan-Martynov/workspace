@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/text_widget.dir/src/text_widget.cpp.o -o /home/samsung/workspace/cpp/learning/design_patterns/structural/decorator/bin/text_widget

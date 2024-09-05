@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/command_example1.dir/src/example1.cpp.o -o /home/samsung/workspace/cpp/learning/design_patterns/behavioral/bin/command_example1

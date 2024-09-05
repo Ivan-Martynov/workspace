@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/show_disk_usage.dir/src/show_disk_usage.cpp.o -o /home/samsung/workspace/cpp/file_system/bin/show_disk_usage

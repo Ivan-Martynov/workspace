@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 3.10)
-
-# project(CommandDesignPattern VERSION 1.0)
-
 set(TARGETS
     example1
     giant
@@ -10,5 +6,6 @@ set(TARGETS
 )
 
 foreach(TARGET ${TARGETS})
-  add_executable(command_${TARGET}.exe src/${TARGET}.cpp)
+    add_executable(command_${TARGET} src/${TARGET}.cpp)
+    target_link_libraries(command_${TARGET} PUBLIC compiler_flags)
 endforeach(TARGET)
