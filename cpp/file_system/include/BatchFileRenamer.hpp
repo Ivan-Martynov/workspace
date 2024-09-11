@@ -1,7 +1,8 @@
 #ifndef _H_BATCH_FILE_RENAMER_H_
 #define _H_BATCH_FILE_RENAMER_H_
 
-#include <filesystem>
+#include "FileRenameCommandInterface.hpp"
+
 #include <vector>
 
 namespace Marvin
@@ -10,25 +11,44 @@ namespace Marvin
 class BatchFileRenamer
 {
   private:
-    // Parameters.
+    std::vector<std::string_view> m_paths;
+    std::vector<std::string_view> m_options;
+    std::vector<std::unique_ptr<FileRenameCommandInterface>> m_commands_ptrs {};
+
+    enum class Targets
+    {
+        NONE = 0,
+        FILES = 1,
+        DIRECTORIES = 2,
+        EXTENSIONS = 4,
+    };
+
+    enum class Sorting
+    {
+        NONE = 0,
+        BY_NAMES = 1,
+        BY_NAMES_DESCENDING = 2,
+        BY_SIZE = 4,
+        BY_SIZE_DESCENDING = 8,
+        BY_TIMESTAMP = 16,
+        BY_TIMESTAMP_DESCENDING = 32,
+    };
+
     bool m_recursive {false};
-    bool m_verbose {true};
-    std::vector<std::filesystem::directory_entry> entries {};
+    bool m_verbose {false};
+    bool do_modify {false};
+
+    size_t m_targets {static_cast<size_t>(Targets::FILES)};
+    size_t m_sorting {static_cast<size_t>(Sorting::NONE)};
+
+    void process_directory(const std::string_view&);
+    void process_items(std::vector<std::filesystem::path>&);
 
   public:
-    explicit BatchFileRenamer() = default;
-    explicit BatchFileRenamer(
-        const std::vector<std::string>&, const bool = false, const bool = true);
+    explicit BatchFileRenamer(const std::vector<std::string_view>&,
+        const std::vector<std::string_view>&);
 
-    explicit BatchFileRenamer(const BatchFileRenamer& other) = default;
-    BatchFileRenamer& operator=(const BatchFileRenamer& other) = default;
-
-    explicit BatchFileRenamer(BatchFileRenamer&& other) = default;
-    BatchFileRenamer& operator=(BatchFileRenamer&& other) = default;
-
-    // Functions to modify the paths.
-    void replace_using_regex(const std::wstring&, const std::wstring&);
-    void replace_spaces_with_underscores();
+    void run();
 };
 
 } // namespace Marvin

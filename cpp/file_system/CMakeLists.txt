@@ -28,5 +28,5 @@ foreach(TARGET ${TARGETS})
 endforeach(TARGET)
 
 add_executable(batch_rename_files
-  src/batch_rename_files.cpp src/BatchFileRenamer.cpp)
+  src/batch_rename_files.cpp src/BatchFileRenamer.cpp src/FileNameValidator.cpp)
 target_link_libraries(batch_rename_files PUBLIC compiler_flags)

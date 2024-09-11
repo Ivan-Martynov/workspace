@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "/home/samsung/workspace/cpp/file_system/bin/batch_rename_files.pdb"
   "CMakeFiles/batch_rename_files.dir/src/BatchFileRenamer.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/BatchFileRenamer.cpp.o.d"
+  "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o"
+  "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/batch_rename_files.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/batch_rename_files.cpp.o.d"
 )

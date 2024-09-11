@@ -11,12 +11,13 @@ namespace Marvin
 class FileRenameContext
 {
   private:
+    std::string m_path;
     std::unique_ptr<FileRenameStrategy> m_strategy_ptr;
 
   public:
-    explicit FileRenameContext(
+    explicit FileRenameContext(const std::string& dir_path,
         std::unique_ptr<FileRenameStrategy>&& strategy_ptr = {})
-        : m_strategy_ptr {std::move(strategy_ptr)}
+        : m_path {dir_path}, m_strategy_ptr {std::move(strategy_ptr)}
     {
     }
 
@@ -25,11 +26,11 @@ class FileRenameContext
         m_strategy_ptr = std::move(strategy_ptr);
     }
 
-    void do_logic() const
+    void modify() const
     {
         if (m_strategy_ptr)
         {
-            m_strategy_ptr->modify_filepath();
+            m_strategy_ptr->modify_files_in_dir(m_path);
         }
     }
 };

@@ -179,6 +179,30 @@ src/BatchFileRenamer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/BatchFileRenamer.cpp.s
 .PHONY : src/BatchFileRenamer.cpp.s
 
+src/FileNameValidator.o: src/FileNameValidator.cpp.o
+.PHONY : src/FileNameValidator.o
+
+# target to build an object file
+src/FileNameValidator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o
+.PHONY : src/FileNameValidator.cpp.o
+
+src/FileNameValidator.i: src/FileNameValidator.cpp.i
+.PHONY : src/FileNameValidator.i
+
+# target to preprocess a source file
+src/FileNameValidator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.i
+.PHONY : src/FileNameValidator.cpp.i
+
+src/FileNameValidator.s: src/FileNameValidator.cpp.s
+.PHONY : src/FileNameValidator.s
+
+# target to generate assembly for a file
+src/FileNameValidator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.s
+.PHONY : src/FileNameValidator.cpp.s
+
 src/batch_rename_files.o: src/batch_rename_files.cpp.o
 .PHONY : src/batch_rename_files.o
 
@@ -265,6 +289,9 @@ help:
 	@echo "... src/BatchFileRenamer.o"
 	@echo "... src/BatchFileRenamer.i"
 	@echo "... src/BatchFileRenamer.s"
+	@echo "... src/FileNameValidator.o"
+	@echo "... src/FileNameValidator.i"
+	@echo "... src/FileNameValidator.s"
 	@echo "... src/batch_rename_files.o"
 	@echo "... src/batch_rename_files.i"
 	@echo "... src/batch_rename_files.s"
