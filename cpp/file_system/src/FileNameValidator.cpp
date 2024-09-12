@@ -57,14 +57,14 @@ bool FileNameValidator::is_valid(const std::wstring_view& file_path)
 }
 
 void FileNameValidator::replace_invalid_characters(
-    std::wstring& s, const std::wstring& replacement)
+    std::wstring& path_name, const std::wstring& replacement)
 {
     if (!is_valid(replacement))
     {
         std::wcout << L"Cannot replace invalid characters, because the "
                       L"replacement contains invalid characters. Replacing "
                       L"with whitespaces.\n";
-        replace_invalid_characters(s, L" ");
+        replace_invalid_characters(path_name, L" ");
         return;
     }
 
@@ -72,15 +72,13 @@ void FileNameValidator::replace_invalid_characters(
     // std::regex_replace(s, r, replacement);
     while (true)
     {
-        const auto n {s.find_first_of(windows_reserved_characters)};
-        if (n != std::wstring::npos)
-        {
-            s.replace(s.cbegin() + n, s.cbegin() + n + 1, replacement);
-        }
-        else
+        const auto n {path_name.find_first_of(windows_reserved_characters)};
+        if (n == std::wstring::npos)
         {
             break;
         }
+        const auto start {path_name.cbegin() + n};
+        path_name.replace(start, start + 1, replacement);
     }
 }
 

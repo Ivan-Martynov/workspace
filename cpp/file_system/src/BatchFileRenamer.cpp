@@ -1,8 +1,8 @@
 #include "BatchFileRenamer.hpp"
-#include "FileDecorator.hpp"
 
 #include "StringReplaceCommand.hpp"
 #include "CaseModifyCommand.hpp"
+#include "StringAppendCommand.hpp"
 
 #include "FileNameValidator.hpp"
 
@@ -130,6 +130,36 @@ BatchFileRenamer::BatchFileRenamer(const std::vector<std::string_view>& paths,
             m_commands_ptrs.emplace_back(
                 std::make_unique<CaseModifyCommand>('c'));
         }
+        else if ((option == "-an") || (option == "-append-number"))
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringAppendCommand>('a', 'n'));
+        }
+        else if ((option == "-pn") || (option == "-prepend-number"))
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringAppendCommand>('p', 'n'));
+        }
+        else if ((option == "-at") || (option == "-append-timestamp"))
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringAppendCommand>('a', 't'));
+        }
+        else if ((option == "-pt") || (option == "-prepend-timestamp"))
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringAppendCommand>('p', 't'));
+        }
+        else if ((option == "-act") || (option == "-append-current-time"))
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringAppendCommand>('a', 'c'));
+        }
+        else if ((option == "-pct") || (option == "-prepend-current-time"))
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringAppendCommand>('p', 'c'));
+        }
     }
 }
 
@@ -172,7 +202,8 @@ void BatchFileRenamer::process_directory(const std::string_view& directory_path)
     for (const std::filesystem::directory_entry& item :
         std::filesystem::directory_iterator {directory_path})
     {
-        if (item.is_directory())
+        if (item.is_directory() && (item.path() != ".")
+            && (item.path() != ".."))
         {
             if (m_recursive)
             {
@@ -263,8 +294,14 @@ void BatchFileRenamer::process_directory(const std::string_view& directory_path)
             }};
     }
 
-    process_items(files);
-    process_items(directories);
+    for (auto& command_ptr : m_commands_ptrs)
+    {
+        // std::wcout << L"Trying to modify path\n";
+        command_ptr->modify(files);
+        command_ptr->modify(directories);
+    }
+    //process_items(files);
+    //process_items(directories);
 }
 
 void BatchFileRenamer::run()
