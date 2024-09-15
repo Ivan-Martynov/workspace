@@ -14,7 +14,7 @@ class FileNameValidator
   public:
     static bool is_valid(const std::wstring_view&);
     static void replace_invalid_characters(
-        std::wstring&, const std::wstring& = L"");
+        std::wstring&, const std::wstring& = L"_");
 };
 
 } // namespace Marvin

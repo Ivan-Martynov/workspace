@@ -64,7 +64,7 @@ void FileNameValidator::replace_invalid_characters(
         std::wcout << L"Cannot replace invalid characters, because the "
                       L"replacement contains invalid characters. Replacing "
                       L"with whitespaces.\n";
-        replace_invalid_characters(path_name, L" ");
+        replace_invalid_characters(path_name, L"_");
         return;
     }
 

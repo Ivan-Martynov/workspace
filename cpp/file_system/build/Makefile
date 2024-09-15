@@ -179,6 +179,30 @@ src/BatchFileRenamer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/BatchFileRenamer.cpp.s
 .PHONY : src/BatchFileRenamer.cpp.s
 
+src/CaseModifyCommand.o: src/CaseModifyCommand.cpp.o
+.PHONY : src/CaseModifyCommand.o
+
+# target to build an object file
+src/CaseModifyCommand.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.o
+.PHONY : src/CaseModifyCommand.cpp.o
+
+src/CaseModifyCommand.i: src/CaseModifyCommand.cpp.i
+.PHONY : src/CaseModifyCommand.i
+
+# target to preprocess a source file
+src/CaseModifyCommand.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.i
+.PHONY : src/CaseModifyCommand.cpp.i
+
+src/CaseModifyCommand.s: src/CaseModifyCommand.cpp.s
+.PHONY : src/CaseModifyCommand.s
+
+# target to generate assembly for a file
+src/CaseModifyCommand.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.s
+.PHONY : src/CaseModifyCommand.cpp.s
+
 src/FileNameValidator.o: src/FileNameValidator.cpp.o
 .PHONY : src/FileNameValidator.o
 
@@ -202,6 +226,78 @@ src/FileNameValidator.s: src/FileNameValidator.cpp.s
 src/FileNameValidator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.s
 .PHONY : src/FileNameValidator.cpp.s
+
+src/StringAppendCommand.o: src/StringAppendCommand.cpp.o
+.PHONY : src/StringAppendCommand.o
+
+# target to build an object file
+src/StringAppendCommand.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o
+.PHONY : src/StringAppendCommand.cpp.o
+
+src/StringAppendCommand.i: src/StringAppendCommand.cpp.i
+.PHONY : src/StringAppendCommand.i
+
+# target to preprocess a source file
+src/StringAppendCommand.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.i
+.PHONY : src/StringAppendCommand.cpp.i
+
+src/StringAppendCommand.s: src/StringAppendCommand.cpp.s
+.PHONY : src/StringAppendCommand.s
+
+# target to generate assembly for a file
+src/StringAppendCommand.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.s
+.PHONY : src/StringAppendCommand.cpp.s
+
+src/StringHelper.o: src/StringHelper.cpp.o
+.PHONY : src/StringHelper.o
+
+# target to build an object file
+src/StringHelper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.o
+.PHONY : src/StringHelper.cpp.o
+
+src/StringHelper.i: src/StringHelper.cpp.i
+.PHONY : src/StringHelper.i
+
+# target to preprocess a source file
+src/StringHelper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.i
+.PHONY : src/StringHelper.cpp.i
+
+src/StringHelper.s: src/StringHelper.cpp.s
+.PHONY : src/StringHelper.s
+
+# target to generate assembly for a file
+src/StringHelper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.s
+.PHONY : src/StringHelper.cpp.s
+
+src/StringReplaceCommand.o: src/StringReplaceCommand.cpp.o
+.PHONY : src/StringReplaceCommand.o
+
+# target to build an object file
+src/StringReplaceCommand.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o
+.PHONY : src/StringReplaceCommand.cpp.o
+
+src/StringReplaceCommand.i: src/StringReplaceCommand.cpp.i
+.PHONY : src/StringReplaceCommand.i
+
+# target to preprocess a source file
+src/StringReplaceCommand.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.i
+.PHONY : src/StringReplaceCommand.cpp.i
+
+src/StringReplaceCommand.s: src/StringReplaceCommand.cpp.s
+.PHONY : src/StringReplaceCommand.s
+
+# target to generate assembly for a file
+src/StringReplaceCommand.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.s
+.PHONY : src/StringReplaceCommand.cpp.s
 
 src/batch_rename_files.o: src/batch_rename_files.cpp.o
 .PHONY : src/batch_rename_files.o
@@ -289,9 +385,21 @@ help:
 	@echo "... src/BatchFileRenamer.o"
 	@echo "... src/BatchFileRenamer.i"
 	@echo "... src/BatchFileRenamer.s"
+	@echo "... src/CaseModifyCommand.o"
+	@echo "... src/CaseModifyCommand.i"
+	@echo "... src/CaseModifyCommand.s"
 	@echo "... src/FileNameValidator.o"
 	@echo "... src/FileNameValidator.i"
 	@echo "... src/FileNameValidator.s"
+	@echo "... src/StringAppendCommand.o"
+	@echo "... src/StringAppendCommand.i"
+	@echo "... src/StringAppendCommand.s"
+	@echo "... src/StringHelper.o"
+	@echo "... src/StringHelper.i"
+	@echo "... src/StringHelper.s"
+	@echo "... src/StringReplaceCommand.o"
+	@echo "... src/StringReplaceCommand.i"
+	@echo "... src/StringReplaceCommand.s"
 	@echo "... src/batch_rename_files.o"
 	@echo "... src/batch_rename_files.i"
 	@echo "... src/batch_rename_files.s"
