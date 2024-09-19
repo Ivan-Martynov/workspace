@@ -8,6 +8,7 @@
         "xlocbuf": "cpp",
         "xstring": "cpp",
         "format": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "vector": "cpp"
     }
 }

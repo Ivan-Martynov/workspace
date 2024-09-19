@@ -74,7 +74,7 @@ static void show_disk_usage(const std::vector<std::filesystem::path>& paths)
 
 int main(const int argc, const char* argv[])
 {
-    std::setlocale(LC_ALL, "en_US.UTF-8");
+    std::setlocale(LC_ALL, "");
 
     std::vector<std::filesystem::path> paths {};
     for (int i {1}; i < argc; ++i)

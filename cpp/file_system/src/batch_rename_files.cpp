@@ -1,9 +1,15 @@
+/**
+ * @file batch_rename_files.cpp
+ * @brief Simple program to rename all files (and/or directories) in the paths
+ * provided as arguments to the program. Other arguments define options for file
+ * names modifications.
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include "BatchFileRenamer.hpp"
 
-#include <chrono>
 #include <filesystem>
-#include <functional>
-#include <iostream>
 #include <vector>
 
 int main(const int argc, const char* argv[])
@@ -15,18 +21,19 @@ int main(const int argc, const char* argv[])
     std::vector<std::string_view> paths {};
     for (int i {1}; i < argc; ++i)
     {
-        const auto argument {argv[i]};
-        // Options should always have a dash sign in front.
-        if ((argument[0] == '-') || !std::filesystem::exists(argument))
-        {
-            options.emplace_back(argument);
-        }
-        else
+        // If the argument is not a valid path, then treat it as an option.
+        const std::string_view argument {argv[i]};
+        if (std::filesystem::exists(argument))
         {
             paths.emplace_back(argument);
         }
+        else
+        {
+            options.emplace_back(argument);
+        }
     }
 
+    // Process all the paths with provided options.
     Marvin::BatchFileRenamer tool {paths, options};
     tool.run();
 

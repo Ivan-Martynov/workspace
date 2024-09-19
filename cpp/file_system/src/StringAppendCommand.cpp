@@ -8,6 +8,12 @@
 namespace Marvin
 {
 
+/**
+ * @brief Construct a new String Append Command:: String Append Command object
+ *
+ * @param method Append ('a') or prepend ('p').
+ * @param appendage Number ('n'), timestamp ('t') or current time ('c').
+ */
 StringAppendCommand::StringAppendCommand(
     const char method, const char appendage)
 {
@@ -39,9 +45,17 @@ StringAppendCommand::StringAppendCommand(
     }
 }
 
-void StringAppendCommand::append_numbers(
+/**
+ * @brief Append or prepend numbers consecutively to item name.
+ *
+ * @param items Items to process.
+ */
+void StringAppendCommand::m_append_numbers(
     std::vector<std::filesystem::path>& items) const
 {
+    // Calculate how many digits the number has in order to prepend with zeros
+    // for proper sorting in different file systems.
+
     size_t n {items.size()};
     size_t number_width {0};
     do
@@ -54,10 +68,12 @@ void StringAppendCommand::append_numbers(
     {
         std::filesystem::path& item_path {items[i]};
 
+        // Construct a string objectd to append.
         const auto num_str {std::format(L"{:0{}}", (i + 1), number_width)};
 
         const auto name_stem {item_path.stem().wstring()};
 
+        // Construct the modified item name.
         auto file_name {m_method == Method::APPEND
                             ? num_str + L'_' + name_stem
                             : name_stem + L'_' + num_str};
@@ -71,19 +87,25 @@ void StringAppendCommand::append_numbers(
     }
 }
 
-void StringAppendCommand::append_timestamp(
+/**
+ * @brief Append or prepend timestamp to item name.
+ *
+ * @param items Items to process.
+ */
+void StringAppendCommand::m_append_timestamp(
     std::vector<std::filesystem::path>& items) const
 {
     for (auto& item_path : items)
     {
         std::wstring time_point_format {};
-        // std::chrono::system_clock::time_point time_point {};
         if (m_appendage == Appendage::CURRENT_TIME)
         {
+            // Get the time for the current zone.
             const std::chrono::zoned_time zoned {
                 std::chrono::current_zone()->name(),
                 std::chrono::system_clock::now()};
 
+            // Format the string by separating date components with underscores.
             time_point_format = std::format(L"{0:%Y_%m_%d_%H_%M_%S}",
                 std::chrono::round<std::chrono::seconds>(
                     zoned.get_local_time()));
@@ -94,6 +116,7 @@ void StringAppendCommand::append_timestamp(
             const std::filesystem::file_time_type time_stamp {
                 std::filesystem::last_write_time(item_path, err_code)};
 
+            // Read the timestamp of the item and report if an error occurs.
             if (err_code)
             {
                 std::wcerr << L"what(): "
@@ -103,10 +126,12 @@ void StringAppendCommand::append_timestamp(
                 continue;
             }
 
+            // Format the string by separating date components with underscores.
             time_point_format = std::format(L"{0:%Y_%m_%d_%H_%M_%S}",
                 std::chrono::round<std::chrono::seconds>(time_stamp));
         }
 
+        // Construct the modified item name.
         const auto name_stem {item_path.stem().wstring()};
         auto file_name {m_method == Method::APPEND
                             ? time_point_format + L'_' + name_stem
@@ -121,6 +146,12 @@ void StringAppendCommand::append_timestamp(
     }
 }
 
+/**
+ * @brief Modify path using target flag.
+ *
+ * @param path Path to an item.
+ * @param target_flag Flag to determine which part of the item to modify.
+ */
 void StringAppendCommand::modify(
     std::vector<std::filesystem::path>& items, const size_t) const
 {
@@ -131,11 +162,11 @@ void StringAppendCommand::modify(
 
     if (m_appendage == Appendage::NUMBER)
     {
-        append_numbers(items);
+        m_append_numbers(items);
     }
     else
     {
-        append_timestamp(items);
+        m_append_timestamp(items);
     }
 }
 

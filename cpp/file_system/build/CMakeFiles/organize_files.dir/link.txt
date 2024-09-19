@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/organize_files.dir/src/organize_files.cpp.o CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o CMakeFiles/organize_files.dir/src/StringHelper.cpp.o -o /home/samsung/workspace/cpp/file_system/bin/organize_files

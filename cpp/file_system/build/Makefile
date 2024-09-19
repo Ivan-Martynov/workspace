@@ -155,6 +155,45 @@ batch_rename_files/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/build
 .PHONY : batch_rename_files/fast
 
+#=============================================================================
+# Target rules for targets named organize_files
+
+# Build rule for target.
+organize_files: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 organize_files
+.PHONY : organize_files
+
+# fast build rule for target.
+organize_files/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/build
+.PHONY : organize_files/fast
+
+#=============================================================================
+# Target rules for targets named mp3_batch_rename_files
+
+# Build rule for target.
+mp3_batch_rename_files: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mp3_batch_rename_files
+.PHONY : mp3_batch_rename_files
+
+# fast build rule for target.
+mp3_batch_rename_files/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/build
+.PHONY : mp3_batch_rename_files/fast
+
+#=============================================================================
+# Target rules for targets named check_locale_encoding
+
+# Build rule for target.
+check_locale_encoding: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 check_locale_encoding
+.PHONY : check_locale_encoding
+
+# fast build rule for target.
+check_locale_encoding/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/check_locale_encoding.dir/build.make CMakeFiles/check_locale_encoding.dir/build
+.PHONY : check_locale_encoding/fast
+
 src/BatchFileRenamer.o: src/BatchFileRenamer.cpp.o
 .PHONY : src/BatchFileRenamer.o
 
@@ -227,6 +266,78 @@ src/FileNameValidator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.s
 .PHONY : src/FileNameValidator.cpp.s
 
+src/FileOrganizer.o: src/FileOrganizer.cpp.o
+.PHONY : src/FileOrganizer.o
+
+# target to build an object file
+src/FileOrganizer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o
+.PHONY : src/FileOrganizer.cpp.o
+
+src/FileOrganizer.i: src/FileOrganizer.cpp.i
+.PHONY : src/FileOrganizer.i
+
+# target to preprocess a source file
+src/FileOrganizer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.i
+.PHONY : src/FileOrganizer.cpp.i
+
+src/FileOrganizer.s: src/FileOrganizer.cpp.s
+.PHONY : src/FileOrganizer.s
+
+# target to generate assembly for a file
+src/FileOrganizer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.s
+.PHONY : src/FileOrganizer.cpp.s
+
+src/FileRenameCommandBase.o: src/FileRenameCommandBase.cpp.o
+.PHONY : src/FileRenameCommandBase.o
+
+# target to build an object file
+src/FileRenameCommandBase.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o
+.PHONY : src/FileRenameCommandBase.cpp.o
+
+src/FileRenameCommandBase.i: src/FileRenameCommandBase.cpp.i
+.PHONY : src/FileRenameCommandBase.i
+
+# target to preprocess a source file
+src/FileRenameCommandBase.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.i
+.PHONY : src/FileRenameCommandBase.cpp.i
+
+src/FileRenameCommandBase.s: src/FileRenameCommandBase.cpp.s
+.PHONY : src/FileRenameCommandBase.s
+
+# target to generate assembly for a file
+src/FileRenameCommandBase.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.s
+.PHONY : src/FileRenameCommandBase.cpp.s
+
+src/MP3Tag.o: src/MP3Tag.cpp.o
+.PHONY : src/MP3Tag.o
+
+# target to build an object file
+src/MP3Tag.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o
+.PHONY : src/MP3Tag.cpp.o
+
+src/MP3Tag.i: src/MP3Tag.cpp.i
+.PHONY : src/MP3Tag.i
+
+# target to preprocess a source file
+src/MP3Tag.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.i
+.PHONY : src/MP3Tag.cpp.i
+
+src/MP3Tag.s: src/MP3Tag.cpp.s
+.PHONY : src/MP3Tag.s
+
+# target to generate assembly for a file
+src/MP3Tag.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.s
+.PHONY : src/MP3Tag.cpp.s
+
 src/StringAppendCommand.o: src/StringAppendCommand.cpp.o
 .PHONY : src/StringAppendCommand.o
 
@@ -257,6 +368,8 @@ src/StringHelper.o: src/StringHelper.cpp.o
 # target to build an object file
 src/StringHelper.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/StringHelper.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o
 .PHONY : src/StringHelper.cpp.o
 
 src/StringHelper.i: src/StringHelper.cpp.i
@@ -265,6 +378,8 @@ src/StringHelper.i: src/StringHelper.cpp.i
 # target to preprocess a source file
 src/StringHelper.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/StringHelper.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.i
 .PHONY : src/StringHelper.cpp.i
 
 src/StringHelper.s: src/StringHelper.cpp.s
@@ -273,6 +388,8 @@ src/StringHelper.s: src/StringHelper.cpp.s
 # target to generate assembly for a file
 src/StringHelper.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/StringHelper.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.s
 .PHONY : src/StringHelper.cpp.s
 
 src/StringReplaceCommand.o: src/StringReplaceCommand.cpp.o
@@ -299,6 +416,30 @@ src/StringReplaceCommand.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.s
 .PHONY : src/StringReplaceCommand.cpp.s
 
+src/SyncsafeIntConverter.o: src/SyncsafeIntConverter.cpp.o
+.PHONY : src/SyncsafeIntConverter.o
+
+# target to build an object file
+src/SyncsafeIntConverter.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o
+.PHONY : src/SyncsafeIntConverter.cpp.o
+
+src/SyncsafeIntConverter.i: src/SyncsafeIntConverter.cpp.i
+.PHONY : src/SyncsafeIntConverter.i
+
+# target to preprocess a source file
+src/SyncsafeIntConverter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.i
+.PHONY : src/SyncsafeIntConverter.cpp.i
+
+src/SyncsafeIntConverter.s: src/SyncsafeIntConverter.cpp.s
+.PHONY : src/SyncsafeIntConverter.s
+
+# target to generate assembly for a file
+src/SyncsafeIntConverter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.s
+.PHONY : src/SyncsafeIntConverter.cpp.s
+
 src/batch_rename_files.o: src/batch_rename_files.cpp.o
 .PHONY : src/batch_rename_files.o
 
@@ -322,6 +463,78 @@ src/batch_rename_files.s: src/batch_rename_files.cpp.s
 src/batch_rename_files.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/batch_rename_files.cpp.s
 .PHONY : src/batch_rename_files.cpp.s
+
+src/check_locale_encoding.o: src/check_locale_encoding.cpp.o
+.PHONY : src/check_locale_encoding.o
+
+# target to build an object file
+src/check_locale_encoding.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/check_locale_encoding.dir/build.make CMakeFiles/check_locale_encoding.dir/src/check_locale_encoding.cpp.o
+.PHONY : src/check_locale_encoding.cpp.o
+
+src/check_locale_encoding.i: src/check_locale_encoding.cpp.i
+.PHONY : src/check_locale_encoding.i
+
+# target to preprocess a source file
+src/check_locale_encoding.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/check_locale_encoding.dir/build.make CMakeFiles/check_locale_encoding.dir/src/check_locale_encoding.cpp.i
+.PHONY : src/check_locale_encoding.cpp.i
+
+src/check_locale_encoding.s: src/check_locale_encoding.cpp.s
+.PHONY : src/check_locale_encoding.s
+
+# target to generate assembly for a file
+src/check_locale_encoding.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/check_locale_encoding.dir/build.make CMakeFiles/check_locale_encoding.dir/src/check_locale_encoding.cpp.s
+.PHONY : src/check_locale_encoding.cpp.s
+
+src/mp3_batch_rename_files.o: src/mp3_batch_rename_files.cpp.o
+.PHONY : src/mp3_batch_rename_files.o
+
+# target to build an object file
+src/mp3_batch_rename_files.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o
+.PHONY : src/mp3_batch_rename_files.cpp.o
+
+src/mp3_batch_rename_files.i: src/mp3_batch_rename_files.cpp.i
+.PHONY : src/mp3_batch_rename_files.i
+
+# target to preprocess a source file
+src/mp3_batch_rename_files.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.i
+.PHONY : src/mp3_batch_rename_files.cpp.i
+
+src/mp3_batch_rename_files.s: src/mp3_batch_rename_files.cpp.s
+.PHONY : src/mp3_batch_rename_files.s
+
+# target to generate assembly for a file
+src/mp3_batch_rename_files.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.s
+.PHONY : src/mp3_batch_rename_files.cpp.s
+
+src/organize_files.o: src/organize_files.cpp.o
+.PHONY : src/organize_files.o
+
+# target to build an object file
+src/organize_files.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/organize_files.cpp.o
+.PHONY : src/organize_files.cpp.o
+
+src/organize_files.i: src/organize_files.cpp.i
+.PHONY : src/organize_files.i
+
+# target to preprocess a source file
+src/organize_files.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/organize_files.cpp.i
+.PHONY : src/organize_files.cpp.i
+
+src/organize_files.s: src/organize_files.cpp.s
+.PHONY : src/organize_files.s
+
+# target to generate assembly for a file
+src/organize_files.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/organize_files.cpp.s
+.PHONY : src/organize_files.cpp.s
 
 src/show_disk_usage.o: src/show_disk_usage.cpp.o
 .PHONY : src/show_disk_usage.o
@@ -380,6 +593,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... batch_rename_files"
+	@echo "... check_locale_encoding"
+	@echo "... mp3_batch_rename_files"
+	@echo "... organize_files"
 	@echo "... show_disk_usage"
 	@echo "... show_files_in_directory"
 	@echo "... src/BatchFileRenamer.o"
@@ -391,6 +607,15 @@ help:
 	@echo "... src/FileNameValidator.o"
 	@echo "... src/FileNameValidator.i"
 	@echo "... src/FileNameValidator.s"
+	@echo "... src/FileOrganizer.o"
+	@echo "... src/FileOrganizer.i"
+	@echo "... src/FileOrganizer.s"
+	@echo "... src/FileRenameCommandBase.o"
+	@echo "... src/FileRenameCommandBase.i"
+	@echo "... src/FileRenameCommandBase.s"
+	@echo "... src/MP3Tag.o"
+	@echo "... src/MP3Tag.i"
+	@echo "... src/MP3Tag.s"
 	@echo "... src/StringAppendCommand.o"
 	@echo "... src/StringAppendCommand.i"
 	@echo "... src/StringAppendCommand.s"
@@ -400,9 +625,21 @@ help:
 	@echo "... src/StringReplaceCommand.o"
 	@echo "... src/StringReplaceCommand.i"
 	@echo "... src/StringReplaceCommand.s"
+	@echo "... src/SyncsafeIntConverter.o"
+	@echo "... src/SyncsafeIntConverter.i"
+	@echo "... src/SyncsafeIntConverter.s"
 	@echo "... src/batch_rename_files.o"
 	@echo "... src/batch_rename_files.i"
 	@echo "... src/batch_rename_files.s"
+	@echo "... src/check_locale_encoding.o"
+	@echo "... src/check_locale_encoding.i"
+	@echo "... src/check_locale_encoding.s"
+	@echo "... src/mp3_batch_rename_files.o"
+	@echo "... src/mp3_batch_rename_files.i"
+	@echo "... src/mp3_batch_rename_files.s"
+	@echo "... src/organize_files.o"
+	@echo "... src/organize_files.i"
+	@echo "... src/organize_files.s"
 	@echo "... src/show_disk_usage.o"
 	@echo "... src/show_disk_usage.i"
 	@echo "... src/show_disk_usage.s"

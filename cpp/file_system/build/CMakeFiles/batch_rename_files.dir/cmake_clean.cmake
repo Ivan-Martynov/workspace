@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o.d"
+  "CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o"
+  "CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.o"

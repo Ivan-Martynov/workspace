@@ -1,7 +1,7 @@
 #ifndef _H_BATCH_FILE_RENAMER_H_
 #define _H_BATCH_FILE_RENAMER_H_
 
-#include "FileRenameCommandInterface.hpp"
+#include "FileRenameCommandBase.hpp"
 
 #include <vector>
 
@@ -20,7 +20,7 @@ class BatchFileRenamer
     // Options to modify the paths.
     std::vector<std::string_view> m_options;
     // List of commands to process paths.
-    std::vector<std::unique_ptr<FileRenameCommandInterface>> m_commands_ptrs {};
+    std::vector<std::unique_ptr<FileRenameCommandBase>> m_commands_ptrs {};
 
     // Define which components are to be renamed (files, extensions,
     // directories.)
@@ -51,31 +51,80 @@ class BatchFileRenamer
         YES,
     };
 
+    // Flag to show help information.
+    bool m_do_show_help {false};
     // Flag to process directories recursively.
     bool m_recursive {false};
     // Flag to output information.
     bool m_verbose {false};
     // Flag to do the actual renaming.
-    bool do_modify {false};
+    bool m_do_modify {false};
+
     // Flag to do check overwriting of existing files.
     Overwrite m_do_overwrite {Overwrite::NONE};
 
     size_t m_targets {static_cast<size_t>(Targets::FILES)};
     size_t m_sorting {static_cast<size_t>(Sorting::NONE)};
 
-    void check_sorting_by_names(std::vector<std::filesystem::path>&,
-        std::vector<std::filesystem::path>&);
-    void check_sorting_by_size(std::vector<std::filesystem::path>&);
-    void check_sorting_by_timestamp(std::vector<std::filesystem::path>&,
+    /**
+     * @brief Show help information.
+     */
+    void m_show_help() const;
+
+    /**
+     * @brief Sorting items by name.
+     *
+     * @param files File names to sort.
+     * @param directories Folder names to sort.
+     */
+    void m_check_sorting_by_names(std::vector<std::filesystem::path>&,
         std::vector<std::filesystem::path>&);
 
-    void process_directory(const std::string_view&);
-    void process_items(std::vector<std::filesystem::path>&, const bool = false);
+    /**
+     * @brief Sorting items by size. Folders are not processed.
+     *
+     * @param files File names to sort.
+     */
+    void m_check_sorting_by_size(std::vector<std::filesystem::path>&);
+
+    /**
+     * @brief Sorting items by timestamp.
+     *
+     * @param files File names to sort.
+     * @param directories Folder names to sort.
+     */
+    void m_check_sorting_by_timestamp(std::vector<std::filesystem::path>&,
+        std::vector<std::filesystem::path>&);
+
+    /**
+     * @brief Process items in the directory or the file path.
+     *
+     * @param target_path Path to the directory or file.
+     */
+    void m_process_target(const std::string_view&);
+
+    /**
+     * @brief Process items (either files or directories).
+     *
+     * @param items Items to process.
+     * @param are_directories Boolean flag whether the items are directories.
+     */
+    void m_process_items(
+        std::vector<std::filesystem::path>&, const bool = false);
 
   public:
+    /**
+     * @brief Construct a new Batch File Renamer:: Batch File Renamer object.
+     *
+     * @param paths Paths to process.
+     * @param options Options to use for processing.
+     */
     explicit BatchFileRenamer(const std::vector<std::string_view>&,
         const std::vector<std::string_view>&);
 
+    /**
+     * @brief Process for each directory
+     */
     void run();
 };
 
