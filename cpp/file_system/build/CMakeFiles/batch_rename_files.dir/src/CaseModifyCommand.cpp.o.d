@@ -1,8 +1,8 @@
 CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.o: \
  /home/samsung/workspace/cpp/file_system/src/CaseModifyCommand.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/file_system/include/CaseModifyCommand.hpp \
- /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.hpp \
+ /home/samsung/workspace/cpp/file_system/include/CaseModifyCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.h \
  /usr/include/c++/13/filesystem \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \

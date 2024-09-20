@@ -1,4 +1,4 @@
-#include "StringHelper.hpp"
+#include "StringHelper.h"
 
 #include <cwctype>
 

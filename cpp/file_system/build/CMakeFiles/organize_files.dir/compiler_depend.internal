@@ -3,8 +3,8 @@
 
 CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o
  /home/samsung/workspace/cpp/file_system/src/FileOrganizer.cpp
- /home/samsung/workspace/cpp/file_system/include/FileOrganizer.hpp
- /home/samsung/workspace/cpp/file_system/include/StringHelper.hpp
+ /home/samsung/workspace/cpp/file_system/include/FileOrganizer.h
+ /home/samsung/workspace/cpp/file_system/include/StringHelper.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
@@ -256,7 +256,7 @@ CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o
 
 CMakeFiles/organize_files.dir/src/StringHelper.cpp.o
  /home/samsung/workspace/cpp/file_system/src/StringHelper.cpp
- /home/samsung/workspace/cpp/file_system/include/StringHelper.hpp
+ /home/samsung/workspace/cpp/file_system/include/StringHelper.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h
@@ -409,7 +409,7 @@ CMakeFiles/organize_files.dir/src/StringHelper.cpp.o
 
 CMakeFiles/organize_files.dir/src/organize_files.cpp.o
  /home/samsung/workspace/cpp/file_system/src/organize_files.cpp
- /home/samsung/workspace/cpp/file_system/include/FileOrganizer.hpp
+ /home/samsung/workspace/cpp/file_system/include/FileOrganizer.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h

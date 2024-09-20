@@ -1,10 +1,10 @@
-#include "BatchFileRenamer.hpp"
+#include "BatchFileRenamer.h"
 
-#include "CaseModifyCommand.hpp"
-#include "FileNameValidator.hpp"
-#include "StringAppendCommand.hpp"
-#include "StringHelper.hpp"
-#include "StringReplaceCommand.hpp"
+#include "CaseModifyCommand.h"
+#include "FileNameValidator.h"
+#include "StringAppendCommand.h"
+#include "StringHelper.h"
+#include "StringReplaceCommand.h"
 
 #include <algorithm>
 #include <iostream>
@@ -12,6 +12,174 @@
 
 namespace Marvin
 {
+
+/**
+ * @brief Set current option.
+ *
+ * @param[in] i Index of the item in the list of options - might be
+ * modified.
+ */
+void BatchFileRenamer::m_set_option(size_t& i)
+{
+    const auto option {m_options[i]};
+    if ((option == "-h") || (option == "-help"))
+    {
+        m_do_show_help = true;
+    }
+    else if ((option == "-r") || (option == "-recursive"))
+    {
+        m_recursive = true;
+    }
+    else if ((option == "-v") || (option == "-verbose"))
+    {
+        m_verbose = true;
+    }
+    else if ((option == "-dm") || (option == "-do-modify"))
+    {
+        m_do_modify = true;
+    }
+    else if ((option == "-dow") || (option == "-do-overwrite"))
+    {
+        m_do_overwrite = Overwrite::YES;
+    }
+    else if ((option == "-dnow") || (option == "-do-not-overwrite"))
+    {
+        m_do_overwrite = Overwrite::NO;
+    }
+    else if ((option == "-nf") || (option == "-no-filenames"))
+    {
+        m_targets = std::to_underlying(Targets::NONE);
+    }
+    else if ((option == "-d") || (option == "-directories"))
+    {
+        m_targets |= std::to_underlying(Targets::DIRECTORIES);
+    }
+    else if ((option == "-do") || (option == "-directories-only"))
+    {
+        m_targets = std::to_underlying(Targets::DIRECTORIES);
+    }
+    else if ((option == "-e") || (option == "-extensions"))
+    {
+        m_targets |= std::to_underlying(Targets::EXTENSIONS);
+    }
+    else if ((option == "-eo") || (option == "-extensions-only"))
+    {
+        m_targets = std::to_underlying(Targets::EXTENSIONS);
+    }
+    else if ((option == "-sbn") || (option == "-sort-by-name"))
+    {
+        m_sorting |= std::to_underlying(Sorting::BY_NAMES);
+    }
+    else if ((option == "-sbnd") || (option == "-sort-by-name-descending"))
+    {
+        m_sorting |= std::to_underlying(Sorting::BY_NAMES_DESCENDING);
+    }
+    else if ((option == "-sbs") || (option == "-sort-by-size"))
+    {
+        m_sorting |= std::to_underlying(Sorting::BY_SIZE);
+    }
+    else if ((option == "-sbsd") || (option == "-sort-by-size-descending"))
+    {
+        m_sorting |= std::to_underlying(Sorting::BY_SIZE_DESCENDING);
+    }
+    else if ((option == "-sbt") || (option == "-sort-by-timestamp"))
+    {
+        m_sorting |= std::to_underlying(Sorting::BY_TIMESTAMP);
+    }
+    else if ((option == "-sbtd") || (option == "-sort-by-timestamp-descending"))
+    {
+        m_sorting |= std::to_underlying(Sorting::BY_TIMESTAMP_DESCENDING);
+    }
+    else if ((option == "-c") || (option == "-clear"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringReplaceCommand>(L".", L""));
+    }
+    else if ((option == "-rur") || (option == "-replace-using-regex")
+             || (option == "-rsw") || (option == "-replace-substring-with"))
+    {
+        std::wstring match {L""};
+        std::wstring replacement {L""};
+        if (++i < m_options.size())
+        {
+            // A trick to convert string to wstring.
+            match = std::filesystem::path(m_options[i]).wstring();
+        }
+
+        if (++i < m_options.size())
+        {
+            replacement = std::filesystem::path(m_options[i]).wstring();
+        }
+
+        if (!match.empty())
+        {
+            m_commands_ptrs.emplace_back(
+                std::make_unique<StringReplaceCommand>(match, replacement));
+        }
+    }
+    else if ((option == "-rww") || (option == "-replace-whitespace-with"))
+    {
+        std::wstring replacement {L""};
+        if (++i < m_options.size())
+        {
+            replacement = std::filesystem::path(m_options[i]).wstring();
+        }
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringReplaceCommand>(L"(\\s+)", replacement));
+    }
+    else if ((option == "-rwwu")
+             || (option == "-replace-whitespace-with-underscore"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringReplaceCommand>(L"(\\s+)", L"_"));
+    }
+    else if ((option == "-tu") || (option == "-to-uppercase"))
+    {
+        m_commands_ptrs.emplace_back(std::make_unique<CaseModifyCommand>('u'));
+    }
+    else if ((option == "-tl") || (option == "-to-lowercase"))
+    {
+        m_commands_ptrs.emplace_back(std::make_unique<CaseModifyCommand>('l'));
+    }
+    else if ((option == "-tc") || (option == "-to-camelcase"))
+    {
+        m_commands_ptrs.emplace_back(std::make_unique<CaseModifyCommand>('c'));
+    }
+    else if ((option == "-tp") || (option == "-to-pascalcase"))
+    {
+        m_commands_ptrs.emplace_back(std::make_unique<CaseModifyCommand>('p'));
+    }
+    else if ((option == "-an") || (option == "-append-number"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringAppendCommand>('a', 'n'));
+    }
+    else if ((option == "-pn") || (option == "-prepend-number"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringAppendCommand>('p', 'n'));
+    }
+    else if ((option == "-at") || (option == "-append-timestamp"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringAppendCommand>('a', 't'));
+    }
+    else if ((option == "-pt") || (option == "-prepend-timestamp"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringAppendCommand>('p', 't'));
+    }
+    else if ((option == "-act") || (option == "-append-current-time"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringAppendCommand>('a', 'c'));
+    }
+    else if ((option == "-pct") || (option == "-prepend-current-time"))
+    {
+        m_commands_ptrs.emplace_back(
+            std::make_unique<StringAppendCommand>('p', 'c'));
+    }
+}
 
 /**
  * @brief Construct a new Batch File Renamer:: Batch File Renamer object.
@@ -25,164 +193,7 @@ BatchFileRenamer::BatchFileRenamer(const std::vector<std::string_view>& paths,
 {
     for (size_t i {0}; i < m_options.size(); ++i)
     {
-        const auto option {m_options[i]};
-        if ((option == "-h") || (option == "-help"))
-        {
-            m_do_show_help = true;
-        }
-        else if ((option == "-r") || (option == "-recursive"))
-        {
-            m_recursive = true;
-        }
-        else if ((option == "-v") || (option == "-verbose"))
-        {
-            m_verbose = true;
-        }
-        else if ((option == "-dm") || (option == "-do-modify"))
-        {
-            m_do_modify = true;
-        }
-        else if ((option == "-dow") || (option == "-do-overwrite"))
-        {
-            m_do_overwrite = Overwrite::YES;
-        }
-        else if ((option == "-dnow") || (option == "-do-not-overwrite"))
-        {
-            m_do_overwrite = Overwrite::NO;
-        }
-        else if ((option == "-nf") || (option == "-no-filenames"))
-        {
-            m_targets = std::to_underlying(Targets::NONE);
-        }
-        else if ((option == "-d") || (option == "-directories"))
-        {
-            m_targets |= std::to_underlying(Targets::DIRECTORIES);
-        }
-        else if ((option == "-do") || (option == "-directories-only"))
-        {
-            m_targets = std::to_underlying(Targets::DIRECTORIES);
-        }
-        else if ((option == "-e") || (option == "-extensions"))
-        {
-            m_targets |= std::to_underlying(Targets::EXTENSIONS);
-        }
-        else if ((option == "-eo") || (option == "-extensions-only"))
-        {
-            m_targets = std::to_underlying(Targets::EXTENSIONS);
-        }
-        else if ((option == "-sbn") || (option == "-sort-by-name"))
-        {
-            m_sorting |= std::to_underlying(Sorting::BY_NAMES);
-        }
-        else if ((option == "-sbnd") || (option == "-sort-by-name-descending"))
-        {
-            m_sorting |= std::to_underlying(Sorting::BY_NAMES_DESCENDING);
-        }
-        else if ((option == "-sbs") || (option == "-sort-by-size"))
-        {
-            m_sorting |= std::to_underlying(Sorting::BY_SIZE);
-        }
-        else if ((option == "-sbsd") || (option == "-sort-by-size-descending"))
-        {
-            m_sorting |= std::to_underlying(Sorting::BY_SIZE_DESCENDING);
-        }
-        else if ((option == "-sbt") || (option == "-sort-by-timestamp"))
-        {
-            m_sorting |= std::to_underlying(Sorting::BY_TIMESTAMP);
-        }
-        else if ((option == "-sbtd")
-                 || (option == "-sort-by-timestamp-descending"))
-        {
-            m_sorting |= std::to_underlying(Sorting::BY_TIMESTAMP_DESCENDING);
-        }
-        else if ((option == "-rur") || (option == "-replace-using-regex")
-                 || (option == "-rsw") || (option == "-replace-substring-with"))
-        {
-            std::wstring match {L""};
-            std::wstring replacement {L""};
-            if (++i < m_options.size())
-            {
-                // A trick to convert string to wstring.
-                match = std::filesystem::path(m_options[i]).wstring();
-            }
-
-            if (++i < m_options.size())
-            {
-                replacement = std::filesystem::path(m_options[i]).wstring();
-            }
-
-            if (!match.empty())
-            {
-                m_commands_ptrs.emplace_back(
-                    std::make_unique<StringReplaceCommand>(match, replacement));
-            }
-        }
-        else if ((option == "-rww") || (option == "-replace-whitespace-with"))
-        {
-            std::wstring replacement {L""};
-            if (++i < m_options.size())
-            {
-                replacement = std::filesystem::path(m_options[i]).wstring();
-            }
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringReplaceCommand>(L"(\\s+)", replacement));
-        }
-        else if ((option == "-rwwu")
-                 || (option == "-replace-whitespace-with-underscore"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringReplaceCommand>(L"(\\s+)", L"_"));
-        }
-        else if ((option == "-tu") || (option == "-to-uppercase"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<CaseModifyCommand>('u'));
-        }
-        else if ((option == "-tl") || (option == "-to-lowercase"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<CaseModifyCommand>('l'));
-        }
-        else if ((option == "-tc") || (option == "-to-camelcase"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<CaseModifyCommand>('c'));
-        }
-        else if ((option == "-tp") || (option == "-to-pascalcase"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<CaseModifyCommand>('p'));
-        }
-        else if ((option == "-an") || (option == "-append-number"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringAppendCommand>('a', 'n'));
-        }
-        else if ((option == "-pn") || (option == "-prepend-number"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringAppendCommand>('p', 'n'));
-        }
-        else if ((option == "-at") || (option == "-append-timestamp"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringAppendCommand>('a', 't'));
-        }
-        else if ((option == "-pt") || (option == "-prepend-timestamp"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringAppendCommand>('p', 't'));
-        }
-        else if ((option == "-act") || (option == "-append-current-time"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringAppendCommand>('a', 'c'));
-        }
-        else if ((option == "-pct") || (option == "-prepend-current-time"))
-        {
-            m_commands_ptrs.emplace_back(
-                std::make_unique<StringAppendCommand>('p', 'c'));
-        }
+        m_set_option(i);
     }
 }
 
@@ -192,62 +203,67 @@ BatchFileRenamer::BatchFileRenamer(const std::vector<std::string_view>& paths,
 void BatchFileRenamer::m_show_help() const
 {
     std::wcout
-        << L"The program expects file paths and options. By default the "
+        << L"\nThe program expects file paths and options. By default the "
            L"files are not renamed - the program only defines how the "
            L"renamed file might look like. The options:\n"
-           L"-h or -help: show this help information;\n"
-           L"-r or -recursive: process directories recursively;\n"
-           L"-v or -verbose: output information about modified name to "
+           L"-\nh or -help: show this help information;\n"
+           L"\n-r or -recursive: process directories recursively;\n"
+           L"\n-v or -verbose: output information about modified name to "
            L"the terminal;\n"
-           L"-dm or -do-modify: do the actual renaming of the file "
+           L"\n-dm or -do-modify: do the actual renaming of the file "
            L"(WARNING: make sure you know what you are doing);\n"
-           L"-dow or -do-overwrite: overwrite existing items if the new "
+           L"\n-dow or -do-overwrite: overwrite existing items if the new "
            L"path names match the existing item (WARNING: make sure you "
            L"know what you are doing);\n"
-           L"-dnow or -do-not-overwrite: do not overwrite existing "
+           L"\n-dnow or -do-not-overwrite: do not overwrite existing "
            L"items if the new path names match the existing item;\n"
-           L"-nf or -no-filenames: do not process file names;\n"
-           L"-d or -directories: process directories too;\n"
-           L"-do or -directories-only: process directories only;\n"
-           L"-e or -extensions: process extensions too;\n"
-           L"-eo or -extensions-only: process extensions only;\n"
-           L"-sbn or -sort-by-name: sort items by name;\n"
-           L"-sbnd or -sort-by-name-descending: sort items by name in "
+           L"\n-nf or -no-filenames: do not process file names;\n"
+           L"\n-d or -directories: process directories too;\n"
+           L"\n-do or -directories-only: process directories only;\n"
+           L"\n-e or -extensions: process extensions too;\n"
+           L"\n-eo or -extensions-only: process extensions only;\n"
+           L"\n-sbn or -sort-by-name: sort items by name;\n"
+           L"\n-sbnd or -sort-by-name-descending: sort items by name in "
            L"descending order;\n"
-           L"-sbs or -sort-by-size: sort items by size (currently only "
+           L"\n-sbs or -sort-by-size: sort items by size (currently only "
            L"affecting files, that is not sorting directories by size);\n"
-           L"-sbsd or -sort-by-size-descending: sort items by size in "
+           L"\n-sbsd or -sort-by-size-descending: sort items by size in "
            L"descending order (currently only affecting files, that is not "
            L"sorting directories by size);\n"
-           L"-sbt or -sort-by-timestamp: sort items by timestamp (when it was "
+           L"\n-sbt or -sort-by-timestamp: sort items by timestamp (when it "
+           L"was "
            L"last modified);\n"
-           L"-sbtd or -sort-by-timestamp-descending: sort items by timestamp "
+           L"\n-sbtd or -sort-by-timestamp-descending: sort items by timestamp "
            L"in descending order (when it was last modified);\n"
-           L"-rur or -replace-using-regex: replace substring represented as a "
+           L"\n-c or -clear: clear the content\n"
+           L"\n-rur or -replace-using-regex: replace substring represented as "
+           L"a "
            L"regular expression with a replacement. Must be followed by two "
            L"values: the expression to match and a replacement string. For "
            L"example, -replace-using-regex \"[0-9]\" "
            " to remove all digits. WARNING, not all regular expressions can be "
            "used. For instance, \\ character (backslash) can trigger "
            "terminal\'s special state, stopping the execution;\n"
-           L"-rsw or -replace-substring-with: replace substring with a "
+           L"\n-rsw or -replace-substring-with: replace substring with a "
            L"replacement. Must be followed by two values: the text to match "
            L"and a replacement string;\n"
-           L"-rww or -replace-whitespace-with: replace whitespaces with a "
+           L"\n-rww or -replace-whitespace-with: replace whitespaces with a "
            L"replacement. Must be followed by a replacement string;\n"
-           L"-rwwu or -replace-whitespace-with-underscore: replace whitespaces "
+           L"\n-rwwu or -replace-whitespace-with-underscore: replace "
+           L"whitespaces "
            L"with underscores;\n"
-           L"-tu or -to-uppercase: change item name to uppercase;\n"
-           L"-tl or -to-lowercase: change item name to lowercase;\n"
-           L"-tc or -to-camelcase: change item name to camelcase;\n"
-           L"-an or -append-number: append numbers sequentially to items. "
+           L"\n-tu or -to-uppercase: change item name to uppercase;\n"
+           L"\n-tl or -to-lowercase: change item name to lowercase;\n"
+           L"\n-tc or -to-camelcase: change item name to camelcase;\n"
+           L"\n-an or -append-number: append numbers sequentially to items. "
            L"Typically used to order files or folders.\n"
-           L"-pn or -prepend-number: prepend numbers sequentially to items;\n"
-           L"-at or -append-timestamp: append item\'s timestamp to the item;\n"
-           L"-pt or -prepend-timestamp: prepend item\'s timestamp to the "
+           L"\n-pn or -prepend-number: prepend numbers sequentially to items;\n"
+           L"\n-at or -append-timestamp: append item\'s timestamp to the "
            L"item;\n"
-           L"-act or -append-current-time: append current time to the item;\n"
-           L"-pct or -prepend-current-time: prepend current time to the "
+           L"\n-pt or -prepend-timestamp: prepend item\'s timestamp to the "
+           L"item;\n"
+           L"\n-act or -append-current-time: append current time to the item;\n"
+           L"\n-pct or -prepend-current-time: prepend current time to the "
            L"item;\n";
 }
 

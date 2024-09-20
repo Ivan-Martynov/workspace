@@ -1,5 +1,5 @@
-#include "MP3Tag.hpp"
-#include "StringHelper.hpp"
+#include "MP3Tag.h"
+#include "StringHelper.h"
 #include "SyncsafeIntConverter.h"
 
 #include <fstream>
@@ -11,7 +11,7 @@ namespace Marvin
 
 MP3Tag::MP3Tag(const std::filesystem::directory_entry& entry,
     const std::vector<std::string_view>& options)
-    : m_id(3, '\0'), m_options {options}
+    : m_file_path {entry.path().string()}, m_id(3, '\0'), m_options {options}
 {
     for (const auto& option : m_options)
     {
@@ -54,7 +54,7 @@ MP3Tag::MP3Tag(const std::filesystem::directory_entry& entry,
 
 MP3Tag::MP3Tag(
     const std::string& file_path, const std::vector<std::string_view>& options)
-    : m_id(3, '\0'), m_options {options}
+    : m_file_path {file_path}, m_id(3, '\0'), m_options {options}
 {
     if (m_read_from_file(file_path))
     {
@@ -137,7 +137,6 @@ bool MP3Tag::m_read_header(std::ifstream& file_stream)
     m_tag_size = SyncsafeIntConverter::syncsafe_decode_from_bytes(
         tag_size_str.c_str(), 4);
 
-    size_t extended_header_size {0};
     if ((m_flags >> 6) & 1)
     {
         std::string extended_tag_str(4, '\0');
@@ -147,8 +146,9 @@ bool MP3Tag::m_read_header(std::ifstream& file_stream)
             return false;
         }
 
-        extended_header_size = SyncsafeIntConverter::syncsafe_decode_from_bytes(
-            extended_tag_str.c_str(), 4);
+        m_extended_header_size
+            = SyncsafeIntConverter::syncsafe_decode_from_bytes(
+                extended_tag_str.c_str(), 4);
     }
 
     return true;
@@ -193,13 +193,13 @@ bool MP3Tag::m_read_frame(std::ifstream& file_stream)
 
     if (frame_id_buffer.front() == 'T') // Text frame.
     {
-        const char encoding_char {static_cast<const char>(file_stream.get())};
+        const char encoding_char {static_cast<char>(file_stream.get())};
         const size_t value {SyncsafeIntConverter::syncsafe_decode_from_bytes(
             &encoding_char, 1)};
         std::string frame_str(frame_size - 1, '\0');
         file_stream.read(frame_str.data(), frame_size - 1);
 
-        if (encoding_char == 0)
+        if (value == 0)
         {
             std::wcout << L"[0]: Test ISO-8859-1 [ISO-8859-1]: ";
 
@@ -215,7 +215,7 @@ bool MP3Tag::m_read_frame(std::ifstream& file_stream)
             std::wcout << L" and maybe " << StringHelper::string_to_wstring(s)
                        << L"\n";
         }
-        else if (encoding_char == 1)
+        else if (value == 1)
         {
             // std::u16string s16 {
             //     std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,
@@ -233,13 +233,14 @@ bool MP3Tag::m_read_frame(std::ifstream& file_stream)
 
         if (m_verbose)
         {
-            // std::wcout << L"Text frame: encoding = "
-            //            << m_encoding_as_text(encoding_char) << "; text = "
-            //            << StringHelper::string_to_wstring(frame_str) <<
-            //            L"\n";
+            //std::wcout << L"Text frame: encoding = "
+            //           << m_encoding_as_text(encoding_char) << L": id = "
+            //           << StringHelper::string_to_wstring(frame_id_buffer)
+            //           << "; text = "
+            //           << StringHelper::string_to_wstring(frame_str) << L"\n";
         }
 
-        m_text_frames[StringHelper::string_to_wstring(frame_id_buffer)]
+        m_text_frames[frame_id_buffer]
             = StringHelper::string_to_wstring(frame_str);
     }
     else
@@ -277,7 +278,7 @@ bool MP3Tag::m_read_from_file(const std::string& file_path)
         return false;
     }
 
-    while (file_stream.tellg() < m_tag_size)
+    while (file_stream.tellg() < static_cast<long int>(m_tag_size))
     {
         if (!m_read_frame(file_stream))
         {
@@ -288,15 +289,43 @@ bool MP3Tag::m_read_from_file(const std::string& file_path)
     return true;
 }
 
-void MP3Tag::show_frames() const {
-    if (!m_verbose){
+std::filesystem::path MP3Tag::get_path() const
+{
+    return m_file_path;
+}
+
+std::wstring MP3Tag::get_frame_text(const std::string& key) const
+{
+    return m_text_frames.contains(key) ? m_text_frames.at(key) : L"";
+}
+
+std::wstring MP3Tag::get_title() const
+{
+    return get_frame_text("TIT2");
+}
+
+std::wstring MP3Tag::get_artist() const
+{
+    return get_frame_text("TPE1");
+}
+
+std::wstring MP3Tag::get_album() const
+{
+    return get_frame_text("TALB");
+}
+
+void MP3Tag::show_frames() const
+{
+    if (!m_verbose)
+    {
         return;
     }
-    for (const auto& p: m_text_frames)
+    for (const auto& p : m_text_frames)
     {
         if (!p.second.empty())
         {
-            std::wcout << L"[" << p.first << L"] = " << p.second << L"\n";
+            std::wcout << L"[" << StringHelper::string_to_wstring(p.first)
+                       << L"] = " << p.second << L"\n";
         }
     }
 }

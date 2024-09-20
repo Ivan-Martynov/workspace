@@ -1,4 +1,5 @@
-#include "MP3Tag.hpp"
+#include "MP3BatchFileRenamer.h"
+#include "MP3Tag.h"
 
 #include <iostream>
 #include <vector>
@@ -6,6 +7,7 @@
 #include <ranges>
 #include <filesystem>
 
+[[maybe_unused]]
 static void process_entry(const std::filesystem::directory_entry& entry,
     const std::vector<std::string_view>& options)
 {
@@ -34,37 +36,9 @@ int main(const int argc, const char* argv[])
         }
     }
 
-    bool recursive {false};
-    for (const auto& option: options)
-    {
-        if ((option == "-r") || (option == "-recursive"))
-        {
-            recursive = true;
-        }
-    }
-
-    if (recursive)
-    {
-        for (const auto& path : paths)
-        {
-            for (const std::filesystem::directory_entry& entry :
-                std::filesystem::recursive_directory_iterator {path})
-            {
-                process_entry(entry, options);
-            }
-        }
-    }
-    else
-    {
-        for (const auto& path : paths)
-        {
-            for (const std::filesystem::directory_entry& entry :
-                std::filesystem::directory_iterator {path})
-            {
-                process_entry(entry, options);
-            }
-        }
-    }
+    // Process all the paths with provided options.
+    Marvin::MP3BatchFileRenamer tool {paths, options};
+    tool.run();
 
     return 0;
 }

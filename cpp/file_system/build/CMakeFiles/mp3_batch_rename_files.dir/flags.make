@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/samsung/workspace/cpp/file_system/include
 
-CXX_FLAGS = 
+CXX_FLAGS = -std=gnu++23 -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++
 

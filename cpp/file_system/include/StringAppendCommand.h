@@ -1,7 +1,7 @@
 #ifndef _H_STRING_APPEND_COMMAND_H_
 #define _H_STRING_APPEND_COMMAND_H_
 
-#include "FileRenameCommandBase.hpp"
+#include "FileRenameCommandBase.h"
 
 namespace Marvin
 {

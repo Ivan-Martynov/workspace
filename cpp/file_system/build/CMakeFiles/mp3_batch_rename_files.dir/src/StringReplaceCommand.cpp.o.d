@@ -1,4 +1,4 @@
-CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o: \
+CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o: \
  /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp \
  /usr/include/stdc-predef.h \
  /home/samsung/workspace/cpp/file_system/include/StringReplaceCommand.h \

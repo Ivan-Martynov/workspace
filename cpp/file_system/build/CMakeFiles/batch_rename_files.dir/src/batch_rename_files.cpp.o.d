@@ -1,8 +1,8 @@
 CMakeFiles/batch_rename_files.dir/src/batch_rename_files.cpp.o: \
  /home/samsung/workspace/cpp/file_system/src/batch_rename_files.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/file_system/include/BatchFileRenamer.hpp \
- /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.hpp \
+ /home/samsung/workspace/cpp/file_system/include/BatchFileRenamer.h \
+ /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.h \
  /usr/include/c++/13/filesystem \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \

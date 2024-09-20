@@ -1,7 +1,7 @@
 #ifndef _H_BATCH_FILE_RENAMER_H_
 #define _H_BATCH_FILE_RENAMER_H_
 
-#include "FileRenameCommandBase.hpp"
+#include "FileRenameCommandBase.h"
 
 #include <vector>
 
@@ -14,7 +14,8 @@ namespace Marvin
  */
 class BatchFileRenamer
 {
-  private:
+  //private:
+  protected:
     // Paths to process.
     std::vector<std::string_view> m_paths;
     // Options to modify the paths.
@@ -72,6 +73,14 @@ class BatchFileRenamer
     void m_show_help() const;
 
     /**
+     * @brief Set current option.
+     *
+     * @param[in] i Index of the item in the list of options - might be
+     * modified.
+     */
+    virtual void m_set_option(size_t& i);
+
+    /**
      * @brief Sorting items by name.
      *
      * @param files File names to sort.
@@ -121,6 +130,8 @@ class BatchFileRenamer
      */
     explicit BatchFileRenamer(const std::vector<std::string_view>&,
         const std::vector<std::string_view>&);
+
+    virtual ~BatchFileRenamer() = default;
 
     /**
      * @brief Process for each directory

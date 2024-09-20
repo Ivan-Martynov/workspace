@@ -12,15 +12,17 @@ namespace Marvin
 class MP3Tag
 {
   private:
+    std::string m_file_path;
     std::string m_id;
     std::vector<std::string_view> m_options;
 
-    std::map<std::wstring, std::wstring> m_text_frames {};
+    std::map<std::string, std::wstring> m_text_frames {};
 
     char m_major_version {};
     char m_revision_number {};
     char m_flags {};
 
+    size_t m_extended_header_size {0};
     size_t m_tag_size {};
 
     // Flag to show help information.
@@ -46,6 +48,12 @@ class MP3Tag
     explicit MP3Tag(const std::string&, const std::vector<std::string_view>&);
     explicit MP3Tag(const std::filesystem::directory_entry&,
         const std::vector<std::string_view>&);
+
+    std::filesystem::path get_path() const;
+    std::wstring get_frame_text(const std::string& key) const;
+    std::wstring get_title() const;
+    std::wstring get_artist() const;
+    std::wstring get_album() const;
 
     bool is_valid() const;
 

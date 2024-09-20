@@ -1,4 +1,4 @@
-#include "CaseModifyCommand.hpp"
+#include "CaseModifyCommand.h"
 
 #include <algorithm>
 

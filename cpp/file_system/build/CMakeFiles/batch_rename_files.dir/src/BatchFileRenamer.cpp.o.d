@@ -1,8 +1,8 @@
 CMakeFiles/batch_rename_files.dir/src/BatchFileRenamer.cpp.o: \
  /home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/file_system/include/BatchFileRenamer.hpp \
- /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.hpp \
+ /home/samsung/workspace/cpp/file_system/include/BatchFileRenamer.h \
+ /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.h \
  /usr/include/c++/13/filesystem \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -187,11 +187,11 @@ CMakeFiles/batch_rename_files.dir/src/BatchFileRenamer.cpp.o: \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
  /usr/include/c++/13/bits/vector.tcc \
- /home/samsung/workspace/cpp/file_system/include/CaseModifyCommand.hpp \
- /home/samsung/workspace/cpp/file_system/include/FileNameValidator.hpp \
- /home/samsung/workspace/cpp/file_system/include/StringAppendCommand.hpp \
- /home/samsung/workspace/cpp/file_system/include/StringHelper.hpp \
- /home/samsung/workspace/cpp/file_system/include/StringReplaceCommand.hpp \
+ /home/samsung/workspace/cpp/file_system/include/CaseModifyCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/FileNameValidator.h \
+ /home/samsung/workspace/cpp/file_system/include/StringAppendCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/StringHelper.h \
+ /home/samsung/workspace/cpp/file_system/include/StringReplaceCommand.h \
  /usr/include/c++/13/regex /usr/include/c++/13/bitset \
  /usr/include/c++/13/stack /usr/include/c++/13/deque \
  /usr/include/c++/13/bits/stl_deque.h /usr/include/c++/13/bits/deque.tcc \

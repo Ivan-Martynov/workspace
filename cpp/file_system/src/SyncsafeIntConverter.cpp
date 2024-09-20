@@ -19,7 +19,7 @@ size_t SyncsafeIntConverter::bytes_to_size_t(
     for (size_t i {0}; i < size; ++i)
     {
         result <<= 8;
-        result |= static_cast<const unsigned char>(bytes[i]);
+        result |= static_cast<unsigned char>(bytes[i]);
     }
 
     return result;

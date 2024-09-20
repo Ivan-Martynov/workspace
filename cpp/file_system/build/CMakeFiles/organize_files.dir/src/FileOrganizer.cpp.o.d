@@ -1,7 +1,7 @@
 CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o: \
  /home/samsung/workspace/cpp/file_system/src/FileOrganizer.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/file_system/include/FileOrganizer.hpp \
+ /home/samsung/workspace/cpp/file_system/include/FileOrganizer.h \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
@@ -187,7 +187,7 @@ CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o: \
  /usr/include/c++/13/ext/aligned_buffer.h \
  /usr/include/c++/13/bits/align.h /usr/include/c++/13/bits/fs_dir.h \
  /usr/include/c++/13/bits/fs_ops.h \
- /home/samsung/workspace/cpp/file_system/include/StringHelper.hpp \
+ /home/samsung/workspace/cpp/file_system/include/StringHelper.h \
  /usr/include/c++/13/iostream /usr/include/c++/13/chrono \
  /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \

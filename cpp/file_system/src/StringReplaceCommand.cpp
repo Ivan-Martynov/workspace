@@ -1,4 +1,4 @@
-#include "StringReplaceCommand.hpp"
+#include "StringReplaceCommand.h"
 
 namespace Marvin
 {

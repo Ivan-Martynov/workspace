@@ -1,5 +1,5 @@
-#include "FileOrganizer.hpp"
-#include "StringHelper.hpp"
+#include "FileOrganizer.h"
+#include "StringHelper.h"
 
 #include <iostream>
 #include <chrono>

@@ -83,10 +83,108 @@ CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.s: cmake_fo
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/mp3_batch_rename_files.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.s
 
+CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o: /home/samsung/workspace/cpp/file_system/src/MP3BatchFileRenamer.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o -c /home/samsung/workspace/cpp/file_system/src/MP3BatchFileRenamer.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/MP3BatchFileRenamer.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/MP3BatchFileRenamer.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.s
+
+CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o: /home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o -c /home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.s
+
+CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o: /home/samsung/workspace/cpp/file_system/src/FileRenameCommandBase.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o -c /home/samsung/workspace/cpp/file_system/src/FileRenameCommandBase.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/FileRenameCommandBase.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/FileRenameCommandBase.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.s
+
+CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o: /home/samsung/workspace/cpp/file_system/src/CaseModifyCommand.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o -c /home/samsung/workspace/cpp/file_system/src/CaseModifyCommand.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/CaseModifyCommand.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/CaseModifyCommand.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.s
+
+CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o: /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o -c /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.s
+
+CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o: /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o -c /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.s
+
+CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
+CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o: /home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp
+CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o -c /home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp
+
+CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp > CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.i
+
+CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp -o CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.s
+
 CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
 CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o: /home/samsung/workspace/cpp/file_system/src/MP3Tag.cpp
 CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o -c /home/samsung/workspace/cpp/file_system/src/MP3Tag.cpp
 
 CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.i: cmake_force
@@ -100,7 +198,7 @@ CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.s: cmake_force
 CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
 CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o: /home/samsung/workspace/cpp/file_system/src/StringHelper.cpp
 CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o -c /home/samsung/workspace/cpp/file_system/src/StringHelper.cpp
 
 CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.i: cmake_force
@@ -114,7 +212,7 @@ CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.s: cmake_force
 CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/flags.make
 CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o: /home/samsung/workspace/cpp/file_system/src/SyncsafeIntConverter.cpp
 CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o: CMakeFiles/mp3_batch_rename_files.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o -MF CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o.d -o CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o -c /home/samsung/workspace/cpp/file_system/src/SyncsafeIntConverter.cpp
 
 CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.i: cmake_force
@@ -128,6 +226,13 @@ CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.s: cmake_forc
 # Object files for target mp3_batch_rename_files
 mp3_batch_rename_files_OBJECTS = \
 "CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o" \
+"CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o" \
 "CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o" \
 "CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o" \
 "CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o"
@@ -136,12 +241,19 @@ mp3_batch_rename_files_OBJECTS = \
 mp3_batch_rename_files_EXTERNAL_OBJECTS =
 
 /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/build.make
 /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files: CMakeFiles/mp3_batch_rename_files.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable /home/samsung/workspace/cpp/file_system/bin/mp3_batch_rename_files"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/mp3_batch_rename_files.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

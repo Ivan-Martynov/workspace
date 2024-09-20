@@ -1,5 +1,5 @@
-#include "StringAppendCommand.hpp"
-#include "StringHelper.hpp"
+#include "StringAppendCommand.h"
+#include "StringHelper.h"
 
 #include <iostream>
 #include <chrono>

@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2024
  *
  */
-#include "BatchFileRenamer.hpp"
+#include "BatchFileRenamer.h"
 
 #include <filesystem>
 #include <vector>

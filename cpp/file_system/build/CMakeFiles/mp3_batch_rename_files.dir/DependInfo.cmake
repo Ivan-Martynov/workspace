@@ -8,8 +8,15 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o.d"
+  "/home/samsung/workspace/cpp/file_system/src/CaseModifyCommand.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o.d"
+  "/home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o.d"
+  "/home/samsung/workspace/cpp/file_system/src/FileRenameCommandBase.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o.d"
+  "/home/samsung/workspace/cpp/file_system/src/MP3BatchFileRenamer.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o.d"
   "/home/samsung/workspace/cpp/file_system/src/MP3Tag.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/MP3Tag.cpp.o.d"
+  "/home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/StringAppendCommand.cpp.o.d"
   "/home/samsung/workspace/cpp/file_system/src/StringHelper.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/StringHelper.cpp.o.d"
+  "/home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o.d"
   "/home/samsung/workspace/cpp/file_system/src/SyncsafeIntConverter.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o.d"
   "/home/samsung/workspace/cpp/file_system/src/mp3_batch_rename_files.cpp" "CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o" "gcc" "CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o.d"
   )

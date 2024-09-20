@@ -1,7 +1,7 @@
 #ifndef _H_FILE_REPLACE_COMMAND_H_
 #define _H_FILE_REPLACE_COMMAND_H_
 
-#include "FileRenameCommandBase.hpp"
+#include "FileRenameCommandBase.h"
 
 #include <regex>
 #include <string>

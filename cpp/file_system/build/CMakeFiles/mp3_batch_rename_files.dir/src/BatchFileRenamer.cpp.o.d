@@ -1,7 +1,7 @@
-CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o: \
- /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp \
+CMakeFiles/mp3_batch_rename_files.dir/src/BatchFileRenamer.cpp.o: \
+ /home/samsung/workspace/cpp/file_system/src/BatchFileRenamer.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/file_system/include/StringReplaceCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/BatchFileRenamer.h \
  /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.h \
  /usr/include/c++/13/filesystem \
  /usr/include/c++/13/bits/requires_hosted.h \
@@ -186,10 +186,16 @@ CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o: \
  /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/vector.tcc /usr/include/c++/13/regex \
- /usr/include/c++/13/bitset /usr/include/c++/13/stack \
- /usr/include/c++/13/deque /usr/include/c++/13/bits/stl_deque.h \
- /usr/include/c++/13/bits/deque.tcc /usr/include/c++/13/bits/stl_stack.h \
+ /usr/include/c++/13/bits/vector.tcc \
+ /home/samsung/workspace/cpp/file_system/include/CaseModifyCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/FileNameValidator.h \
+ /home/samsung/workspace/cpp/file_system/include/StringAppendCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/StringHelper.h \
+ /home/samsung/workspace/cpp/file_system/include/StringReplaceCommand.h \
+ /usr/include/c++/13/regex /usr/include/c++/13/bitset \
+ /usr/include/c++/13/stack /usr/include/c++/13/deque \
+ /usr/include/c++/13/bits/stl_deque.h /usr/include/c++/13/bits/deque.tcc \
+ /usr/include/c++/13/bits/stl_stack.h \
  /usr/include/c++/13/bits/std_function.h \
  /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \
@@ -209,4 +215,10 @@ CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o: \
  /usr/include/c++/13/bits/regex_compiler.tcc \
  /usr/include/c++/13/bits/regex.h /usr/include/c++/13/bits/regex.tcc \
  /usr/include/c++/13/bits/regex_executor.h \
- /usr/include/c++/13/bits/regex_executor.tcc
+ /usr/include/c++/13/bits/regex_executor.tcc \
+ /usr/include/c++/13/algorithm /usr/include/c++/13/bits/ranges_algo.h \
+ /usr/include/c++/13/optional \
+ /usr/include/c++/13/bits/enable_special_members.h \
+ /usr/include/c++/13/bits/ranges_algobase.h \
+ /usr/include/c++/13/pstl/glue_algorithm_defs.h \
+ /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/iostream

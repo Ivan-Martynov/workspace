@@ -1,8 +1,8 @@
 CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o: \
  /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/file_system/include/StringAppendCommand.hpp \
- /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.hpp \
+ /home/samsung/workspace/cpp/file_system/include/StringAppendCommand.h \
+ /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.h \
  /usr/include/c++/13/filesystem \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -187,7 +187,7 @@ CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o: \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
  /usr/include/c++/13/bits/vector.tcc \
- /home/samsung/workspace/cpp/file_system/include/StringHelper.hpp \
+ /home/samsung/workspace/cpp/file_system/include/StringHelper.h \
  /usr/include/c++/13/iostream /usr/include/c++/13/chrono \
  /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \

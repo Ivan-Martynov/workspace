@@ -45,15 +45,18 @@ add_executable(organize_files
 
 add_executable(mp3_batch_rename_files
   src/mp3_batch_rename_files.cpp
+  src/MP3BatchFileRenamer.cpp
+  src/BatchFileRenamer.cpp
+  src/FileRenameCommandBase.cpp
+  src/CaseModifyCommand.cpp
+  src/StringReplaceCommand.cpp
+  src/StringAppendCommand.cpp
+  src/FileNameValidator.cpp
   src/MP3Tag.cpp
   src/StringHelper.cpp
   src/SyncsafeIntConverter.cpp
 )
 
-add_executable(check_locale_encoding
-    src/check_locale_encoding.cpp
-)
-
 target_link_libraries(batch_rename_files PUBLIC compiler_flags)
 target_link_libraries(organize_files PUBLIC compiler_flags)
-target_link_libraries(check_locale_encoding PUBLIC compiler_flags)
+target_link_libraries(mp3_batch_rename_files  PUBLIC compiler_flags)

@@ -1,7 +1,7 @@
 #ifndef _H_CASE_MODIFY_COMMAND_H_
 #define _H_CASE_MODIFY_COMMAND_H_
 
-#include "FileRenameCommandBase.hpp"
+#include "FileRenameCommandBase.h"
 
 namespace Marvin
 {
