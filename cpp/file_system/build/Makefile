@@ -286,6 +286,33 @@ src/FileOrganizer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.s
 .PHONY : src/FileOrganizer.cpp.s
 
+src/FileOverwritePrompt.o: src/FileOverwritePrompt.cpp.o
+.PHONY : src/FileOverwritePrompt.o
+
+# target to build an object file
+src/FileOverwritePrompt.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/FileOverwritePrompt.cpp.o
+.PHONY : src/FileOverwritePrompt.cpp.o
+
+src/FileOverwritePrompt.i: src/FileOverwritePrompt.cpp.i
+.PHONY : src/FileOverwritePrompt.i
+
+# target to preprocess a source file
+src/FileOverwritePrompt.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/FileOverwritePrompt.cpp.i
+.PHONY : src/FileOverwritePrompt.cpp.i
+
+src/FileOverwritePrompt.s: src/FileOverwritePrompt.cpp.s
+.PHONY : src/FileOverwritePrompt.s
+
+# target to generate assembly for a file
+src/FileOverwritePrompt.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/FileOverwritePrompt.cpp.s
+.PHONY : src/FileOverwritePrompt.cpp.s
+
 src/FileRenameCommandBase.o: src/FileRenameCommandBase.cpp.o
 .PHONY : src/FileRenameCommandBase.o
 
@@ -469,6 +496,36 @@ src/SyncsafeIntConverter.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.s
 .PHONY : src/SyncsafeIntConverter.cpp.s
 
+src/Utilities.o: src/Utilities.cpp.o
+.PHONY : src/Utilities.o
+
+# target to build an object file
+src/Utilities.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/Utilities.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/Utilities.cpp.o
+.PHONY : src/Utilities.cpp.o
+
+src/Utilities.i: src/Utilities.cpp.i
+.PHONY : src/Utilities.i
+
+# target to preprocess a source file
+src/Utilities.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/Utilities.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/Utilities.cpp.i
+.PHONY : src/Utilities.cpp.i
+
+src/Utilities.s: src/Utilities.cpp.s
+.PHONY : src/Utilities.s
+
+# target to generate assembly for a file
+src/Utilities.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/batch_rename_files.dir/build.make CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/organize_files.dir/build.make CMakeFiles/organize_files.dir/src/Utilities.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mp3_batch_rename_files.dir/build.make CMakeFiles/mp3_batch_rename_files.dir/src/Utilities.cpp.s
+.PHONY : src/Utilities.cpp.s
+
 src/batch_rename_files.o: src/batch_rename_files.cpp.o
 .PHONY : src/batch_rename_files.o
 
@@ -614,6 +671,9 @@ help:
 	@echo "... src/FileOrganizer.o"
 	@echo "... src/FileOrganizer.i"
 	@echo "... src/FileOrganizer.s"
+	@echo "... src/FileOverwritePrompt.o"
+	@echo "... src/FileOverwritePrompt.i"
+	@echo "... src/FileOverwritePrompt.s"
 	@echo "... src/FileRenameCommandBase.o"
 	@echo "... src/FileRenameCommandBase.i"
 	@echo "... src/FileRenameCommandBase.s"
@@ -635,6 +695,9 @@ help:
 	@echo "... src/SyncsafeIntConverter.o"
 	@echo "... src/SyncsafeIntConverter.i"
 	@echo "... src/SyncsafeIntConverter.s"
+	@echo "... src/Utilities.o"
+	@echo "... src/Utilities.i"
+	@echo "... src/Utilities.s"
 	@echo "... src/batch_rename_files.o"
 	@echo "... src/batch_rename_files.i"
 	@echo "... src/batch_rename_files.s"

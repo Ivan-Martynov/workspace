@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/mp3_batch_rename_files.dir/src/CaseModifyCommand.cpp.o.d"
   "CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o"
   "CMakeFiles/mp3_batch_rename_files.dir/src/FileNameValidator.cpp.o.d"
+  "CMakeFiles/mp3_batch_rename_files.dir/src/FileOverwritePrompt.cpp.o"
+  "CMakeFiles/mp3_batch_rename_files.dir/src/FileOverwritePrompt.cpp.o.d"
   "CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o"
   "CMakeFiles/mp3_batch_rename_files.dir/src/FileRenameCommandBase.cpp.o.d"
   "CMakeFiles/mp3_batch_rename_files.dir/src/MP3BatchFileRenamer.cpp.o"
@@ -21,6 +23,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/mp3_batch_rename_files.dir/src/StringReplaceCommand.cpp.o.d"
   "CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o"
   "CMakeFiles/mp3_batch_rename_files.dir/src/SyncsafeIntConverter.cpp.o.d"
+  "CMakeFiles/mp3_batch_rename_files.dir/src/Utilities.cpp.o"
+  "CMakeFiles/mp3_batch_rename_files.dir/src/Utilities.cpp.o.d"
   "CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o"
   "CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o.d"
 )

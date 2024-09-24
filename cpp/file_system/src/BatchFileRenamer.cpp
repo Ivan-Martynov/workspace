@@ -40,11 +40,16 @@ void BatchFileRenamer::m_set_option(size_t& i)
     }
     else if ((option == "-dow") || (option == "-do-overwrite"))
     {
-        m_do_overwrite = Overwrite::YES;
+        m_overwrite_prompt.set_mode(FileOverwritePrompt::Mode::YES_TO_ALL);
+    }
+    else if ((option == "-dowu") || (option == "-do-overwrite-update"))
+    {
+        m_overwrite_prompt.set_mode(
+            FileOverwritePrompt::Mode::YES_TO_ALL_UPDATE);
     }
     else if ((option == "-dnow") || (option == "-do-not-overwrite"))
     {
-        m_do_overwrite = Overwrite::NO;
+        m_overwrite_prompt.set_mode(FileOverwritePrompt::Mode::NO_TO_ALL);
     }
     else if ((option == "-nf") || (option == "-no-filenames"))
     {
@@ -215,6 +220,9 @@ void BatchFileRenamer::m_show_help() const
            L"\n-dow or -do-overwrite: overwrite existing items if the new "
            L"path names match the existing item (WARNING: make sure you "
            L"know what you are doing);\n"
+           L"\n-dowu or -do-overwrite-update: overwrite existing items if the "
+           L"new path names match the existing item and the new file is newer "
+           L"(WARNING: make sure you know what you are doing);\n"
            L"\n-dnow or -do-not-overwrite: do not overwrite existing "
            L"items if the new path names match the existing item;\n"
            L"\n-nf or -no-filenames: do not process file names;\n"
@@ -360,60 +368,17 @@ void BatchFileRenamer::m_process_items(
         }
 
         // No need to rename if the item has not been modified.
-        if (is_same)
-        {
-            continue;
-        }
+        //if (is_same)
+        //{
+        //    continue;
+        //}
 
         // Try to actually modify (rename) the item.
-        if (m_do_modify)
+        // If a modified item points to an existing file, then prompt for
+        // permission to overwrite.
+        if (m_do_modify
+            && m_overwrite_prompt.is_overwriting(original_paths[i], new_path))
         {
-            // If a modified item points to an existing file, then prompt for
-            // permission to overwrite.
-            if (std::filesystem::exists(items[i]))
-            {
-                if (m_do_overwrite != Overwrite::NO)
-                {
-                    std::wcout << L"File already exists: " << items[i] << L'\n';
-                }
-                bool do_overwrite {m_do_overwrite == Overwrite::YES};
-                if (!do_overwrite && (m_do_overwrite != Overwrite::NO))
-                {
-                    // Use letters to process the answer:
-                    // 'n' - do not overwrite the current item;
-                    // 'y' - do overwrite the current item;
-                    // 'a' - do overwrite existing items if needed;
-                    // 'o' - do not overwrite existing items.
-                    std::wcout << "Overwrite? [n]o, [y]es, yes to [a]ll, n[o] "
-                                  "to all\n";
-                    char answer {};
-                    std::cin >> answer;
-                    switch (answer)
-                    {
-                        case 'a':
-                            m_do_overwrite = Overwrite::YES;
-                            do_overwrite = true;
-                            break;
-
-                        case 'y':
-                            do_overwrite = true;
-                            break;
-
-                        case 'o':
-                            m_do_overwrite = Overwrite::NO;
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-                if (!do_overwrite)
-                {
-                    continue;
-                }
-            }
-
             // Try renaming the item and report if an error occurs.
             std::error_code err_code {};
             std::filesystem::rename(original_paths[i], new_path, err_code);

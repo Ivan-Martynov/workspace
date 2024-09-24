@@ -2,6 +2,7 @@
 #define _H_BATCH_FILE_RENAMER_H_
 
 #include "FileRenameCommandBase.h"
+#include "FileOverwritePrompt.h"
 
 #include <vector>
 
@@ -45,13 +46,6 @@ class BatchFileRenamer
         BY_TIMESTAMP_DESCENDING = 32,
     };
 
-    enum class Overwrite
-    {
-        NONE,
-        NO,
-        YES,
-    };
-
     // Flag to show help information.
     bool m_do_show_help {false};
     // Flag to process directories recursively.
@@ -62,7 +56,8 @@ class BatchFileRenamer
     bool m_do_modify {false};
 
     // Flag to do check overwriting of existing files.
-    Overwrite m_do_overwrite {Overwrite::NONE};
+    FileOverwritePrompt::Mode m_do_overwrite {FileOverwritePrompt::Mode::NONE};
+    FileOverwritePrompt m_overwrite_prompt {};
 
     size_t m_targets {static_cast<size_t>(Targets::FILES)};
     size_t m_sorting {static_cast<size_t>(Sorting::NONE)};

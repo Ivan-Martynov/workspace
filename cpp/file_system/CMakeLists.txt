@@ -34,19 +34,23 @@ add_executable(batch_rename_files
   src/FileRenameCommandBase.cpp
   src/CaseModifyCommand.cpp
   src/StringReplaceCommand.cpp
+  src/FileOverwritePrompt.cpp
   src/StringAppendCommand.cpp
+  src/Utilities.cpp
   src/FileNameValidator.cpp)
 
 add_executable(organize_files
   src/organize_files.cpp
   src/FileOrganizer.cpp
   src/StringHelper.cpp
+  src/Utilities.cpp
 )
 
 add_executable(mp3_batch_rename_files
   src/mp3_batch_rename_files.cpp
   src/MP3BatchFileRenamer.cpp
   src/BatchFileRenamer.cpp
+  src/FileOverwritePrompt.cpp
   src/FileRenameCommandBase.cpp
   src/CaseModifyCommand.cpp
   src/StringReplaceCommand.cpp
@@ -55,6 +59,7 @@ add_executable(mp3_batch_rename_files
   src/MP3Tag.cpp
   src/StringHelper.cpp
   src/SyncsafeIntConverter.cpp
+  src/Utilities.cpp
 )
 
 target_link_libraries(batch_rename_files PUBLIC compiler_flags)

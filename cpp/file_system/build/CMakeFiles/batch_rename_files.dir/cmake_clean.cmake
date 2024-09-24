@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o.d"
+  "CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o"
+  "CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o"
@@ -15,6 +17,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/batch_rename_files.dir/src/StringHelper.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o.d"
+  "CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o"
+  "CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o.d"
   "CMakeFiles/batch_rename_files.dir/src/batch_rename_files.cpp.o"
   "CMakeFiles/batch_rename_files.dir/src/batch_rename_files.cpp.o.d"
 )

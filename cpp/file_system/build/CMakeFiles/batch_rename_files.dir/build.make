@@ -153,10 +153,24 @@ CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/StringReplaceCommand.cpp -o CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.s
 
+CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o: CMakeFiles/batch_rename_files.dir/flags.make
+CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o: /home/samsung/workspace/cpp/file_system/src/FileOverwritePrompt.cpp
+CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o: CMakeFiles/batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o -MF CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o.d -o CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o -c /home/samsung/workspace/cpp/file_system/src/FileOverwritePrompt.cpp
+
+CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/FileOverwritePrompt.cpp > CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.i
+
+CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/FileOverwritePrompt.cpp -o CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.s
+
 CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o: CMakeFiles/batch_rename_files.dir/flags.make
 CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o: /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp
 CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o: CMakeFiles/batch_rename_files.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o -MF CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o.d -o CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o -c /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp
 
 CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.i: cmake_force
@@ -167,10 +181,24 @@ CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/StringAppendCommand.cpp -o CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.s
 
+CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o: CMakeFiles/batch_rename_files.dir/flags.make
+CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o: /home/samsung/workspace/cpp/file_system/src/Utilities.cpp
+CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o: CMakeFiles/batch_rename_files.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o -MF CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o.d -o CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o -c /home/samsung/workspace/cpp/file_system/src/Utilities.cpp
+
+CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/samsung/workspace/cpp/file_system/src/Utilities.cpp > CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.i
+
+CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/samsung/workspace/cpp/file_system/src/Utilities.cpp -o CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.s
+
 CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o: CMakeFiles/batch_rename_files.dir/flags.make
 CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o: /home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp
 CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o: CMakeFiles/batch_rename_files.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o -MF CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o.d -o CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o -c /home/samsung/workspace/cpp/file_system/src/FileNameValidator.cpp
 
 CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.i: cmake_force
@@ -189,7 +217,9 @@ batch_rename_files_OBJECTS = \
 "CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o" \
 "CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.o" \
 "CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o" \
+"CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o" \
 "CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o" \
+"CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o" \
 "CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o"
 
 # External object files for target batch_rename_files
@@ -201,11 +231,13 @@ batch_rename_files_EXTERNAL_OBJECTS =
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/FileRenameCommandBase.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/CaseModifyCommand.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/StringReplaceCommand.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/FileOverwritePrompt.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/StringAppendCommand.cpp.o
+/home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/Utilities.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/src/FileNameValidator.cpp.o
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/build.make
 /home/samsung/workspace/cpp/file_system/bin/batch_rename_files: CMakeFiles/batch_rename_files.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable /home/samsung/workspace/cpp/file_system/bin/batch_rename_files"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/samsung/workspace/cpp/file_system/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable /home/samsung/workspace/cpp/file_system/bin/batch_rename_files"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/batch_rename_files.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

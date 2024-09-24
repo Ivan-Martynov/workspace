@@ -195,7 +195,9 @@ CMakeFiles/mp3_batch_rename_files.dir/src/mp3_batch_rename_files.cpp.o: \
  /home/samsung/workspace/cpp/file_system/include/BatchFileRenamer.h \
  /home/samsung/workspace/cpp/file_system/include/FileRenameCommandBase.h \
  /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
+ /home/samsung/workspace/cpp/file_system/include/FileOverwritePrompt.h \
  /home/samsung/workspace/cpp/file_system/include/MP3Tag.h \
+ /home/samsung/workspace/cpp/file_system/include/Utilities.h \
  /usr/include/c++/13/iostream /usr/include/c++/13/algorithm \
  /usr/include/c++/13/bits/stl_algo.h \
  /usr/include/c++/13/bits/algorithmfwd.h \

@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/organize_files.dir/src/FileOrganizer.cpp.o.d"
   "CMakeFiles/organize_files.dir/src/StringHelper.cpp.o"
   "CMakeFiles/organize_files.dir/src/StringHelper.cpp.o.d"
+  "CMakeFiles/organize_files.dir/src/Utilities.cpp.o"
+  "CMakeFiles/organize_files.dir/src/Utilities.cpp.o.d"
   "CMakeFiles/organize_files.dir/src/organize_files.cpp.o"
   "CMakeFiles/organize_files.dir/src/organize_files.cpp.o.d"
 )
