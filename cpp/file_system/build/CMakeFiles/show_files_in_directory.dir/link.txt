@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/show_files_in_directory.dir/src/show_files_in_directory.cpp.o -o /home/samsung/workspace/cpp/file_system/bin/show_files_in_directory
