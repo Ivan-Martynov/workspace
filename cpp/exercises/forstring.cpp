@@ -11,9 +11,7 @@ int main()
     // display charachters in a reverse order
     for (int i = word.size() - 1; i >= 0; --i)
     {
-	int x = 100;
-	cout << x << endl;
-	cout << word[i];
+        cout << word[i];
     }
     cout << "\ndone!\n";
     cout << x << endl;

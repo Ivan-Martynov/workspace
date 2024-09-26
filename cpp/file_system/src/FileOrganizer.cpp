@@ -12,9 +12,8 @@ FileOrganizer::FileOrganizer(const std::vector<std::string_view>& paths,
     const std::vector<std::string_view>& options)
     : m_paths {paths}, m_options {options}
 {
-    for (size_t i {0}; i < m_options.size(); ++i)
+    for (const auto& option: options)
     {
-        const auto& option {m_options[i]};
         if ((option == "-h") || (option == "-help"))
         {
             m_do_show_help = true;
@@ -25,11 +24,16 @@ FileOrganizer::FileOrganizer(const std::vector<std::string_view>& paths,
         }
         else if ((option == "-dow") || (option == "-do-overwrite"))
         {
-            m_do_overwrite = Overwrite::YES;
+            m_overwrite_prompt.set_mode(FileOverwritePrompt::Mode::YES_TO_ALL);
+        }
+        else if ((option == "-dowu") || (option == "-do-overwrite-update"))
+        {
+            m_overwrite_prompt.set_mode(
+                FileOverwritePrompt::Mode::YES_TO_ALL_UPDATE);
         }
         else if ((option == "-dnow") || (option == "-do-not-overwrite"))
         {
-            m_do_overwrite = Overwrite::NO;
+            m_overwrite_prompt.set_mode(FileOverwritePrompt::Mode::NO_TO_ALL);
         }
         else if ((option == "-dc") || (option == "-do-copy"))
         {
@@ -160,16 +164,16 @@ void FileOrganizer::actual_copy_or_move(
         std::filesystem::copy_file(current_path, target_path, err_code);
     }
 
-    if (m_verbose)
-    {
-        std::wcout << L"Done.\n";
-    }
-
     if (err_code)
     {
         std::wcerr << L"what(): "
                    << StringHelper::string_to_wstring(err_code.message())
                    << L"\n";
+    }
+
+    if (m_verbose)
+    {
+        std::wcout << L"Done.\n";
     }
 }
 
@@ -190,49 +194,9 @@ void FileOrganizer::process_item(const std::filesystem::directory_entry& item)
 
     if (m_do_copy || m_do_move)
     {
-        if (std::filesystem::exists(target_path))
+        if (m_overwrite_prompt.is_overwriting(current_path, target_path))
         {
-            if (m_do_overwrite != Overwrite::NO)
-            {
-                std::wcout << L"File already exists: " << target_path << L'\n';
-            }
-
-            bool do_overwrite {m_do_overwrite == Overwrite::YES};
-            if (!do_overwrite && (m_do_overwrite != Overwrite::NO))
-            {
-                // Use letters to process the answer:
-                // 'n' - do not overwrite the current item;
-                // 'y' - do overwrite the current item;
-                // 'a' - do overwrite existing items if needed;
-                // 'o' - do not overwrite existing items.
-                std::wcout << "Overwrite? [n]o, [y]es, yes to [a]ll, n[o] "
-                              "to all\n";
-                char answer {};
-                std::cin >> answer;
-                switch (answer)
-                {
-                    case 'a':
-                        m_do_overwrite = Overwrite::YES;
-                        do_overwrite = true;
-                        break;
-
-                    case 'y':
-                        do_overwrite = true;
-                        break;
-
-                    case 'o':
-                        m_do_overwrite = Overwrite::NO;
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            if (!do_overwrite)
-            {
-                return;
-            }
+            actual_copy_or_move(current_path, target_path);
         }
 
         actual_copy_or_move(current_path, target_path);

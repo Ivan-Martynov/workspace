@@ -17,16 +17,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(TARGETS
-    show_disk_usage
-    show_files_in_directory
-)
-
-foreach(TARGET ${TARGETS})
-  add_executable(${TARGET} src/${TARGET}.cpp)
-  target_link_libraries(${TARGET} PUBLIC compiler_flags)
-endforeach(TARGET)
-
 add_executable(batch_rename_files
   src/batch_rename_files.cpp
   src/StringHelper.cpp
@@ -42,6 +32,7 @@ add_executable(batch_rename_files
 add_executable(organize_files
   src/organize_files.cpp
   src/FileOrganizer.cpp
+  src/FileOverwritePrompt.cpp
   src/StringHelper.cpp
   src/Utilities.cpp
 )

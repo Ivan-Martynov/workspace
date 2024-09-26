@@ -60,7 +60,8 @@ class FileRenameCommandBase
      * @param items Items to process.
      * @param target_flag Flag to determine which part of an item to modify.
      */
-    virtual void modify(std::vector<std::filesystem::path>&,
+    virtual void modify(
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
         const size_t = std::to_underlying(Target::STEM)) const;
 };
 

@@ -275,25 +275,11 @@ void BatchFileRenamer::m_show_help() const
            L"item;\n";
 }
 
-/**
- * @brief Process items (either files or directories).
- *
- * @param items Items to process.
- * @param are_directories Boolean flag whether the items are directories.
- */
-void BatchFileRenamer::m_process_items(
-    std::vector<std::filesystem::path>& items, const bool are_directories)
+size_t BatchFileRenamer::m_build_target_flag(const bool are_directories) const
 {
-    // Collect original path names in order to rename later if needed.
-    std::vector<std::wstring> original_paths {};
-    for (size_t i {0}; i < items.size(); ++i)
-    {
-        original_paths.emplace_back(items[i].wstring());
-    }
-
     // Build the target flag to process the desired items parts (i.e., file
     // names and/or their extensions).
-    auto target {std::to_underlying(FileRenameCommandBase::Target::STEM)};
+    size_t target {std::to_underlying(FileRenameCommandBase::Target::STEM)};
     if (!are_directories)
     {
         if (m_targets == std::to_underlying(Targets::EXTENSIONS))
@@ -309,6 +295,22 @@ void BatchFileRenamer::m_process_items(
                 |= std::to_underlying(FileRenameCommandBase::Target::EXTENSION);
         }
     }
+    return target;
+}
+
+/**
+ * @brief Process items (either files or directories).
+ *
+ * @param items Items to process.
+ * @param are_directories Boolean flag whether the items are directories.
+ */
+void BatchFileRenamer::m_process_items(
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+    const bool are_directories)
+{
+    // Build the target flag to process the desired items parts (i.e., file
+    // names and/or their extensions).
+    auto target {m_build_target_flag(are_directories)};
 
     // Actuall processing using renaming commands.
     for (auto& command_ptr : m_commands_ptrs)
@@ -320,68 +322,30 @@ void BatchFileRenamer::m_process_items(
     {
         // Check if the modified name has invalid characters and replace them if
         // any.
-        std::wstring file_name {items[i].filename().wstring()};
-        FileNameValidator::replace_invalid_characters(file_name, L"_");
-
-        if (FileNameValidator::filename_too_long(file_name))
+        std::wstring file_name {items[i].second.filename().wstring()};
+        if (!FileNameValidator::try_fixing_name(file_name, L"_"))
         {
-            if (m_verbose)
-            {
-                std::wcerr << L"The file name " << file_name
-                           << L" is too long.\n";
-            }
             continue;
-        }
-
-        // Cannot rename to an emtpy string.
-        if (file_name.empty())
-        {
-            if (m_verbose)
-            {
-                std::wcerr << L"The item " << original_paths[i]
-                           << L" has been modified to an empty string - "
-                              L"renaming not allowed.\n";
-            }
-            continue;
-        }
-
-        if (are_directories && ((file_name == L".") || (file_name == L"..")))
-        {
-            std::wcerr << L"Cannot rename a directory into the current or "
-                          L"upper directory (i.e., \".\" or \"..\")\n";
-            return;
         }
 
         // Build the full path for the modified item.
-        std::filesystem::path new_path {items[i].parent_path() / file_name};
-        if (are_directories
-            && FileNameValidator::directory_name_too_long(new_path.wstring()))
-        {
-            std::wcerr << L"The file path " << new_path << L" is too long.\n";
-        }
+        std::filesystem::path new_path {
+            items[i].second.parent_path() / file_name};
 
-        const bool is_same {original_paths[i] == new_path};
         if (m_verbose)
         {
-            std::wcout << original_paths[i] << L"=>" << new_path
-                       << (is_same ? L" (no change)\n" : L"\n");
+            std::wcout << items[i].first << L" => " << new_path << L"\n";
         }
-
-        // No need to rename if the item has not been modified.
-        //if (is_same)
-        //{
-        //    continue;
-        //}
 
         // Try to actually modify (rename) the item.
         // If a modified item points to an existing file, then prompt for
         // permission to overwrite.
         if (m_do_modify
-            && m_overwrite_prompt.is_overwriting(original_paths[i], new_path))
+            && m_overwrite_prompt.is_overwriting(items[i].first, new_path))
         {
             // Try renaming the item and report if an error occurs.
             std::error_code err_code {};
-            std::filesystem::rename(original_paths[i], new_path, err_code);
+            std::filesystem::rename(items[i].first, new_path, err_code);
             if (err_code)
             {
                 std::wcerr << L"what(): "
@@ -400,8 +364,8 @@ void BatchFileRenamer::m_process_items(
  * @param directories Folder names to sort.
  */
 void BatchFileRenamer::m_check_sorting_by_names(
-    std::vector<std::filesystem::path>& files,
-    std::vector<std::filesystem::path>& directories)
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& files,
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& directories)
 {
     // Sort by names to have unique sorting if the flags is set.
     if ((m_sorting & std::to_underlying(Sorting::BY_NAMES))
@@ -409,13 +373,17 @@ void BatchFileRenamer::m_check_sorting_by_names(
     {
         if ((m_sorting & std::to_underlying(Sorting::BY_NAMES)))
         {
-            std::sort(files.begin(), files.end());
-            std::sort(directories.begin(), directories.end());
+            auto compare_lambda {[](const auto& a, const auto& b)
+                { return a.second < b.second; }};
+            std::sort(files.begin(), files.end(), compare_lambda);
+            std::sort(directories.begin(), directories.end(), compare_lambda);
         }
         else
         {
-            std::sort(files.begin(), files.end(), std::greater<>());
-            std::sort(directories.begin(), directories.end(), std::greater<>());
+            auto compare_lambda {[](const auto& a, const auto& b)
+                { return a.second > b.second; }};
+            std::sort(files.begin(), files.end(), compare_lambda);
+            std::sort(directories.begin(), directories.end(), compare_lambda);
         }
     }
 }
@@ -426,7 +394,7 @@ void BatchFileRenamer::m_check_sorting_by_names(
  * @param files File names to sort.
  */
 void BatchFileRenamer::m_check_sorting_by_size(
-    std::vector<std::filesystem::path>& files)
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& files)
 {
     if ((m_sorting & std::to_underlying(Sorting::BY_SIZE))
         || (m_sorting & std::to_underlying(Sorting::BY_SIZE_DESCENDING)))
@@ -434,22 +402,27 @@ void BatchFileRenamer::m_check_sorting_by_size(
         const bool ascending {
             (m_sorting & std::to_underlying(Sorting::BY_SIZE_DESCENDING)) == 0};
         std::sort(files.begin(), files.end(),
-            [&ascending](auto& a, auto& b) // Lambda to be used for sorting.
+            [&ascending](
+                const auto& a, const auto& b) // Lambda to be used for sorting.
             {
                 std::error_code err_code {};
-                const auto size_a {std::filesystem::file_size(a, err_code)};
+                const auto size_a {
+                    std::filesystem::file_size(a.second, err_code)};
                 if (err_code)
                 {
                     // If failed to get the size of the first item, then assume
                     // it to be smaller.
-                    return ascending;
+                    return ascending ? a.second < b.second
+                                     : a.second > b.second;
                 }
-                const auto size_b {std::filesystem::file_size(b, err_code)};
+                const auto size_b {
+                    std::filesystem::file_size(b.second, err_code)};
                 if (err_code)
                 {
                     // If failed to get the size of the second item, then sort
                     // by default order.
-                    return ascending ? a < b : a > b;
+                    return ascending ? a.second < b.second
+                                     : a.second > b.second;
                 }
                 return ascending ? size_a < size_b : size_a > size_b;
             });
@@ -463,8 +436,8 @@ void BatchFileRenamer::m_check_sorting_by_size(
  * @param directories Folder names to sort.
  */
 void BatchFileRenamer::m_check_sorting_by_timestamp(
-    std::vector<std::filesystem::path>& files,
-    std::vector<std::filesystem::path>& directories)
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& files,
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& directories)
 {
     if ((m_sorting & std::to_underlying(Sorting::BY_TIMESTAMP))
         || (m_sorting & std::to_underlying(Sorting::BY_TIMESTAMP_DESCENDING)))
@@ -473,11 +446,11 @@ void BatchFileRenamer::m_check_sorting_by_timestamp(
             (m_sorting & std::to_underlying(Sorting::BY_TIMESTAMP_DESCENDING))
             == 0};
         // Lambda to be used for sorting.
-        auto f {[&ascending](auto& a, auto& b)
+        auto compare_lambda {[&ascending](const auto& a, const auto& b)
             {
                 std::error_code err_code {};
                 const auto stamp_a {
-                    std::filesystem::last_write_time(a, err_code)};
+                    std::filesystem::last_write_time(a.second, err_code)};
                 if (err_code)
                 {
                     // If failed to get the timestamp of the first item, then
@@ -485,18 +458,18 @@ void BatchFileRenamer::m_check_sorting_by_timestamp(
                     return ascending;
                 }
                 const auto stamp_b {
-                    std::filesystem::last_write_time(b, err_code)};
+                    std::filesystem::last_write_time(b.second, err_code)};
                 if (err_code)
                 {
                     // If failed to get the timestamp of the second item, then
                     // sort by default order.
-                    return ascending ? a < b : a > b;
+                    return ascending ? a.second < b.second : a.second > b.second;
                 }
 
                 return ascending ? stamp_a < stamp_b : stamp_a > stamp_b;
             }};
-        std::sort(files.begin(), files.end(), f);
-        std::sort(directories.begin(), directories.end(), f);
+        std::sort(files.begin(), files.end(), compare_lambda);
+        std::sort(directories.begin(), directories.end(), compare_lambda);
     }
 }
 
@@ -507,8 +480,19 @@ void BatchFileRenamer::m_check_sorting_by_timestamp(
  */
 void BatchFileRenamer::m_process_target(const std::string_view& target_path)
 {
-    std::vector<std::filesystem::path> files {};
-    std::vector<std::filesystem::path> directories {};
+    // Keep original path and the path to modify in a pair: first element is the
+    // original path name and the second is the path to work on.
+    std::vector<std::pair<std::wstring, std::filesystem::path>> file_pairs {};
+    std::vector<std::pair<std::wstring, std::filesystem::path>> folder_pairs {};
+
+    auto add_pair_lambda {
+        [](const std::filesystem::directory_entry& item,
+            std::vector<std::pair<std::wstring, std::filesystem::path>>& pair)
+        {
+            auto path {item.path()};
+            path.make_preferred();
+            pair.emplace_back(path.wstring(), path);
+        }};
 
     if (std::filesystem::is_directory(target_path))
     {
@@ -528,39 +512,38 @@ void BatchFileRenamer::m_process_target(const std::string_view& target_path)
 
                 if (m_targets & std::to_underlying(Targets::DIRECTORIES))
                 {
-                    directories.emplace_back(item);
+                    add_pair_lambda(item, folder_pairs);
                 }
             }
-            else if (item.is_regular_file()
-                     && ((m_targets & std::to_underlying(Targets::FILES))
-                         || (m_targets
-                             & std::to_underlying(Targets::EXTENSIONS))))
+            else if ((m_targets & std::to_underlying(Targets::FILES))
+                     || (m_targets & std::to_underlying(Targets::EXTENSIONS)))
             {
-                files.emplace_back(item);
+                add_pair_lambda(item, file_pairs);
             }
         }
     }
-    else if (std::filesystem::is_regular_file(target_path)
-             && ((m_targets & std::to_underlying(Targets::FILES))
-                 || (m_targets & std::to_underlying(Targets::EXTENSIONS))))
+    else if ((m_targets & std::to_underlying(Targets::FILES))
+             || (m_targets & std::to_underlying(Targets::EXTENSIONS)))
     {
-        files.emplace_back(target_path);
+        std::filesystem::path path {target_path};
+        path.make_preferred();
+        file_pairs.emplace_back(path.wstring(), path);
     }
 
     // Sort by names to have unique sorting if the flags is set.
-    m_check_sorting_by_names(files, directories);
+    m_check_sorting_by_names(file_pairs, folder_pairs);
 
     // Sort by file size to have unique sorting if the flags is set. Using
     // stable sort to preserve order. Directories are not sorted by size.
-    m_check_sorting_by_size(files);
+    m_check_sorting_by_size(file_pairs);
 
     // Sort by timestamp to have unique sorting if the flags is set. Using
     // stable sort to preserve order.
-    m_check_sorting_by_timestamp(files, directories);
+    m_check_sorting_by_timestamp(file_pairs, folder_pairs);
 
     // Process file names and folder names.
-    m_process_items(files, false);
-    m_process_items(directories, true);
+    m_process_items(file_pairs, false);
+    m_process_items(folder_pairs, true);
 }
 
 /**

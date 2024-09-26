@@ -1,12 +1,14 @@
+#include <exception>
 #include <iostream>
 #include <typeinfo>
-#include <exception>
 
 using namespace std;
 
 class Foo
 {
-    virtual void method(void) { }
+  public:
+    virtual ~Foo() = default;
+    virtual void method(void) {}
 };
 
 class Bar : public Foo
@@ -18,7 +20,7 @@ void unexpected(void)
     throw;
 }
 
-void function(void) throw(int, bad_exception)
+void function(void) // throw(int, bad_exception)
 {
     throw 'x';
 }
@@ -26,31 +28,42 @@ void function(void) throw(int, bad_exception)
 int main(void)
 {
     // Bad alloc
-    try {
-        int *array = new int[-1];
+    try
+    {
+        int* array = new int[1];
         int i = 0;
         i = array[0];
         cout << i << endl;
-    } catch (bad_alloc & e) {
+    }
+    catch (bad_alloc& e)
+    {
         cerr << "bad_alloc caught: " << e.what() << endl;
     }
 
     // Bad cast
-    try {
+    try
+    {
         Foo f;
         // Bar & b = dynamic_cast<Bar &>(f);
-    } catch (bad_cast & e) {
+    }
+    catch (bad_cast& e)
+    {
         cerr << "bad_cast caught: " << e.what() << endl;
     }
 
     // Bad exception
     // set_unexpected(unexpected);
 
-    try {
+    try
+    {
         function();
-    } catch(int) {
+    }
+    catch (int)
+    {
         cerr << "caught int" << endl;
-    } catch (bad_exception e) {
+    }
+    catch (const std::exception& e)
+    {
         cerr << "bad_exception caught: " << e.what() << endl;
     }
 

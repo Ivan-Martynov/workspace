@@ -51,11 +51,10 @@ StringAppendCommand::StringAppendCommand(
  * @param items Items to process.
  */
 void StringAppendCommand::m_append_numbers(
-    std::vector<std::filesystem::path>& items) const
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& items) const
 {
     // Calculate how many digits the number has in order to prepend with zeros
     // for proper sorting in different file systems.
-
     size_t n {items.size()};
     size_t number_width {0};
     do
@@ -66,7 +65,7 @@ void StringAppendCommand::m_append_numbers(
 
     for (size_t i {0}; i < items.size(); ++i)
     {
-        std::filesystem::path& item_path {items[i]};
+        std::filesystem::path& item_path {items[i].second};
 
         // Construct a string objectd to append.
         const auto num_str {std::format(L"{:0{}}", (i + 1), number_width)};
@@ -93,10 +92,12 @@ void StringAppendCommand::m_append_numbers(
  * @param items Items to process.
  */
 void StringAppendCommand::m_append_timestamp(
-    std::vector<std::filesystem::path>& items) const
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& items) const
 {
-    for (auto& item_path : items)
+    for (auto& pair : items)
     {
+        std::filesystem::path& item_path {pair.second};
+
         std::wstring time_point_format {};
         if (m_appendage == Appendage::CURRENT_TIME)
         {
@@ -153,7 +154,8 @@ void StringAppendCommand::m_append_timestamp(
  * @param target_flag Flag to determine which part of the item to modify.
  */
 void StringAppendCommand::modify(
-    std::vector<std::filesystem::path>& items, const size_t) const
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+    const size_t) const
 {
     if ((m_method == Method::NONE) || (m_appendage == Appendage::NONE))
     {

@@ -6,9 +6,11 @@
 class Shape
 {
     public:
-        Shape(Point2D center) { myCenter = center; }
+      Shape(Point2D center) : myCenter {center} {}
 
-        virtual void draw() = 0;
+      virtual ~Shape() = default;
+
+      virtual void draw() = 0;
 
     protected:
         Point2D myCenter;

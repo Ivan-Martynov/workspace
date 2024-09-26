@@ -54,11 +54,12 @@ void FileRenameCommandBase::modify_filename(std::filesystem::path& path,
  * @param target_flag Flag to determine which part of an item to modify.
  */
 void FileRenameCommandBase::modify(
-    std::vector<std::filesystem::path>& items, const size_t target_flag) const
+    std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+    const size_t target_flag) const
 {
     for (auto& path : items)
     {
-        modify(path, target_flag);
+        modify(path.second, target_flag);
     }
 }
 

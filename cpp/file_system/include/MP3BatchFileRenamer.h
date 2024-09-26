@@ -30,8 +30,15 @@ class MP3BatchFileRenamer
 
     size_t m_target {std::to_underlying(Target::NONE)};
 
+    // Flag to process directories recursively.
     bool m_recursive {false};
+    // Flag to output information.
     bool m_verbose {false};
+    // Flag to do the actual renaming.
+    bool m_do_modify {false};
+
+    // Flag to do check overwriting of existing files.
+    FileOverwritePrompt m_overwrite_prompt {};
 
     void m_process_options();
     void m_process_items(const std::string_view& path);

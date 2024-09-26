@@ -25,6 +25,8 @@ class Integer
 
         Integer(int value = 0) : _value(value) { }
 
+        virtual ~Integer() = default;
+
         virtual Integer operator + (Integer &other)
         {
             unsigned char result = _value + other._value;

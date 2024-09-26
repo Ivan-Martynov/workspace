@@ -1,16 +1,8 @@
 #include "point2d.h"
 
-Point2D::Point2D()
-{
-    xVal = 0.0;
-    yVal = 0.0;
-}
+Point2D::Point2D(double x, double y) : xVal {x}, yVal {y} {}
 
-Point2D::Point2D(double x, double y)
-{
-    xVal = x;
-    yVal = y;
-}
+Point2D::Point2D() : Point2D(0.0, 0.0) {}
 
 void Point2D::setX(double x)
 {

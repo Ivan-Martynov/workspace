@@ -1,3 +1,0 @@
-/home/paaanda/Dropbox/workspace/cpp/cmake_tut/build/CMakeFiles/rebuild_cache.dir
-/home/paaanda/Dropbox/workspace/cpp/cmake_tut/build/CMakeFiles/main.dir
-/home/paaanda/Dropbox/workspace/cpp/cmake_tut/build/CMakeFiles/edit_cache.dir

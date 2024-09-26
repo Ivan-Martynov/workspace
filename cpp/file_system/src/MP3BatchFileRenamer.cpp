@@ -1,6 +1,7 @@
 #include "MP3BatchFileRenamer.h"
 #include "MP3ReplaceCommand.h"
 #include "FileNameValidator.h"
+#include "StringHelper.h"
 
 #include <iostream>
 
@@ -23,6 +24,23 @@ void MP3BatchFileRenamer::m_process_options()
         else if ((option == "-ua") || (option == "-use-album"))
         {
             m_target = std::to_underlying(Target::ALBUM);
+        }
+        else if ((option == "-dm") || (option == "-do-modify"))
+        {
+            m_do_modify = true;
+        }
+        else if ((option == "-dow") || (option == "-do-overwrite"))
+        {
+            m_overwrite_prompt.set_mode(FileOverwritePrompt::Mode::YES_TO_ALL);
+        }
+        else if ((option == "-dowu") || (option == "-do-overwrite-update"))
+        {
+            m_overwrite_prompt.set_mode(
+                FileOverwritePrompt::Mode::YES_TO_ALL_UPDATE);
+        }
+        else if ((option == "-dnow") || (option == "-do-not-overwrite"))
+        {
+            m_overwrite_prompt.set_mode(FileOverwritePrompt::Mode::NO_TO_ALL);
         }
     }
 }
@@ -81,47 +99,34 @@ void MP3BatchFileRenamer::m_process_items(const std::string_view& path)
             std::wcout << L"Album = " << item.get_album() << L"\n";
         }
 
-        FileNameValidator::replace_invalid_characters(modified_name);
-
-        if (FileNameValidator::filename_too_long(modified_name))
+        if (!FileNameValidator::try_fixing_name(modified_name))
         {
-            if (m_verbose)
-            {
-                std::wcerr << L"The file name " << modified_name
-                           << L" is too long.\n";
-            }
             continue;
         }
-
-        if (modified_name.empty())
-        {
-            if (m_verbose)
-            {
-                std::wcerr << L"The item " << file_path
-                           << L" has been modified to an empty string - "
-                              L"renaming not allowed.\n";
-            }
-            continue;
-        }
-
-        modified_name += file_path.extension().wstring();
 
         std::filesystem::path new_path {
-            file_path.parent_path() / modified_name};
-        const bool is_same {file_path == new_path};
+            file_path.parent_path()
+            / (modified_name + file_path.extension().wstring())};
+
         if (m_verbose)
         {
-            std::wcout << file_path << L"=>" << new_path
-                       << (is_same ? L" (no change)\n" : L"\n");
+            std::wcout << file_path << L" => " << new_path << L"\n";
         }
 
-        // No need to rename if the item has not been modified.
-        if (is_same)
+        if (m_do_modify
+            && m_overwrite_prompt.is_overwriting(file_path, new_path))
         {
-            continue;
+            // Try renaming the item and report if an error occurs.
+            std::error_code err_code {};
+            std::filesystem::rename(file_path, new_path, err_code);
+            if (err_code)
+            {
+                std::wcerr << L"what(): "
+                           << StringHelper::string_to_wstring(
+                                  err_code.message())
+                           << L"\n";
+            }
         }
-
-        std::wcout << file_path << L" => " << new_path << L"\n";
     }
 }
 

@@ -37,13 +37,17 @@ class StringAppendCommand : public FileRenameCommandBase
      *
      * @param items Items to process.
      */
-    void m_append_numbers(std::vector<std::filesystem::path>&) const;
+    void m_append_numbers(
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& items)
+        const;
     /**
      * @brief Append or prepend numbers consecutively to item name.
      *
      * @param items Items to process.
      */
-    void m_append_timestamp(std::vector<std::filesystem::path>&) const;
+    void m_append_timestamp(
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& items)
+        const;
 
   public:
     /**
@@ -73,7 +77,8 @@ class StringAppendCommand : public FileRenameCommandBase
      * @param target_flag Flag to determine which part of the item to modify.
      */
     void modify(
-        std::vector<std::filesystem::path>&, const size_t) const override;
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+        const size_t) const override;
 };
 
 } // namespace Marvin

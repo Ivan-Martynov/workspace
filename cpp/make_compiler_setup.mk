@@ -22,3 +22,15 @@ CXXFLAGS := ${compilation_flags.common} ${compilation_flags.${BUILD}}
 COMPILE_CMD := $(CXX) $(CFLAGS)
 LINK_CMD := $(CXX)
 MKLIB_CMD := ar rsc
+
+define simple_source_to_object
+$(1).o : $(1).cpp
+	@echo "Source to object $$@... "
+	$(CXX) -c $(CXXFLAGS) $$< -o $$@
+endef
+
+define simple_source_to_binary
+$(1): $(1).cpp
+	@echo "Building $$@... "
+	$(CXX) $(1).cpp $(CXXFLAGS) -o $$@
+endef

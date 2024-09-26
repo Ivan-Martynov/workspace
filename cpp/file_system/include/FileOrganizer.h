@@ -5,6 +5,8 @@
 #include <string>
 #include <filesystem>
 
+#include "FileOverwritePrompt.h"
+
 namespace Marvin
 {
 
@@ -25,15 +27,7 @@ class FileOrganizer
     // Flag whether to move files.
     bool m_do_move {false};
 
-    enum class Overwrite
-    {
-        NONE,
-        NO,
-        YES,
-    };
-
-    // Flag to do check overwriting of existing files.
-    Overwrite m_do_overwrite {Overwrite::NONE};
+    FileOverwritePrompt m_overwrite_prompt {};
 
     enum class FolderTarget : size_t
     {

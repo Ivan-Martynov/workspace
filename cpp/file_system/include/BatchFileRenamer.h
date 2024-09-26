@@ -56,7 +56,6 @@ class BatchFileRenamer
     bool m_do_modify {false};
 
     // Flag to do check overwriting of existing files.
-    FileOverwritePrompt::Mode m_do_overwrite {FileOverwritePrompt::Mode::NONE};
     FileOverwritePrompt m_overwrite_prompt {};
 
     size_t m_targets {static_cast<size_t>(Targets::FILES)};
@@ -75,21 +74,26 @@ class BatchFileRenamer
      */
     virtual void m_set_option(size_t& i);
 
+    size_t m_build_target_flag(const bool are_directories) const;
+
     /**
      * @brief Sorting items by name.
      *
      * @param files File names to sort.
      * @param directories Folder names to sort.
      */
-    void m_check_sorting_by_names(std::vector<std::filesystem::path>&,
-        std::vector<std::filesystem::path>&);
+    void m_check_sorting_by_names(
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& files,
+        std::vector<std::pair<std::wstring, std::filesystem::path>>&
+            directories);
 
     /**
      * @brief Sorting items by size. Folders are not processed.
      *
      * @param files File names to sort.
      */
-    void m_check_sorting_by_size(std::vector<std::filesystem::path>&);
+    void m_check_sorting_by_size(
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& files);
 
     /**
      * @brief Sorting items by timestamp.
@@ -97,8 +101,10 @@ class BatchFileRenamer
      * @param files File names to sort.
      * @param directories Folder names to sort.
      */
-    void m_check_sorting_by_timestamp(std::vector<std::filesystem::path>&,
-        std::vector<std::filesystem::path>&);
+    void m_check_sorting_by_timestamp(
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& files,
+        std::vector<std::pair<std::wstring, std::filesystem::path>>&
+            directories);
 
     /**
      * @brief Process items in the directory or the file path.
@@ -114,7 +120,8 @@ class BatchFileRenamer
      * @param are_directories Boolean flag whether the items are directories.
      */
     void m_process_items(
-        std::vector<std::filesystem::path>&, const bool = false);
+        std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+        const bool = false);
 
   public:
     /**

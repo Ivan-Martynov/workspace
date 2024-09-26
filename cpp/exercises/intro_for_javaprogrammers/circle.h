@@ -5,17 +5,19 @@
 
 class Circle : public Shape
 {
-    public:
-        Circle(Point2D center, double radius = 0.5) : Shape(center) {
-            myRadius = radius;
-        }
+  public:
+    Circle(Point2D center, double radius = 0.5)
+        : Shape(center), myRadius {radius}
+    {
+    }
 
-        void draw() {
-            // do something
-        }
+    void draw()
+    {
+        // do something
+    }
 
-    private:
-        double myRadius;
+  private:
+    double myRadius;
 };
 
 #endif

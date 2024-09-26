@@ -55,7 +55,7 @@ next_step:;
 
 size_t scan_size_t() {
     size_t n {0};
-    for (register char c = getchar(); (c > 47 && c < 58); c = getchar())
+    for (char c = getchar(); (c > 47 && c < 58); c = getchar())
         n = n * 10 + c - 48;
     return n;
 }

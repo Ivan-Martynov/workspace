@@ -6,10 +6,11 @@ using namespace std;
 class Real
 {
     public:
-
         Real(double a = 0) : _x(a) {
             cout << "Real constructor called" << endl;
         }
+
+        virtual ~Real() = default;
 
         virtual Real operator + (Real &other) {
             return Real(_x + other._x);
@@ -44,12 +45,10 @@ class Real
 
 class Integer : public Real {
     public:
-
-        Integer(int a = 0) : Real(int(round(a))) { };
+      Integer(int a = 0) :Real(int(round(a))) {};
 
     protected:
-
-        int _x;
+        //int _x;
 };
 
 int main(void)
