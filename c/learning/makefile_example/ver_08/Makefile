@@ -24,19 +24,33 @@ TARGETS := $(BIN_DIR)edit
 all: $(TARGETS)
 
 # Make objects' names in the OBJ_DIR directory from source file names.
-OBJECTS := $(patsubst %.c, $(OBJ_DIR)%.o, $(wildcard *.c))
+OBJECTS := $(patsubst %.c, %.o, $(wildcard *.c))
 
 # $@ - target, $^ - all prerequisites without duplicates.
 $(BIN_DIR)edit : $(OBJECTS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-$(OBJ_DIR)%.o : %.c
-	$(MAKE) -C src
-	$(CC) -c $(CFLAGS) $< -o $@
+DEPDIR := deps
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+
+COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+
+%.o : %.c $(DEPDIR)/%.d | $(DEPDIR)
+	$(CC) -c $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $<
+# $(CC) -c $(CFLAGS) $< -o $@
+# $(COMPILE.c) $(OUTPUT_OPTION) $<
+
+$(DEPDIR): ; @mkdir -p $@
+
+DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
+$(DEPFILES):
+
+include $(wildcard $(DEPFILES))
+
 
 # Make the rule to create the OBJ_DIR directory if needed, without
 # rebuilding .o objects if OBJ_DIR directory's timestamp changes.
-$(OBJECTS): defs.h | $(OBJ_DIR)
+#$(OBJECTS): defs.h | $(OBJ_DIR)
 $(TARGETS): | $(BIN_DIR)
 
 # Using ; to put the recipe on the same line as the target.

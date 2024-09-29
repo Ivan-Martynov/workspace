@@ -12,7 +12,6 @@ BUILD := debug
 compilation_flags.common := -std=c2x -Wall -Wshadow -Wpedantic -Wextra -Werror
 # Debug specific flags.
 compilation_flags.debug := -Og -g -D _DEBUG
-:q
 # Release specific flags.
 compilation_flags.release := -O2 -D NDEBUG
 
