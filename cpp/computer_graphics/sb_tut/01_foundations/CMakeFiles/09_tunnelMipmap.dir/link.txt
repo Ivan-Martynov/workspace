@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ CMakeFiles/09_tunnelMipmap.dir/src/09_tunnelMipmap/09_tunnelMipmap.cpp.o CMakeFiles/09_tunnelMipmap.dir/src/glad.c.o -o bin/09_tunnelMipmap  -lglfw -ldl -lstdc++fs

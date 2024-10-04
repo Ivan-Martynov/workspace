@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/03_blending.exe.dir/03_blending/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/bin/03_blending.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

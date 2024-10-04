@@ -1,0 +1,12 @@
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/01_depth_testing.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/02_stencil_testing.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/03_blending.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/04_face_culling.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/05_framebuffers.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/06_cubemaps.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/07_advanced_data_glsl.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/08_geometry_shader.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/09_instancing.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/10_anti_aliasing.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/04_lighting_maps.exe.dir/04_lighting_maps/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/02_lighting/bin/04_lighting_maps.exe  -lGLEW -lGL -lglfw -lSOIL

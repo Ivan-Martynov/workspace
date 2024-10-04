@@ -1,0 +1,3 @@
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/practice/build/CMakeFiles/01_text_rendering.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/practice/build/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/practice/build/CMakeFiles/rebuild_cache.dir

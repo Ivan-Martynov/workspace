@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++   CMakeFiles/08_objectWithTexture.dir/src/08_objectWithTexture/08_objectWithTexture.cpp.o CMakeFiles/08_objectWithTexture.dir/src/glad.c.o  -o ../bin/08_objectWithTexture -lglfw -ldl -lstdc++fs 

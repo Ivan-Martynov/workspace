@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ CMakeFiles/03_PingPong_with_sound.dir/src/03_PingPong_with_sound/03_PingPong_with_sound.cpp.o CMakeFiles/03_PingPong_with_sound.dir/src/glad.c.o -o bin/03_PingPong_with_sound  -lglfw -ldl -lopenal -laudio -lstdc++fs

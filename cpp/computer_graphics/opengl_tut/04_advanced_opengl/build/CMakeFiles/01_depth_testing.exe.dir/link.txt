@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/01_depth_testing.exe.dir/01_depth_testing/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/bin/01_depth_testing.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

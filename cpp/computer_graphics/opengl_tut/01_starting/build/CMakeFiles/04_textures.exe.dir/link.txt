@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/04_textures.exe.dir/04_textures/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/bin/04_textures.exe  -lGLEW -lGL -lglfw -lSOIL

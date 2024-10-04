@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/06_cubemaps.exe.dir/06_cubemaps/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/bin/06_cubemaps.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

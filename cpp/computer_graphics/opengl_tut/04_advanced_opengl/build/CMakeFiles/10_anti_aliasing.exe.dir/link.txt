@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/10_anti_aliasing.exe.dir/10_anti_aliasing/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/bin/10_anti_aliasing.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

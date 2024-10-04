@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/07_advanced_data_glsl.exe.dir/07_advanced_data_glsl/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/bin/07_advanced_data_glsl.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

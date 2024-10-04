@@ -1,0 +1,15 @@
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/12_fragmentListDepth.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/11_textureRain.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/10_wrapModesExample.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/08_objectWithTexture.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/07_simpleTexture.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/02_singleDot.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/edit_cache.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/03_simpleTriangle.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/05_fragmentColorTriangle.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/rebuild_cache.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/01_emptyWindow.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/04_tessellatedTriangle.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/13_shaderSubroutines.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/09_tunnelMipmap.dir
+/home/paaanda/Dropbox/workspace/cpp/computer_graphics/sb_tut/01_foundations/build/CMakeFiles/06_spinningCubes.dir

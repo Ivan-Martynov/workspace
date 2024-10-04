@@ -1,0 +1,5 @@
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/build/CMakeFiles/01_Blinn_Phong.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/build/CMakeFiles/02_gamma_correction.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/build/CMakeFiles/03_shadow_mapping.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/build/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/build/CMakeFiles/rebuild_cache.dir

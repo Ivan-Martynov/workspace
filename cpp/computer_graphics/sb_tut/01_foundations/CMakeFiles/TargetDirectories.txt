@@ -1,0 +1,15 @@
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/01_emptyWindow.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/02_singleDot.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/03_simpleTriangle.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/04_tessellatedTriangle.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/05_fragmentColorTriangle.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/06_spinningCubes.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/07_simpleTexture.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/08_objectWithTexture.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/09_tunnelMipmap.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/10_wrapModesExample.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/11_textureRain.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/12_fragmentListDepth.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/13_shaderSubroutines.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/01_foundations/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/01_colors.exe.dir/01_colors/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/02_lighting/bin/01_colors.exe  -lGLEW -lGL -lglfw -lSOIL

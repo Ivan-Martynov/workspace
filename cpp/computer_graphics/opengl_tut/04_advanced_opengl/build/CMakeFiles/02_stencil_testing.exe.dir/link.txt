@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/02_stencil_testing.exe.dir/02_stencil_testing/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/04_advanced_opengl/bin/02_stencil_testing.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

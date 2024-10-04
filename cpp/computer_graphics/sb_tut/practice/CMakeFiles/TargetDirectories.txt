@@ -1,0 +1,5 @@
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/CMakeFiles/01_simplePlot2D.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/CMakeFiles/02_simplePingPong.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/CMakeFiles/03_PingPong_with_sound.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/CMakeFiles/rebuild_cache.dir

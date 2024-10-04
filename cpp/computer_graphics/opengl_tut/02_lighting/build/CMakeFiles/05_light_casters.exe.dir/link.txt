@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/05_light_casters.exe.dir/05_light_casters/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/02_lighting/bin/05_light_casters.exe  -lGLEW -lGL -lglfw -lSOIL

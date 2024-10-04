@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/03_shaders.exe.dir/03_shaders/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/bin/03_shaders.exe  -lGLEW -lGL -lglfw -lSOIL

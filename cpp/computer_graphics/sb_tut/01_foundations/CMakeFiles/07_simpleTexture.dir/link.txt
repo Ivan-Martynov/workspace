@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ CMakeFiles/07_simpleTexture.dir/src/07_simpleTexture/07_simpleTexture.cpp.o CMakeFiles/07_simpleTexture.dir/src/glad.c.o -o bin/07_simpleTexture  -lglfw -ldl -lstdc++fs

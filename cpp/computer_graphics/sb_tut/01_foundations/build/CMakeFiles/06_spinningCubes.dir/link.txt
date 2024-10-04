@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++   CMakeFiles/06_spinningCubes.dir/src/06_spinningCubes/06_spinningCubes.cpp.o CMakeFiles/06_spinningCubes.dir/src/glad.c.o  -o ../bin/06_spinningCubes -lglfw -ldl -lstdc++fs 

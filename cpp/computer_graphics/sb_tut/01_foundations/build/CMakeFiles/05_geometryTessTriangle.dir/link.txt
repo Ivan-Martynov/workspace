@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/05_geometryTessTriangle.dir/src/05_geometryTessTriangle/05_geometryTessTriangle.cpp.o CMakeFiles/05_geometryTessTriangle.dir/src/glad.c.o  -o ../bin/05_geometryTessTriangle -lglfw -ldl 

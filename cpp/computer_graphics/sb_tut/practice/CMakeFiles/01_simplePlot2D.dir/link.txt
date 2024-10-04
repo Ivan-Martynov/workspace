@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ CMakeFiles/01_simplePlot2D.dir/src/01_simplePlot2D/01_simplePlot2D.cpp.o CMakeFiles/01_simplePlot2D.dir/src/glad.c.o -o bin/01_simplePlot2D  -lglfw -ldl -lopenal -laudio -lstdc++fs

@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/01_Blinn_Phong.exe.dir/01_Blinn_Phong/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/bin/01_Blinn_Phong.exe  -lGLEW -lGL -lglfw -lSOIL

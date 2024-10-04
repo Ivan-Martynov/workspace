@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/06_multiple_light.exe.dir/06_multiple_light/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/02_lighting/bin/06_multiple_light.exe  -lGLEW -lGL -lglfw -lSOIL

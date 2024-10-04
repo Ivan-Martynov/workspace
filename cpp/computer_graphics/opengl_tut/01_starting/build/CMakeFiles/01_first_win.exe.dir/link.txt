@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/01_first_win.exe.dir/01_first_win/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/bin/01_first_win.exe  -lGLEW -lGL -lglfw -lSOIL

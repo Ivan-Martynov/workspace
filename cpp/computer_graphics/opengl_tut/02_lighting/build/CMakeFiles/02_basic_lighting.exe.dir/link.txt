@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/02_basic_lighting.exe.dir/02_basic_lighting/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/02_lighting/bin/02_basic_lighting.exe  -lGLEW -lGL -lglfw -lSOIL

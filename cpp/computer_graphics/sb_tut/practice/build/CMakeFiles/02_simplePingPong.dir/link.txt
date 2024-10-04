@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -g CMakeFiles/02_simplePingPong.dir/src/02_simplePingPong/02_simplePingPong.cpp.o CMakeFiles/02_simplePingPong.dir/src/glad.c.o -o /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/bin/02_simplePingPong  -lglfw -ldl -lopenal -laudio -lstdc++fs 

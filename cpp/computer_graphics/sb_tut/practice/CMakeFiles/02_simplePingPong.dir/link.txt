@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ CMakeFiles/02_simplePingPong.dir/src/02_simplePingPong/02_simplePingPong.cpp.o CMakeFiles/02_simplePingPong.dir/src/glad.c.o -o bin/02_simplePingPong  -lglfw -ldl -lopenal -laudio -lstdc++fs

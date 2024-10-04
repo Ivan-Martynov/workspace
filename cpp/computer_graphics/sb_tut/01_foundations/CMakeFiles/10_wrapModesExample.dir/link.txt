@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ CMakeFiles/10_wrapModesExample.dir/src/10_wrapModesExample/10_wrapModesExample.cpp.o CMakeFiles/10_wrapModesExample.dir/src/glad.c.o -o bin/10_wrapModesExample  -lglfw -ldl -lstdc++fs

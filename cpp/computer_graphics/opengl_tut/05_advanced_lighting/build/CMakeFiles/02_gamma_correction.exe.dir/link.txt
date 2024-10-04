@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/02_gamma_correction.exe.dir/02_gamma_correction/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/05_advanced_lighting/bin/02_gamma_correction.exe  -lGLEW -lGL -lglfw -lSOIL

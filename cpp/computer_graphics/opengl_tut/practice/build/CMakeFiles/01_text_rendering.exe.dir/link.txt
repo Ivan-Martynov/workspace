@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/01_text_rendering.exe.dir/01_text_rendering/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/practice/bin/01_text_rendering.exe  -lGLEW -lGL -lglfw -lSOIL -lfreetype

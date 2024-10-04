@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/02_hello_tri.exe.dir/02_hello_tri/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/bin/02_hello_tri.exe  -lGLEW -lGL -lglfw -lSOIL

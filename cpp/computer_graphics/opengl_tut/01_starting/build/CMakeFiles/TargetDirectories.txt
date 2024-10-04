@@ -1,0 +1,9 @@
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/01_first_win.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/02_hello_tri.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/03_shaders.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/04_textures.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/05_transformations.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/06_coord_sys.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/07_camera.exe.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/edit_cache.dir
+/home/samsung/workspace/cpp/computer_graphics/opengl_tut/01_starting/build/CMakeFiles/rebuild_cache.dir

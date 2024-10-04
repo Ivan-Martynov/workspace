@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wshadow -Wpedantic -Wextra -Werror -Weffc++ CMakeFiles/model_loading.exe.dir/main.cpp.o -o /home/samsung/workspace/cpp/computer_graphics/opengl_tut/03_model_loading/bin/model_loading.exe  -lGLEW -lGL -lglfw -lSOIL -lassimp

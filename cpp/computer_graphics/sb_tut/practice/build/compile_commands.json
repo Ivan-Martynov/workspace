@@ -1,0 +1,38 @@
+[
+{
+  "directory": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/build",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/include  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -g -o CMakeFiles/01_simplePlot2D.dir/src/01_simplePlot2D/01_simplePlot2D.cpp.o -c /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/01_simplePlot2D/01_simplePlot2D.cpp",
+  "file": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/01_simplePlot2D/01_simplePlot2D.cpp",
+  "output": "CMakeFiles/01_simplePlot2D.dir/src/01_simplePlot2D/01_simplePlot2D.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/build",
+  "command": "/usr/bin/cc  -I/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/include -g -o CMakeFiles/01_simplePlot2D.dir/src/glad.c.o -c /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/glad.c",
+  "file": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/glad.c",
+  "output": "CMakeFiles/01_simplePlot2D.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/build",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/include  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -g -o CMakeFiles/02_simplePingPong.dir/src/02_simplePingPong/02_simplePingPong.cpp.o -c /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/02_simplePingPong/02_simplePingPong.cpp",
+  "file": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/02_simplePingPong/02_simplePingPong.cpp",
+  "output": "CMakeFiles/02_simplePingPong.dir/src/02_simplePingPong/02_simplePingPong.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/build",
+  "command": "/usr/bin/cc  -I/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/include -g -o CMakeFiles/02_simplePingPong.dir/src/glad.c.o -c /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/glad.c",
+  "file": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/glad.c",
+  "output": "CMakeFiles/02_simplePingPong.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/build",
+  "command": "/usr/bin/c++  -I/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/include  -Wall -Wextra -Wshadow -pedantic -Werror -Weffc++ -g -o CMakeFiles/03_PingPong_with_sound.dir/src/03_PingPong_with_sound/03_PingPong_with_sound.cpp.o -c /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/03_PingPong_with_sound/03_PingPong_with_sound.cpp",
+  "file": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/03_PingPong_with_sound/03_PingPong_with_sound.cpp",
+  "output": "CMakeFiles/03_PingPong_with_sound.dir/src/03_PingPong_with_sound/03_PingPong_with_sound.cpp.o"
+},
+{
+  "directory": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/build",
+  "command": "/usr/bin/cc  -I/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/include -g -o CMakeFiles/03_PingPong_with_sound.dir/src/glad.c.o -c /home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/glad.c",
+  "file": "/home/samsung/workspace/cpp/computer_graphics/sb_tut/practice/src/glad.c",
+  "output": "CMakeFiles/03_PingPong_with_sound.dir/src/glad.c.o"
+}
+]
