@@ -45,4 +45,4 @@ $(OBJ_DIR): ; mkdir $(OBJ_DIR)
 
 # Using '-' character for Makefile to ignore errors.
 # Using ; to put the recipe on the same line as the target.
-clean : ; -rm $(OBJECTS) $(TARGETS)
+clean : ; -@rm -f $(OBJECTS) $(TARGETS)

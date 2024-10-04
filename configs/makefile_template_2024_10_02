@@ -1,0 +1,133 @@
+# Prevent make from trying to remake the makefile.
+.PHONY: Makefile
+
+# Defining C and C++ compilers.
+CC := gcc
+CXX := g++
+
+# Flags for linking and libraries.
+LDFLAGS :=
+LDLIBS :=
+
+# Set name for the default target to build. Usually two targets are used:
+# debug and release.
+BUILD := debug
+
+# Flags used for either target.
+compilation_flags.common := -Wall -Wshadow -Wpedantic -Wextra -Werror
+# Debug specific flags.
+compilation_flags.debug := -Og -g -D _DEBUG
+# Release specific flags.
+compilation_flags.release := -O2 -D NDEBUG
+
+# Replacing default CFLAGS with custom ones.
+CFLAGS := -std=c2x ${compilation_flags.common} ${compilation_flags.${BUILD}}
+
+# Replacing default CXXFLAGS with custom ones.
+CXXFLAGS := -std=c++23 ${compilation_flags.common} -Weffc++ \
+	${compilation_flags.${BUILD}}
+
+STATIC_LIB_CMD := ar rsc
+
+CC_SHARED_LIB_CMD = $(CC) $(CFLAGS) -fPIC -shared
+CXX_SHARED_LIB_CMD = $(CXX) $(CXXFLAGS) -fPIC -shared
+
+# Define directories.
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin/$(BUILD)
+DEP_DIR := $(OBJ_DIR)/dependencies
+INC_DIR := include
+
+# Add include directory to have access to the headers.
+CFLAGS += -I $(INC_DIR)
+CXXFLAGS += -I $(INC_DIR)
+
+# Build sources' names for c and c++.
+CSOURCES := $(wildcard $(SRC_DIR)/*.c)
+CXXSOURCES := $(wildcard $(SRC_DIR)/*.cpp)
+
+# Build objects' names for c and c++ and keep them in a separate directory.
+OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(CSOURCES))
+OBJECTS += $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(CXXSOURCES))
+
+# Build dependencies' names for c and c++ and keep them in a separate directory.
+DEPFILES := $(patsubst $(SRC_DIR)/%.c, $(DEP_DIR)/%.d, $(CSOURCES))
+DEPFILES += $(patsubst $(SRC_DIR)/%.cpp, $(DEP_DIR)/%.d, $(CXXSOURCES))
+
+# Define targets.
+TARGETS := $(BIN_DIR)/dummy
+
+# Ensure the recipe to be explicit, avoid possible conflicts with file names.
+.PHONY : all
+all : $(TARGETS)
+
+# Define prerequisites.
+# $@ - target, $^ - all prerequisites without duplicates.
+#$(BIN_DIR)/dummy: $(OBJ_DIR)/dummy.o
+#	$(CXX) $^ -o $@ $(LDFLAGS)
+
+# Flags for making dependencies:
+# https://gcc.gnu.org/onlinedocs/gcc-5.2.0/gcc/Preprocessor-Options.html
+# -MT $@ - Set the name of the target in the dependency file.
+# -MMD - generate a dependency output file only with user header files (that is,
+#	ignoring system header files) as a side-effect of the compilation process.
+# -MP - add a phony target for each dependency file, except the main one. Thus
+#	each dependency depends on nothing. Works for cases when header files are
+#	removed without updating Makefile to match.
+# -MF $(DEP_DIR)/$*.d - determine a file to write to instead of default.
+# Using .Td extension for a temporary dependency.
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)/$*.Td
+
+# Build compilation commands to produce dependencies along.
+COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) -c -o $@
+COMPILE.cxx = $(CXX) $(DEPFLAGS) $(CXXFLAGS) -c -o $@
+
+# Rename the temporary file with the correct dependency extension and touch to
+# update the timestamp (that is, make knows it's newer). This trick is to
+# prevent problems if a dependency file is corrupted (for example, the build
+# was interrupted).
+POSTCOMPILE = mv $(DEP_DIR)/$*.Td $(DEP_DIR)/$*.d && touch $@
+
+# Delete built-in rules.
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
+# Use the custom rule instead.
+# - $(DEP_DIR)/%.d - use the dependency file as a prerequisite of the target, so
+#	that if it’s missing target will be rebuilt.
+# - | $(OBJ_DIR) $(DEP_DIR) - dependency directories as an order-only
+#	prerequisites of the target, so that they will be created when needed.
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp $(DEP_DIR)/%.d | $(OBJ_DIR) $(DEP_DIR)
+	@echo Building $@ ...
+	$(COMPILE.cxx) $<
+	$(POSTCOMPILE)
+
+# Delete built-in rules.
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+# Use the custom rule instead.
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(DEP_DIR)/%.d | $(OBJ_DIR) $(DEP_DIR)
+	@echo Building $@ ...
+	$(COMPILE.c) $<
+	$(POSTCOMPILE)
+
+# Directory as an order-only prerequisite.
+$(TARGETS) : | $(BIN_DIR)
+
+# Create a directory if doesn't exist.
+$(OBJ_DIR) : ; mkdir -p $@
+$(BIN_DIR) : ; mkdir -p $@
+$(DEP_DIR) : ; mkdir -p $@
+
+# Each dependency file as a target: make won’t fail if the file doesn’t exist.
+$(DEPFILES):
+# Include the dependency files with the use of wildcard to avoid
+# failing on non-existent files.
+-include $(wildcard $(DEPFILES))
+
+.PHONY : clean clean_dependencies clean_all
+
+clean_dependencies: ; -rm -f $(DEPFILES)
+
+clean : ; -rm -f $(OBJECTS) $(TARGETS)
+
+clean_all: clean_dependencies clean
+

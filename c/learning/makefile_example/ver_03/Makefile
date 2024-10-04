@@ -27,4 +27,4 @@ include make_objects.mk
 .PHONY : clean
 # Using '-' character for Makefile to ignore errors.
 clean :
-	-rm $(OBJECTS) $(TARGETS)
+	-@rm -f $(OBJECTS) $(TARGETS)

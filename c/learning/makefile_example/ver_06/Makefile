@@ -62,8 +62,8 @@ make.dependencies: $(SOURCES)
 
 
 
-#$(OBJ_DIR)%.o : %.c
-#	$(CC) -c $(CFLAGS) $< -o $@
+$(OBJ_DIR)%.o : %.c
+	$(CC) -c $(CFLAGS) $< -o $@
 
 # Make the rule to create the OBJ_DIR directory if needed, without
 # rebuilding .o objects if OBJ_DIR directory's timestamp changes.
@@ -82,4 +82,4 @@ $(BIN_DIR): ; mkdir $(BIN_DIR)
 
 # Using '-' character for Makefile to ignore errors.
 # Using ; to put the recipe on the same line as the target.
-clean : ; -rm $(OBJECTS) $(TARGETS) $(wildcard *.d)
+clean : ; -@rm -f $(OBJECTS) $(TARGETS) $(wildcard *.d)

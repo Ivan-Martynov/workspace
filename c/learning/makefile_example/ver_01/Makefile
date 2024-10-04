@@ -60,4 +60,4 @@ utils.o : utils.c defs.h
 .PHONY : clean
 # Using '-' character for Makefile to ignore errors.
 clean :
-	-rm $(OBJECTS) $(TARGETS)
+	-@rm -f $(OBJECTS) $(TARGETS)

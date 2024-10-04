@@ -1,10 +1,4 @@
-# - Example of using order-only prerequisite to make obj/ directory if it does
-# not exist. Consequently, starting file structure reorganization - moving
-# object files into a separate directory.
-# - Using ; to put the recipe on the same line as the target.
-# - Using := to assign variable.
-# - Using wildcard and patsubst to build names for object files.
-# - Placing the target into bin/ directory.
+# Practing auto generation of dependencies.
 
 # Prevent make from trying to remake the makefile.
 .PHONY: Makefile
@@ -12,57 +6,83 @@
 # Include makefile with setup for compiler options.
 include make_compiler_setup.mk
 
-BIN_DIR := bin/
-OBJ_DIR := obj/
+# Define directories.
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin/$(BUILD)
+DEP_DIR := $(OBJ_DIR)/dependencies
+INC_DIR := include
+
+# Add include directory to have access to the headers.
+CFLAGS += -I $(INC_DIR)
 
 # List of targets to make.
-TARGETS := $(BIN_DIR)edit
-#TARGETS := $(addprefix $(BIN_DIR), edit)
+TARGETS := $(BIN_DIR)/edit
 
-# Ensure the recipe to be explicit, avoid possible conflicts with file names.
 .PHONY: all
 all: $(TARGETS)
 
-# Make objects' names in the OBJ_DIR directory from source file names.
-OBJECTS := $(patsubst %.c, %.o, $(wildcard *.c))
+# All source files are in a separate directory.
+SOURCES := $(wildcard $(SRC_DIR)/*.c)
+# Put object files are into a separate directory.
+OBJECTS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SOURCES))
+# Put dependency files are into a separate directory.
+DEPENDENCIES := $(patsubst $(SRC_DIR)/%.c, $(DEP_DIR)/%.d, $(SOURCES))
 
 # $@ - target, $^ - all prerequisites without duplicates.
-$(BIN_DIR)edit : $(OBJECTS)
+$(BIN_DIR)/edit : $(OBJECTS) | $(BIN_DIR)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-DEPDIR := deps
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+# Flags for making dependencies:
+# https://gcc.gnu.org/onlinedocs/gcc-5.2.0/gcc/Preprocessor-Options.html
+# -MT $@ - Set the name of the target in the dependency file.
+# -MMD - generate a dependency output file only with user header files (that is,
+#	ignoring system header files) as a side-effect of the compilation process.
+# -MP - add a phony target for each dependency file, except the main one. Thus
+#	each dependency depends on nothing. Works for cases when header files are
+#	removed without updating Makefile to match.
+# -MF $(DEP_DIR)/$*.d - determine a file to write to instead of default.
+# Using .Td extension for a temporary dependency.
+# Recursively expanded variable.
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEP_DIR)/$*.Td
 
-COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+# Build compilation commands to produce dependencies along.
+# Recursively expanded variable.
+COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) -c -o $@ $<
 
-%.o : %.c $(DEPDIR)/%.d | $(DEPDIR)
-	$(CC) -c $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $<
-# $(CC) -c $(CFLAGS) $< -o $@
-# $(COMPILE.c) $(OUTPUT_OPTION) $<
+# Rename the temporary file with the correct dependency extension and touch to
+# update the timestamp (that is, make knows it's newer). This trick is to
+# prevent problems if a dependency file is corrupted (for example, the build
+# was interrupted).
+# Recursively expanded variable.
+POSTCOMPILE = mv $(DEP_DIR)/$*.Td $(DEP_DIR)/$*.d && touch $@
 
-$(DEPDIR): ; @mkdir -p $@
+# Delete built-in rules.
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+# Use the custom rule instead.
+# - $(DEP_DIR)/%.d - use the dependency file as a prerequisite of the target, so
+#	that if it’s missing target will be rebuilt.
+# - | $(OBJ_DIR) $(DEP_DIR) - dependency directories as an order-only
+#	prerequisites of the target, so that they will be created when needed.
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c $(DEP_DIR)/%.d | $(OBJ_DIR) $(DEP_DIR)
+	$(COMPILE.c)
+	$(POSTCOMPILE)
 
-DEPFILES := $(SRCS:%.c=$(DEPDIR)/%.d)
-$(DEPFILES):
+# Create a directory if doesn't exist.
+$(OBJ_DIR) : ; mkdir -p $@
+$(BIN_DIR) : ; mkdir -p $@
+$(DEP_DIR) : ; mkdir -p $@
 
-include $(wildcard $(DEPFILES))
+# Each dependency file as a target: make won’t fail if the file doesn’t exist.
+$(DEPENDENCIES):
+# Include the dependency files with the use of wildcard to avoid
+# failing on non-existent files.
+-include $(wildcard $(DEPENDENCIES))
 
+.PHONY: clean clean_deps clean_all
 
-# Make the rule to create the OBJ_DIR directory if needed, without
-# rebuilding .o objects if OBJ_DIR directory's timestamp changes.
-#$(OBJECTS): defs.h | $(OBJ_DIR)
-$(TARGETS): | $(BIN_DIR)
+clean: ; -@rm -f $(OBJECTS) $(TARGETS)
 
-# Using ; to put the recipe on the same line as the target.
-$(OBJ_DIR): ; mkdir $(OBJ_DIR)
-$(BIN_DIR): ; mkdir $(BIN_DIR)
+clean_deps: ; -@rm -f $(DEPENDENCIES)
 
-# Include makefile with objects compilation recipies.
-# include make_objects.mk
-
-# Ensure the recipe to be explicit, avoid possible conflicts with file names.
-.PHONY : clean
-
-# Using '-' character for Makefile to ignore errors.
-# Using ; to put the recipe on the same line as the target.
-clean : ; -rm $(OBJECTS) $(TARGETS)
+clean_all: clean clean_deps

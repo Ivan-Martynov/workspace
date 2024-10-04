@@ -48,4 +48,4 @@ display.o insert.o search.o files.o : buffer.h
 .PHONY : clean
 # Using '-' character for Makefile to ignore errors.
 clean :
-	-rm $(OBJECTS) $(TARGETS)
+	-@rm -f $(OBJECTS) $(TARGETS)
