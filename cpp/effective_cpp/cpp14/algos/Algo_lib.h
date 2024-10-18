@@ -9,6 +9,7 @@
 #include <iostream>
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 
 namespace Algo_lib {
 

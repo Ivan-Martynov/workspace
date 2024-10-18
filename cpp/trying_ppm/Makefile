@@ -20,7 +20,9 @@ LIBS =
 SOURCES := main.cpp PPM_Image.cpp Geometry.cpp
 TARGETS := main
 
-all:
+all: $(TARGETS)
+
+$(TARGETS): $(SOURCES)
 	$(CXX) $(SOURCES) $(CXXFLAGS) $(LIBS) -o $(TARGETS)
 
 clean:

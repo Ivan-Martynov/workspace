@@ -18,8 +18,7 @@ COMP_OPTIONS = -m64 -Wall -Wextra -Wshadow -pedantic -Werror
 CXXFLAGS = -std=c++17 -Weffc++ $(COMP_OPTIONS)
 DEBUG_FLAGS = -O0 -g -D _DEBUG
 RELEASE_FLAGS = -O3 -D NDEBUG
-LIBS = -lstdc++fs -lGL -lGLU -lGLEW -lGLEW -lglfw -lXxf86vm -ldl -lX11\
-       -lpthread -lXrandr -lXi -lXinerama -lXcursor -lSOIL
+LIBS = -lstdc++fs -lGL -lGLEW -lglfw -lSOIL
 
 SOURCES := $(wildcard *.cpp)
 TARGET := main

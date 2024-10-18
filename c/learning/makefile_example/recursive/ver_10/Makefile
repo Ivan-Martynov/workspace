@@ -24,9 +24,6 @@ TARGETS := ${BIN_DIR}/edit
 #include make_config_header.mk
 PROJECT_CONFIG_FILE ?=
 
-rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) \
-	$(filter $(subst *,%,$2),$d))
-
 # For each item in the folder ($1) find items by given pattern ($2).
 # - made as plain assignment to be able to expand later.
 # - ${wildcard ${1:=/*}} - get all files and subdirectories in the directory.

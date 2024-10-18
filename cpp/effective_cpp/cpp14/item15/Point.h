@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <atomic>
+#include <cmath>
 
 class Point {
 public:

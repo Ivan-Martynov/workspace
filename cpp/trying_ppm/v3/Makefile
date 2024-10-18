@@ -20,7 +20,7 @@ LIBS =
 SOURCES := $(wildcard *.cpp)
 TARGETS := main
 
-all:
+all: $(SOURCES)
 	$(CXX) $(SOURCES) $(CXXFLAGS) $(LIBS) -o $(TARGETS)
 
 clean:

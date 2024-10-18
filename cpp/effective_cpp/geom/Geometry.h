@@ -26,11 +26,12 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 namespace Geometry_lib { // general namespace for this small library
 
 // pi constant
-static constexpr double pi {std::acos(-1)};
+static constexpr double pi {3.141592653589793238462643383279502884197};
 
 // function to compute a square value: x^2
 template <class T>

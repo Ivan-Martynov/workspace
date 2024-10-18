@@ -4,6 +4,7 @@
 #include <fstream>
 #include <array>
 #include <algorithm>
+#include <cmath>
 
 /*
  * Class Vec:

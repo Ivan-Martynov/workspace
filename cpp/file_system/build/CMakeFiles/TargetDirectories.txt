@@ -1,5 +1,0 @@
-/home/samsung/workspace/cpp/file_system/build/CMakeFiles/batch_rename_files.dir
-/home/samsung/workspace/cpp/file_system/build/CMakeFiles/organize_files.dir
-/home/samsung/workspace/cpp/file_system/build/CMakeFiles/mp3_batch_rename_files.dir
-/home/samsung/workspace/cpp/file_system/build/CMakeFiles/edit_cache.dir
-/home/samsung/workspace/cpp/file_system/build/CMakeFiles/rebuild_cache.dir

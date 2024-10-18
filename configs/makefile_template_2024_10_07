@@ -135,10 +135,6 @@ $(DEPFILES):
 -include $(wildcard $(DEPFILES))
 
 .PHONY : clean clean_dependencies clean_all
-
 clean_dependencies: ; -rm -f $(DEPFILES)
-
 clean : ; -rm -f $(OBJECTS) $(TARGETS)
-
 clean_all: clean_dependencies clean
-

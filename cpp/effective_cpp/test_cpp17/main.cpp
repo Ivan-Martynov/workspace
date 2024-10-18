@@ -1,21 +1,21 @@
-#include <iostream>
-#include <vector>
-#include <stdexcept>
-#include <cassert>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <SOIL/SOIL.h>
+#include <cassert>
 #include <experimental/filesystem>
+#include <iostream>
+#include <stdexcept>
+#include <vector>
 
 // GL math
-//#define GLM_FORCE_RADIANS
+// #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Shader.h"
 #include "Camera.h"
 #include "Camera_Q.h"
+#include "Shader.h"
 
 #include "Log_surface.h"
 
@@ -29,7 +29,7 @@ static bool keys[1024];
 
 // global values to keep track of time between the frames
 static GLfloat delta_frame_time = 0;
-static GLfloat last_frame_time  = 0;
+static GLfloat last_frame_time = 0;
 
 // last cursor position
 static GLfloat last_x = 0, last_y = 0;
@@ -38,8 +38,8 @@ static GLfloat last_x = 0, last_y = 0;
 static bool first_mouse_move = true;
 
 // using Camera class
-static Camera main_cam { glm::vec3{0, 0, 3} };
-static Camera_q main_cam_q { glm::vec3{0, 0, 100} };
+static Camera main_cam {glm::vec3 {0, 0, 3}};
+static Camera_q main_cam_q {glm::vec3 {0, 0, 100}};
 
 /*
  * Functions declarations
@@ -58,32 +58,33 @@ int clean_up(const int);
 void gen_objects(GLuint*, GLuint*, GLuint*);
 // bind the objects with vertex data
 void make_objects(const GLuint, const GLuint, const GLuint,
-        const std::vector<GLfloat>&, const std::vector<GLuint>&);
+    const std::vector<GLfloat>&, const std::vector<GLuint>&);
 
 // init textures
 void gen_textures(std::vector<GLuint>&);
-void make_textures(const GLuint, const std::string&,
-        const GLenum, const GLenum);
+void make_textures(
+    const GLuint, const std::string&, const GLenum, const GLenum);
 
 // drawing rotating and scaling containers
 void rotating_cube(GLFWwindow*, const int = 0);
 void rotating_cube_draw(GLFWwindow*, const std::vector<GLfloat>&,
-        const std::vector<GLuint>&, const int);
+    const std::vector<GLuint>&, const int);
 void rotating_cube_loop(GLFWwindow*, const GLuint, const Shader&,
-        const std::vector<GLuint>&, const std::vector<std::string>&,
-        const std::vector<glm::vec3>&, const int);
+    const std::vector<GLuint>&, const std::vector<std::string>&,
+    const std::vector<glm::vec3>&, const int);
 
 // function to compute sizeof elements lying in the vector container
-template <class T>
-constexpr size_t size_of_elements(const std::vector<T> &v) {
+template <class T> constexpr size_t size_of_elements(const std::vector<T>& v)
+{
     return v.size() * sizeof(T);
 }
 
-std::vector<std::string> directory_files(const std::string& dir_path){
+std::vector<std::string> directory_files(const std::string& dir_path)
+{
     namespace fs = std::experimental::filesystem;
 
     std::vector<std::string> file_paths;
-    for (const auto &p : fs::directory_iterator(dir_path))
+    for (const auto& p : fs::directory_iterator(dir_path))
         file_paths.emplace_back(p.path());
 
     return file_paths;
@@ -95,12 +96,14 @@ void process_input(GLFWwindow*, const std::string&);
 void show_menu(GLFWwindow*, const std::string&);
 
 // here goes the main()
-int main(int argc, char *argv[]) try {
+int main(int argc, char* argv[])
+try
+{
 
     static constexpr GLuint width {800}, height {600};
     last_x = width >> 1;
     last_y = height >> 1;
-    GLFWwindow *win = init(width, height);
+    GLFWwindow* win = init(width, height);
 
     if (argc > 1)
         process_input(win, argv[1]);
@@ -109,14 +112,19 @@ int main(int argc, char *argv[]) try {
 
     // clean up and exit properly
     return clean_up(0);
-
-} catch (const std::runtime_error &e) {
+}
+catch (const std::runtime_error& e)
+{
     std::cerr << e.what() << '\n';
     return clean_up(1);
-} catch (const std::exception &e) {
+}
+catch (const std::exception& e)
+{
     std::cerr << e.what() << '\n';
     return clean_up(2);
-} catch (...) {
+}
+catch (...)
+{
     std::cerr << "Unknown exception\n";
     return clean_up(3);
 }
@@ -124,12 +132,15 @@ int main(int argc, char *argv[]) try {
 /*
  * Process user input
  */
-void process_input(GLFWwindow *win, const std::string &inp) {
+void process_input(GLFWwindow* win, const std::string& inp)
+{
     static constexpr char num_options {'4'};
     const std::string s {inp};
     const char inp_char {s[0]};
-    if (s.length() == 1 && inp_char >= '0' && inp_char <= num_options) {
-        switch (inp_char - '0') {
+    if (s.length() == 1 && inp_char >= '0' && inp_char <= num_options)
+    {
+        switch (inp_char - '0')
+        {
             case 1:
                 rotating_cube(win, 1);
                 break;
@@ -146,7 +157,9 @@ void process_input(GLFWwindow *win, const std::string &inp) {
             default:
                 rotating_cube(win);
         }
-    } else {
+    }
+    else
+    {
         std::cerr << "Wrong input: drawing default rotating cube\n";
         rotating_cube(win);
     }
@@ -155,14 +168,16 @@ void process_input(GLFWwindow *win, const std::string &inp) {
 /*
  * Display a menu of possible actions
  */
-void show_menu(GLFWwindow *win, const std::string &prog_name) {
-    std::cout << "Note: the program can be run as follows:\n" <<
-        prog_name << " int_param, where int_param is:\n" <<
-        "0:\trotating cube (default)\n" <<
-        "1:\tcubes rotating on a \"sphere\"\n" <<
-        "2:\tcamera moving with keys (WASD or arrow keys) and mouse" <<
-        " (left-right and up-down movement)\n" <<
-        "3:\tadded zooming (scrolling the mouse wheel, can be buggy...)\n";
+void show_menu(GLFWwindow* win, const std::string& prog_name)
+{
+    std::cout
+        << "Note: the program can be run as follows:\n"
+        << prog_name << " int_param, where int_param is:\n"
+        << "0:\trotating cube (default)\n"
+        << "1:\tcubes rotating on a \"sphere\"\n"
+        << "2:\tcamera moving with keys (WASD or arrow keys) and mouse"
+        << " (left-right and up-down movement)\n"
+        << "3:\tadded zooming (scrolling the mouse wheel, can be buggy...)\n";
     rotating_cube(win);
 }
 
@@ -171,7 +186,8 @@ void show_menu(GLFWwindow *win, const std::string &prog_name) {
  * put more stuff inside a single function, though trying not to make it too
  * long (keeping the idea of fitting a single function on a screen in mind)
  */
-GLFWwindow* init(const GLuint w, const GLuint h) {
+GLFWwindow* init(const GLuint w, const GLuint h)
+{
     glfwInit();
 
     // configuring GLFW
@@ -181,7 +197,7 @@ GLFWwindow* init(const GLuint w, const GLuint h) {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // create a window object
-    GLFWwindow *win = glfwCreateWindow(w, h, "Camera", nullptr, nullptr);
+    GLFWwindow* win = glfwCreateWindow(w, h, "Camera", nullptr, nullptr);
     if (win == nullptr)
         throw std::runtime_error {"Failed to create GLFW window"};
 
@@ -195,7 +211,7 @@ GLFWwindow* init(const GLuint w, const GLuint h) {
     // register keyboard callback
     glfwSetKeyCallback(win, key_callback);
     // set up mouse callback
-    //glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(win, mouse_callback);
     // scrolling
     glfwSetScrollCallback(win, scroll_callback);
@@ -212,14 +228,19 @@ GLFWwindow* init(const GLuint w, const GLuint h) {
 /*
  * Call this function whenever a key is pressed / released
  */
-void key_callback(GLFWwindow *win, const int key, const int,
-        const int action, const int mod) {
-    if (action == GLFW_PRESS) {
-        if (key == GLFW_KEY_ESCAPE || (mod == GLFW_MOD_CONTROL && key == GLFW_KEY_Q))
+void key_callback(
+    GLFWwindow* win, const int key, const int, const int action, const int mod)
+{
+    if (action == GLFW_PRESS)
+    {
+        if (key == GLFW_KEY_ESCAPE
+            || (mod == GLFW_MOD_CONTROL && key == GLFW_KEY_Q))
             glfwSetWindowShouldClose(win, GL_TRUE);
         else
             keys[key] = true;
-    } else if (action == GLFW_RELEASE) {
+    }
+    else if (action == GLFW_RELEASE)
+    {
         keys[key] = false;
     }
 }
@@ -227,8 +248,10 @@ void key_callback(GLFWwindow *win, const int key, const int,
 /*
  * Call this function whenever pointer (mouse) moves
  */
-void mouse_callback(GLFWwindow* win, const double xpos, const double ypos) {
-    if (first_mouse_move) {
+void mouse_callback(GLFWwindow* win, const double xpos, const double ypos)
+{
+    if (first_mouse_move)
+    {
         last_x = xpos;
         last_y = ypos;
         first_mouse_move = false;
@@ -240,12 +263,14 @@ void mouse_callback(GLFWwindow* win, const double xpos, const double ypos) {
     last_y = ypos;
 
     int state = glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT);
-    if (state == GLFW_PRESS) {
+    if (state == GLFW_PRESS)
+    {
         glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         main_cam.process_mouse_move(xoffset, yoffset);
         main_cam_q.process_mouse_move(xoffset, yoffset);
     }
-    else {
+    else
+    {
         glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 }
@@ -253,30 +278,36 @@ void mouse_callback(GLFWwindow* win, const double xpos, const double ypos) {
 /*
  * Call this function during scrolling
  */
-void scroll_callback(GLFWwindow*, const double, const double yoffset) {
+void scroll_callback(GLFWwindow*, const double, const double yoffset)
+{
     main_cam.process_scroll(yoffset);
 }
 
 /*
  * Function for smooth movement of the camera
  */
-void do_movement() {
-    if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP]) {
+void do_movement()
+{
+    if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
+    {
         main_cam.process_keyboard(Camera::forward_dir, delta_frame_time);
         main_cam_q.pitch(-1 * std::acos(-1) / 180);
     }
-    else if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN]) {
+    else if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
+    {
         main_cam.process_keyboard(Camera::backward_dir, delta_frame_time);
         main_cam_q.pitch(1 * std::acos(-1) / 180);
     }
-    else if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT]) {
+    else if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
+    {
         main_cam.process_keyboard(Camera::left_dir, delta_frame_time);
         if (keys[GLFW_KEY_LEFT_SHIFT])
             main_cam_q.roll(-1 * std::acos(-1) / 180);
         else
             main_cam_q.yaw(-1 * std::acos(-1) / 180);
     }
-    else if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT]) {
+    else if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
+    {
         main_cam.process_keyboard(Camera::right_dir, delta_frame_time);
         if (keys[GLFW_KEY_LEFT_SHIFT])
             main_cam_q.roll(1 * std::acos(-1) / 180);
@@ -289,7 +320,8 @@ void do_movement() {
  * Properly clean up and return the value as an indicator of success (0) or
  * failure (1 or other non-zero value)
  */
-int clean_up(const int val) {
+int clean_up(const int val)
+{
     glfwTerminate();
     return val;
 }
@@ -297,15 +329,17 @@ int clean_up(const int val) {
 /*
  * Generate objects like Vertex Array Objects, Vertex Buffer Object
  */
-void gen_objects(GLuint *VAO, GLuint *VBO, GLuint *EBO) {
+void gen_objects(GLuint* VAO, GLuint* VBO, GLuint* EBO)
+{
     glGenVertexArrays(1, VAO);
     glGenBuffers(1, VBO);
     glGenBuffers(1, EBO);
 }
 
 // exploiting std::vector to initialize several textures
-void gen_textures(std::vector<GLuint> &tex) {
-    for (auto &x: tex)
+void gen_textures(std::vector<GLuint>& tex)
+{
+    for (auto& x : tex)
         glGenTextures(1, &x);
 }
 
@@ -313,23 +347,23 @@ void gen_textures(std::vector<GLuint> &tex) {
  * Binding objects with vertex data.
  */
 void make_objects(const GLuint VAO, const GLuint VBO, const GLuint EBO,
-        const std::vector<GLfloat> &vertices,
-        const std::vector<GLuint> &indices) {
+    const std::vector<GLfloat>& vertices, const std::vector<GLuint>& indices)
+{
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, size_of_elements(vertices), vertices.data(),
-            GL_STATIC_DRAW);
+        GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_of_elements(indices),
-            indices.data(), GL_STATIC_DRAW);
+        indices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
-            (GLvoid *)0);
+    glVertexAttribPointer(
+        0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
-            (GLvoid *)(3 * sizeof(GLfloat)));
+        (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
@@ -339,7 +373,8 @@ void make_objects(const GLuint VAO, const GLuint VBO, const GLuint EBO,
  * Binding textures with the image data
  */
 void make_textures(const GLuint tex, const std::string& img_fn,
-        const GLenum wrap, const GLenum filter) {
+    const GLenum wrap, const GLenum filter)
+{
     glBindTexture(GL_TEXTURE_2D, tex);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
@@ -347,62 +382,50 @@ void make_textures(const GLuint tex, const std::string& img_fn,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 
     int img_w, img_h;
-    unsigned char *img = SOIL_load_image(img_fn.c_str(), &img_w, &img_h, 0,
-            SOIL_LOAD_RGB);
+    unsigned char* img
+        = SOIL_load_image(img_fn.c_str(), &img_w, &img_h, 0, SOIL_LOAD_RGB);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_w, img_h, 0, GL_RGB,
-            GL_UNSIGNED_BYTE, img);
+        GL_UNSIGNED_BYTE, img);
     glGenerateMipmap(GL_TEXTURE_2D);
     SOIL_free_image_data(img);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // draw a rotating cube with a smiley
-void rotating_cube(GLFWwindow *win, const int option) {
+void rotating_cube(GLFWwindow* win, const int option)
+{
     const auto half_size = 0.5f;
     // define vertices and indices for the cube
-    static const std::vector<GLfloat> vertices {
-       -half_size, -half_size, -half_size,  0, 0,
-        half_size, -half_size, -half_size,  1, 0,
-        half_size,  half_size, -half_size,  1, 1,
-        half_size,  half_size, -half_size,  1, 1,
-       -half_size,  half_size, -half_size,  0, 1,
-       -half_size, -half_size, -half_size,  0, 0,
+    static const std::vector<GLfloat> vertices {-half_size, -half_size,
+        -half_size, 0, 0, half_size, -half_size, -half_size, 1, 0, half_size,
+        half_size, -half_size, 1, 1, half_size, half_size, -half_size, 1, 1,
+        -half_size, half_size, -half_size, 0, 1, -half_size, -half_size,
+        -half_size, 0, 0,
 
-       -half_size, -half_size,  half_size,  0, 0,
-        half_size, -half_size,  half_size,  1, 0,
-        half_size,  half_size,  half_size,  1, 1,
-        half_size,  half_size,  half_size,  1, 1,
-       -half_size,  half_size,  half_size,  0, 1,
-       -half_size, -half_size,  half_size,  0, 0,
+        -half_size, -half_size, half_size, 0, 0, half_size, -half_size,
+        half_size, 1, 0, half_size, half_size, half_size, 1, 1, half_size,
+        half_size, half_size, 1, 1, -half_size, half_size, half_size, 0, 1,
+        -half_size, -half_size, half_size, 0, 0,
 
-       -half_size,  half_size,  half_size,  1, 0,
-       -half_size,  half_size, -half_size,  1, 1,
-       -half_size, -half_size, -half_size,  0, 1,
-       -half_size, -half_size, -half_size,  0, 1,
-       -half_size, -half_size,  half_size,  0, 0,
-       -half_size,  half_size,  half_size,  1, 0,
+        -half_size, half_size, half_size, 1, 0, -half_size, half_size,
+        -half_size, 1, 1, -half_size, -half_size, -half_size, 0, 1, -half_size,
+        -half_size, -half_size, 0, 1, -half_size, -half_size, half_size, 0, 0,
+        -half_size, half_size, half_size, 1, 0,
 
-        half_size,  half_size,  half_size,  1, 0,
-        half_size,  half_size, -half_size,  1, 1,
-        half_size, -half_size, -half_size,  0, 1,
-        half_size, -half_size, -half_size,  0, 1,
-        half_size, -half_size,  half_size,  0, 0,
-        half_size,  half_size,  half_size,  1, 0,
+        half_size, half_size, half_size, 1, 0, half_size, half_size, -half_size,
+        1, 1, half_size, -half_size, -half_size, 0, 1, half_size, -half_size,
+        -half_size, 0, 1, half_size, -half_size, half_size, 0, 0, half_size,
+        half_size, half_size, 1, 0,
 
-       -half_size, -half_size, -half_size,  0, 1,
-        half_size, -half_size, -half_size,  1, 1,
-        half_size, -half_size,  half_size,  1, 0,
-        half_size, -half_size,  half_size,  1, 0,
-       -half_size, -half_size,  half_size,  0, 0,
-       -half_size, -half_size, -half_size,  0, 1,
+        -half_size, -half_size, -half_size, 0, 1, half_size, -half_size,
+        -half_size, 1, 1, half_size, -half_size, half_size, 1, 0, half_size,
+        -half_size, half_size, 1, 0, -half_size, -half_size, half_size, 0, 0,
+        -half_size, -half_size, -half_size, 0, 1,
 
-       -half_size,  half_size, -half_size,  0, 1,
-        half_size,  half_size, -half_size,  1, 1,
-        half_size,  half_size,  half_size,  1, 0,
-        half_size,  half_size,  half_size,  1, 0,
-       -half_size,  half_size,  half_size,  0, 0,
-       -half_size,  half_size, -half_size,  0, 1
-    };
+        -half_size, half_size, -half_size, 0, 1, half_size, half_size,
+        -half_size, 1, 1, half_size, half_size, half_size, 1, 0, half_size,
+        half_size, half_size, 1, 0, -half_size, half_size, half_size, 0, 0,
+        -half_size, half_size, -half_size, 0, 1};
     static const std::vector<GLuint> indices {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
@@ -411,20 +434,22 @@ void rotating_cube(GLFWwindow *win, const int option) {
     rotating_cube_draw(win, vertices, indices, option);
 }
 
-std::vector<glm::vec3> log_cube_positions(const log_measurement::Log_surface&
-        surface, const size_t disc_index_step, const size_t point_index_step)
+std::vector<glm::vec3> log_cube_positions(
+    const log_measurement::Log_surface& surface, const size_t disc_index_step,
+    const size_t point_index_step)
 {
     std::vector<glm::vec3> cubes_pos;
 
     for (size_t disc_index {0}; disc_index < surface.size();
-            disc_index += disc_index_step) {
+         disc_index += disc_index_step)
+    {
         log_measurement::Log_disc disc = surface[disc_index];
         const auto height = disc.height() * 0.3;
         for (size_t point_index {0}; point_index < disc.size();
-                point_index += point_index_step)
+             point_index += point_index_step)
         {
-            cubes_pos.push_back(glm::vec3 { disc[point_index].x(),
-                    disc[point_index].y(), height});
+            cubes_pos.push_back(glm::vec3 {
+                disc[point_index].x(), disc[point_index].y(), height});
         }
     }
 
@@ -432,13 +457,14 @@ std::vector<glm::vec3> log_cube_positions(const log_measurement::Log_surface&
 }
 
 // helper function to initialize parameters for drawing a rotating cube
-void rotating_cube_draw(GLFWwindow *win, const std::vector<GLfloat> &vertices,
-        const std::vector<GLuint> &indices, const int option) {
-    const Shader shad {shad_path + "transform_cont2.vs",
-        shad_path + "transform_cont2.frag"};
+void rotating_cube_draw(GLFWwindow* win, const std::vector<GLfloat>& vertices,
+    const std::vector<GLuint>& indices, const int option)
+{
+    const Shader shad {
+        shad_path + "transform_cont2.vs", shad_path + "transform_cont2.frag"};
 
-    const std::vector<std::string> tex_imgs {tex_path + "container.jpg",
-        tex_path + "awesomeface.png"};
+    const std::vector<std::string> tex_imgs {
+        tex_path + "container.jpg", tex_path + "awesomeface.png"};
     const std::vector<std::string> frag_uni_tex {"in_tex1", "in_tex2"};
     assert(tex_imgs.size() == frag_uni_tex.size());
 
@@ -459,38 +485,31 @@ void rotating_cube_draw(GLFWwindow *win, const std::vector<GLfloat> &vertices,
     std::vector<glm::vec3> cubes_pos;
     if (option == 0)
     {
-        cubes_pos = { glm::vec3{ 0.0,  0.0,  0.0} };
+        cubes_pos = {glm::vec3 {0.0, 0.0, 0.0}};
     }
     else if (option < 4)
     {
-        cubes_pos = {
-            glm::vec3{ 0.0,  0.0,  0.0},
-            glm::vec3{ 2.0,  5.0, -15.0},
-            glm::vec3{-1.5, -2.2, -2.5},
-            glm::vec3{-3.8, -2.0, -12.3},
-            glm::vec3{ 2.4, -0.4, -3.5},
-            glm::vec3{-1.7,  3.0, -7.5},
-            glm::vec3{ 1.3, -2.0, -2.5},
-            glm::vec3{ 1.5,  2.0, -2.5},
-            glm::vec3{ 1.5,  0.2, -1.5},
-            glm::vec3{-1.3,  1.0, -1.5}
-        };
+        cubes_pos = {glm::vec3 {0.0, 0.0, 0.0}, glm::vec3 {2.0, 5.0, -15.0},
+            glm::vec3 {-1.5, -2.2, -2.5}, glm::vec3 {-3.8, -2.0, -12.3},
+            glm::vec3 {2.4, -0.4, -3.5}, glm::vec3 {-1.7, 3.0, -7.5},
+            glm::vec3 {1.3, -2.0, -2.5}, glm::vec3 {1.5, 2.0, -2.5},
+            glm::vec3 {1.5, 0.2, -1.5}, glm::vec3 {-1.3, 1.0, -1.5}};
     }
     else
     {
-        const std::string
-            files_path{"../../log_sorting/logPointsTxt/surfaces4"};
+        const std::string files_path {
+            "../../log_sorting/logPointsTxt/surfaces4"};
         auto files = directory_files(files_path);
 
         log_measurement::Log_surface surface {files.front()};
 
-        main_cam = Camera {glm::vec3{100, 100, 10}};
+        main_cam = Camera {glm::vec3 {100, 100, 10}};
 
         cubes_pos = log_cube_positions(surface, 1, 1);
     }
 
-    rotating_cube_loop(win, VAO, shad, textures, frag_uni_tex, cubes_pos,
-            option);
+    rotating_cube_loop(
+        win, VAO, shad, textures, frag_uni_tex, cubes_pos, option);
 
     // cleaning up
     glDeleteVertexArrays(1, &VAO);
@@ -499,57 +518,67 @@ void rotating_cube_draw(GLFWwindow *win, const std::vector<GLfloat> &vertices,
 }
 
 // implementing the drawing (game) loop for a rotating cube
-void rotating_cube_loop(GLFWwindow *win, const GLuint VAO, const Shader &shad,
-        const std::vector<GLuint> &textures,
-        const std::vector<std::string> &tex_frag_uni,
-        const std::vector<glm::vec3> &cubes_pos, const int option) {
+void rotating_cube_loop(GLFWwindow* win, const GLuint VAO, const Shader& shad,
+    const std::vector<GLuint>& textures,
+    const std::vector<std::string>& tex_frag_uni,
+    const std::vector<glm::vec3>& cubes_pos, const int option)
+{
     int win_w, win_h;
     glfwGetFramebufferSize(win, &win_w, &win_h); // get window size
     // use window size for the projection matrix
     glm::mat4 proj;
 
-    const GLfloat far_plane { (option < 4) ? 100.0f : 1000.0f };
-    proj = glm::perspective(glm::radians(60.0f), float(win_w) / win_h, 0.1f, far_plane);
+    const GLfloat far_plane {(option < 4) ? 100.0f : 1000.0f};
+    proj = glm::perspective(
+        glm::radians(60.0f), float(win_w) / win_h, 0.1f, far_plane);
 
     const auto model_loc = glGetUniformLocation(shad.id(), "model");
-    const auto view_loc  = glGetUniformLocation(shad.id(), "view");
-    const auto proj_loc  = glGetUniformLocation(shad.id(), "proj");
+    const auto view_loc = glGetUniformLocation(shad.id(), "view");
+    const auto proj_loc = glGetUniformLocation(shad.id(), "proj");
     const GLfloat view_radius = 10;
-    while (!glfwWindowShouldClose(win)) {
+    while (!glfwWindowShouldClose(win))
+    {
         glfwPollEvents();
 
         int state = glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_LEFT);
-        if (state == GLFW_PRESS) {
+        if (state == GLFW_PRESS)
+        {
             glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
-        else {
+        else
+        {
             glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
 
         const auto curr_time = glfwGetTime();
         delta_frame_time = curr_time - last_frame_time;
-        last_frame_time  = curr_time;
+        last_frame_time = curr_time;
         glm::mat4 view; // lookat view matrix
-        if (option >= 2) { // a lot of crutches...
+        if (option >= 2)
+        { // a lot of crutches...
             do_movement();
-            //view = main_cam.view_matrix();
+            // view = main_cam.view_matrix();
             view = main_cam_q.view();
             if (option >= 3)
-                proj = glm::perspective(glm::radians(60.0f), float(win_w) / win_h, 0.1f, far_plane);
-        } else {
+                proj = glm::perspective(
+                    glm::radians(60.0f), float(win_w) / win_h, 0.1f, far_plane);
+        }
+        else
+        {
             const auto cam_x = sin(curr_time) * view_radius;
             const auto cam_z = cos(curr_time) * view_radius;
-            view = glm::lookAt(glm::vec3{cam_x, 0, cam_z},
-                    glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0});
+            view = glm::lookAt(glm::vec3 {cam_x, 0, cam_z}, glm::vec3 {0, 0, 0},
+                glm::vec3 {0, 1, 0});
         }
         glClearColor(0.6, 0.7, 0.2, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // bind textures using texture units
-        for (size_t i {0}; i < textures.size(); ++i) {
+        for (size_t i {0}; i < textures.size(); ++i)
+        {
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, textures[i]);
-            glUniform1i(glGetUniformLocation(shad.id(),
-                        tex_frag_uni[i].c_str()), i);
+            glUniform1i(
+                glGetUniformLocation(shad.id(), tex_frag_uni[i].c_str()), i);
         }
         shad.use(); // activate shader
         // set matrices
@@ -558,16 +587,16 @@ void rotating_cube_loop(GLFWwindow *win, const GLuint VAO, const Shader &shad,
         // model matrix
         glBindVertexArray(VAO);
         glm::mat4 model;
-        for (GLuint i = 0; i < cubes_pos.size(); ++i) {
-            model = glm::translate(glm::mat4{}, cubes_pos[i]);
-            model = glm::rotate(model, glm::radians(float(curr_time) * 50 +
-                        20 * i) * (i % 3 == 0), glm::vec3{1, 0.3, 0.5});
+        for (GLuint i = 0; i < cubes_pos.size(); ++i)
+        {
+            model = glm::translate(glm::mat4 {}, cubes_pos[i]);
+            model = glm::rotate(model,
+                glm::radians(float(curr_time) * 50 + 20 * i) * (i % 3 == 0),
+                glm::vec3 {1, 0.3, 0.5});
             glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
-            glDrawArrays(GL_TRIANGLES, 0 , 36);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         glBindVertexArray(0);
         glfwSwapBuffers(win);
     }
 }
-
-

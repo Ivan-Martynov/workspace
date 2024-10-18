@@ -173,9 +173,9 @@ void test_generating_function() {
 void test_prime() {
     using namespace Algo_lib;
     constexpr size_t n {100000};
-    auto v = eratosthenes_sieve(n);
+    auto v = Algo_lib::eratosthenes_sieve(n);
     std::cout << v.size() << '\n';
-    v = eratosthenes_sieve_segmented(n);
+    v = Algo_lib::eratosthenes_sieve_segmented(n);
     std::cout << v.size() << '\n';
     //const auto v = primes(n);
     //for (const auto x : v)
