@@ -198,7 +198,7 @@ int main() {
     std::cout << "Execution time: " <<
         std::chrono::duration<double>(t).count() << " seconds\n";
 
-    //std::cout << sum_vals(-1, 22, 13, -8) << '\n';
+    std::cout << sum_vals(-1, 22, 13, -8) << '\n';
 
     return 0;
 }

@@ -51,7 +51,7 @@ StringAppendCommand::StringAppendCommand(
  * @param items Items to process.
  */
 void StringAppendCommand::m_append_numbers(
-    std::vector<std::pair<std::wstring, std::filesystem::path>>& items) const
+    std::span<std::pair<std::wstring, std::filesystem::path>> items) const
 {
     // Calculate how many digits the number has in order to prepend with zeros
     // for proper sorting in different file systems.
@@ -92,7 +92,7 @@ void StringAppendCommand::m_append_numbers(
  * @param items Items to process.
  */
 void StringAppendCommand::m_append_timestamp(
-    std::vector<std::pair<std::wstring, std::filesystem::path>>& items) const
+    std::span<std::pair<std::wstring, std::filesystem::path>> items) const
 {
     for (auto& pair : items)
     {
@@ -154,7 +154,7 @@ void StringAppendCommand::m_append_timestamp(
  * @param target_flag Flag to determine which part of the item to modify.
  */
 void StringAppendCommand::modify(
-    std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+    std::span<std::pair<std::wstring, std::filesystem::path>> items,
     const size_t) const
 {
     if ((m_method == Method::NONE) || (m_appendage == Appendage::NONE))

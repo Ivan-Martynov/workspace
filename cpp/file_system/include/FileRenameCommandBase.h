@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <utility>
 #include <vector>
+#include <span>
 
 namespace Marvin
 {
@@ -61,7 +62,7 @@ class FileRenameCommandBase
      * @param target_flag Flag to determine which part of an item to modify.
      */
     virtual void modify(
-        std::vector<std::pair<std::wstring, std::filesystem::path>>& items,
+        std::span<std::pair<std::wstring, std::filesystem::path>> items,
         const size_t = std::to_underlying(Target::STEM)) const;
 };
 
