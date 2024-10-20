@@ -16,15 +16,15 @@
 	"Make header guards from file base name": {
 		"prefix": "headerGuardBase",
 		"body": [
-			"#ifndef H${TM_FILENAME_BASE/([A-Z])([a-z]*)/_$1${2:/upcase}/g}_H",
-			"#define H${TM_FILENAME_BASE/([A-Z])([a-z]*)/_$1${2:/upcase}/g}_H",
+			"#ifndef H${TM_FILENAME_BASE/([A-Z])([0-9a-z]*)/_$1${2:/upcase}/g}_H",
+			"#define H${TM_FILENAME_BASE/([A-Z])([0-9a-z]*)/_$1${2:/upcase}/g}_H",
 			"",
 			"namespace ${1:Marvin}",
 			"{",
 			"",
 			"} // namespace ${1:Marvin}",
 			"",
-			"#endif // H${TM_FILENAME_BASE/([A-Z])([a-z]*)/_$1${2:/upcase}/g}_H",
+			"#endif // H${TM_FILENAME_BASE/([A-Z])([0-9a-z]*)/_$1${2:/upcase}/g}_H",
 			"",
 		]
 	},
@@ -32,15 +32,15 @@
 	"Make header guards from file base name and current time": {
 		"prefix": "headerGuardBaseTime",
 		"body": [
-			"#ifndef H${TM_FILENAME_BASE/([A-Z])([a-z]*)/_$1${2:/upcase}/g}_${CURRENT_YEAR}_${CURRENT_MONTH_NAME/(.*)/${1:/upcase}/g}_${CURRENT_DATE}_${CURRENT_HOUR}_${CURRENT_MINUTE}_${CURRENT_SECOND}_H",
-			"#define H${TM_FILENAME_BASE/([A-Z])([a-z]*)/_$1${2:/upcase}/g}_${CURRENT_YEAR}_${CURRENT_MONTH_NAME/(.*)/${1:/upcase}/g}_${CURRENT_DATE}_${CURRENT_HOUR}_${CURRENT_MINUTE}_${CURRENT_SECOND}_H",
+			"#ifndef H${TM_FILENAME_BASE/([A-Z])([0-9a-z]*)/_$1${2:/upcase}/g}_${CURRENT_YEAR}_${CURRENT_MONTH_NAME/(.*)/${1:/upcase}/g}_${CURRENT_DATE}_${CURRENT_HOUR}_${CURRENT_MINUTE}_${CURRENT_SECOND}_H",
+			"#define H${TM_FILENAME_BASE/([A-Z])([0-9a-z]*)/_$1${2:/upcase}/g}_${CURRENT_YEAR}_${CURRENT_MONTH_NAME/(.*)/${1:/upcase}/g}_${CURRENT_DATE}_${CURRENT_HOUR}_${CURRENT_MINUTE}_${CURRENT_SECOND}_H",
 			"",
 			"namespace ${1:Marvin}",
 			"{",
 			"",
 			"} // namespace ${1:Marvin}",
 			"",
-			"#endif // H${TM_FILENAME_BASE/([A-Z])([a-z]*)/_$1${2:/upcase}/g}_${CURRENT_YEAR}_${CURRENT_MONTH_NAME/(.*)/${1:/upcase}/g}_${CURRENT_DATE}_${CURRENT_HOUR}_${CURRENT_MINUTE}_${CURRENT_SECOND}_H",
+			"#endif // H${TM_FILENAME_BASE/([A-Z])([0-9a-z]*)/_$1${2:/upcase}/g}_${CURRENT_YEAR}_${CURRENT_MONTH_NAME/(.*)/${1:/upcase}/g}_${CURRENT_DATE}_${CURRENT_HOUR}_${CURRENT_MINUTE}_${CURRENT_SECOND}_H",
 			"",
 		]
 	},
@@ -48,15 +48,15 @@
 	"Make header guards from relative path and file base name": {
 		"prefix": "headerGuardRelativeBase",
 		"body": [
-			"#ifndef H_${RELATIVE_FILEPATH/(^[a-z]+)|(\\/*)([A-Z][a-z]*)|([A-Z][a-z]*)|(\\.)(.*)/${1:/upcase}${3:/upcase}${5:?H:_}/g}",
-			"#define H_${RELATIVE_FILEPATH/(^[a-z]+)|(\\/*)([A-Z][a-z]*)|([A-Z][a-z]*)|(\\.)(.*)/${1:/upcase}${3:/upcase}${5:?H:_}/g}",
+			"#ifndef H_${RELATIVE_FILEPATH/([a-zA-Z0-9]*)([\\/\\.]+)([a-zA-Z0-9]*)/${1:/upcase}_${3:/upcase}/g}_H",
+			"#define H_${RELATIVE_FILEPATH/([a-zA-Z0-9]*)([\\/\\.]+)([a-zA-Z0-9]*)/${1:/upcase}_${3:/upcase}/g}_H",
 			"",
 			"namespace ${1:Marvin}",
 			"{",
 			"",
 			"} // namespace ${1:Marvin}",
 			"",
-			"#endif // H_${RELATIVE_FILEPATH/(^[a-z]+)|(\\/*)([A-Z][a-z]*)|([A-Z][a-z]*)|(\\.)(.*)/${1:/upcase}${3:/upcase}${5:?H:_}/g}",
+			"#endif // H_${RELATIVE_FILEPATH/[\\/\\.]/_/g}_H",
 			"",
 		]
 	},
