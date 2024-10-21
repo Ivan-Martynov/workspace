@@ -23,7 +23,7 @@ compilation_flags.release := -O2 -D NDEBUG
 # Replacing default CFLAGS with custom ones.
 export CFLAGS := ${compilation_flags.common} ${compilation_flags.${BUILD}}
 
-# All folder to process.
+# All folders to process.
 #FOLDERS := ver_01 ver_02 ver_03 ver_04 ver_05 ver_06 ver_07 ver_08  ver_09
 FOLDERS := ${patsubst %/,%,${wildcard */}}
 
