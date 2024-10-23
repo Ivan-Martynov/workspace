@@ -86,15 +86,54 @@ template <typename T = std::intmax_t> class Rational
     /***************************************************************************
      * Getters section                                                         *
      **************************************************************************/
-    constexpr value_type numerator() const
+
+    // Using ref-qualification to have two versions - one for const l-value
+    // reference and one for right-value. The & qualifer overloads function to
+    // match only l-value implicit objects. The && qualifer overloads function
+    // to match only r-value implicit objects.
+
+    /**
+     * @brief Get numerator of the rational number.
+     *
+     * @return constexpr const value_type& Const l-value reference to the
+     * numerator value.
+     */
+    constexpr const value_type& numerator() const &
     {
         return m_num;
     }
 
-    constexpr value_type denominator() const
+    /**
+     * @brief Get numerator of the rational number.
+     *
+     * @return constexpr value_type r-value of the numerator value.
+     */
+    constexpr value_type numerator() const &&
+    {
+        return std::move(m_num);
+    }
+
+    /**
+     * @brief Get denominator of the rational number.
+     *
+     * @return constexpr const value_type& Const l-value reference to the
+     * denominator value.
+     */
+    constexpr const value_type& denominator() const &
     {
         return m_den;
     }
+
+    /**
+     * @brief Get denominator of the rational number.
+     *
+     * @return constexpr value_type r-value of the denominator value.
+     */
+    constexpr value_type denominator() const &&
+    {
+        return std::move(m_den);
+    }
+
     /***************************************************************************
      * End of Getters section                                                  *
      **************************************************************************/

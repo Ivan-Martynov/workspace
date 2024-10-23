@@ -29,6 +29,12 @@ static void test_rational()
     rat2.invert();
 
     std::cout << rat2 << "\n";
+
+    // Won't probably compile - possible dangling reference.
+    const int& ref {Marvin::Rational {17, 24}.numerator()};
+    std::cout << ref << "\n";
+
+    std::cout << Marvin::Rational {7, 12}.numerator() << "\n";
 }
 
 int main()
