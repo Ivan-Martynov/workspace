@@ -1,4 +1,4 @@
-#include "SampleStatisticsData.h"
+#include "Statistics/SampleStatisticsData.h"
 
 #include <iostream>
 #include <numeric>

@@ -36,8 +36,8 @@ CXXFLAGS := -std=c++23 ${compilation_flags.common} -Weffc++ \
 
 # Define commands to build libraries.
 STATIC_LIB_CMD := ar rsc
-CC_SHARED_LIB_CMD = $(CC) $(CFLAGS) -fPIC -shared
-CXX_SHARED_LIB_CMD = $(CXX) $(CXXFLAGS) -fPIC -shared
+CC_SHARED_LIB_CMD := $(CC) $(CFLAGS) -fPIC -shared
+CXX_SHARED_LIB_CMD := $(CXX) $(CXXFLAGS) -fPIC -shared
 
 # Define file extensions.
 CC_SRC_EXT := c

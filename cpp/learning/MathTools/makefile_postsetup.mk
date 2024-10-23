@@ -41,11 +41,15 @@ $(foreach FILE_OBJ,$(CC_OBJECTS),$(eval $(call \
 $(foreach FILE_OBJ,$(CXX_OBJECTS),$(eval $(call \
 	build_object_rule,$(FILE_OBJ),$(CXX_SRC_EXT),$(CXX),$(CXXFLAGS))))
 
+# Add folder dependencies for targets.
+$(foreach TARGET,$(TARGETS),$(eval $(TARGET) : | $(dir $(TARGET))))
+
 # Using sort function to retrieve unique folders thus avoiding duplicated rules.
 $(foreach FOLDER,\
 	$(sort $(dir $(CC_OBJECTS) $(CXX_OBJECTS))) \
 	$(sort $(dir $(CC_DEPENDENCIES) $(CXX_DEPENDENCIES))) \
-	$(BIN_DIR), $(eval $(FOLDER) : ; @mkdir -p $$@))
+	$(sort $(dir $(TARGETS))), $(eval $(FOLDER) : ; @mkdir -p $$@))
+#$(BIN_DIR), $(eval $(FOLDER) : ; @mkdir -p $$@))
 
 # Each dependency file as a target: make won’t fail if the file doesn’t exist.
 $(CC_DEPENDENCIES):
