@@ -13,7 +13,11 @@ void MP3BatchFileRenamer::m_process_options()
     for (size_t i {0}; i < m_options.size(); ++i)
     {
         const auto& option {m_options[i]};
-        if ((option == "-ut") || (option == "-use-title"))
+        if ((option == "-v") || (option == "-verbose"))
+        {
+            m_verbose = true;
+        }
+        else if ((option == "-ut") || (option == "-use-title"))
         {
             m_target = std::to_underlying(Target::TITLE);
         }
@@ -80,7 +84,10 @@ void MP3BatchFileRenamer::m_process_items(const std::string_view& path)
     {
         const auto file_path {item.get_path()};
 
-        std::wcout << L"Processing item " << file_path << L"\n";
+        if (m_verbose)
+        {
+            std::wcout << L"Processing item " << file_path << L"\n";
+        }
         std::wstring modified_name {L""};
         // item.show_frames();
         if (m_target & std::to_underlying(Target::TITLE))

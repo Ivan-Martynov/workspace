@@ -35,7 +35,7 @@ static constexpr std::wstring_view forbidden_characters {L"/?><\\:*|\"^"};
 bool FileNameValidator::contains_invalid_character(
     const std::wstring_view& file_name)
 {
-    for (const auto& c: file_name)
+    for (wchar_t c: file_name)
     {
         if (!std::iswprint(c) || forbidden_characters.contains(c))
         {
@@ -52,10 +52,12 @@ bool FileNameValidator::contains_invalid_character(
  * @return true if the file name ends with a period (dot) or space.
  * @return false otherwise.
  */
-bool FileNameValidator::ends_with_space_or_period(
+bool FileNameValidator::ends_with_space_period_or_null(
     const std::wstring_view& file_name)
 {
-    return std::wstring_view {L" ."}.contains(file_name.back());
+    const auto c {file_name.back()};
+    return (!file_name.empty()
+            && ((c == L'.') || (c == L' ') || (static_cast<wint_t>(c) == 0)));
 }
 
 /**
@@ -114,7 +116,7 @@ bool FileNameValidator::is_valid(const std::wstring_view& file_name)
         }
     }
 
-    return !ends_with_space_or_period(file_name);
+    return !ends_with_space_period_or_null(file_name);
 }
 
 /**
@@ -147,8 +149,8 @@ bool FileNameValidator::try_fixing_name(
         const auto start {file_name.cbegin() + n};
         file_name.replace(start, start + 1, replacement);
     }
-
-    while (!file_name.empty() && ends_with_space_or_period(file_name))
+ 
+    while (ends_with_space_period_or_null(file_name))
     {
         file_name.pop_back();
     }

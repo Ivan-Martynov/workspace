@@ -40,7 +40,7 @@ class FileNameValidator
      * @return true if the file name ends with a period (dot) or space.
      * @return false otherwise.
      */
-    static bool ends_with_space_or_period(const std::wstring_view& file_name);
+    static bool ends_with_space_period_or_null(const std::wstring_view&);
 
     /**
      * @brief Check if file name is too long.
