@@ -2,6 +2,7 @@
 #define H_ALGORITHMS_INCLUDE_NUMERICAL_H_H
 
 #include <type_traits> // For templates metaprogramming.
+#include <utility>     // For std::pair.
 
 namespace Marvin
 {
@@ -11,15 +12,40 @@ namespace Marvin
  ******************************************************************************/
 
 template <typename T, typename U>
-inline constexpr std::common_type_t<T, U> min(const T& lhs, const U&rhs)
+concept Less_Comparable = requires(T a, U b) {
+    { a < b } -> std::convertible_to<bool>;
+};
+
+// template <Less_Comparable<T, U>>
+template <typename T, typename U>
+    requires Less_Comparable<T, U>
+inline constexpr std::common_type_t<T, U> min(const T& lhs, const U& rhs)
 {
     return lhs < rhs ? lhs : rhs;
 }
 
-template <typename T, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
-inline constexpr T abs(const T& value)
+template <typename T>
+concept Absolutable = requires(T a) {
+    a < static_cast<T>(0); // Can "less than zero" compare.
+    -a;                    // Has unary operator-.
+};
+template <Absolutable T> inline constexpr T abs(const T& value)
 {
     return value < static_cast<T>(0) ? -value : value;
+}
+
+//concept TwoIntegrals = std::integral<T> && std::integral<U>;
+template <std::integral T>
+inline constexpr int number_digit_count(int value)
+{
+    int width {value > 0 ? 0 : 1};
+    do
+    {
+        value /= 10;
+        ++width;
+    } while (value);
+
+    return width;
 }
 
 /*******************************************************************************
@@ -93,27 +119,53 @@ inline constexpr int gcd_v1(const int a, const int b) noexcept
     return (a == 0) ? abs(b) : (b == 0) ? abs(a) : gcd_v1_base(abs(a), abs(b));
 }
 
+template <typename T, typename U>
+concept TwoIntegrals = std::integral<T> && std::integral<U>;
+
 // implementing "effective" algorithm
-inline constexpr int gcd_v2_base(const int a, const int b) noexcept
+template <typename T = int, typename U = int>
+    requires TwoIntegrals<T, U>
+inline constexpr std::common_type_t<T, U> gcd_v2_base(
+    const T a, const U b) noexcept
 {
     return (a == b) ? a : gcd_v2_base(min(a, b), abs(a - b));
 }
 
-inline constexpr int gcd(const int a, const int b) noexcept
+template <typename T = int, typename U = int>
+    requires TwoIntegrals<T, U>
+inline constexpr std::common_type_t<T, U> gcd(const T a, const U b) noexcept
 {
     return (a == 0) ? abs(b) : (b == 0) ? abs(a) : gcd_v2_base(abs(a), abs(b));
 }
 
-inline constexpr void normalize_by_gcd(int& a, int& b)
+template <typename T = int, typename U = int>
+    requires TwoIntegrals<T, U>
+inline constexpr std::pair<T, U> normalized_by_gcd(
+    const T a, const U b) noexcept
 {
     const auto divisor {gcd(a, b)};
-    a /= divisor;
-    b /= divisor;
+    return divisor ? std::make_pair(a / divisor, b / divisor)
+                   : std::make_pair(0, 0);
 }
 
-inline constexpr int lcm(int a, int b) noexcept
+template <typename T = int, typename U = int>
+    requires TwoIntegrals<T, U>
+inline constexpr void normalize_by_gcd(T& a, U& b)
 {
-    return abs(a * (b / gcd(a, b)));
+    const auto divisor {gcd(a, b)};
+    if (divisor)
+    {
+        a /= divisor;
+        b /= divisor;
+    }
+}
+
+template <typename T = int, typename U = int>
+    requires TwoIntegrals<T, U>
+inline constexpr std::common_type_t<T, U> lcm(T a, U b) noexcept
+{
+    const auto divisor {gcd(a, b)};
+    return divisor ? abs(a * (b / gcd(a, b))) : 0;
 }
 
 // finding gcd plus a and b, such that d = a * m + b * n
@@ -180,8 +232,6 @@ template <> inline constexpr int factorial_template<0>() noexcept
 /*******************************************************************************
  * End of Factorial section                                                    *
  ******************************************************************************/
-
-
 
 } // namespace Marvin
 

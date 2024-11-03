@@ -15,10 +15,11 @@ include makefile_presetup.mk
 ALGORITHMS_MAIN_TARGET := $(BIN_DIR)/Algorithms/main
 NUMBERS_MAIN_TARGET := $(BIN_DIR)/Numbers/main
 STATISTICS_MAIN_TARGET := $(BIN_DIR)/Statistics/main
+STRUCTURES_MAIN_TARGET := $(BIN_DIR)/Structures/main
 
 # List of targets to make.
 TARGETS := $(ALGORITHMS_MAIN_TARGET) $(NUMBERS_MAIN_TARGET) \
-	$(STATISTICS_MAIN_TARGET)
+	$(STATISTICS_MAIN_TARGET) $(STRUCTURES_MAIN_TARGET)
 
 .PHONY: all
 all: $(TARGETS)
@@ -27,6 +28,7 @@ all: $(TARGETS)
 $(ALGORITHMS_MAIN_TARGET): $(OBJ_DIR)/Algorithms/main.o
 $(NUMBERS_MAIN_TARGET): $(OBJ_DIR)/Numbers/main.o
 $(STATISTICS_MAIN_TARGET): $(OBJ_DIR)/Statistics/main.o
+$(STRUCTURES_MAIN_TARGET): $(OBJ_DIR)/Structures/main.o
 
 # $@ - target, $^ - all prerequisites without duplicates.
 # Rules for cpp files.

@@ -1,4 +1,5 @@
 #include "Numbers/Rational.h"
+#include "Numbers/RationalTemplated.h"
 #include "Numbers/Constants.h"
 
 #include <iostream>
@@ -9,7 +10,7 @@
 // (denominator is one in this case).
 static constexpr auto operator""_rat(unsigned long long int value)
 {
-    return Marvin::Rational {static_cast<int>(value)};
+    return Marvin::Rational {static_cast<Marvin::Rational::value_type>(value)};
 }
 
 static void test_rational()
@@ -21,20 +22,24 @@ static void test_rational()
     static_assert(Marvin::Rational {-2, -3} == Marvin::Rational {2, 3});
     static_assert(Marvin::Rational {2, -3} == Marvin::Rational {-2, 3});
 
-    auto number {Marvin::Constants::three_quarters};
+    auto number {
+        Marvin::Constants::three_quarters + Marvin::Constants::one_half};
     std::cout << number << "\n";
 
     number += 3_rat /= Marvin::Rational {5, 6} *= Marvin::Rational {2, 3};
     auto rat2 = Marvin::Rational {-number.numerator(), number.denominator()};
     rat2.invert();
 
-    std::cout << rat2 << "\n";
+    std::cout << rat2 << " => " << static_cast<double>(rat2) << "\n";
 
     // Won't probably compile - possible dangling reference.
     const int& ref {Marvin::Rational {17, 24}.numerator()};
     std::cout << ref << "\n";
 
     std::cout << Marvin::Rational {7, 12}.numerator() << "\n";
+    std::cout << static_cast<float>(Marvin::Rational {2, 0}) << "\n";
+    std::cout << static_cast<double>(Marvin::Rational {-3, 0}) << "\n";
+    std::cout << static_cast<long double>(Marvin::Rational {0, 0}) << "\n";
 }
 
 int main()
