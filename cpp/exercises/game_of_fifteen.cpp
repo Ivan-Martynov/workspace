@@ -383,25 +383,27 @@ char get_letter()
 [[maybe_unused]]
 static void game_loop()
 {
-    auto board {Board::random_board(1000)};
+    auto board {Board::random_board(5)};
     std::cout << board;
 
+    int move_count {0};
     while (!board.is_solved())
     {
         const char letter {UserInput::get_letter()};
         if (letter == 'q')
         {
-            std::cout << "\n\nBye!\n\n";
+            std::cout << "\n\nBye! (" << move_count << " moves)\n\n";
             return;
         }
 
         if (board.move_tile(UserInput::direction_from_input(letter)))
         {
             std::cout << board;
+            ++move_count;
         }
     }
 
-    std::cout << "\n\nYou won!\n\n";
+    std::cout << "\n\nYou won! (" << move_count << " moves)\n\n";
 }
 
 int main()

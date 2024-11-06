@@ -94,6 +94,17 @@ class Rational
         normalize_by_gcd(m_num, m_den);
     }
 
+    //explicit constexpr Rational(Rational& other)
+    //    : m_num {other.m_num}, m_den {other.m_den}
+    //{
+    //}
+
+    //explicit Rational(Rational&& other)
+    //    : m_num {other.m_num}, m_den {other.m_den}
+    //{
+    //    std::cout << "Calling move constructor\n";
+    //}
+
     /***************************************************************************
      * End of Constructors section                                             *
      **************************************************************************/
