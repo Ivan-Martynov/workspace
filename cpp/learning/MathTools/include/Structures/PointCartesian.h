@@ -7,11 +7,23 @@ namespace Marvin
 {
 
 template <typename T, int N>
-class PointCartesian : CartesianCooridinates
+class PointCartesian : public CartesianCooridinates<T, N>
 {
-  private:
-
   public:
+    using value_type = CartesianCooridinates<T, N>::value_type;
+    using size_type = CartesianCooridinates<value_type, N>::size_type;
+
+    explicit PointCartesian(std::span<const value_type>& array)
+        : CartesianCooridinates<value_type, N> {array}
+    {
+    }
+
+    explicit PointCartesian(std::initializer_list<value_type> list)
+        : CartesianCooridinates<value_type, N> {list}
+    {
+    }
+
+  private:
 };
 
 

@@ -1,6 +1,24 @@
+#include "Structures/CartesianCooridinates.h"
+#include "Structures/PointCartesian2D.h"
 #include "Structures/MatrixFixed.h"
 
 #include <iostream>
+
+static void test_cartesian()
+{
+    Marvin::CartesianCooridinates<int, 2> point {};
+    for (int i = 0; i < point.length(); ++i)
+    {
+        point[i] = (i + 7) * (i + 25);
+        std::cout << point[i] << " ";
+    }
+    std::cout << "\n";
+
+    Marvin::PointCartesian2D<int> p {3, 8};
+    std::cout << p.x() << ", " << p.y() << "\n";
+    p.set_to(23, -82);
+    std::cout << p << "\n";
+}
 
 static void test_matrix()
 {
@@ -23,6 +41,7 @@ static void test_matrix()
 
 int main()
 {
+    test_cartesian();
     test_matrix();
 
     return 0;
