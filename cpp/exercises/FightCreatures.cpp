@@ -246,8 +246,8 @@ static void attack_monster(Player& player, Monster& monster)
 
         if (Random::get(1, 10) < 4)
         {
-            constexpr char valid_inputs[] {'y', 'n'};
-            if (Input::get_input<char>(std::span<const char>(valid_inputs),
+            if (Input::get_input<char>(
+                    std::span<const char>(std::array<char, 2>({'y', 'n'})),
                     "You found a mythical potion! Do you want to drink it? "
                     "[y/n]: ",
                     "Invalid input, try again.")

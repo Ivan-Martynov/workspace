@@ -1,6 +1,6 @@
 #include "Numbers/Rational.h"
 #include "Numbers/Complex.h"
-#include "Numbers/RationalTemplated.h"
+// #include "Numbers/RationalTemplated.h"
 #include "Numbers/Constants.h"
 
 #include <iostream>
@@ -9,9 +9,10 @@
 // Example of using a custom literal to produce a Rational instance using only
 // unsigned long long int value, representing a non-negative numerator
 // (denominator is one in this case).
-static constexpr auto operator""_rat(unsigned long long int value)
+ static constexpr auto operator""_rat(unsigned long long int value)
 {
-    return Marvin::Rational {static_cast<Marvin::Rational::value_type>(value)};
+    return Marvin::Rational
+    {static_cast<Marvin::Rational::value_type>(value)};
 }
 
 static auto operator""_complex(unsigned long long int value)
@@ -27,8 +28,17 @@ static void test_rational()
     static_assert(Marvin::Rational {0, -3} == Marvin::Rational {0, 1});
     static_assert(Marvin::Rational {-2, -3} == Marvin::Rational {2, 3});
     static_assert(Marvin::Rational {2, -3} == Marvin::Rational {-2, 3});
+    static_assert(Marvin::Rational {1, 0} == Marvin::Rational {2, 0});
+    static_assert(Marvin::Rational {-8, 0} == Marvin::Rational {-27, 0});
+    static_assert(Marvin::Rational {-8, 0} != Marvin::Rational {0, 0});
+    static_assert(Marvin::Rational {4, 3} != Marvin::Rational {0, 0});
+    static_assert(Marvin::Rational {1, 0} != Marvin::Rational {0, 0});
+    static_assert(Marvin::Rational {128, 3} < Marvin::Rational {1, 0});
+    static_assert(Marvin::Rational {-1, 0} < Marvin::Rational {1, 138});
+    static_assert(Marvin::Rational {1, 0} >= Marvin::Rational {1, 138});
+    static_assert(Marvin::Rational {1, 3} >= Marvin::Rational {2, 6});
 
-    auto&& number {
+    auto number {
         Marvin::Constants::three_quarters + Marvin::Constants::one_half};
     std::cout << number << "\n";
 
@@ -37,6 +47,7 @@ static void test_rational()
     rat2.invert();
 
     std::cout << rat2 << " => " << static_cast<double>(rat2) << "\n";
+    std::cout << rat2 << " => " << static_cast<short>(rat2) << "\n";
 
     // Won't probably compile - possible dangling reference.
     const int& ref {Marvin::Rational {17, 24}.numerator()};
@@ -46,6 +57,20 @@ static void test_rational()
     std::cout << static_cast<float>(Marvin::Rational {2, 0}) << "\n";
     std::cout << static_cast<double>(Marvin::Rational {-3, 0}) << "\n";
     std::cout << static_cast<long double>(Marvin::Rational {0, 0}) << "\n";
+
+    auto rat_03 {Marvin::RationalTemplated<int> {4, -6}};
+    std::cout << Marvin::reciprocal(rat_03) << " => " << rat_03 << "\n";
+
+    std::cout << std::boolalpha
+              << (Marvin::Rational {1, 0} < Marvin::Rational {-1, 0}) << "\n";
+    std::cout << std::boolalpha
+              << (Marvin::Rational {1, 0} <= Marvin::Rational {-1, 0}) << "\n";
+    std::cout << std::boolalpha
+              << (Marvin::Rational {-1, 0} < Marvin::Rational {-1, 0}) << "\n";
+    std::cout << std::boolalpha
+              << (Marvin::Rational {-1, 0} <= Marvin::Rational {-1, 0}) << "\n";
+    std::cout << std::boolalpha
+              << (Marvin::Rational {0, 0} <= Marvin::Rational {0, 0}) << "\n";
 }
 
 static Marvin::Complex test_function_return()

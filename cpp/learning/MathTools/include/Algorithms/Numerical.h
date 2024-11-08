@@ -149,7 +149,7 @@ inline constexpr std::pair<T, U> normalized_by_gcd(
 }
 
 template <typename T = int, typename U = int>
-    requires TwoIntegrals<T, U>
+    requires std::integral<T> && std::integral<U>
 inline constexpr void normalize_by_gcd(T& a, U& b)
 {
     const auto divisor {gcd(a, b)};

@@ -13,6 +13,8 @@ class PointCartesian2D : public PointCartesian<T, 2>
     using value_type = PointCartesian<T, 2>::value_type;
     using size_type = PointCartesian<value_type, 2>::size_type;
 
+    PointCartesian2D() : PointCartesian2D {0, 0} {}
+
     PointCartesian2D(value_type x, value_type y)
         : PointCartesian<value_type, 2>({x, y})
     {
