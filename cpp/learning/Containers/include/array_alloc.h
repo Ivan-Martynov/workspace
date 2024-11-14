@@ -35,28 +35,30 @@ class array_alloc
     explicit array_alloc() : m_data_ptr {nullptr} {}
 
     /**
-     * @brief Construct an array of given size and fill with the specified or
-     * default value.
+     * @brief Construct an array of given size and fill with the type's default
+     * value.
      *
      * @param[in] n Length of array to construct.
-     * @param[in] value Value to fill with (default is the default value of
-     * value_type).
      */
-    explicit array_alloc(size_type n, const value_type& value = value_type {})
-        : m_data_ptr {new(std::nothrow) value_type[n] {}}
+    explicit array_alloc(size_type n)
+        : m_data_ptr {m_try_allocate(
+              n, "array_alloc constructor: Failed to allocate memory")},
+          m_length {n}, m_capacity {n}
     {
-        std::cout << "Calling constructor\n";
-        if (!m_data_ptr)
+    }
+
+    /**
+     * @brief Construct an array of given size and fill with the specified
+     * value.
+     *
+     * @param[in] n Length of array to construct.
+     * @param[in] value Value to fill with.
+     */
+    explicit array_alloc(size_type n, const value_type& value) : array_alloc(n)
+    {
+        for (size_type i {0}; i < m_length; ++i)
         {
-            m_failed_alloc_info();
-        }
-        else
-        {
-            for (size_type i {0}; i < n; ++i)
-            {
-                m_data_ptr[i] = value;
-            }
-            m_capacity = m_length = n;
+            m_data_ptr[i] = value;
         }
     }
 
@@ -66,10 +68,11 @@ class array_alloc
      * @param[in] other Array to copy from.
      */
     explicit array_alloc(const array_alloc& other)
-        : m_data_ptr {new(std::nothrow) value_type[other.capacity()] {}}
+        : m_data_ptr {m_try_allocate(other.length(),
+              "array_alloc copy constructor: Failed to allocate memory")},
+          m_length {other.length()}, m_capacity {other.capacity()}
     {
-        std::cout << "Calling copy constructor\n";
-        m_try_copy_from_other(other);
+        m_copy_from_other(other);
     }
 
     /**
@@ -80,12 +83,16 @@ class array_alloc
      */
     array_alloc& operator=(const array_alloc& other)
     {
-        std::cout << "Calling copy assignment\n";
         if (this != &other)
         {
             delete[] m_data_ptr;
-            m_data_ptr = new (std::nothrow) value_type[other.capacity()] {};
-            m_try_copy_from_other(other);
+            m_data_ptr = m_try_allocate(other.capacity(),
+                "array_alloc copy assignment: Failed to allocate memory");
+
+            m_copy_from_other(other);
+
+            m_length = other.length();
+            m_capacity = other.capacity();
         }
         return *this;
     }
@@ -99,7 +106,6 @@ class array_alloc
         : m_data_ptr {other.data()}, m_length {other.length()},
           m_capacity {other.capacity()}
     {
-        std::cout << "Calling move constructor\n";
         other.m_reset();
     }
 
@@ -110,7 +116,6 @@ class array_alloc
      */
     array_alloc& operator=(array_alloc&& other) noexcept
     {
-        std::cout << "Calling move assignment\n";
         if (this != &other)
         {
             delete[] m_data_ptr;
@@ -131,22 +136,12 @@ class array_alloc
      * @param[in] list List to copy elements from.
      */
     explicit array_alloc(std::initializer_list<value_type> list)
-        : m_data_ptr {new(std::nothrow)
-                  value_type[static_cast<size_type>(list.size())] {}}
+        : array_alloc(static_cast<size_type>(list.size()))
     {
-        std::cout << "Calling initializer list constructor.\n";
-        if (!m_data_ptr)
+        const auto n {static_cast<size_type>(list.size())};
+        for (size_type i {0}; i < n; ++i)
         {
-            m_failed_alloc_info();
-        }
-        else
-        {
-            const auto n {static_cast<size_type>(list.size())};
-            for (size_type i {0}; i < n; ++i)
-            {
-                m_data_ptr[i] = *(list.begin() + i);
-            }
-            m_capacity = m_length = n;
+            m_data_ptr[i] = *(list.begin() + i);
         }
     }
 
@@ -157,27 +152,20 @@ class array_alloc
      */
     array_alloc& operator=(std::initializer_list<value_type> list)
     {
-        std::cout << "Calling initializer list assignment.\n";
-
         const auto n {static_cast<size_type>(list.size())};
         if (n != m_length)
         {
             delete[] m_data_ptr;
-            m_data_ptr = new (std::nothrow) value_type[n] {};
-            if (!m_data_ptr)
-            {
-                m_failed_alloc_info();
-            }
+            m_data_ptr
+                = m_try_allocate(n, "array_alloc copy assignment from list "
+                                    "initializer: Failed to allocate memory");
+
+            m_capacity = m_length = n;
         }
 
         for (size_type i {0}; i < n; ++i)
         {
             m_data_ptr[i] = *(list.begin() + i);
-        }
-
-        if (n != m_length)
-        {
-            m_capacity = m_length = n;
         }
 
         return *this;
@@ -291,12 +279,8 @@ class array_alloc
     {
         if (n > capacity())
         {
-            value_type* temp_ptr {new (std::nothrow) value_type[n] {}};
-            if (!temp_ptr)
-            {
-                m_failed_alloc_info();
-                return;
-            }
+            value_type* temp_ptr {m_try_allocate(
+                n, "array_alloc reserve function: Failed to allocate memory")};
 
             for (size_type i {0}; i < m_length; ++i)
             {
@@ -319,12 +303,8 @@ class array_alloc
     {
         if (n > m_length)
         {
-            value_type* temp_ptr {new (std::nothrow) value_type[n] {}};
-            if (!temp_ptr)
-            {
-                m_failed_alloc_info();
-                return;
-            }
+            value_type* temp_ptr {m_try_allocate(
+                n, "array_alloc resize function: Failed to allocate memory")};
 
             for (size_type i {0}; i < m_length; ++i)
             {
@@ -369,10 +349,6 @@ class array_alloc
         if (m_length == m_capacity)
         {
             reserve(m_calculate_new_capacity());
-            if (!m_data_ptr)
-            {
-                return *this;
-            }
         }
 
         m_data_ptr[m_length++] = item;
@@ -393,10 +369,6 @@ class array_alloc
         if (m_length == m_capacity)
         {
             reserve(m_calculate_new_capacity());
-            if (!m_data_ptr)
-            {
-                return *this;
-            }
         }
 
         m_data_ptr[m_length++] = value_type {std::forward<Args>(args)...};
@@ -410,7 +382,7 @@ class array_alloc
 
   private:
     // Pointer to the underlying raw array.
-    value_type* m_data_ptr;
+    value_type* m_data_ptr {nullptr};
     // Length (size) of the array.
     size_type m_length {0};
     // Capacity of the array: how many elements the array can hold without
@@ -418,11 +390,25 @@ class array_alloc
     size_type m_capacity {0};
 
     /**
-     * @brief Helper function to inform about failed memory allocation.
+     * @brief Try allocating n elements for the array.
+     *
+     * @param[in] element_count Number of elements to allocate for.
+     * @return value_type* Pointer to the allocated array.
      */
-    void m_failed_alloc_info()
+    value_type* m_try_allocate(int element_count, std::string_view message)
     {
-        std::cerr << "array_alloc: Failed to allocate memory.\n";
+        try
+        {
+            return new value_type[element_count] {};
+        }
+        catch (const std::bad_alloc& e)
+        {
+            std::cerr << message << ": (" << e.what() << ")\n";
+            // Throw the same exception again. Note, no need to provide the
+            // exception specifically, otherwise it may perform copy and
+            // potential slicing may occur.
+            throw;
+        }
     }
 
     /**
@@ -431,21 +417,11 @@ class array_alloc
      *
      * @param[in] other Array to copy from.
      */
-    void m_try_copy_from_other(const array_alloc& other)
+    void m_copy_from_other(const array_alloc& other)
     {
-        if (!m_data_ptr)
+        for (size_type i {0}; i < other.length(); ++i)
         {
-            m_failed_alloc_info();
-        }
-        else
-        {
-            const auto n {other.length()};
-            for (size_type i {0}; i < n; ++i)
-            {
-                m_data_ptr[i] = other[i];
-            }
-            m_length = n;
-            m_capacity = other.capacity();
+            m_data_ptr[i] = other[i];
         }
     }
 
