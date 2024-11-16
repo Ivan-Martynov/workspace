@@ -96,11 +96,31 @@ static void test_complex()
     Marvin::Complex complex_06 {37_complex};
 }
 
+template <typename T, typename U>
+    requires std::is_arithmetic_v<T> && std::is_arithmetic_v<U>
+static void show_numbers_equality(T a, U b)
+{
+    if (std::is_floating_point_v<U>)
+    {
+        std::cout << "Second is float\n";
+    }
+    std::cout << a << " == " << b << " ? " << Marvin::are_equal(a, b) << "\n";
+}
+
+static void test_comparison()
+{
+    show_numbers_equality(10.0 / 2, 5);
+    show_numbers_equality(5, 10.0 / 2);
+    show_numbers_equality(1.0 / 2, 0.5f);
+}
+
 int main()
 {
     test_rational();
     std::cout << "\n";
     test_complex();
+
+    test_comparison();
 
     return 0;
 }

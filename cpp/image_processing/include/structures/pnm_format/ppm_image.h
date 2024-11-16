@@ -46,14 +46,14 @@ class PPMImage : public PNMImageBase
         }
     }
 
-    void read_raster_raw(std::istream& stream)
+    std::istream& read_raster_raw(std::istream& stream)
     {
         const auto pixel_count {width() * height()};
         if (static_cast<size_t>(pixel_count) >= m_pixels.max_size())
         {
             std::cerr << "Cannot allocate more than max ("
                       << m_pixels.max_size() << ") allowed elements.\n";
-            return;
+            return stream;
         }
 
         m_pixels.reserve(pixel_count);
@@ -75,6 +75,7 @@ class PPMImage : public PNMImageBase
             }
             m_pixels.emplace_back(values);
         }
+        return stream;
     }
 
     void read_from(std::string_view file_path)

@@ -3,6 +3,8 @@
 
 #include <type_traits> // For templates metaprogramming.
 #include <utility>     // For std::pair.
+#include <limits>
+#include <algorithm>
 
 namespace Marvin
 {
@@ -29,12 +31,13 @@ concept Absolutable = requires(T a) {
     a < static_cast<T>(0); // Can "less than zero" compare.
     -a;                    // Has unary operator-.
 };
-template <Absolutable T> inline constexpr T abs(const T& value)
+template <Absolutable T>
+inline constexpr T abs(const T& value)
 {
     return value < static_cast<T>(0) ? -value : value;
 }
 
-//concept TwoIntegrals = std::integral<T> && std::integral<U>;
+// concept TwoIntegrals = std::integral<T> && std::integral<U>;
 template <std::integral T>
 inline constexpr int number_digit_count(int value)
 {
@@ -220,17 +223,103 @@ inline constexpr int factorial_recursive(const int n)
 }
 
 // using templates: can accept only const parameter
-template <int N> inline constexpr int factorial_template() noexcept
+template <int N>
+inline constexpr int factorial_template() noexcept
 {
     return N * factorial_template<N - 1>();
 }
-template <> inline constexpr int factorial_template<0>() noexcept
+template <>
+inline constexpr int factorial_template<0>() noexcept
 {
     return 1;
 }
 
 /*******************************************************************************
  * End of Factorial section                                                    *
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Comparsion section                                                          *
+ ******************************************************************************/
+
+template <std::floating_point T>
+constexpr auto default_precision_threshold {static_cast<T>(1E-6)};
+
+template <std::floating_point T>
+constexpr auto default_zero_precision_threshold {static_cast<T>(1E-9)};
+
+constexpr bool almost_equal(std::floating_point auto a,
+    std::floating_point auto b, std::floating_point auto tolerance,
+    std::floating_point auto zero_tolerance)
+{
+    const auto abs_min {std::min(
+        std::abs(static_cast<std::common_type_t<decltype(a), decltype(b)>>(a)),
+        std::abs(static_cast<std::common_type_t<decltype(a), decltype(b)>>(b)))};
+    const auto abs_diff {std::abs(a - b)};
+    if (abs_min == 0)
+    {
+        return abs_diff < static_cast<decltype(abs_diff)>(zero_tolerance);
+    }
+    else
+    {
+        const auto threshold {std::numeric_limits<decltype(abs_diff)>::min()};
+        return abs_diff / std::max(threshold, abs_min)
+               < static_cast<decltype(abs_diff)>(tolerance);
+    }
+}
+
+constexpr bool almost_equal(std::floating_point auto a,
+    std::floating_point auto b, std::floating_point auto tolerance)
+{
+    return almost_equal(
+        a, b, tolerance, default_zero_precision_threshold<decltype(tolerance)>);
+}
+
+#if 0
+constexpr bool are_equal(std::floating_point auto a, std::floating_point auto b)
+{
+    return almost_equal(a, b,
+        default_precision_threshold<
+            std::common_type_t<decltype(a), decltype(b)>>);
+}
+
+constexpr bool are_equal(std::integral auto a, std::integral auto b)
+{
+    return a == b;
+}
+
+#else
+template <typename T, typename U>
+constexpr bool are_equal(T a, U b)
+{
+    if constexpr (std::is_floating_point_v<T> || std::is_floating_point_v<U>)
+    {
+        if constexpr (std::is_integral_v<U>)
+        {
+            return almost_equal(a, static_cast<T>(b),
+                default_precision_threshold<std::common_type_t<T, U>>);
+        }
+        else if constexpr (std::is_integral_v<T>)
+        {
+            return almost_equal(static_cast<U>(a), b,
+                default_precision_threshold<std::common_type_t<T, U>>);
+        }
+        else
+        {
+            return almost_equal(
+                a, b, default_precision_threshold<std::common_type_t<T, U>>);
+        }
+    }
+    else
+    {
+        return a == b;
+    }
+}
+
+#endif
+
+/*******************************************************************************
+ * End of Comparsion section                                                   *
  ******************************************************************************/
 
 } // namespace Marvin
