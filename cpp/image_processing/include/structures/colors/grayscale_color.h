@@ -22,16 +22,14 @@ class GrayScaleColor
     value_type m_value;
 };
 
-std::ostream& operator<<(std::ostream& stream, const GrayScaleColor& color)
+inline std::ostream& operator<<(std::ostream& stream, const GrayScaleColor& color)
 {
-    stream << color.value();
-    return stream;
+    return stream << color.value();
 }
 
-std::istream& operator>>(std::istream& stream, GrayScaleColor& color)
+inline std::istream& operator>>(std::istream& stream, GrayScaleColor& color)
 {
-    stream >> color.m_value;
-    return stream;
+    return stream >> color.m_value;
 }
 
 } // namespace Marvin

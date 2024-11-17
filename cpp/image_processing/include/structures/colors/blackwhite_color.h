@@ -31,16 +31,14 @@ class BlackWhiteColor
     static constexpr value_type m_white {true};
 };
 
-std::ostream& operator<<(std::ostream& stream, const BlackWhiteColor& color)
+inline std::ostream& operator<<(std::ostream& stream, const BlackWhiteColor& color)
 {
-    stream << color.value();
-    return stream;
+    return stream << color.value();
 }
 
-std::istream& operator>>(std::istream& stream, BlackWhiteColor& color)
+inline std::istream& operator>>(std::istream& stream, BlackWhiteColor& color)
 {
-    stream >> color.m_value;
-    return stream;
+    return stream >> color.m_value;
 }
 
 } // namespace Marvin

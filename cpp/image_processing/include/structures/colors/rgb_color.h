@@ -60,17 +60,15 @@ class RGBColor
     value_type m_blue;
 };
 
-std::ostream& operator<<(std::ostream& stream, const RGBColor& color)
+inline std::ostream& operator<<(std::ostream& stream, const RGBColor& color)
 {
-    stream << "(" << color.red() << ", " << color.green() << ", "
-           << color.blue() << ")";
-    return stream;
+    return stream << "(" << color.red() << ", " << color.green() << ", "
+                  << color.blue() << ")";
 }
 
-std::istream& operator>>(std::istream& stream, RGBColor& color)
+inline std::istream& operator>>(std::istream& stream, RGBColor& color)
 {
-    stream >> color.m_red >> color.m_green >> color.m_blue;
-    return stream;
+    return stream >> color.m_red >> color.m_green >> color.m_blue;
 }
 
 } // namespace Marvin

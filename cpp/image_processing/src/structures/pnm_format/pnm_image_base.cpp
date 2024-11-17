@@ -164,6 +164,81 @@ std::intmax_t PNMImageBase::max_value() const noexcept
     return m_max_value;
 }
 
+std::unique_ptr<IPNMImage> read_from_file(const char* const file_path)
+{
+    try
+    {
+        std::ifstream file_stream {file_path, std::ios::binary};
+        if (!file_stream.good())
+        {
+            std::cerr << "Failed to open file " << file_path
+                      << " for reading.\n";
+            return nullptr;
+        }
+
+        std::string format_id {};
+        file_stream >> format_id;
+
+        const auto type {PNMHeader::type_from_string(format_id)};
+
+        std::unique_ptr<IPNMImage> image_ptr {nullptr};
+        if (PNMHeader::is_blackwhite(type))
+        {
+            image_ptr = std::make_unique<BWImage>();
+        }
+        else if (PNMHeader::is_grayscale(type))
+        {
+            image_ptr = std::make_unique<GSImage>();
+        }
+        else if (PNMHeader::is_rgb(type))
+        {
+            image_ptr = std::make_unique<RGBImage>();
+        }
+        else
+        {
+            std::cerr << "Wrong image header id.\n";
+            return nullptr;
+        }
+
+        image_ptr->read_from(file_path);
+
+#if 0
+        file_stream.close();
+        file_stream.open(file_path.data(),
+            is_plain ? std::ios_base::openmode {} : std::ios_base::binary);
+
+        if (!file_stream.good())
+        {
+            std::cerr << "Failed to reopen file " << file_path
+                      << " for reading.\n";
+            return nullptr;
+        }
+
+        const PNMHeader header {file_stream};
+        if (!image_ptr->m_try_init_from_header(header))
+        {
+            return nullptr;
+        }
+
+        if (is_plain)
+        {
+            m_read_raster_data_plain(file_stream);
+        }
+        else
+        {
+            m_read_raster_data_raw(file_stream);
+        }
+#endif
+        return image_ptr;
+    }
+    catch (const std::ios_base::failure& failure)
+    {
+        std::cerr << "PPMImage: failed to read from file " << file_path
+                  << "; what(): " << failure.what() << "\n";
+        return nullptr;
+    }
+}
+
 } // namespace PNM_Format
 
 } // namespace Marvin
