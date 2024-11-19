@@ -7,15 +7,14 @@
 
 #include <array>
 #include <string_view>
-#include <cstdint>
 #include <utility>
 #include <vector>
 #include <memory>
 #include <iostream>
 #include <exception>
-#include <limits>
 #include <iomanip>
 #include <fstream>
+#include <optional>
 
 namespace Marvin
 {
@@ -54,80 +53,6 @@ try
         - read raster data(mode: raw or plain)
 catch (std::ios_base::failure)
      */
-class PNMImageBase
-{
-  public:
-    /**
-     * @brief Type of image, representing format:
-     * - P1 - plain black and white.
-     * - P2 - plain grayscale.
-     * - P3 - plain rgb.
-     * - P4 - raw (binary) black and white.
-     * - P5 - raw (binary) grayscale.
-     * - P6 - raw (binary) rgb.
-     *
-     * max_type used as the count of types. Can also be used to mark the default
-     * and/or error value.
-     *
-     */
-    enum class Type
-    {
-        P1,
-        P2,
-        P3,
-        P4,
-        P5,
-        P6,
-
-        max_type,
-    };
-
-    enum class Mode
-    {
-        plain,
-        raw,
-    };
-
-    static constexpr std::array<std::string_view,
-        std::to_underlying(Type::max_type)>
-        type_names {"P1", "P2", "P3", "P4", "P5", "P6"};
-
-    std::intmax_t width() const noexcept;
-
-    std::intmax_t height() const noexcept;
-
-    std::intmax_t max_value() const noexcept;
-
-    bool is_valid_type(Type type) const noexcept;
-    bool is_valid_format_id(std::string_view format_id) const;
-    bool is_plain_id(Type type) const;
-    static Type get_header_type(std::string_view format_id);
-
-    /* Write to file. Use format to identify how to write header.
-    write_to(filepath, type, comment):
-        - write_header (stream, type, comment)
-        - write raster data
-     */
-    void read_header(std::istream& stream);
-    void write_header(
-        std::ostream& stream, Type type, std::string_view comment = "") const;
-
-  private:
-    std::intmax_t m_width {};
-    std::intmax_t m_height {};
-    std::intmax_t m_max_value {};
-};
-
-static void skip_whitespace_and_comment(std::istream& stream)
-{
-    while (std::isspace(stream.peek()) || (stream.peek() == '#'))
-    {
-        if (stream.get() == '#')
-        {
-            stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
-    }
-}
 
 class PNMHeader
 {
@@ -158,6 +83,10 @@ class PNMHeader
         max_type,
     };
 
+    /**
+     * @brief Array containing names representing header ids.
+     *
+     */
     static constexpr std::array<std::string_view,
         std::to_underlying(Type::max_type)>
         type_names {"P1", "P2", "P3", "P4", "P5", "P6"};
@@ -175,76 +104,53 @@ class PNMHeader
         return false;
     }
 
-    static Type type_from_string(std::string_view format_id)
+    /**
+     * @brief Convert string to header type.
+     *
+     * @param[in] format_id String representing header id.
+     * @return constexpr std::optional<Type> Type representing image format or
+     * nullopt for illegal format id.
+     */
+    static constexpr std::optional<Type> type_from_string(
+        std::string_view format_id)
     {
-        for (size_t i {0}; i < PNMImageBase::type_names.size(); ++i)
+        for (size_t i {0}; i < type_names.size(); ++i)
         {
-            if (PNMImageBase::type_names[i] == format_id)
+            if (type_names[i] == format_id)
             {
                 return static_cast<Type>(i);
             }
         }
 
-        return Type::max_type;
+        return {};
     }
 
-    static bool is_blackwhite(Type type)
+    static constexpr bool is_blackwhite(Type type)
     {
         return (type == Type::P1) || (type == Type::P4);
     }
 
-    static bool is_grayscale(Type type)
+    static constexpr bool is_grayscale(Type type)
     {
         return (type == Type::P2) || (type == Type::P5);
     }
 
-    static bool is_rgb(Type type)
+    static constexpr bool is_rgb(Type type)
     {
         return (type == Type::P3) || (type == Type::P6);
     }
 
-    static bool is_plain(Type type)
+    static constexpr bool is_plain(Type type)
     {
         return (type == Type::P1) || (type == Type::P2) || (type == Type::P3);
     }
 
-    static bool is_raw(Type type)
+    static constexpr bool is_raw(Type type)
     {
         return (type == Type::P4) || (type == Type::P5) || (type == Type::P6);
     }
 
-    PNMHeader(std::istream& stream)
-    {
-        stream >> std::skipws;
-        std::string format_id {};
-        stream >> format_id;
-
-        m_type = type_from_string(format_id);
-
-        skip_whitespace_and_comment(stream);
-
-        stream >> m_width;
-        std::cout << "Width = " << m_width << "\n";
-
-        skip_whitespace_and_comment(stream);
-
-        stream >> m_height;
-        std::cout << "Height = " << m_height << "\n";
-
-        skip_whitespace_and_comment(stream);
-
-        if (!is_blackwhite(m_type))
-        {
-            stream >> m_max_value;
-        }
-        else
-        {
-            m_max_value = 1;
-        }
-        std::cout << "Max value = " << m_max_value << "\n";
-
-        skip_whitespace_and_comment(stream);
-    }
+    PNMHeader(std::istream& stream);
 
     Type type() const noexcept
     {
@@ -286,7 +192,9 @@ class IPNMImage
     virtual constexpr PNMHeader::Type plain_type() const = 0;
     virtual constexpr PNMHeader::Type raw_type() const = 0;
 
-    virtual void read_from(const char* const file_path) = 0;
+    virtual void read_from(const char* const file_path,
+        std::ios_base::openmode open_mode = std::ios_base::binary)
+        = 0;
     virtual void write_to(const char* const file_path,
         std::ios_base::openmode open_mode = std::ios_base::binary,
         std::string_view comment = "")
@@ -371,11 +279,51 @@ class PNMImage_Common : public IPNMImage
         return operator[](i * width() + j);
     }
 
-    void read_from(const char* const file_path) override
+    void scale(size_type new_width, size_type new_height)
+    {
+        const auto pixel_count {new_width * new_height};
+        std::vector<value_type> temp {};
+        try
+        {
+            temp.resize(pixel_count);
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << "Failed to create array of pixels for " << pixel_count
+                      << " elements: " << e.what() << "\n";
+            return;
+        }
+
+        const auto scale_row {height() / static_cast<double>(new_height)};
+        const auto scale_col {width() / static_cast<double>(new_width)};
+
+        for (size_type row {0}; row < new_height; ++row)
+        {
+            for (size_type col {0}; col < new_width; ++col)
+            {
+                temp[row * new_width + col]
+                    = operator[](static_cast<size_type>(row * scale_row),
+                        static_cast<size_type>(col * scale_col));
+            }
+        }
+
+        m_pixels = std::move(temp);
+        m_width = new_width;
+        m_height = new_height;
+    }
+
+    void scale(double scale_value)
+    {
+        scale(static_cast<size_type>(m_width * scale_value),
+            static_cast<size_type>(m_height * scale_value));
+    }
+
+    void read_from(const char* const file_path,
+        std::ios_base::openmode open_mode = std::ios_base::binary) override
     {
         try
         {
-            std::ifstream file_stream {file_path, std::ios::binary};
+            std::ifstream file_stream {file_path, open_mode};
             if (!file_stream.good())
             {
                 std::cerr << "Failed to open file " << file_path
@@ -387,13 +335,13 @@ class PNMImage_Common : public IPNMImage
             file_stream >> format_id;
 
             const auto type {PNMHeader::type_from_string(format_id)};
-
-            const bool is_plain {type == plain_type()};
-            if (!is_plain && (type != raw_type()))
+            if (!type)
             {
                 std::cerr << "Wrong image header id.\n";
                 return;
             }
+
+            const bool is_plain {type.value() == plain_type()};
 
             file_stream.close();
             file_stream.open(file_path,
@@ -434,6 +382,13 @@ class PNMImage_Common : public IPNMImage
     {
         try
         {
+            if ((open_mode & std::ios_base::app)
+                && !(open_mode & std::ios_base::binary))
+            {
+                std::cout << "Appending images to one file is allowed only in "
+                             "binary mode.\n";
+                open_mode |= std::ios_base::binary;
+            }
             std::ofstream file_stream {file_path, open_mode};
 
             if (!file_stream.good())
@@ -453,6 +408,7 @@ class PNMImage_Common : public IPNMImage
                 m_write_header(file_stream, plain_type(), comment);
                 m_write_raster_data_plain(file_stream);
             }
+            file_stream << '\n';
         }
         catch (const std::ios_base::failure& failure)
         {
@@ -557,14 +513,54 @@ class PNMImage_Common : public IPNMImage
         return true;
     }
 
+    void m_add_comment(std::ostream& stream, std::string_view comment) const
+    {
+        size_t word_start {comment.find_first_not_of(' ')};
+        if (word_start == std::string_view::npos)
+        {
+            return;
+        }
+
+        size_t line_limit {70};
+        if (comment[word_start] != '#')
+        {
+            stream << "# ";
+            line_limit -= 2;
+        }
+
+        if (comment.length() - word_start <= line_limit)
+        {
+            stream << comment.substr(word_start) << '\n';
+            return;
+        }
+
+        auto last_space {comment.find_last_of(' ', line_limit)};
+        if (last_space == std::string_view::npos)
+        {
+            stream << comment.substr(word_start, line_limit - word_start)
+                   << '\n';
+            m_add_comment(stream, comment.substr(line_limit));
+        }
+        else
+        {
+            auto last_char {comment.find_last_not_of(' ', last_space)};
+            stream << comment.substr(word_start, last_char + 1) << '\n';
+            m_add_comment(stream, comment.substr(last_space));
+        }
+    }
+
     void m_write_header(std::ostream& stream, PNMHeader::Type type,
         std::string_view comment) const
     {
+        //auto line_limit {70};
         stream << PNMHeader::type_names[std::to_underlying(type)] << '\n';
-        if (!comment.empty())
-        {
-            stream << "# " << comment << '\n';
-        }
+
+        m_add_comment(stream, comment);
+        //if (!comment.empty())
+        //{
+        //    stream << "# " << comment << '\n';
+        //}
+
         stream << m_width << ' ' << m_height << '\n';
 
         if (!PNMHeader::is_blackwhite(type))
@@ -575,11 +571,11 @@ class PNMImage_Common : public IPNMImage
 
 };
 
-class RGBImage : public PNMImage_Common<RGBColor>
+class PPMImage : public PNMImage_Common<RGBColor>
 {
   public:
-    RGBImage() = default;
-    RGBImage(size_type width, size_type height, size_type max_value = 255)
+    PPMImage() = default;
+    PPMImage(size_type width, size_type height, size_type max_value = 255)
         : PNMImage_Common<value_type> {width, height, max_value}
     {
     }
@@ -594,83 +590,25 @@ class RGBImage : public PNMImage_Common<RGBColor>
         return PNMHeader::Type::P6;
     }
 
-    void read_from(const char* const file_path)
-    {
-        PNMImage_Common::read_from(file_path);
-    }
-
   private:
-    virtual constexpr int channel_count() const
+    constexpr int channel_count() const override
     {
         return 3;
     }
 
     void value_to_ostream_plain(std::ostream& stream, const value_type& color,
-        size_type item_width) const override
-    {
-        stream << std::setw(item_width) << color.red() << ' '
-               << std::setw(item_width) << color.green() << ' '
-               << std::setw(item_width) << color.blue();
-    }
-
-    void m_read_raster_data_raw(std::istream& stream) override
-    {
-        if (max_value() > 0xFF)
-        {
-            for (auto& p : data())
-            {
-                std::array<RGBColor::value_type, 3> values {};
-                for (auto& v : values)
-                {
-                    const auto first {stream.get()};
-                    const auto second {stream.get()};
-                    v = (first << 8) | second;
-                }
-                p = values;
-            }
-        }
-        else
-        {
-            for (auto& p : data())
-            {
-                std::array<RGBColor::value_type, 3> values {};
-                for (auto& v : values)
-                {
-                    v = stream.get();
-                }
-                p = values;
-            }
-        }
-    }
-
-    void m_write_raster_data_raw(std::ostream& stream) const override
-    {
-        for (const auto& color : data())
-        {
-            // std::array<Marvin::RGBColor::value_type, 3> values {
-            //     color.red(), color.green(), color.blue()};
-            // for (auto v : values)
-            for (auto v : {color.red(), color.green(), color.blue()})
-            {
-                if (max_value() > 0xFF)
-                {
-                    stream << static_cast<char>((v >> 8) & 0xFF);
-                    stream << static_cast<char>(v & 0xFF);
-                }
-                else
-                {
-                    stream << static_cast<char>(v);
-                }
-            }
-        }
-    }
+        size_type item_width) const override;
+    void m_read_raster_data_raw(std::istream& stream) override;
+    void m_write_raster_data_raw(std::ostream& stream) const override;
+    
 };
 
-class GSImage : public PNMImage_Common<GrayScaleColor>
+//using PGMImage = PNMImage_Common<GrayScaleColor>;
+class PGMImage : public PNMImage_Common<GrayScaleColor>
 {
   public:
-    GSImage() = default;
-    GSImage(size_type width, size_type height, size_type max_value = 255)
+    PGMImage() = default;
+    PGMImage(size_type width, size_type height, size_type max_value = 255)
         : PNMImage_Common<value_type> {width, height, max_value}
     {
     }
@@ -685,58 +623,28 @@ class GSImage : public PNMImage_Common<GrayScaleColor>
         return PNMHeader::Type::P5;
     }
 
-    void read_from(const char* const file_path)
-    {
-        PNMImage_Common::read_from(file_path);
-    }
-
   private:
-    void m_read_raster_data_raw(std::istream& stream) override
-    {
-        if (max_value() > 0xFF)
-        {
-            for (auto& p : data())
-            {
-                const auto first {stream.get()};
-                const auto second {stream.get()};
-                p = (first << 8) | second;
-            }
-        }
-        else
-        {
-            for (auto& p : data())
-            {
-                p = stream.get();
-            }
-        }
-    }
-
-    void m_write_raster_data_raw(std::ostream& stream) const override
-    {
-        if (max_value() > 0xFF)
-        {
-            for (const auto& color : data())
-            {
-                stream << static_cast<unsigned char>(
-                    (color.value() >> 8) & 0xFF);
-                stream << static_cast<unsigned char>(color.value() & 0xFF);
-            }
-        }
-        else
-        {
-            for (const auto& color : data())
-            {
-                stream << static_cast<unsigned char>(color.value());
-            }
-        }
-    }
+    void m_read_raster_data_raw(std::istream& stream) override;
+    void m_write_raster_data_raw(std::ostream& stream) const override;
 };
 
-class BWImage : public PNMImage_Common<BlackWhiteColor>
+/**
+ * @brief PBM (Portable Bit Map) image is a black-white image, each pixel
+ * reprsented by 1 or 0.
+ *
+ * @remarks These remarks concern files representing PBM images:
+ * - Identifiers (aka magic numbers) are P1 for plain and P4 for raw data types.
+ * - For raw data type, values are packed to have 8 values per byte for
+ * each row. If there are extra bits in the last byte in the row, then they are
+ * ignored.
+ * - For plain data type each line cannot be longer than 70 characters.
+ * - Header doesn't contain max value - it is always 1.
+ */
+class PBMImage : public PNMImage_Common<BlackWhiteColor>
 {
   public:
-    BWImage() = default;
-    BWImage(size_type width, size_type height)
+    PBMImage() = default;
+    PBMImage(size_type width, size_type height)
         : PNMImage_Common<value_type> {width, height, 1}
     {
     }
@@ -751,84 +659,12 @@ class BWImage : public PNMImage_Common<BlackWhiteColor>
         return PNMHeader::Type::P4;
     }
 
-    void read_from(const char* const file_path)
-    {
-        PNMImage_Common::read_from(file_path);
-    }
-
   private:
-    void m_read_raster_data_raw(std::istream& stream) override
-    {
-        int pixel_index {0};
-        const auto add_pixel_lambda {
-            [&stream, &pixel_index, this](int bit_count)
-            {
-                const auto byte_value {stream.get()};
-                auto shift {8};
-                while (bit_count--)
-                {
-                    // Extract most significant bits first.
-                    operator[](pixel_index++) = byte_value & 1 << --shift;
-                }
-            }};
-
-        const auto row_value_count {width() / 8};
-        const int last_value_bit_count {static_cast<int>(width() % 8)};
-
-        for (size_type row {0}; row < height(); ++row)
-        {
-            for (size_type i {0}; i < row_value_count; ++i)
-            {
-                add_pixel_lambda(8);
-            }
-
-            if (last_value_bit_count != 0)
-            {
-                add_pixel_lambda(last_value_bit_count);
-            }
-        }
-    }
-
-    void m_write_raster_data_raw(std::ostream& stream) const override
-    {
-        size_type pixel_index {0};
-        auto add_pixel_lambda {
-            [&stream, this, &pixel_index](size_type col, int bit_count)
-            {
-                unsigned char byte_value {};
-                unsigned char shift {8};
-                while (bit_count--)
-                {
-                    // The most signficant bit is place first.
-                    byte_value |= operator[](pixel_index++).value() << --shift;
-                }
-
-                stream << byte_value;
-
-                return col;
-            }};
-
-        const auto row_value_count {width() / 8};
-        const int last_value_bit_count {static_cast<int>(width() % 8)};
-
-        for (size_type row {0}; row < height(); ++row)
-        {
-            size_type col {0};
-            for (size_type i {0}; i < row_value_count; ++i)
-            {
-                col = add_pixel_lambda(col, 8);
-            }
-
-            if (last_value_bit_count)
-            {
-                col = add_pixel_lambda(col, last_value_bit_count);
-            }
-        }
-    }
+    void m_read_raster_data_raw(std::istream& stream) override;
+    void m_write_raster_data_raw(std::ostream& stream) const override;
 };
 
 std::unique_ptr<IPNMImage> read_from_file(const char* const file_path);
-
 
 } // namespace PNM_Format
 

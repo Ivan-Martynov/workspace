@@ -1,100 +1,38 @@
 #include "structures/pnm_format/pnm_image_base.h"
-#include "structures/pnm_format/pbm_image.h"
-#include "structures/pnm_format/pgm_image.h"
-#include "structures/pnm_format/ppm_image.h"
 #include "structures/colors/blackwhite_color.h"
 #include "structures/colors/grayscale_color.h"
 #include "structures/colors/rgb_color.h"
 
 #include <filesystem>
-
-[[maybe_unused]]
-static void test_pnm_format()
-{
-    using namespace Marvin::PNM_Format;
-    PNMImageBase image;
-    //std::ifstream file_stream {"images/feep_plain.pgm", std::ios_base::in};
-    std::ifstream file_stream {"images/feep.pgm", std::ios_base::in};
-    image.read_header(file_stream);
-}
+#include <algorithm>
 
 [[maybe_unused]]
 static void test_reading_pbm()
 {
     using namespace Marvin::PNM_Format;
-#if 0
-    PBMImage image {};
-    image.read_from("images/pbm/feep.pbm");
-    image.write_to(
-        "images/pbm/feep_raw_to_binary.pbm", PNMImageBase::Mode::raw);
 
-    PBMImage image_plain {};
-    image_plain.read_from("images/pbm/feep_raw_to_plain.pbm");
-    image_plain.write_to(
-        "images/pbm/feep_plain_to_binary.pbm", PNMImageBase::Mode::raw);
-    image_plain.write_to(
-        "images/pbm/feep_plain_to_plain.pbm", PNMImageBase::Mode::plain);
-
-    PBMImage image_raw {};
-    image_raw.read_from("images/pbm/feep_plain_to_plain.pbm");
-    image_raw.write_to(
-        "images/pbm/feep_raw_to_text.pbm", PNMImageBase::Mode::plain);
+#if 1
+    const auto test_comment {
+        "Comment about a black and white image representing letter J. Trying "
+        "to make it longer than the default line length limit."};
+#else
+    const auto test_comment {
+        "ad;fka;dfajkd;"
+        "sfajoiewapefajpeaejpoiewjpqojewpqiwjqpwejpqfiejpqqpeiKdk:"
+        "EIIPE qpep qije qpjpqwei jqewjpq eejfuqwpeqweijq pwe"};
 #endif
-
-    //PBMImage j_plain {};
-    BWImage j_plain {};
-    j_plain.read_from("images/pbm/j.pbm");
-    j_plain.write_to("images/pbm/j_to_raw.pbm");
+    // PBMImage j_plain {};
+    PBMImage j_plain {};
+    j_plain.read_from("images/pbm/raw/j.pbm");
+    j_plain.write_to("images/pbm/j_to_raw.pbm", test_comment);
+    j_plain.write_to("images/pbm/j_to_raw.pbm", std::ios_base::app);
 
     // PBMImage j_raw {};
-    BWImage j_raw {};
+    PBMImage j_raw {};
     j_plain.read_from("images/pbm/j_to_raw.pbm");
-    j_plain.write_to(
-        "images/pbm/j_raw_to_plain.pbm", std::ios_base::openmode {});
+    j_plain.write_to("images/pbm/j_raw_to_plain.pbm",
+        std::ios_base::openmode {}, test_comment);
 }
-
-[[maybe_unused]]
-static void test_pgm_image()
-{
-    using namespace Marvin::PNM_Format;
-
-    PGM_Image image_raw {PGM_Image::read_from_file(
-        "images/feep.pgm", std::ios_base::binary | std::ios_base::in)};
-    PGM_Image image_plain {
-        PGM_Image::read_from_file("images/feep_plain.pgm", std::ios_base::in)};
-
-    image_raw.write_to("images/feep_raw_to_binary.pgm", std::ios::binary | std::ios::out);
-    image_plain.write_to("images/feep_plain_to_binary.pgm", std::ios::binary | std::ios::out);
-
-    PGM_Image image_binary {PGM_Image::read_from_file(
-        "images/feep_plain_to_binary.pgm", std::ios::binary | std::ios::in)};
-    image_binary.write_to("images/feep_binary_to_plain.pgm", std::ios::out);
-
-    //PGM_Image image2 {PGM_Image::read_from_file(
-    //    "images/feep_binary.pgm", std::ios_base::binary | std::ios_base::in)};
-}
-
-[[maybe_unused]]
-static void test_ppm_image()
-{
-    using namespace Marvin::PNM_Format;
-    PPMImage image_raw {};
-    image_raw.read_from("images/ppm/pbmlib.ppm");
-    image_raw.write_to(
-        "images/ppm/pbmlib_to_plain.ppm", PNMImageBase::Mode::plain);
-    image_raw.write_to(
-        "images/ppm/pbmlib_to_raw.ppm", PNMImageBase::Mode::raw);
-    PPMImage image_plain {};
-    image_plain.read_from("images/ppm/pbmlib.ascii.ppm");
-    image_plain.write_to(
-        "images/ppm/pbmlib.ascii_to_raw.ppm", PNMImageBase::Mode::raw);
-
-    RGBImage rgb_image_raw {};
-    //PNMImage_Common<Marvin::RGBColor> rgb_image_raw {};
-    rgb_image_raw.read_from("images/ppm/pbmlib.ppm");
-    rgb_image_raw.write_to("images/ppm/pbmlib_to_plain2.ppm");
-}
-
 
 static void test_single_rgb(const Marvin::RGBColor& color)
 {
@@ -128,6 +66,7 @@ static void test_grayscale_color()
     std::cout << color_02 << "\n";
 }
 
+[[maybe_unused]]
 static void test_pnm_images(const std::filesystem::path& image_path)
 {
     auto process_subdir_lambda {
@@ -153,21 +92,123 @@ static void test_pnm_images(const std::filesystem::path& image_path)
     process_subdir_lambda("plain", "_to_raw", std::ios_base::binary);
 }
 
+static void fractal(double left, double top, double x_side, double y_side,
+    Marvin::PNM_Format::PPMImage& image)
+{
+    static constexpr int max_count {30};
+
+    const auto width = image.width();
+    const auto height = image.height();
+
+    const auto x_scale {x_side / width};
+    const auto y_scale {y_side / height};
+
+    using size_type = Marvin::PNM_Format::PPMImage::size_type;
+
+    for (size_type row {0}; row < height; ++row)
+    {
+        for (size_type col {0}; col < width; ++col)
+        {
+            const auto cx = col * x_scale + left;
+            const auto cy = row * y_scale + top;
+
+            double zx {0.0};
+            double zy {0.0};
+            size_type count {0};
+
+            while ((zx * zx + zy * zy < 4) && (count++ < max_count))
+            {
+                const auto temp_x {zx * zx - zy * zy + cx};
+                zy = 2 * zx * zy + cy;
+                zx = temp_x;
+            }
+
+#if 0
+            count = static_cast<size_type>(
+                count * (image.max_value() / static_cast<double>(max_count)));
+
+            // image[row, col] = {count, count, count};
+            // image[row, col] = {count, count, count};
+            image[row, col] = {count, 0, 0};
+#else
+            image[row, col] = Marvin::RGBColor::from_intmax(
+                static_cast<int>(count * (65535.0 / max_count)));
+#endif
+        }
+    }
+}
+
+static void create_rgb_image()
+{
+    using namespace Marvin::PNM_Format;
+
+    constexpr int width {4};
+    constexpr int height {2};
+
+    PPMImage image_01 {width, height};
+    for (int row {0}; row < height >> 1; ++row)
+    {
+        for (int col {0}; col < width >> 1; ++col)
+        {
+            image_01[row, col] = Marvin::RGBColor {image_01.max_value(), 0, 0};
+        }
+
+        for (int col {width >> 1}; col < width; ++col)
+        {
+            image_01[row, col] = Marvin::RGBColor {
+                image_01.max_value(), image_01.max_value(), 0};
+        }
+    }
+
+    for (int row {height >> 1}; row < height; ++row)
+    {
+        for (int col {0}; col < width >> 1; ++col)
+        {
+            image_01[row, col] = Marvin::RGBColor {0, image_01.max_value(), 0};
+        }
+
+        for (int col {width >> 1}; col < width; ++col)
+        {
+            image_01[row, col] = Marvin::RGBColor {0, 0, image_01.max_value()};
+        }
+    }
+
+    //image_01.scale(400, 200);
+    image_01.scale(127.8);
+    image_01.write_to("images/ppm/test_01.ppm");
+
+    PPMImage image_02 {800, 600, 32};
+    auto left = -1.75;
+    auto top = -0.25;
+    auto xside = 0.25;
+    auto yside = 0.45;
+    fractal(left, top, xside, yside, image_02);
+    image_02.scale(401, 273);
+    // image_02.scale(500, 250);
+
+    // auto m {0};
+    // for (const auto& color : image_02.data())
+    //{
+    //     m = std::max({m, color.red(), color.green(), color.blue()});
+    // }
+    // std::cout << "Max = " << m << "\n";
+
+    image_02.write_to("images/ppm/test_02.ppm");
+}
+
 int main()
 {
-    // test_pgm_image();
-    // test_pnm_format();
-    //test_reading_pbm();
-
     test_rgb_color();
     test_grayscale_color();
     test_blackwhite_color();
 
-   // test_ppm_image();
+    //test_pnm_images("images/pbm/");
+    //test_pnm_images("images/pgm/");
+    //test_pnm_images("images/ppm/");
 
-   test_pnm_images("images/pbm/");
-   test_pnm_images("images/pgm/");
-   test_pnm_images("images/ppm/");
+    test_reading_pbm();
+
+    create_rgb_image();
 
     return 0;
 }

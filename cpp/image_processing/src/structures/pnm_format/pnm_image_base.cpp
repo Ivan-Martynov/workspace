@@ -12,21 +12,9 @@ namespace PNM_Format
 {
 
 static constexpr int max_line_length {70};
+static constexpr int absolute_max_value {65535}; // 2^16 - 1
 
-PNMImageBase::Type PNMImageBase::get_header_type(std::string_view format_id)
-{
-    for (size_t i {0}; i < PNMImageBase::type_names.size(); ++i)
-    {
-        if (PNMImageBase::type_names[i] == format_id)
-        {
-            return static_cast<PNMImageBase::Type>(i);
-        }
-    }
-
-    return PNMImageBase::Type::max_type;
-}
-
-static void skip_ws_and_comment(std::istream & stream)
+static void skip_whitespace_and_comment(std::istream& stream)
 {
     while (std::isspace(stream.peek()) || (stream.peek() == '#'))
     {
@@ -37,84 +25,27 @@ static void skip_ws_and_comment(std::istream & stream)
     }
 }
 
-[[maybe_unused]]
-static std::intmax_t s_get_int_value(std::istringstream& string_stream)
-{
-    std::intmax_t value {};
-    string_stream >> value;
-    return value;
-}
-
-[[maybe_unused]]
-static void read_plain(std::istream& stream)
-{
-    std::string line {};
-    std::getline(stream, line);
-
-    if (line.length() > max_line_length)
-    {
-        std::cerr << "Line is too long: (max = " << max_line_length << ").\n";
-    }
-
-    std::istringstream string_stream {line};
-    if (string_stream.peek() == '#')
-    {
-        string_stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    else
-    {
-        std::intmax_t value {};
-        string_stream >> value;
-        if (value < 0)
-        {
-            std::cerr << "Wrong value.\n";
-        }
-    }
-}
-
-bool PNMImageBase::is_valid_type(Type type) const noexcept
-{
-    return type != PNMImageBase::Type::max_type;
-}
-
-bool PNMImageBase::is_valid_format_id(std::string_view format_id) const
-{
-    return get_header_type(format_id) != PNMImageBase::Type::max_type;
-}
-
-bool PNMImageBase::is_plain_id(Type type) const
-{
-    return (type == Type::P1) || (type == Type::P2) || (type == Type::P3);
-}
-
-void PNMImageBase::read_header(std::istream& stream)
+PNMHeader::PNMHeader(std::istream& stream)
 {
     stream >> std::skipws;
     std::string format_id {};
     stream >> format_id;
 
-    const auto type {get_header_type(format_id)};
+    m_type = type_from_string(format_id).value_or(PNMHeader::Type::max_type);
 
-    if (!is_valid_format_id(format_id))
-    {
-        std::cerr << "Reading header: invalid header identifier (got "
-                  << format_id << ").\n";
-        return;
-    }
-
-    skip_ws_and_comment(stream);
+    skip_whitespace_and_comment(stream);
 
     stream >> m_width;
     std::cout << "Width = " << m_width << "\n";
 
-    skip_ws_and_comment(stream);
+    skip_whitespace_and_comment(stream);
 
     stream >> m_height;
     std::cout << "Height = " << m_height << "\n";
 
-    skip_ws_and_comment(stream);
+    skip_whitespace_and_comment(stream);
 
-    if ((type != PNMImageBase::Type::P1) && (type != PNMImageBase::Type::P4))
+    if (!is_blackwhite(m_type))
     {
         stream >> m_max_value;
     }
@@ -124,44 +55,171 @@ void PNMImageBase::read_header(std::istream& stream)
     }
     std::cout << "Max value = " << m_max_value << "\n";
 
-    skip_ws_and_comment(stream);
+    skip_whitespace_and_comment(stream);
 }
 
-void PNMImageBase::write_header(
-    std::ostream& stream, Type type, std::string_view comment) const
+void PPMImage::value_to_ostream_plain(
+    std::ostream& stream, const value_type& color, size_type item_width) const
 {
-    if (!is_valid_type(type))
+    stream << std::setw(item_width) << color.red() << ' '
+           << std::setw(item_width) << color.green() << ' '
+           << std::setw(item_width) << color.blue();
+}
+
+void PPMImage::m_read_raster_data_raw(std::istream& stream)
+{
+    if (max_value() > 0xFF)
     {
-        std::cerr << "Invalid type.\n";
-        return;
+        for (auto& p : data())
+        {
+            std::array<RGBColor::value_type, 3> values {};
+            for (auto& v : values)
+            {
+                const auto first {stream.get()};
+                const auto second {stream.get()};
+                v = (first << 8) | second;
+            }
+            p = values;
+        }
     }
-
-    stream << type_names[std::to_underlying(type)] << '\n';
-    if (!comment.empty())
+    else
     {
-        stream << "# " << comment << '\n';
+        for (auto& p : data())
+        {
+            std::array<RGBColor::value_type, 3> values {};
+            for (auto& v : values)
+            {
+                v = stream.get();
+            }
+            p = values;
+        }
     }
-    stream << m_width << ' ' << m_height << '\n';
+}
 
-    if ((type != PNMImageBase::Type::P1) && (type != PNMImageBase::Type::P4))
+void PPMImage::m_write_raster_data_raw(std::ostream& stream) const
+{
+    for (const auto& color : data())
     {
-        stream << m_max_value << '\n';
+        for (auto v : {color.red(), color.green(), color.blue()})
+        {
+            if (max_value() > 0xFF)
+            {
+                stream << static_cast<char>((v >> 8) & 0xFF);
+                stream << static_cast<char>(v & 0xFF);
+            }
+            else
+            {
+                stream << static_cast<char>(v);
+            }
+        }
     }
 }
 
-std::intmax_t PNMImageBase::width() const noexcept
+void PGMImage::m_read_raster_data_raw(std::istream& stream)
 {
-    return m_width;
+    if (max_value() > 0xFF)
+    {
+        for (auto& p : data())
+        {
+            const auto first {stream.get()};
+            const auto second {stream.get()};
+            p = (first << 8) | second;
+        }
+    }
+    else
+    {
+        for (auto& p : data())
+        {
+            p = stream.get();
+        }
+    }
 }
 
-std::intmax_t PNMImageBase::height() const noexcept
+void PGMImage::m_write_raster_data_raw(std::ostream& stream) const
 {
-    return m_height;
+    if (max_value() > 0xFF)
+    {
+        for (const auto& color : data())
+        {
+            stream << static_cast<unsigned char>((color.value() >> 8) & 0xFF);
+            stream << static_cast<unsigned char>(color.value() & 0xFF);
+        }
+    }
+    else
+    {
+        for (const auto& color : data())
+        {
+            stream << static_cast<unsigned char>(color.value());
+        }
+    }
 }
 
-std::intmax_t PNMImageBase::max_value() const noexcept
+void PBMImage::m_read_raster_data_raw(std::istream& stream)
 {
-    return m_max_value;
+    int pixel_index {0};
+    const auto add_pixel_lambda {[&stream, &pixel_index, this](int bit_count)
+        {
+            const auto byte_value {stream.get()};
+            auto shift {8};
+            while (bit_count--)
+            {
+                // Extract most significant bits first.
+                operator[](pixel_index++) = byte_value & 1 << --shift;
+            }
+        }};
+
+    const auto row_value_count {width() / 8};
+    const int last_value_bit_count {static_cast<int>(width() % 8)};
+
+    for (size_type row {0}; row < height(); ++row)
+    {
+        for (size_type i {0}; i < row_value_count; ++i)
+        {
+            add_pixel_lambda(8);
+        }
+
+        if (last_value_bit_count != 0)
+        {
+            add_pixel_lambda(last_value_bit_count);
+        }
+    }
+}
+
+void PBMImage::m_write_raster_data_raw(std::ostream& stream) const
+{
+    size_type pixel_index {0};
+    auto add_pixel_lambda {
+        [&stream, this, &pixel_index](size_type col, int bit_count)
+        {
+            unsigned char byte_value {};
+            unsigned char shift {8};
+            while (bit_count--)
+            {
+                // The most signficant bit is place first.
+                byte_value |= operator[](pixel_index++).value() << --shift;
+            }
+
+            stream << byte_value;
+
+            return col;
+        }};
+
+    const auto row_value_count {width() / 8};
+    const int last_value_bit_count {static_cast<int>(width() % 8)};
+
+    for (size_type row {0}; row < height(); ++row)
+    {
+        size_type col {0};
+        for (size_type i {0}; i < row_value_count; ++i)
+        {
+            col = add_pixel_lambda(col, 8);
+        }
+
+        if (last_value_bit_count)
+        {
+            col = add_pixel_lambda(col, last_value_bit_count);
+        }
+    }
 }
 
 std::unique_ptr<IPNMImage> read_from_file(const char* const file_path)
@@ -180,24 +238,24 @@ std::unique_ptr<IPNMImage> read_from_file(const char* const file_path)
         file_stream >> format_id;
 
         const auto type {PNMHeader::type_from_string(format_id)};
-
-        std::unique_ptr<IPNMImage> image_ptr {nullptr};
-        if (PNMHeader::is_blackwhite(type))
-        {
-            image_ptr = std::make_unique<BWImage>();
-        }
-        else if (PNMHeader::is_grayscale(type))
-        {
-            image_ptr = std::make_unique<GSImage>();
-        }
-        else if (PNMHeader::is_rgb(type))
-        {
-            image_ptr = std::make_unique<RGBImage>();
-        }
-        else
+        if (!type)
         {
             std::cerr << "Wrong image header id.\n";
             return nullptr;
+        }
+
+        std::unique_ptr<IPNMImage> image_ptr {nullptr};
+        if (PNMHeader::is_blackwhite(type.value()))
+        {
+            image_ptr = std::make_unique<PBMImage>();
+        }
+        else if (PNMHeader::is_grayscale(type.value()))
+        {
+            image_ptr = std::make_unique<PGMImage>();
+        }
+        else if (PNMHeader::is_rgb(type.value()))
+        {
+            image_ptr = std::make_unique<PPMImage>();
         }
 
         image_ptr->read_from(file_path);
