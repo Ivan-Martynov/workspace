@@ -1,5 +1,11 @@
 P1
-6 10
+# main comment about file at images/pbm/raw/j.pbm
+6
+# Comment about the width of this image. Another dummy comment which,
+# perhaps, will exceed the line length limit.
+10
+# Height of this image has been informed about. Another dummy comment
+# which, perhaps, will exceed the line length limit.
 0 0 0 0 1 0
 0 0 0 0 1 0
 0 0 0 0 1 0

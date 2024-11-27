@@ -1,6 +1,14 @@
 P3
-258 792
+# main comment about file at images/ppm/raw/bell_206.ppm
+258
+# Comment about the width of this image. Another dummy comment which,
+# perhaps, will exceed the line length limit.
+792
+# Height of this image has been informed about. Another dummy comment
+# which, perhaps, will exceed the line length limit.
 255
+# This image has fixed max value. Another dummy comment which,
+# perhaps, will not appear in the file... but who knows
 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255
 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255
 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255

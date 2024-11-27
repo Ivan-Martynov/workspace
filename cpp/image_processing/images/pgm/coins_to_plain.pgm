@@ -1,6 +1,14 @@
 P2
-300 246
+# main comment about file at images/pgm/raw/coins.pgm
+300
+# Comment about the width of this image. Another dummy comment which,
+# perhaps, will exceed the line length limit.
+246
+# Height of this image has been informed about. Another dummy comment
+# which, perhaps, will exceed the line length limit.
 255
+# This image has fixed max value. Another dummy comment which,
+# perhaps, will not appear in the file... but who knows
 49  50  48  49  48  48  49  50  50  50  50  49  49  48  50  50  51 
 50  49  49  48  50  52  50  50  49  50  51  50  49  50  49  49  51 
 51  50  51  51  52  51  51  51  51  50  52  52  51  52  52  53  53 

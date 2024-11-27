@@ -21,17 +21,30 @@ static void test_reading_pbm()
         "sfajoiewapefajpeaejpoiewjpqojewpqiwjqpwejpqfiejpqqpeiKdk:"
         "EIIPE qpep qije qpjpqwei jqewjpq eejfuqwpeqweijq pwe"};
 #endif
+    PPMImage rgb_plain {};
+    PGMImage gs_plain {};
     // PBMImage j_plain {};
     PBMImage j_plain {};
     j_plain.read_from("images/pbm/raw/j.pbm");
-    j_plain.write_to("images/pbm/j_to_raw.pbm", test_comment);
+    j_plain.write_to("images/pbm/j_to_raw.pbm", HeaderComments {test_comment});
     j_plain.write_to("images/pbm/j_to_raw.pbm", std::ios_base::app);
 
-    // PBMImage j_raw {};
+    HeaderComments comments {test_comment};
+    // comments.main_comment = test_comment;
+    comments.width_comment
+        = "Comment about the width of this image. Another dummy comment which, "
+          "perhaps, will exceed the line length limit.";
+    comments.height_comment
+        = "Height of this image has been informed about. Another dummy comment "
+          "which, perhaps, will exceed the line length limit.";
+    comments.max_value_comment
+        = "This image has fixed max value. Another dummy comment "
+          "which, perhaps, will not appear in the file...";
+
     PBMImage j_raw {};
     j_plain.read_from("images/pbm/j_to_raw.pbm");
     j_plain.write_to("images/pbm/j_raw_to_plain.pbm",
-        std::ios_base::openmode {}, test_comment);
+        std::ios_base::openmode {}, HeaderComments {test_comment});
 }
 
 static void test_single_rgb(const Marvin::RGBColor& color)
@@ -41,6 +54,7 @@ static void test_single_rgb(const Marvin::RGBColor& color)
               << Marvin::RGBColor::from_intmax(value) << "\n";
 }
 
+[[maybe_unused]]
 static void test_rgb_color()
 {
     test_single_rgb(Marvin::RGBColor {});
@@ -48,6 +62,7 @@ static void test_rgb_color()
     test_single_rgb(Marvin::RGBColor {255, 255, 255});
 }
 
+[[maybe_unused]]
 static void test_blackwhite_color()
 {
     Marvin::BlackWhiteColor color_01 {};
@@ -57,6 +72,7 @@ static void test_blackwhite_color()
     std::cout << color_02 << "\n";
 }
 
+[[maybe_unused]]
 static void test_grayscale_color()
 {
     Marvin::GrayScaleColor color_01 {};
@@ -78,13 +94,28 @@ static void test_pnm_images(const std::filesystem::path& image_path)
             {
                 const auto path {entry.path()};
 
-                Marvin::PNM_Format::read_from_file(path.string().c_str())
+                Marvin::PNM_Format::HeaderComments comments {
+                    "main comment about file at " + path.string()};
+                comments.width_comment
+                    = "Comment about the width of this image. Another dummy "
+                      "comment which, "
+                      "perhaps, will exceed the line length limit.";
+                comments.height_comment
+                    = "Height of this image has been informed about. Another "
+                      "dummy comment "
+                      "which, perhaps, will exceed the line length limit.";
+                comments.max_value_comment
+                    = "This image has fixed max value. Another dummy comment "
+                      "which, perhaps, will not appear in the file... but who "
+                      "knows";
+
+                Marvin::PNM_Format::make_image_ptr(path.string().c_str())
                     ->write_to((path.parent_path().parent_path()
                                    / (path.stem().string() + suffix
                                        + path.extension().string()))
                                    .string()
                                    .c_str(),
-                        open_mode);
+                        open_mode, comments);
             }
         }};
 
@@ -138,9 +169,80 @@ static void fractal(double left, double top, double x_side, double y_side,
     }
 }
 
+[[maybe_unused]]
+/**
+ * @brief Create Cantor's line segments on the image on both sides of the
+ * horizontal center line, which is used a the starting line for the Cantor's
+ * set.
+ *
+ * @remark Not using an iteration count here, because for most images there are
+ * not too many steps before a line degenerates.
+ *
+ * @param[in] start Start of the segment.
+ * @param[in] end End of the segment.
+ * @param[in] image Image to write to.
+ * @param[in] row Row of the image to place the current segments on.
+ */
+static void add_Cantor(
+    int start, int end, Marvin::PNM_Format::PBMImage& image, int row)
+{
+    static constexpr int stripe_width {5};
+
+    const auto step {(end - start) / 3};
+    if ((step <= 0) || (row <= 0) || (row >= image.height()))
+    {
+        return;
+    }
+
+    const auto next {start + (step << 1)};
+    for (int i {std::max(0, row - stripe_width + 1)};
+         i < std::min(image.height(), row + stripe_width - 1); ++i)
+    {
+        for (int col {start}; col < start + step; ++col)
+        {
+            image[i, col] = 1;
+        }
+
+        for (int col {next}; col < end; ++col)
+        {
+            image[i, col] = 1;
+        }
+    }
+
+    constexpr auto row_step {stripe_width << 1};
+    add_Cantor(start, start + step, image, row - row_step);
+    add_Cantor(start, start + step, image, row + row_step);
+    add_Cantor(next, end, image, row - row_step);
+    add_Cantor(next, end, image, row + row_step);
+}
+
+[[maybe_unused]]
+static void make_Cantor_fractal(
+    Marvin::PNM_Format::PBMImage&& image, const char* const file_path)
+// Marvin::PNM_Format::PBMImage&& image, const char* const file_path)
+{
+    add_Cantor(0, image.width(), image, image.height() >> 1);
+    image.write_to(file_path);
+}
+
+[[maybe_unused]]
+static void make_Cantor_fractal()
+{
+    make_Cantor_fractal({27 * 27, 600}, "images/fractals/cantor_01.pbm");
+    make_Cantor_fractal({81, 27}, "images/fractals/cantor_02.pbm");
+}
+
+[[maybe_unused]]
 static void create_rgb_image()
 {
     using namespace Marvin::PNM_Format;
+
+#if 1 // Test new class.
+    PNMImageTemplated<Marvin::BlackWhiteColor> p {10, 8};
+    // const auto t {p.plain_type()};
+    // std::cout << std::to_underlying(t) << "\n";
+    std::cout << p.values().size() << "\n";
+#endif
 
     constexpr int width {4};
     constexpr int height {2};
@@ -173,7 +275,7 @@ static void create_rgb_image()
         }
     }
 
-    //image_01.scale(400, 200);
+    // image_01.scale(400, 200);
     image_01.scale(127.8);
     image_01.write_to("images/ppm/test_01.ppm");
 
@@ -183,7 +285,7 @@ static void create_rgb_image()
     auto xside = 0.25;
     auto yside = 0.45;
     fractal(left, top, xside, yside, image_02);
-    image_02.scale(401, 273);
+    image_02.resize(401, 273);
     // image_02.scale(500, 250);
 
     // auto m {0};
@@ -198,17 +300,18 @@ static void create_rgb_image()
 
 int main()
 {
-    test_rgb_color();
-    test_grayscale_color();
-    test_blackwhite_color();
+    // test_rgb_color();
+    // test_grayscale_color();
+    // test_blackwhite_color();
 
-    //test_pnm_images("images/pbm/");
-    //test_pnm_images("images/pgm/");
-    //test_pnm_images("images/ppm/");
+    test_pnm_images("images/pbm/");
+    test_pnm_images("images/pgm/");
+    test_pnm_images("images/ppm/");
 
     test_reading_pbm();
 
-    create_rgb_image();
+    //    create_rgb_image();
+    // make_Cantor_fractal();
 
     return 0;
 }
