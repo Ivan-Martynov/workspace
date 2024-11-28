@@ -66,26 +66,29 @@ class MatrixTemplated
      * Subscripting operations section.                                        *
      **************************************************************************/
 
-    value_type& operator[](size_type i) { return m_values[i]; }
-    const value_type& operator[](size_type i) const { return m_values[i]; }
+    value_type& operator[](size_type row) { return m_values[row]; }
+    const value_type& operator[](size_type row) const { return m_values[row]; }
 
-    value_type& at(size_type i) { return m_values.at(i); }
-    const value_type& at(size_type i) const { return m_values.at(i); }
+    value_type& at(size_type row) { return m_values.at(row); }
+    const value_type& at(size_type row) const { return m_values.at(row); }
 
-    value_type& operator[](size_type i, size_type j)
+    value_type& operator[](size_type row, size_type column)
     {
-        return (*this)[m_index(i, j)];
+        return (*this)[m_index(row, column)];
     }
-    const value_type& operator[](size_type i, size_type j) const
+    const value_type& operator[](size_type row, size_type column) const
     {
-        return (*this)[m_index(i, j)];
+        return (*this)[m_index(row, column)];
     }
 
-    value_type& at(size_type i, size_type j) { return at(m_index(i, j)); }
-
-    const value_type& at(size_type i, size_type j) const
+    value_type& at(size_type row, size_type column)
     {
-        return at(m_index(i, j));
+        return at(m_index(row, column));
+    }
+
+    const value_type& at(size_type row, size_type column) const
+    {
+        return at(m_index(row, column));
     }
 
     /***************************************************************************
@@ -114,6 +117,55 @@ class MatrixTemplated
      * End of Getters section.                                                 *
      **************************************************************************/
 
+    /***************************************************************************
+     * Modifiers section.                                                      *
+     **************************************************************************/
+
+    /**
+     * @brief Fill the entire matrix with a value.
+     *
+     * @param[in] value Value to fill with.
+     */
+    void fill(const value_type& value)
+    {
+        for (auto& v : m_values)
+        {
+            v = value;
+        }
+    }
+
+    /**
+     * @brief Fill a row of a matrix with a value.
+     *
+     * @param[in] row Index of a row to fill.
+     * @param[in] value Value to fill with.
+     */
+    void fill_row(size_type row, const value_type& value)
+    {
+        for (size_type column {0}; column < column_count(); ++column)
+        {
+            (*this)[row, column] = value;
+        }
+    }
+
+    /**
+     * @brief Fill a column of a matrix with a value.
+     *
+     * @param[in] column Index of a column to fill.
+     * @param[in] value Value to fill with.
+     */
+    void fill_column(size_type column, const value_type& value)
+    {
+        for (size_type row {0}; row < row_count(); ++row)
+        {
+            (*this)[row, column] = value;
+        }
+    }
+
+    /***************************************************************************
+     * End of Modifiers section.                                               *
+     **************************************************************************/
+
   private:
     std::vector<value_type> m_values {};
     size_type m_row_count {};
@@ -123,14 +175,14 @@ class MatrixTemplated
      * @brief Caculate index for an underlying vector to retrive matrix element
      * specified by row and column.
      *
-     * @param[in] i Row index.
-     * @param[in] j Column index.
+     * @param[in] row Row index.
+     * @param[in] column Column index.
      *
      * @return constexpr size_type Index of the vector's item.
      */
-    constexpr size_type m_index(size_type i, size_type j) const
+    constexpr size_type m_index(size_type row, size_type column) const
     {
-        return i * m_column_count + j;
+        return row * m_column_count + column;
     }
 };
 

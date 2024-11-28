@@ -1,14 +1,8 @@
 P3
-# main comment about file at images/ppm/raw/blackbuck.ppm
-512
 # Comment about the width of this image. Another dummy comment which,
 # perhaps, will exceed the line length limit.
-512
-# Height of this image has been informed about. Another dummy comment
-# which, perhaps, will exceed the line length limit.
+512 512
 255
-# This image has fixed max value. Another dummy comment which,
-# perhaps, will not appear in the file... but who knows
 0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  
 0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  
 0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  

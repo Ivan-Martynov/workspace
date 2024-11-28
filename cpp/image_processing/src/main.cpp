@@ -7,82 +7,6 @@
 #include <algorithm>
 
 [[maybe_unused]]
-static void test_reading_pbm()
-{
-    using namespace Marvin::PNM_Format;
-
-#if 1
-    const auto test_comment {
-        "Comment about a black and white image representing letter J. Trying "
-        "to make it longer than the default line length limit."};
-#else
-    const auto test_comment {
-        "ad;fka;dfajkd;"
-        "sfajoiewapefajpeaejpoiewjpqojewpqiwjqpwejpqfiejpqqpeiKdk:"
-        "EIIPE qpep qije qpjpqwei jqewjpq eejfuqwpeqweijq pwe"};
-#endif
-    PPMImage rgb_plain {};
-    PGMImage gs_plain {};
-    // PBMImage j_plain {};
-    PBMImage j_plain {};
-    j_plain.read_from("images/pbm/raw/j.pbm");
-    j_plain.write_to("images/pbm/j_to_raw.pbm", HeaderComments {test_comment});
-    j_plain.write_to("images/pbm/j_to_raw.pbm", std::ios_base::app);
-
-    HeaderComments comments {test_comment};
-    // comments.main_comment = test_comment;
-    comments.width_comment
-        = "Comment about the width of this image. Another dummy comment which, "
-          "perhaps, will exceed the line length limit.";
-    comments.height_comment
-        = "Height of this image has been informed about. Another dummy comment "
-          "which, perhaps, will exceed the line length limit.";
-    comments.max_value_comment
-        = "This image has fixed max value. Another dummy comment "
-          "which, perhaps, will not appear in the file...";
-
-    PBMImage j_raw {};
-    j_plain.read_from("images/pbm/j_to_raw.pbm");
-    j_plain.write_to("images/pbm/j_raw_to_plain.pbm",
-        std::ios_base::openmode {}, HeaderComments {test_comment});
-}
-
-static void test_single_rgb(const Marvin::RGBColor& color)
-{
-    const auto value {static_cast<std::intmax_t>(color)};
-    std::cout << color << " => " << value << " => "
-              << Marvin::RGBColor::from_intmax(value) << "\n";
-}
-
-[[maybe_unused]]
-static void test_rgb_color()
-{
-    test_single_rgb(Marvin::RGBColor {});
-    test_single_rgb(Marvin::RGBColor {255, 0, 255});
-    test_single_rgb(Marvin::RGBColor {255, 255, 255});
-}
-
-[[maybe_unused]]
-static void test_blackwhite_color()
-{
-    Marvin::BlackWhiteColor color_01 {};
-    std::cout << color_01 << "\n";
-
-    Marvin::BlackWhiteColor color_02 {true};
-    std::cout << color_02 << "\n";
-}
-
-[[maybe_unused]]
-static void test_grayscale_color()
-{
-    Marvin::GrayScaleColor color_01 {};
-    std::cout << std::boolalpha << color_01 << "\n";
-
-    Marvin::GrayScaleColor color_02 {128};
-    std::cout << color_02 << "\n";
-}
-
-[[maybe_unused]]
 static void test_pnm_images(const std::filesystem::path& image_path)
 {
     auto process_subdir_lambda {
@@ -94,28 +18,17 @@ static void test_pnm_images(const std::filesystem::path& image_path)
             {
                 const auto path {entry.path()};
 
-                Marvin::PNM_Format::HeaderComments comments {
-                    "main comment about file at " + path.string()};
-                comments.width_comment
-                    = "Comment about the width of this image. Another dummy "
-                      "comment which, "
-                      "perhaps, will exceed the line length limit.";
-                comments.height_comment
-                    = "Height of this image has been informed about. Another "
-                      "dummy comment "
-                      "which, perhaps, will exceed the line length limit.";
-                comments.max_value_comment
-                    = "This image has fixed max value. Another dummy comment "
-                      "which, perhaps, will not appear in the file... but who "
-                      "knows";
-
+                std::string_view comment {
+                    "Comment about the width of this image. Another dummy "
+                    "comment which, perhaps, will exceed the line length "
+                    "limit."};
                 Marvin::PNM_Format::make_image_ptr(path.string().c_str())
                     ->write_to((path.parent_path().parent_path()
                                    / (path.stem().string() + suffix
                                        + path.extension().string()))
                                    .string()
                                    .c_str(),
-                        open_mode, comments);
+                        open_mode, comment);
             }
         }};
 
@@ -219,7 +132,6 @@ static void add_Cantor(
 [[maybe_unused]]
 static void make_Cantor_fractal(
     Marvin::PNM_Format::PBMImage&& image, const char* const file_path)
-// Marvin::PNM_Format::PBMImage&& image, const char* const file_path)
 {
     add_Cantor(0, image.width(), image, image.height() >> 1);
     image.write_to(file_path);
@@ -241,7 +153,7 @@ static void create_rgb_image()
     PNMImageTemplated<Marvin::BlackWhiteColor> p {10, 8};
     // const auto t {p.plain_type()};
     // std::cout << std::to_underlying(t) << "\n";
-    std::cout << p.values().size() << "\n";
+    //std::cout << p.values().size() << "\n";
 #endif
 
     constexpr int width {4};
@@ -296,21 +208,22 @@ static void create_rgb_image()
     // std::cout << "Max = " << m << "\n";
 
     image_02.write_to("images/ppm/test_02.ppm");
+
+    PPMImage image_03 {200, 200};
+    image_03.fill({128, 0, 0});
+    image_03.fill_row(
+        image_03.height() - (image_03.height() / 3), {0, 255, 255});
+    image_03.fill_column(image_03.width() >> 2, {0, 0, 255});
+    image_03.write_to("images/ppm/test_03.ppm");
 }
 
 int main()
 {
-    // test_rgb_color();
-    // test_grayscale_color();
-    // test_blackwhite_color();
+    // test_pnm_images("images/pbm/");
+    // test_pnm_images("images/pgm/");
+    // test_pnm_images("images/ppm/");
 
-    test_pnm_images("images/pbm/");
-    test_pnm_images("images/pgm/");
-    test_pnm_images("images/ppm/");
-
-    test_reading_pbm();
-
-    //    create_rgb_image();
+    create_rgb_image();
     // make_Cantor_fractal();
 
     return 0;

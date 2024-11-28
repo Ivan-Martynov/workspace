@@ -1,14 +1,8 @@
 P2
-# main comment about file at images/pgm/raw/baboon.pgm
-512
 # Comment about the width of this image. Another dummy comment which,
 # perhaps, will exceed the line length limit.
-512
-# Height of this image has been informed about. Another dummy comment
-# which, perhaps, will exceed the line length limit.
+512 512
 255
-# This image has fixed max value. Another dummy comment which,
-# perhaps, will not appear in the file... but who knows
 160 60  53  97  151 99  67  36  77  84  100 160 169 118 82  161 201
 133 87  102 80  98  113 73  78  134 133 77  62  160 191 73  75  151
 154 97  85  65  188 97  38  77  177 174 67  120 102 138 158 117 84 

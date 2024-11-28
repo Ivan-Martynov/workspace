@@ -1,28 +1,6 @@
 #ifndef H_INCLUDE_STRUCTURES_PNM_FORMAT_PNM_image_BASE_H_H
 #define H_INCLUDE_STRUCTURES_PNM_FORMAT_PNM_image_BASE_H_H
 
-#include "structures/matrix_container.h"
-#include "structures/colors/rgb_color.h"
-#include "structures/colors/grayscale_color.h"
-#include "structures/colors/blackwhite_color.h"
-
-#include <array>
-#include <string_view>
-#include <utility>
-#include <vector>
-#include <memory>
-#include <iostream>
-#include <exception>
-#include <iomanip>
-#include <fstream>
-#include <optional>
-
-namespace Marvin
-{
-
-namespace PNM_Format
-{
-
 /**
  * @brief General class, responsible for reading/writing image files.
  *
@@ -42,7 +20,8 @@ namespace PNM_Format
  *
  */
 
-/* Write/read to file. Use format to identify how to write header.
+/*
+Write/read to file. Use format to identify how to write header.
 try
     write_to(filepath, type, comment):
         - write_header(stream, type, comment)
@@ -53,65 +32,74 @@ try
         - read_header(stream) => type, widht, height, (max_value?)
         - read raster data(mode: raw or plain)
 catch (std::ios_base::failure)
-     */
+
+ *
+ */
+
+#include "structures/matrix_container.h"
+#include "structures/colors/rgb_color.h"
+#include "structures/colors/grayscale_color.h"
+#include "structures/colors/blackwhite_color.h"
+
+#include <memory>
+#include <fstream>
+
+namespace Marvin
+{
+
+namespace PNM_Format
+{
 
 /**
- * @brief Structure containing comments for PNM image header.
- *
- * @remark All comments can be empty.
+ * @brief Concept representing types for PNM images.
+ * 
+ * @tparam T Pixel color type.
  */
-struct HeaderComments
-{
-    using value_type = std::string;
-
-    // The main comment refers to the comment right after the header id (aka
-    // magic number).
-    value_type main_comment {};
-
-    // Width comment refers to the comment after the width field. Rarely used.
-    value_type width_comment {};
-
-    // Height comment refers to the comment after the height field. Rarely used.
-    value_type height_comment {};
-
-    // Max value comment refers to the comment after the max value field. Rarely
-    // used.
-    value_type max_value_comment {};
-
-    HeaderComments() = default;
-    HeaderComments(std::string_view comment) : main_comment {comment} {}
-};
-
 template <class T>
 concept pnm_suitable
     = std::is_same_v<T, RGBColor> || std::is_same_v<T, GrayScaleColor>
       || std::is_same_v<T, BlackWhiteColor>;
 
+/**
+ * @brief Interface for PNM images.
+ */
 class IPNMImage
 {
   public:
     virtual ~IPNMImage() = default;
 
+    /**
+     * @brief Read from a file.
+     *
+     * @param[in] file_path Path to the file.
+     * @param[in] open_mode Mode to open the file. Default is binary.
+     */
     virtual void read_from(const char* const file_path,
         std::ios_base::openmode open_mode = std::ios_base::binary)
         = 0;
 
+    /**
+     * @brief Write to a file.
+     *
+     * @param[in] file_path Path to the file.
+     * @param[in] comment Comment to add to the header. Default is empty.
+     * @param[in] open_mode Mode to open the file. Default is binary.
+     */
     virtual void write_to(const char* const file_path,
-        const HeaderComments& comments,
+        std::string_view comment = std::string_view {},
         std::ios_base::openmode open_mode = std::ios_base::binary) const
         = 0;
 
+    /**
+     * @brief Write to a file.
+     *
+     * @param[in] file_path Path to the file.
+     * @param[in] open_mode Mode to open the file.
+     * @param[in] comment Comment to add to the header. Default is empty.
+     */
     virtual void write_to(const char* const file_path,
-        std::ios_base::openmode open_mode = std::ios_base::binary,
-        const HeaderComments& comments = {}) const
-        = 0;
-
-    virtual void write_to(const char* const file_path,
-        std::ios_base::openmode open_mode, std::string_view comment) const
-        = 0;
-
-    virtual void write_to(const char* const file_path, std::string_view comment,
-        std::ios_base::openmode open_mode) const
+        std::ios_base::openmode open_mode,
+        std::string_view comment = std::string_view {}) const
         = 0;
 };
 
@@ -122,38 +110,147 @@ class PNMImageTemplated : public MatrixTemplated<T>, public IPNMImage
     using value_type = MatrixTemplated<T>::value_type;
     using size_type = MatrixTemplated<value_type>::size_type;
 
+    /**
+     * @brief Default emtpy constructor.
+     */
     PNMImageTemplated() = default;
+
+    /***************************************************************************
+     * Constructors/destructor section.                                        *
+     **************************************************************************/
+
+    /**
+     * @brief Initialize an image from width, height and max value.
+     *
+     * @tparam T Color type.
+     * @param[in] width Width of the image.
+     * @param[in] height Height of the image.
+     * @param[in] max_value Max value for each channel pixel value.
+     */
     PNMImageTemplated(size_type width, size_type height, size_type max_value);
+
+    /**
+     * @brief Initialize an image from width and height, using default max
+     * value.
+     *
+     * @tparam T Color type.
+     * @param[in] width Width of the image.
+     * @param[in] height Height of the image.
+     */
     PNMImageTemplated(size_type width, size_type height);
+
+    /**
+     * @brief Construct an image from a file.
+     *
+     * @tparam T Color type.
+     * @param[in] file_path Path to the file to read from.
+     * @param[in] open_mode Mode to open the file. Default is binary.
+     */
+    PNMImageTemplated(std::string_view file_path,
+        std::ios_base::openmode open_mode = std::ios_base::binary);
 
     ~PNMImageTemplated() = default;
 
+    /***************************************************************************
+     * End of Constructors/destructor section.                                 *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Getters section.                                                        *
+     **************************************************************************/
+
+    /**
+     * @brief Width of the image, that is the number of columns in the
+     * underlying matrix.
+     *
+     * @return size_type Width (number of columns).
+     */
     size_type width() const { return this->column_count(); }
+
+    /**
+     * @brief Height of the image, that is the number of rows in the
+     * underlying matrix.
+     *
+     * @return size_type Height (number of rows).
+     */
     size_type height() const { return this->row_count(); }
+
+    /**
+     * @brief Maximum value for each channel in each pixel of the raster data of
+     * the image.
+     *
+     * @return size_type Max value.
+     */
     size_type max_value() const { return m_max_value; }
 
+    /***************************************************************************
+     * End of Getters section.                                                 *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Modifiers section.                                                      *
+     **************************************************************************/
+
+    /**
+     * @brief Resize an image.
+     *
+     * @tparam T Color type.
+     * @param[in] new_width New width.
+     * @param[in] new_height New height.
+     */
     void resize(size_type new_width, size_type new_height);
+
+    /**
+     * @brief Scale (resize) an image.
+     *
+     * @tparam T Color type.
+     * @param[in] scale_value Value to scale the image with.
+     */
     void scale(double scale_value);
 
+    /***************************************************************************
+     * End of Modifiers section.                                               *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Read/Write section.                                                     *
+     **************************************************************************/
+
+    /**
+     * @brief Read from a file.
+     *
+     * @param[in] file_path Path to the file.
+     * @param[in] open_mode Mode to open the file. Default is binary.
+     */
     void read_from(const char* const file_path,
         std::ios_base::openmode open_mode = std::ios_base::binary) override;
 
-    void write_to(const char* const file_path, const HeaderComments& comments,
+    /**
+     * @brief Write to a file.
+     *
+     * @param[in] file_path Path to the file.
+     * @param[in] comment Comment to add to the header. Default is empty.
+     * @param[in] open_mode Mode to open the file. Default is binary.
+     */
+    void write_to(const char* const file_path,
+        std::string_view comment = std::string_view {},
         std::ios_base::openmode open_mode
         = std::ios_base::binary) const override;
 
-    void write_to(const char* const file_path,
-        std::ios_base::openmode open_mode = std::ios_base::binary,
-        const HeaderComments& comments = {}) const override;
-
+    /**
+     * @brief Write to a file.
+     *
+     * @param[in] file_path Path to the file.
+     * @param[in] open_mode Mode to open the file.
+     * @param[in] comment Comment to add to the header. Default is empty.
+     */
     void write_to(const char* const file_path,
         std::ios_base::openmode open_mode,
-        std::string_view comment) const override;
+        std::string_view comment = std::string_view {}) const override;
 
-    void write_to(const char* const file_path, std::string_view comment,
-        std::ios_base::openmode open_mode
-        = std::ios_base::binary) const override;
-
+    /***************************************************************************
+     * End of Read/Write section.                                              *
+     **************************************************************************/
   private:
     size_type m_max_value {};
 };

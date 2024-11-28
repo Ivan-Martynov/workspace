@@ -1,10 +1,8 @@
 #include "structures/pnm_format/pnm_image_base.h"
 
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <limits>
+#include <iomanip>
 #include <algorithm>
+#include <utility>
 
 namespace Marvin
 {
@@ -27,168 +25,342 @@ static constexpr int absolute_max_value {65535}; // 2^16 - 1
 
 } // namespace Settings
 
+/**
+ * @brief Tools to operate with types of PNM files.
+ */
+namespace TypeTools
+{
+/**
+ * @brief Type of image, representing format:
+ * - P1 - plain black and white.
+ * - P2 - plain grayscale.
+ * - P3 - plain rgb.
+ * - P4 - raw (binary) black and white.
+ * - P5 - raw (binary) grayscale.
+ * - P6 - raw (binary) rgb.
+ *
+ * max_type used as the count of types. Can also be used to mark the default
+ * and/or error value.
+ *
+ * @todo Add P7.
+ *
+ */
+enum class Type
+{
+    P1,
+    P2,
+    P3,
+    P4,
+    P5,
+    P6,
+
+    max_type,
+};
+
+/**
+ * @brief Array containing names representing header ids.
+ */
+constexpr std::array<std::string_view, std::to_underlying(Type::max_type)>
+    type_names {"P1", "P2", "P3", "P4", "P5", "P6"};
+
+/**
+ * @brief Convert string to header type.
+ *
+ * @param[in] format_id String representing header id.
+ * @return constexpr std::optional<Type> Type representing image format or
+ * nullopt for illegal format id.
+ */
+constexpr std::optional<Type> type_from_string(std::string_view format_id)
+{
+    for (size_t i {0}; i < type_names.size(); ++i)
+    {
+        if (type_names[i] == format_id)
+        {
+            return static_cast<Type>(i);
+        }
+    }
+
+    return {};
+}
+
+/**
+ * @brief Check whether the type represent a black and white image.
+ *
+ * @param[in] type Type to check.
+ * @return true Image is black and white.
+ * @return false Image is not black and white.
+ */
+constexpr bool is_blackwhite(Type type)
+{
+    return (type == Type::P1) || (type == Type::P4);
+}
+
+/**
+ * @brief Check whether the type represent a grayscale image.
+ *
+ * @param[in] type Type to check.
+ * @return true Image is grayscale.
+ * @return false Image is not grayscale.
+ */
+constexpr bool is_grayscale(Type type)
+{
+    return (type == Type::P2) || (type == Type::P5);
+}
+
+/**
+ * @brief Check whether the type represent an rgb image.
+ *
+ * @param[in] type Type to check.
+ * @return true Image is rgb.
+ * @return false Image is not rgb.
+ */
+constexpr bool is_rgb(Type type)
+{
+    return (type == Type::P3) || (type == Type::P6);
+}
+
+/**
+ * @brief Check whether the type represent plain (text) file.
+ *
+ * @param[in] type Type to check.
+ * @return true File is plain.
+ * @return false File is not plain.
+ */
+constexpr bool is_plain(Type type)
+{
+    return (type == Type::P1) || (type == Type::P2) || (type == Type::P3);
+}
+
+/**
+ * @brief Check whether the type represent raw (binary) file.
+ *
+ * @param[in] type Type to check.
+ * @return true File is raw.
+ * @return false File is not raw.
+ */
+constexpr bool is_raw(Type type)
+{
+    return (type == Type::P4) || (type == Type::P5) || (type == Type::P6);
+}
+} // namespace TypeTools
+
+/**
+ * @brief Traits for PNM images, containing type specific qualities. For
+ * example, plain and raw type identifiers.
+ *
+ * @tparam T One of PNM suitable types (BlackWhiteColor, GrayScaleColor,
+ * RGBColor).
+ */
 template <pnm_suitable T>
 class pnm_image_traits;
 
 /**
- * @brief Structure to contain information about a pnm image: typically, the id
- * from the header, width, height and max value.
+ * @brief Traits for PBM (Black and White) images.
  *
- * @remarks Black-white images do not contain max value in a header, but it is
- * still present in this structure. Typically set as one.
+ * @tparam BlackWhiteColor
  */
-struct PNMImageInfo
-{
-    using size_type = int;
-
-    /**
-     * @brief Type of image, representing format:
-     * - P1 - plain black and white.
-     * - P2 - plain grayscale.
-     * - P3 - plain rgb.
-     * - P4 - raw (binary) black and white.
-     * - P5 - raw (binary) grayscale.
-     * - P6 - raw (binary) rgb.
-     *
-     * max_type used as the count of types. Can also be used to mark the default
-     * and/or error value.
-     *
-     * @todo Add P7.
-     *
-     */
-    enum class Type
-    {
-        P1,
-        P2,
-        P3,
-        P4,
-        P5,
-        P6,
-
-        max_type,
-    };
-
-    /**
-     * @brief Array containing names representing header ids.
-     */
-    static constexpr std::array<std::string_view,
-        std::to_underlying(Type::max_type)>
-        type_names {"P1", "P2", "P3", "P4", "P5", "P6"};
-
-    PNMImageInfo() = default;
-
-    template <class T>
-    PNMImageInfo(Type image_type, const PNMImageTemplated<T>& image)
-        : type {image_type}, width {image.width()}, height {image.height()},
-          max_value {image.max_value()}
-    {
-    }
-
-    template <class T>
-    PNMImageInfo(const PNMImageTemplated<T>& image, bool is_raw)
-        : PNMImageInfo {is_raw ? pnm_image_traits<T>::raw_type()
-                               : pnm_image_traits<T>::plain_type(),
-              image}
-    //                       , width {image.width()}, height {image.height()},
-    //         max_value {image.max_value()}
-    {
-    }
-
-    /**
-     * @brief Convert string to header type.
-     *
-     * @param[in] format_id String representing header id.
-     * @return constexpr std::optional<Type> Type representing image format or
-     * nullopt for illegal format id.
-     */
-    static constexpr std::optional<Type> type_from_string(
-        std::string_view format_id)
-    {
-        for (size_t i {0}; i < type_names.size(); ++i)
-        {
-            if (type_names[i] == format_id)
-            {
-                return static_cast<Type>(i);
-            }
-        }
-
-        return {};
-    }
-
-    static constexpr bool is_blackwhite(Type type)
-    {
-        return (type == Type::P1) || (type == Type::P4);
-    }
-
-    static constexpr bool is_grayscale(Type type)
-    {
-        return (type == Type::P2) || (type == Type::P5);
-    }
-
-    static constexpr bool is_rgb(Type type)
-    {
-        return (type == Type::P3) || (type == Type::P6);
-    }
-
-    static constexpr bool is_plain(Type type)
-    {
-        return (type == Type::P1) || (type == Type::P2) || (type == Type::P3);
-    }
-
-    static constexpr bool is_raw(Type type)
-    {
-        return (type == Type::P4) || (type == Type::P5) || (type == Type::P6);
-    }
-
-    Type type {};
-    size_type width {};
-    size_type height {};
-    size_type max_value {};
-};
-
 template <>
 class pnm_image_traits<BlackWhiteColor>
 {
   public:
-    static constexpr auto default_max_value() { return 1; }
-    static constexpr auto channel_count() { return 1; }
-    static constexpr auto plain_type() { return PNMImageInfo::Type::P1; }
-    static constexpr auto raw_type() { return PNMImageInfo::Type::P4; }
+    using size_type = PNMImageTemplated<BlackWhiteColor>::size_type;
+    using type_type = TypeTools::Type;
+    /**
+     * @brief Default max value for black and white images.
+     *
+     * @return constexpr size_type Max value for a pixel.
+     */
+    static constexpr size_type default_max_value() { return 1; }
+
+    /**
+     * @brief Number of channels to represent a pixel's color.
+     *
+     * @return constexpr size_type Channel count.
+     */
+    static constexpr size_type channel_count() { return 1; }
+
+    /**
+     * @brief Type representing plain (text) files.
+     *
+     * @return constexpr type_type File type.
+     */
+    static constexpr type_type plain_type() { return TypeTools::Type::P1; }
+
+    /**
+     * @brief Type representing raw (binary) files.
+     *
+     * @return constexpr type_type File type.
+     */
+    static constexpr type_type raw_type() { return TypeTools::Type::P4; }
 };
 
+/**
+ * @brief Traits for PGM (GrayScale) images.
+ *
+ * @tparam GrayScaleColor
+ */
 template <>
 class pnm_image_traits<GrayScaleColor>
 {
   public:
-    static constexpr auto default_max_value() { return 255; }
-    static constexpr auto channel_count() { return 1; }
-    static constexpr auto plain_type() { return PNMImageInfo::Type::P2; }
-    static constexpr auto raw_type() { return PNMImageInfo::Type::P5; }
+    using size_type = PNMImageTemplated<GrayScaleColor>::size_type;
+    using type_type = TypeTools::Type;
+    /**
+     * @brief Default max value for grayscale images.
+     *
+     * @return constexpr size_type Max value for a pixel.
+     */
+    static constexpr size_type default_max_value() { return 255; }
+
+    /**
+     * @brief Number of channels to represent a pixel's color.
+     *
+     * @return constexpr size_type Channel count.
+     */
+    static constexpr size_type channel_count() { return 1; }
+
+    /**
+     * @brief Type representing plain (text) files.
+     *
+     * @return constexpr type_type File type.
+     */
+    static constexpr type_type plain_type() { return TypeTools::Type::P2; }
+
+    /**
+     * @brief Type representing raw (binary) files.
+     *
+     * @return constexpr type_type File type.
+     */
+    static constexpr type_type raw_type() { return TypeTools::Type::P5; }
 };
 
+/**
+ * @brief Traits for PPM (RGB) images.
+ *
+ * @tparam RGBColor
+ */
 template <>
 class pnm_image_traits<RGBColor>
 {
   public:
-    static constexpr auto default_max_value() { return 255; }
-    static constexpr auto channel_count() { return 3; }
-    static constexpr auto plain_type() { return PNMImageInfo::Type::P3; }
-    static constexpr auto raw_type() { return PNMImageInfo::Type::P6; }
+    using size_type = PNMImageTemplated<RGBColor>::size_type;
+    using type_type = TypeTools::Type;
+    /**
+     * @brief Default max value for a single channel in RGB images.
+     *
+     * @return constexpr size_type Max value for pixel's channel.
+     */
+    static constexpr size_type default_max_value() { return 255; }
+
+    /**
+     * @brief Number of channels to represent a pixel's color.
+     *
+     * @return constexpr size_type Channel count.
+     */
+    static constexpr size_type channel_count() { return 3; }
+
+    /**
+     * @brief Type representing plain (text) files.
+     *
+     * @return constexpr type_type File type.
+     */
+    static constexpr type_type plain_type() { return TypeTools::Type::P3; }
+
+    /**
+     * @brief Type representing raw (binary) files.
+     *
+     * @return constexpr type_type File type.
+     */
+    static constexpr type_type raw_type() { return TypeTools::Type::P6; }
 };
 
 /**
  * @brief Structure for a pnm image header, containing the image info and header
- * comments.
+ * comment.
  */
-struct PNMImageHeader
+class PNMImageHeader
 {
-    using size_type = PNMImageInfo::size_type;
+public:
+    using size_type = int;
 
-    PNMImageInfo info {};
-    HeaderComments comments {};
+    /***************************************************************************
+     * Constructors section                                                    *
+     **************************************************************************/
 
+    /**
+     * @brief Default constructor.
+     */
     PNMImageHeader() = default;
+
+    /**
+     * @brief Construct a header from a type, image and optional comment.
+     *
+     * @tparam T Image pixel type.
+     * @param[in] header_type Type of header file.
+     * @param[in] image Image to get information from.
+     * @param[in] comment Header comment.
+     */
+    template <pnm_suitable T>
+    PNMImageHeader(TypeTools::Type header_type,
+        const PNMImageTemplated<T>& image,
+        std::string_view comment = std::string_view {});
+
+    /**
+     * @brief Construct a header from an image and optional comment. The first
+     * value is a flag for raw/plain file type.
+     *
+     * @tparam T Image pixel type.
+     * @param[in] is_raw Whether the file is raw (binary) or plain (text).
+     * @param[in] image Image to get information from.
+     * @param[in] comment Header comment.
+     */
+    template <pnm_suitable T>
+    PNMImageHeader(bool is_raw, const PNMImageTemplated<T>& image,
+        std::string_view comment = std::string_view {});
+
+    /**
+     * @brief Construct a header from a stream.
+     *
+     * @param[in] stream Stream to read from.
+     */
     PNMImageHeader(std::istream& stream);
+
+    /***************************************************************************
+     * End of Constructors section                                             *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Getters section                                                         *
+     **************************************************************************/
+
+    constexpr TypeTools::Type type() const { return m_type; }
+    constexpr size_type width() const { return m_width; }
+    constexpr size_type height() const { return m_height; }
+    constexpr size_type max_value() const { return m_max_value; }
+    std::string_view comment() const { return m_comment; }
+
+    /***************************************************************************
+     * End of Getters section                                                  *
+     **************************************************************************/
+
+    void print() const
+    {
+        std::cout << "Header: "
+                  << TypeTools::type_names[std::to_underlying(m_type)]
+                  << "; width = " << m_width << "; height = " << m_height
+                  << "; max = " << m_max_value << "\n";
+        if (!m_comment.empty())
+        {
+            std::cout << "Comment: " << m_comment << "\n";
+        }
+    }
+
+  private:
+    TypeTools::Type m_type {};
+    size_type m_width {};
+    size_type m_height {};
+    size_type m_max_value {};
+    std::string m_comment {};
 };
 
 /**
@@ -198,24 +370,34 @@ struct PNMImageHeader
 namespace FileOperations
 {
 
+/**
+ * @brief Skip whitespace and comments in a stream, collecting comments into a
+ * string.
+ *
+ * @param[in] stream Stream to process (typically, a file stream).
+ * @return std::string String representing comments from a stream.
+ */
 std::string skip_whitespace_and_comment(std::istream& stream)
 {
     std::string comment {};
     while (true)
     {
+        // The hash ('#') symbol marks the beginning of comment in a PNM file.
         if (const auto c {stream.get()}; c == '#')
         {
+            // Skip leading spaces.
             while (std::isspace(stream.peek()))
             {
                 stream.get();
             }
+            // The comment continues till the end of line.
             std::string line {};
             std::getline(stream, line);
             if (!line.empty())
             {
+                // If the comment is spread along lines, keep adding them.
                 comment += line + "\n";
             }
-            // stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         else if (!std::isspace(c))
         {
@@ -228,6 +410,15 @@ std::string skip_whitespace_and_comment(std::istream& stream)
     return comment;
 }
 
+/**
+ * @brief Attempt to close and open the file stream from a file path.
+ *
+ * @param[in] file_stream Stream to reopen.
+ * @param[in] file_path Path to the file.
+ * @param[in] open_mode Specify how to open the file.
+ * @return true File stream was successfully reopened.
+ * @return false Failed to reopen the stream.
+ */
 bool reopen_file(std::ifstream& file_stream, const char* const file_path,
     std::ios_base::openmode open_mode = std::ios_base::in)
 {
@@ -245,6 +436,13 @@ bool reopen_file(std::ifstream& file_stream, const char* const file_path,
     }
 }
 
+/**
+ * @brief Retrive color values from a stream.
+ *
+ * @tparam T Color type.
+ * @param[in] stream Stream to read from.
+ * @param[in] image Image to write to.
+ */
 template <pnm_suitable T>
 void read_raster_plain(std::istream& stream, PNMImageTemplated<T>& image)
 {
@@ -258,9 +456,29 @@ void read_raster_plain(std::istream& stream, PNMImageTemplated<T>& image)
     }
 }
 
+/**
+ * @brief Read raw (binary) data from a stream. The methods vary depending on
+ * the color type.
+ *
+ * @tparam T Color type.
+ */
 template <pnm_suitable T>
 void read_raster_raw(std::istream&, PNMImageTemplated<T>&);
 
+/**
+ * @brief Read raw (binary) BlackWhiteColor data from a stream.
+ *
+ * @remarks Each row is Width bits, packed 8 to a byte, with don't care bits to
+ * fill out the last byte in the row. Each bit represents a pixel: 1 is black, 0
+ * is white. The order of the pixels is left to right. The order of their
+ * storage within each file byte is most significant bit to least significant
+ * bit. The order of the file bytes is from the beginning of the file toward the
+ * end of the file. (Source: https://netpbm.sourceforge.net/doc/pbm.html)
+ *
+ * @tparam BlackWhiteColor.
+ * @param[in] stream Stream to read from.
+ * @param[in] image Image to write to.
+ */
 template <>
 void read_raster_raw<BlackWhiteColor>(
     std::istream& stream, PNMImageTemplated<BlackWhiteColor>& image)
@@ -271,6 +489,7 @@ void read_raster_raw<BlackWhiteColor>(
         {
             const auto byte_value {stream.get()};
             auto shift {8};
+            // Retrieve each pixel from the packed byte (char, uint8) value.
             while (bit_count--)
             {
                 // Extract most significant bits first.
@@ -278,16 +497,20 @@ void read_raster_raw<BlackWhiteColor>(
             }
         }};
 
+    // Number of bytes in a row, reprsenting packed pixel values.
     const auto row_value_count {image.width() / 8};
+    // Number of bits in the last pixel. Reason: ignoring extra bits.
     const int last_value_bit_count {static_cast<int>(image.width() % 8)};
 
     for (size_type row {0}; row < image.height(); ++row)
     {
         for (size_type i {0}; i < row_value_count; ++i)
         {
+            // Each byte contains 8 bits.
             add_pixel_lambda(8);
         }
 
+        // If there are extra bits, process only what's necessary.
         if (last_value_bit_count)
         {
             add_pixel_lambda(last_value_bit_count);
@@ -295,22 +518,46 @@ void read_raster_raw<BlackWhiteColor>(
     }
 }
 
-int ppm_raw_gray_value(std::istream& stream)
+/**
+ * @brief Helper function to retrive a two-byte grayscale value from a stream.
+ *
+ * @remarks The reason is to use this function not only for GrayScale images,
+ * but also for RGB ones, because there are three channels (red, green and blue)
+ * which essentially are grayscale.
+ *
+ * @param[in] stream Stream to read from.
+ * @return int Value representing the grayscale color.
+ */
+int pnm_raw_gray_value_read(std::istream& stream)
 {
     const auto first {stream.get()};
     const auto second {stream.get()};
+    // The most significant byte is first.
     return (first << 8) | second;
 }
 
-// TODO: check that reading from stream succeeds.
+/**
+ * @brief Read raw (binary) GrayScaleColor data from a stream.
+ *
+ * @remarks Each gray value is a number from 0 through Maxval, with 0 being
+ * black and Maxval being white. Each gray value is represented in pure binary
+ * by either 1 or 2 bytes. If the Maxval is less than 256, it is 1 byte.
+ * Otherwise, it is 2 bytes. The most significant byte is first.
+ * (Source: https://netpbm.sourceforge.net/doc/pgm.html)
+ *
+ * @tparam GrayScaleColor.
+ * @param[in] stream Stream to read from.
+ * @param[in] image Image to write to.
+ */
 template <>
 void read_raster_raw<GrayScaleColor>(
     std::istream& stream, PNMImageTemplated<GrayScaleColor>& image)
 {
+    // Values require two bytes per pixel.
     if (image.max_value() > 0xFF)
     {
         std::ranges::for_each(image.values(),
-            [&stream](auto& p) { p = ppm_raw_gray_value(stream); });
+            [&stream](auto& p) { p = pnm_raw_gray_value_read(stream); });
     }
     else
     {
@@ -319,18 +566,32 @@ void read_raster_raw<GrayScaleColor>(
     }
 }
 
+/**
+ * @brief Read raw (binary) RGBColor data from a stream.
+ *
+ * @remarks Each pixel is a triplet of red, green, and blue samples, in that
+ * order. Each sample is represented in pure binary by either 1 or 2 bytes. If
+ * the Maxval is less than 256, it is 1 byte. Otherwise, it is 2 bytes. The most
+ * significant byte is first.
+ * (Source: https://netpbm.sourceforge.net/doc/ppm.html)
+ *
+ * @tparam RGBColor.
+ * @param[in] stream Stream to read from.
+ * @param[in] image Image to write to.
+ */
 template <>
 void read_raster_raw<RGBColor>(
     std::istream& stream, PNMImageTemplated<RGBColor>& image)
 {
+    // Values require two bytes per pixel.
     if (image.max_value() > 0xFF)
     {
         std::ranges::for_each(image.values(),
             [&stream](auto& p)
             {
-                const auto red {ppm_raw_gray_value(stream)};
-                const auto green {ppm_raw_gray_value(stream)};
-                const auto blue {ppm_raw_gray_value(stream)};
+                const auto red {pnm_raw_gray_value_read(stream)};
+                const auto green {pnm_raw_gray_value_read(stream)};
+                const auto blue {pnm_raw_gray_value_read(stream)};
                 p = {red, green, blue};
             });
     }
@@ -347,24 +608,32 @@ void read_raster_raw<RGBColor>(
     }
 }
 
+/**
+ * @brief Helper function to place a pixel into the stream (reprsenting plain
+ * text file) using width to align all items.
+ *
+ * @tparam T Color type.
+ * @param[in] stream Stream to write to.
+ * @param[in] color Color to write.
+ * @param[in] item_width Width to align elements.
+ */
 template <pnm_suitable T>
 void color_to_ostream_plain(
-    std::ostream& stream, const T& color, int item_width);
-
-template <>
-void color_to_ostream_plain<BlackWhiteColor>(
-    std::ostream& stream, const BlackWhiteColor& color, int item_width)
+    std::ostream& stream, const T& color, int item_width)
 {
     stream << std::setw(item_width) << color.value();
 }
 
-template <>
-void color_to_ostream_plain<GrayScaleColor>(
-    std::ostream& stream, const GrayScaleColor& color, int item_width)
-{
-    stream << std::setw(item_width) << color.value();
-}
-
+/**
+ * @brief
+ * @brief Specialization to place an RGB pixel into the stream since an RGB
+ * color is repsented by three values.
+ *
+ * @tparam RGBColor.
+ * @param[in] stream Stream to write to.
+ * @param[in] color Color to write.
+ * @param[in] item_width Width to align elements.
+ */
 template <>
 void color_to_ostream_plain<RGBColor>(
     std::ostream& stream, const RGBColor& color, int item_width)
@@ -374,17 +643,47 @@ void color_to_ostream_plain<RGBColor>(
            << std::setw(item_width) << color.blue();
 }
 
+/**
+ * @brief Write the raster data to a plain (text) stream (typicall, file
+ * stream).
+ *
+ * @tparam T Color type.
+ * @param[in] stream Stream to write to.
+ * @param[in] image Image containing the raster data.
+ */
 template <pnm_suitable T>
 void write_raster_plain(std::ostream& stream, const PNMImageTemplated<T>& image)
 {
     using size_type = PNMImageTemplated<T>::size_type;
 
+    auto number_width_lambda {[](size_type n)
+        {
+            size_type w {1};
+            while (n /= 10)
+            {
+                ++w;
+            }
+            return w;
+        }};
+
     stream << std::left;
-    const auto item_width {
-        static_cast<size_type>(std::to_string(image.max_value()).length())};
+
+    // Use the max value digit count to define the item width for alignment.
+    const auto item_width {number_width_lambda(image.max_value())};
+
+    // Important, because RGB images have three values to add per pixel, while
+    // other image (GrayScale and BlackWhite) have only one value per pixel.
     const auto multiplier {pnm_image_traits<T>::channel_count()};
+
+    // Initial space occupied by a pixel.
     const auto width_step {item_width * multiplier};
+    // Step to the next pixel. The addition of multiplier represent the space
+    // require for a whitespace character. Therefore, RGB color requires three
+    // values and three spaces.
     const auto stride {width_step + multiplier};
+
+    // Adjust line length limit in case the maximum space a row occupies is
+    // smaller than the default max line length.
     const auto line_limit {
         std::min(Settings::max_line_length, image.width() * stride - 1)};
 
@@ -396,9 +695,7 @@ void write_raster_plain(std::ostream& stream, const PNMImageTemplated<T>& image)
     while (++i < n)
     {
         current_width_pos += stride;
-        const bool next_line {current_width_pos > line_limit};
-
-        if (next_line)
+        if (current_width_pos > line_limit)
         {
             current_width_pos = width_step;
             stream << '\n';
@@ -412,9 +709,29 @@ void write_raster_plain(std::ostream& stream, const PNMImageTemplated<T>& image)
     }
 }
 
+/**
+ * @brief Function to write raw (binary) raster data to a stream. Vary for
+ * different color types.
+ *
+ * @tparam T Color type.
+ */
 template <pnm_suitable T>
 void write_raster_raw(std::ostream&, const PNMImageTemplated<T>&);
 
+/**
+ * @brief Function to write raw (binary) BlackWhite raster data to a stream.
+ *
+ * @remarks Each row is Width bits, packed 8 to a byte, with don't care bits to
+ * fill out the last byte in the row. Each bit represents a pixel: 1 is black, 0
+ * is white. The order of the pixels is left to right. The order of their
+ * storage within each file byte is most significant bit to least significant
+ * bit. The order of the file bytes is from the beginning of the file toward the
+ * end of the file. (Source: https://netpbm.sourceforge.net/doc/pbm.html)
+
+ * @tparam BlackWhiteColor.
+ * @param[in] stream Stream to write to.
+ * @param[in] image Image containing raster data.
+ */
 template <>
 void write_raster_raw<BlackWhiteColor>(
     std::ostream& stream, const PNMImageTemplated<BlackWhiteColor>& image)
@@ -426,6 +743,7 @@ void write_raster_raw<BlackWhiteColor>(
         {
             unsigned char byte_value {};
             unsigned char shift {8};
+            // Pack pixel values into a byte.
             while (bit_count--)
             {
                 // The most signficant bit is place first.
@@ -437,7 +755,9 @@ void write_raster_raw<BlackWhiteColor>(
             return col;
         }};
 
+    // Number of bytes to pack the values into.
     const auto row_value_count {image.width() / 8};
+    // Last bits to pack values into. The extra bits are to be ignored.
     const int last_value_bit_count {static_cast<int>(image.width() % 8)};
     for (size_type row {0}; row < image.height(); ++row)
     {
@@ -449,94 +769,101 @@ void write_raster_raw<BlackWhiteColor>(
 
         if (last_value_bit_count)
         {
+            // If there are extra bits, process only what's necessary.
             col = add_pixel_lambda(col, last_value_bit_count);
         }
     }
 }
 
+/**
+ * @brief Helper function to place a two-byte GrayScale value into a stream.
+ *
+ * @param[in] stream Stream to write to.
+ * @param[in] value Value to place into the stream.
+ */
+void pnm_raw_gray_value_write(std::ostream& stream, int value)
+{
+    // Most significant byte first.
+    stream << static_cast<unsigned char>((value >> 8) & 0xFF)
+           << static_cast<unsigned char>(value & 0xFF);
+}
+
+/**
+ * @brief Function to write raw (binary) GrayScale raster data to a stream.
+ *
+ * @remarks Each gray value is a number from 0 through Maxval, with 0 being
+ * black and Maxval being white. Each gray value is represented in pure binary
+ * by either 1 or 2 bytes. If the Maxval is less than 256, it is 1 byte.
+ * Otherwise, it is 2 bytes. The most significant byte is first.
+ * (Source: https://netpbm.sourceforge.net/doc/pgm.html)
+ *
+ * @tparam GrayScaleColor.
+ * @param[in] stream Stream to write to.
+ * @param[in] image Image containing raster data.
+ */
 template <>
 void write_raster_raw<GrayScaleColor>(
     std::ostream& stream, const PNMImageTemplated<GrayScaleColor>& image)
 {
+    // Values require two bytes per pixel.
     if (image.max_value() > 0xFF)
     {
-        for (const auto& color : image.values())
-        {
-            stream << static_cast<unsigned char>((color.value() >> 8) & 0xFF);
-            stream << static_cast<unsigned char>(color.value() & 0xFF);
-        }
+        std::ranges::for_each(image.values(), [&stream](const auto& color)
+            { pnm_raw_gray_value_write(stream, color.value()); });
     }
     else
     {
-        for (const auto& color : image.values())
-        {
-            stream << static_cast<unsigned char>(color.value());
-        }
+        std::ranges::for_each(image.values(), [&stream](const auto& color)
+            { stream << static_cast<unsigned char>(color.value()); });
     }
 }
 
+/**
+ * @brief Function to write raw (binary) RGB raster data to a stream.
+ *
+ * @remarks Each pixel is a triplet of red, green, and blue samples, in that
+ * order. Each sample is represented in pure binary by either 1 or 2 bytes. If
+ * the Maxval is less than 256, it is 1 byte. Otherwise, it is 2 bytes. The most
+ * significant byte is first.
+ * (Source: https://netpbm.sourceforge.net/doc/ppm.html)
+ *
+ * @tparam RGBColor.
+ * @param[in] stream Stream to write to.
+ * @param[in] image Image containing raster data.
+ */
 template <>
 void write_raster_raw<RGBColor>(
     std::ostream& stream, const PNMImageTemplated<RGBColor>& image)
 {
+    // Values require two bytes per pixel.
     if (image.max_value() > 0xFF)
     {
-        for (const auto& color : image.values())
-        {
-            for (auto v : {color.red(), color.green(), color.blue()})
+        std::ranges::for_each(image.values(),
+            [&stream](const auto& color)
             {
-                stream << static_cast<char>((v >> 8) & 0xFF);
-                stream << static_cast<char>(v & 0xFF);
-            }
-        }
+                pnm_raw_gray_value_write(stream, color.red());
+                pnm_raw_gray_value_write(stream, color.green());
+                pnm_raw_gray_value_write(stream, color.blue());
+            });
     }
     else
     {
-        for (const auto& color : image.values())
-        {
-            for (auto v : {color.red(), color.green(), color.blue()})
+        std::ranges::for_each(image.values(),
+            [&stream](const auto& color)
             {
-                stream << static_cast<char>(v);
-            }
-        }
+                stream << static_cast<unsigned char>(color.red())
+                       << static_cast<unsigned char>(color.green())
+                       << static_cast<unsigned char>(color.blue());
+            });
     }
 }
 
-static void m_add_comment(std::ostream& stream, std::string_view comment)
-{
-    size_t word_start {comment.find_first_not_of(' ')};
-    if (word_start == std::string_view::npos)
-    {
-        return;
-    }
-
-    size_t line_limit {Settings::max_line_length};
-    if (comment[word_start] != '#')
-    {
-        stream << "# ";
-        line_limit -= 2;
-    }
-
-    if (comment.length() - word_start <= line_limit)
-    {
-        stream << comment.substr(word_start) << '\n';
-        return;
-    }
-
-    auto last_space {comment.find_last_of(' ', line_limit)};
-    if (last_space == std::string_view::npos)
-    {
-        stream << comment.substr(word_start, line_limit - word_start) << '\n';
-        m_add_comment(stream, comment.substr(line_limit));
-    }
-    else
-    {
-        auto last_char {comment.find_last_not_of(' ', last_space)};
-        stream << comment.substr(word_start, last_char + 1) << '\n';
-        m_add_comment(stream, comment.substr(last_space));
-    }
-}
-
+/**
+ * @brief Helper function to write a comment into a stream.
+ *
+ * @param[in] stream Stream to write to.
+ * @param[in] comment Comment to add to the stream.
+ */
 void add_header_comment(std::ostream& stream, std::string_view comment)
 {
     size_t word_start {comment.find_first_not_of(' ')};
@@ -546,12 +873,14 @@ void add_header_comment(std::ostream& stream, std::string_view comment)
     }
 
     size_t line_limit {Settings::max_line_length};
+    // Comments in pnm files should begin with a hash symbol.
     if (comment[word_start] != '#')
     {
         stream << "# ";
         line_limit -= 2;
     }
 
+    // Place the entire string if its length doesn't exceed the limit.
     if (comment.length() - word_start <= line_limit)
     {
         stream << comment.substr(word_start) << '\n';
@@ -561,84 +890,62 @@ void add_header_comment(std::ostream& stream, std::string_view comment)
     auto last_space {comment.find_last_of(' ', line_limit)};
     if (last_space == std::string_view::npos)
     {
+        // If there are no spaces within the limits (very long word - very
+        // rare), then break the line inside the word, and process the rest of
+        // the string.
         stream << comment.substr(word_start, line_limit - word_start) << '\n';
-        m_add_comment(stream, comment.substr(line_limit));
+        add_header_comment(stream, comment.substr(line_limit));
     }
     else
     {
+        // Break the line before the whitespace and process the rest of the
+        // string.
         auto last_char {comment.find_last_not_of(' ', last_space)};
         stream << comment.substr(word_start, last_char + 1) << '\n';
-        m_add_comment(stream, comment.substr(last_space));
+        add_header_comment(stream, comment.substr(last_space));
     }
 }
 
-[[maybe_unused]]
+/**
+ * @brief Add header to the stream.
+ *
+ * @param[in] stream Stream to write to.
+ * @param[in] header Header to place into the stream.
+ */
 void write_header(std::ostream& stream, const PNMImageHeader& header)
 {
-    stream << PNMImageInfo::type_names[std::to_underlying(header.info.type)]
-           << '\n';
+    stream << TypeTools::type_names[std::to_underlying(header.type())] << '\n';
 
-    add_header_comment(stream, header.comments.main_comment);
+    add_header_comment(stream, header.comment());
 
-    stream << header.info.width;
-    if (header.comments.width_comment.empty())
+    stream << header.width() << ' ' << header.height() << '\n';
+
+    // BlackWhite image have no max value entity - their max value equals one.
+    if (!TypeTools::is_blackwhite(header.type()))
     {
-        stream << ' ';
-    }
-    else
-    {
-        stream << '\n';
-        add_header_comment(stream, header.comments.width_comment);
-    }
-
-    stream << header.info.height << '\n';
-    add_header_comment(stream, header.comments.height_comment);
-
-    if (!PNMImageInfo::is_blackwhite(header.info.type))
-    {
-        stream << header.info.max_value << '\n';
-        add_header_comment(stream, header.comments.max_value_comment);
+        stream << header.max_value() << '\n';
     }
 }
 
-[[maybe_unused]]
-void write_header_old(std::ostream& stream, PNMImageHeader header)
-// std::ostream& stream, PNMHeader::Type type, std::string_view comment)
-{
-    stream << PNMImageInfo::type_names[std::to_underlying(header.info.type)]
-           << '\n';
-
-    FileOperations::m_add_comment(stream, header.comments.main_comment);
-
-    stream << header.info.width << ' ' << header.info.height << '\n';
-
-    if (!PNMImageInfo::is_blackwhite(header.info.type))
-    {
-        stream << header.info.max_value << '\n';
-    }
-    stream << PNMImageInfo::type_names[std::to_underlying(header.info.type)]
-           << '\n';
-
-    // m_add_comment(stream, comment);
-
-    // stream << width() << ' ' << height() << '\n';
-
-    // if (!PNMHeader::is_blackwhite(type))
-    // {
-    //     stream << max_value() << '\n';
-    // }
-}
-
+/**
+ * @brief Write an image to a file.
+ *
+ * @tparam T Underlying color type.
+ * @param[in] image Image to write into the file.
+ * @param[in] file_path Path to the file.
+ * @param[in] open_mode Mode to open the file.
+ * @param[in] comment Comment to add.
+ */
 template <pnm_suitable T>
 void write_to_file(const PNMImageTemplated<T> image,
     const char* const file_path, std::ios_base::openmode open_mode,
-    const HeaderComments& comments)
-//    std::string_view comment)
+    std::string_view comment)
 {
     if ((open_mode & std::ios_base::app)
         && !(open_mode & std::ios_base::binary))
     {
-        std::cout << "Appending images to one file is allowed only in "
+        std::cout << "Info: File " << file_path
+                  << ": appending images to one file is allowed only in "
                      "binary mode: opening as binary.\n";
         open_mode |= std::ios_base::binary;
     }
@@ -650,27 +957,16 @@ void write_to_file(const PNMImageTemplated<T> image,
         return;
     }
 
-    bool is_raw {(open_mode & std::ios_base::binary) != 0};
-
-    PNMImageInfo info {image, is_raw};
-    // PNMImageInfo info {*this, is_raw ? raw_type() : plain_type()};
-    // HeaderComments comments {};
-    // comments.main_comment = comment;
-    PNMImageHeader header {};
-    header.info = info;
-    header.comments = comments;
-    FileOperations::write_header(file_stream, header);
-
-    if (is_raw)
+    if (open_mode & std::ios_base::binary)
     {
-        // image.m_write_header(
-        //     file_stream, pnm_image_traits<T>::raw_type(), comment);
+        FileOperations::write_header(
+            file_stream, {pnm_image_traits<T>::raw_type(), image, comment});
         write_raster_raw(file_stream, image);
     }
     else
     {
-        // image.m_write_header(
-        //     file_stream, pnm_image_traits<T>::plain_type(), comment);
+        FileOperations::write_header(
+            file_stream, {pnm_image_traits<T>::plain_type(), image, comment});
         write_raster_plain(file_stream, image);
     }
     file_stream << '\n';
@@ -679,14 +975,55 @@ void write_to_file(const PNMImageTemplated<T> image,
 } // namespace FileOperations
 } // namespace
 
+/*******************************************************************************
+ * Header's Constructor section.                                               *
+ ******************************************************************************/
+
+/**
+ * @brief Construct a header from a type, image and optional comment.
+ *
+ * @tparam T Image pixel type.
+ * @param[in] header_type Type of header file.
+ * @param[in] image Image to get information from.
+ * @param[in] comment Header comment.
+ */
+template <pnm_suitable T>
+PNMImageHeader::PNMImageHeader(TypeTools::Type header_type,
+    const PNMImageTemplated<T>& image, std::string_view comment)
+    : m_type {header_type}, m_width {image.width()}, m_height {image.height()},
+      m_max_value {image.max_value()}, m_comment {comment}
+{
+}
+
+/**
+ * @brief Construct a header from an image and optional comment. The first
+ * value is a flag for raw/plain file type.
+ *
+ * @tparam T Image pixel type.
+ * @param[in] is_raw Whether the file is raw (binary) or plain (text).
+ * @param[in] image Image to get information from.
+ * @param[in] comment Header comment.
+ */
+template <pnm_suitable T>
+PNMImageHeader::PNMImageHeader(
+    bool is_raw, const PNMImageTemplated<T>& image, std::string_view comment)
+    : PNMImageHeader {is_raw ? pnm_image_traits<T>::raw_type()
+                             : pnm_image_traits<T>::plain_type(),
+          image, comment}
+{
+}
+
+/**
+ * @brief Construct a header from a stream.
+ *
+ * @param[in] stream Stream to read from.
+ */
 PNMImageHeader::PNMImageHeader(std::istream& stream)
 {
-    stream >> std::skipws;
-
-    std::string current_comment {};
     auto read_lambda {
-        [&stream, &current_comment](auto& value, std::string_view error_message)
+        [&stream, this](auto& value, std::string_view error_message)
         {
+            stream >> std::skipws;
             if (!(stream >> value))
             {
                 std::cerr << error_message << "\n";
@@ -694,140 +1031,33 @@ PNMImageHeader::PNMImageHeader(std::istream& stream)
             }
             else
             {
-                current_comment
-                    = FileOperations::skip_whitespace_and_comment(stream);
+                const auto current_comment {
+                    FileOperations::skip_whitespace_and_comment(stream)};
+                if (!current_comment.empty())
+                {
+                    m_comment += current_comment;
+                    // current_comment += current_comment;
+                }
                 return true;
             }
         }};
 
     std::string format_id {};
-    if (!read_lambda(format_id, "Failed to read id info from PNM header."))
+    if (!read_lambda(format_id, "Failed to read id from PNM header.")
+        || !read_lambda(
+            m_width, format_id + ": failed to read width from PNM header.")
+        || !read_lambda(
+            m_height, format_id + ": failed to read height from PNM header."))
     {
         return;
     }
 
-    const std::string main_comment {current_comment};
+    m_type = TypeTools::type_from_string(format_id).value_or(
+        TypeTools::Type::max_type);
 
-    size_type width {};
-    if (!read_lambda(
-            width, format_id + ": failed to read width info from PNM header."))
+    if (!TypeTools::is_blackwhite(m_type))
     {
-        return;
-    }
-    const std::string width_comment {current_comment};
-
-    size_type height {};
-    if (!read_lambda(height,
-            format_id + ": failed to read height info from PNM header."))
-    {
-        return;
-    }
-    const std::string height_comment {current_comment};
-
-    const auto type {PNMImageInfo::type_from_string(format_id).value_or(
-        PNMImageInfo::Type::max_type)};
-    size_type max_value {};
-    std::string max_value_comment {};
-    if (!PNMImageInfo::is_blackwhite(type))
-    {
-        if (!read_lambda(max_value,
-                format_id + ": failed to read max value info from PNM header."))
-        {
-            return;
-        }
-        max_value_comment = current_comment;
-    }
-    else
-    {
-        max_value = 1;
-    }
-
-    // PNMImageInfo image_info {};
-    info.type = type;
-    info.width = width;
-    info.height = height;
-    info.max_value = max_value;
-
-    auto copy_comment_lambda {[](std::string& target, std::string_view comment)
-        {
-            if (!comment.empty())
-            {
-                target = comment;
-            }
-        }};
-    copy_comment_lambda(comments.main_comment, main_comment);
-    copy_comment_lambda(comments.width_comment, width_comment);
-    copy_comment_lambda(comments.height_comment, height_comment);
-    copy_comment_lambda(comments.max_value_comment, max_value_comment);
-
-    // m_type = type;
-    // m_width = width;
-    // m_height = height;
-    // m_max_value = max_value;
-
-    std::cout << "Header: "
-              << PNMImageInfo::type_names[std::to_underlying(info.type)]
-              << "; width = " << width << "; height = " << height
-              << "; max = " << max_value << "\n";
-    auto show_comment_lambda {
-        [](std::string_view comment_name, std::string_view comment)
-        {
-            if (!comment.empty())
-            {
-                std::cout << comment_name << ": " << comment << "\n";
-            }
-        }};
-
-    show_comment_lambda("main comment", comments.main_comment);
-    show_comment_lambda("width comment", comments.width_comment);
-    show_comment_lambda("height comment", comments.height_comment);
-    show_comment_lambda("max value comment", comments.max_value_comment);
-}
-
-#if 0
-PNMHeader::PNMHeader(std::istream& stream)
-{
-    stream >> std::skipws;
-
-    auto read_lambda {[&stream](auto& value, std::string_view error_message)
-        {
-            if (!(stream >> value))
-            {
-                std::cerr << error_message << "\n";
-                return false;
-            }
-            else
-            {
-                FileOperations::skip_whitespace_and_comment(stream);
-                return true;
-            }
-        }};
-
-    std::string format_id {};
-    if (!read_lambda(format_id, "Failed to read id info from PNM header."))
-    {
-        return;
-    }
-
-    size_type width {};
-    if (!read_lambda(
-            width, format_id + ": failed to read width info from PNM header."))
-    {
-        return;
-    }
-
-    size_type height {};
-    if (!read_lambda(height,
-            format_id + ": failed to read height info from PNM header."))
-    {
-        return;
-    }
-
-    auto type {type_from_string(format_id).value_or(PNMHeader::Type::max_type)};
-    size_type max_value {};
-    if (!is_blackwhite(type))
-    {
-        if (!read_lambda(max_value,
+        if (!read_lambda(m_max_value,
                 format_id + ": failed to read max value info from PNM header."))
         {
             return;
@@ -835,20 +1065,28 @@ PNMHeader::PNMHeader(std::istream& stream)
     }
     else
     {
-        max_value = 1;
+        m_max_value = 1;
     }
 
-    m_type = type;
-    m_width = width;
-    m_height = height;
-    m_max_value = max_value;
-
-    std::cout << "Header: " << PNMHeader::type_names[std::to_underlying(m_type)]
-              << "; width = " << width << "; height = " << height
-              << "; max = " << max_value << "\n";
+    //print();
 }
-#endif
 
+/*******************************************************************************
+ * End of  Header's Constructor section.                                       *
+ ******************************************************************************/
+
+/*******************************************************************************
+ * PNMImageTemplated Constructors section.                                     *
+ ******************************************************************************/
+
+/**
+ * @brief Initialize an image from width, height and max value.
+ * 
+ * @tparam T Color type.
+ * @param[in] width Width of the image.
+ * @param[in] height Height of the image.
+ * @param[in] max_value Max value for each channel pixel value.
+ */
 template <pnm_suitable T>
 PNMImageTemplated<T>::PNMImageTemplated(
     size_type width, size_type height, size_type max_value)
@@ -857,6 +1095,13 @@ PNMImageTemplated<T>::PNMImageTemplated(
 {
 }
 
+/**
+ * @brief Initialize an image from width and height, using default max value.
+ * 
+ * @tparam T Color type.
+ * @param[in] width Width of the image.
+ * @param[in] height Height of the image.
+ */
 template <pnm_suitable T>
 PNMImageTemplated<T>::PNMImageTemplated(size_type width, size_type height)
     : PNMImageTemplated {
@@ -864,6 +1109,31 @@ PNMImageTemplated<T>::PNMImageTemplated(size_type width, size_type height)
 {
 }
 
+/**
+ * @brief Construct an image from a file.
+ * 
+ * @tparam T Color type.
+ * @param[in] file_path Path to the file to read from.
+ * @param[in] open_mode Mode to open the file.
+ */
+template <pnm_suitable T>
+PNMImageTemplated<T>::PNMImageTemplated(
+    std::string_view file_path, std::ios_base::openmode open_mode)
+{
+    read_from(file_path.data(), open_mode);
+}
+
+/*******************************************************************************
+ * End of PNMImageTemplated Constructors section.                              *
+ ******************************************************************************/
+
+/**
+ * @brief Resize an image.
+ * 
+ * @tparam T Color type.
+ * @param[in] new_width New width.
+ * @param[in] new_height New height.
+ */
 template <pnm_suitable T>
 void PNMImageTemplated<T>::resize(size_type new_width, size_type new_height)
 {
@@ -893,13 +1163,29 @@ void PNMImageTemplated<T>::resize(size_type new_width, size_type new_height)
     }
 }
 
+/**
+ * @brief Scale (resize) an image.
+ * 
+ * @tparam T Color type.
+ * @param[in] scale_value Value to scale the image with.
+ */
 template <pnm_suitable T>
 void PNMImageTemplated<T>::scale(double scale_value)
 {
-    resize(static_cast<size_type>(width() * scale_value),
-        static_cast<size_type>(height() * scale_value));
+    if (scale_value > 0)
+    {
+        resize(static_cast<size_type>(width() * scale_value),
+            static_cast<size_type>(height() * scale_value));
+    }
 }
 
+/**
+ * @brief Read an image from a file.
+ * 
+ * @tparam T Color type.
+ * @param[in] file_path Path to the file.
+ * @param[in] open_mode Mode to open the file.
+ */
 template <pnm_suitable T>
 void PNMImageTemplated<T>::read_from(
     const char* const file_path, std::ios_base::openmode open_mode)
@@ -917,7 +1203,7 @@ void PNMImageTemplated<T>::read_from(
         std::string format_id {};
         file_stream >> format_id;
 
-        const auto type {PNMImageInfo::type_from_string(format_id)};
+        const auto type {TypeTools::type_from_string(format_id)};
         if (!type)
         {
             std::cerr << "Wrong image header id.\n";
@@ -926,6 +1212,7 @@ void PNMImageTemplated<T>::read_from(
 
         const bool is_plain {type.value() == pnm_image_traits<T>::plain_type()};
 
+        // Reopen the file if it was open in the wrong mode.
         if (open_mode & std::ios_base::binary)
         {
             if (is_plain
@@ -947,16 +1234,15 @@ void PNMImageTemplated<T>::read_from(
         file_stream.seekg(0);
 
         const PNMImageHeader header {file_stream};
-
         try
         {
             *this = std::move(PNMImageTemplated {
-                header.info.width, header.info.height, header.info.max_value});
+                header.width(), header.height(), header.max_value()});
         }
         catch (const std::exception& e)
         {
-            std::cerr << "Failed to create image of size (" << header.info.width
-                      << "x" << header.info.height << "): " << e.what() << "\n";
+            std::cerr << "Failed to create image of size (" << header.width()
+                      << "x" << header.height() << "): " << e.what() << "\n";
             return;
         }
 
@@ -976,13 +1262,21 @@ void PNMImageTemplated<T>::read_from(
     }
 }
 
+/**
+ * @brief Write an image to file.
+ * 
+ * @tparam T Color type.
+ * @param[in] file_path Path to the file.
+ * @param[in] comment Comment to add to the header.
+ * @param[in] open_mode Mode to open the file.
+ */
 template <pnm_suitable T>
 void PNMImageTemplated<T>::write_to(const char* const file_path,
-    const HeaderComments& comments, std::ios_base::openmode open_mode) const
+    std::string_view comment, std::ios_base::openmode open_mode) const
 {
     try
     {
-        FileOperations::write_to_file(*this, file_path, open_mode, comments);
+        FileOperations::write_to_file(*this, file_path, open_mode, comment);
     }
     catch (const std::ios_base::failure& failure)
     {
@@ -991,34 +1285,32 @@ void PNMImageTemplated<T>::write_to(const char* const file_path,
     }
 }
 
-template <pnm_suitable T>
-void PNMImageTemplated<T>::write_to(const char* const file_path,
-    std::ios_base::openmode open_mode, const HeaderComments& comments) const
-{
-    write_to(file_path, comments, open_mode);
-}
-
-#if 1
+/**
+ * @brief Write an image to file.
+ * 
+ * @tparam T Color type.
+ * @param[in] file_path Path to the file.
+ * @param[in] open_mode Mode to open the file.
+ * @param[in] comment Comment to add to the header.
+ */
 template <pnm_suitable T>
 void PNMImageTemplated<T>::write_to(const char* const file_path,
     std::ios_base::openmode open_mode, std::string_view comment) const
 {
-    write_to(file_path, HeaderComments {comment}, open_mode);
+    write_to(file_path, comment, open_mode);
 }
-
-template <pnm_suitable T>
-void PNMImageTemplated<T>::write_to(const char* const file_path,
-    std::string_view comment, std::ios_base::openmode open_mode) const
-{
-    write_to(file_path, open_mode, comment);
-}
-#endif
 
 // Instantiate concrete classes.
 template class PNMImageTemplated<BlackWhiteColor>;
 template class PNMImageTemplated<GrayScaleColor>;
 template class PNMImageTemplated<RGBColor>;
 
+/**
+ * @brief Create an image pointer from a file.
+ *
+ * @param[in] file_path Path to the file.
+ * @return std::unique_ptr<IPNMImage> Pointer to the created image.
+ */
 std::unique_ptr<IPNMImage> make_image_ptr(const char* const file_path)
 {
     try
@@ -1034,30 +1326,29 @@ std::unique_ptr<IPNMImage> make_image_ptr(const char* const file_path)
         std::string format_id {};
         file_stream >> format_id;
 
-        const auto type {PNMImageInfo::type_from_string(format_id)};
+        const auto type {TypeTools::type_from_string(format_id)};
         if (!type)
         {
             std::cerr << "Wrong image header id.\n";
             return nullptr;
         }
 
-        std::unique_ptr<IPNMImage> image_ptr {nullptr};
-        if (PNMImageInfo::is_blackwhite(type.value()))
+        if (TypeTools::is_blackwhite(type.value()))
         {
-            image_ptr = std::make_unique<PBMImage>();
+            return std::make_unique<PBMImage>(file_path);
         }
-        else if (PNMImageInfo::is_grayscale(type.value()))
+        else if (TypeTools::is_grayscale(type.value()))
         {
-            image_ptr = std::make_unique<PGMImage>();
+            return std::make_unique<PGMImage>(file_path);
         }
-        else if (PNMImageInfo::is_rgb(type.value()))
+        else if (TypeTools::is_rgb(type.value()))
         {
-            image_ptr = std::make_unique<PPMImage>();
+            return std::make_unique<PPMImage>(file_path);
         }
-
-        image_ptr->read_from(file_path);
-
-        return image_ptr;
+        else
+        {
+            return nullptr;
+        }
     }
     catch (const std::ios_base::failure& failure)
     {
