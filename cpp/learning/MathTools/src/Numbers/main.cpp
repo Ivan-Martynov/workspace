@@ -71,6 +71,17 @@ static void test_rational()
               << (Marvin::Rational {-1, 0} <= Marvin::Rational {-1, 0}) << "\n";
     std::cout << std::boolalpha
               << (Marvin::Rational {0, 0} <= Marvin::Rational {0, 0}) << "\n";
+
+    auto rat_04 {rat2 * rat_03};
+    rat_04 = rat_03;
+    std::cout << rat_04 << "; " << (rat2 * rat_03) << "\n";
+    // The next line show the case of assignment to the intermediate value, like
+    // (a * b = c). Perhaps, we shouldn't allow this.
+    // std::cout << rat_04 << "; " << (rat2 * rat_03 = rat_03) << "\n";
+    auto rat_05 {Marvin::reciprocal(rat_03 * rat2)};
+    std::cout << rat_05 << "\n";
+    //std::cout << rat_05 << "; " << (Marvin::reciprocal(rat_03 * rat2) = rat2)
+    //                                                                   << "\n";
 }
 
 static Marvin::Complex test_function_return()

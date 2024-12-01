@@ -1,5 +1,6 @@
 Language: Cpp
 # BasedOnStyle:  LLVM
+# BasedOnStyle:  Stroustrup
 AccessModifierOffset: -2
 AlignAfterOpenBracket: DontAlign
 AlignConsecutiveAssignments: false

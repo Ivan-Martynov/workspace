@@ -137,20 +137,14 @@ class RationalTemplated
      * @return constexpr const value_type& Const l-value reference to the
      * numerator value.
      */
-    constexpr const value_type& numerator() const&
-    {
-        return m_num;
-    }
+    constexpr const value_type& numerator() const& { return m_num; }
 
     /**
      * @brief Get numerator of the rational number.
      *
      * @return constexpr value_type r-value of the numerator value.
      */
-    constexpr value_type numerator() const&&
-    {
-        return std::move(m_num);
-    }
+    constexpr value_type numerator() const&& { return std::move(m_num); }
 
     /**
      * @brief Get denominator of the rational number.
@@ -158,20 +152,14 @@ class RationalTemplated
      * @return constexpr const value_type& Const l-value reference to the
      * denominator value.
      */
-    constexpr const value_type& denominator() const&
-    {
-        return m_den;
-    }
+    constexpr const value_type& denominator() const& { return m_den; }
 
     /**
      * @brief Get denominator of the rational number.
      *
      * @return constexpr value_type r-value of the denominator value.
      */
-    constexpr value_type denominator() const&&
-    {
-        return std::move(m_den);
-    }
+    constexpr value_type denominator() const&& { return std::move(m_den); }
 
     /**
      * @brief Get type of the number, meaning whether it is a normal value,
@@ -248,10 +236,7 @@ class RationalTemplated
      * @return true The number represents NAN.
      * @return false The number doesn't represents NAN.
      */
-    constexpr bool is_nan() const
-    {
-        return type() == Type::nan;
-    }
+    constexpr bool is_nan() const { return type() == Type::nan; }
 
     /**
      * @brief Equality operator.
@@ -506,29 +491,81 @@ class RationalTemplated
     }
 };
 
+/**
+ * @brief Sum operator.
+ *
+ * @remark Returning as const to avoid assigning value to the intermidate
+ * result, like (a + b = c). Const will not make the assigned value as const be
+ * default.
+ *
+ * @tparam T Underlying type.
+ * @param[in] lhs Left-hand-side operand.
+ * @param[in] rhs Rgiht-hand-side operand.
+ * @return const RationalTemplated<T> Rational number reprsenting the sum of the
+ * two operands.
+ */
 template <typename T>
-RationalTemplated<T> operator+(
+const RationalTemplated<T> operator+(
     const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
 {
     return RationalTemplated {RationalTemplated {lhs} += rhs};
 }
 
+/**
+ * @brief Subtraction operator.
+ *
+ * @remark Returning as const to avoid assigning value to the intermidate
+ * result, like (a - b = c). Const will not make the assigned value as const be
+ * default.
+ *
+ * @tparam T Underlying type.
+ * @param[in] lhs Left-hand-side operand.
+ * @param[in] rhs Rgiht-hand-side operand.
+ * @return const RationalTemplated<T> Rational number reprsenting the difference
+ * of the two operands.
+ */
 template <typename T>
-RationalTemplated<T> operator-(
+const RationalTemplated<T> operator-(
     const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
 {
     return RationalTemplated {RationalTemplated {lhs} -= rhs};
 }
 
+/**
+ * @brief Multiplication operator.
+ *
+ * @remark Returning as const to avoid assigning value to the intermidate
+ * result, like (a * b = c). Const will not make the assigned value as const be
+ * default.
+ *
+ * @tparam T Underlying type.
+ * @param[in] lhs Left-hand-side operand.
+ * @param[in] rhs Rgiht-hand-side operand.
+ * @return const RationalTemplated<T> Rational number reprsenting the product of
+ * the two operands.
+ */
 template <typename T>
-RationalTemplated<T> operator*(
+constexpr const RationalTemplated<T> operator*(
     const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
 {
     return RationalTemplated {RationalTemplated {lhs} *= rhs};
 }
 
+/**
+ * @brief Division operator.
+ *
+ * @remark Returning as const to avoid assigning value to the intermidate
+ * result, like (a / b = c). Const will not make the assigned value as const be
+ * default.
+ *
+ * @tparam T Underlying type.
+ * @param[in] lhs Left-hand-side operand.
+ * @param[in] rhs Rgiht-hand-side operand.
+ * @return const RationalTemplated<T> Rational number reprsenting the fraction
+ * of the two operands.
+ */
 template <typename T>
-RationalTemplated<T> operator/(
+const RationalTemplated<T> operator/(
     const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
 {
     return RationalTemplated {RationalTemplated {lhs} /= rhs};
@@ -543,7 +580,7 @@ RationalTemplated<T> operator/(
  * @return constexpr RationalTemplated<T>
  */
 template <typename T>
-inline constexpr RationalTemplated<T> reciprocal(
+inline constexpr const RationalTemplated<T> reciprocal(
     const RationalTemplated<T>& number)
 {
     return RationalTemplated {number.denominator(), number.numerator()};

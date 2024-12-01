@@ -1,10 +1,10 @@
 #include "structures/pnm_format/pnm_image_base.h"
-#include "structures/colors/blackwhite_color.h"
-#include "structures/colors/grayscale_color.h"
-#include "structures/colors/rgb_color.h"
+#include "structures/geometric/point2d.h"
+#include "tools/random_number.h"
 
 #include <filesystem>
 #include <algorithm>
+#include <thread>
 
 [[maybe_unused]]
 static void test_pnm_images(const std::filesystem::path& image_path)
@@ -145,6 +145,94 @@ static void make_Cantor_fractal()
 }
 
 [[maybe_unused]]
+static void make_Sierpinski_triangle(int)
+{
+    //Marvin::Geometric::Point2d p {};
+//    int x1 {0}; int y1 {0};
+//    int x2 {128}; int y2 {0};
+//    // 110 * 100 < sqrt(128 * 128 - 64 * 64) < 111 * 111
+//    int x3 {64}; int y3 {111};
+//    Marvin::PNM_Format::PPMImage image{129, 129};
+
+}
+
+static void fill_in_threads(
+    Marvin::PNM_Format::PPMImage& image, const Marvin::RGBColor& color)
+{
+    using namespace Marvin::PNM_Format;
+    using size_type = PPMImage::size_type;
+
+    const auto w {image.width()};
+    const auto h {image.height()};
+    const auto n {w * h};
+    auto thread_count {std::min(
+        n, static_cast<size_type>(std::thread::hardware_concurrency()))};
+//        thread_count = 7;
+    std::vector<std::thread> threads {};
+    threads.reserve(thread_count);
+    const auto step {n / thread_count};
+    for (size_type i {0}; i < thread_count; ++i)
+    {
+        const auto start {i * step};
+        const auto end {i != thread_count - 1 ? start + step : n};
+        std::cout << "Start = " << start << "; end = " << end << "\n";
+        threads.push_back(std::thread {[start, end, &image, &color]()
+            {
+                for (auto j {start}; j < end; ++j)
+                {
+                    // No need for locking as every pixel index is unique.
+                    image[j] = color;
+                }
+            }});
+    }
+    for (auto& t : threads)
+    {
+        t.join();
+    }
+
+    std::cout << "Image size = " << w << "x" << h << "\n";
+    std::cout << "Number of threads on the system = " << thread_count << "\n";
+}
+
+static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
+    const Marvin::PNM_Format::PPMImage::size_type point_count,
+    const Marvin::RGBColor& point_color)
+{
+    using namespace Marvin::PNM_Format;
+    using size_type = PPMImage::size_type;
+
+    auto thread_count {std::min(image.width() * image.height(),
+        static_cast<size_type>(std::thread::hardware_concurrency()))};
+    //        thread_count = 7;
+
+    std::mutex mutex {};
+    auto add_random_point_lambda {
+        [&image, thread_count, &mutex, point_count, &point_color]()
+        {
+            const auto n {image.width() * image.height()};
+            for (auto j {0}; j < point_count / thread_count; ++j)
+            {
+                std::lock_guard<std::mutex> guard {mutex};
+                image[Marvin::Random::get(0, n - 1)] = point_color;
+            }
+        }};
+
+    //std::vector<std::thread> threads(
+    //    thread_count, std::move(std::thread {add_random_point_lambda}));
+    std::vector<std::thread> threads {};
+    threads.reserve(thread_count);
+    for (size_type i {0}; i < thread_count; ++i)
+    {
+        threads.push_back(std::thread {add_random_point_lambda});
+    }
+
+    for (auto& t : threads)
+    {
+        t.join();
+    }
+}
+
+[[maybe_unused]]
 static void create_rgb_image()
 {
     using namespace Marvin::PNM_Format;
@@ -209,11 +297,16 @@ static void create_rgb_image()
 
     image_02.write_to("images/ppm/test_02.ppm");
 
+    //PPMImage image_03 {5, 6};
     PPMImage image_03 {200, 200};
-    image_03.fill({128, 0, 0});
+
+    fill_in_threads(image_03, {128, 0, 0});
+
+//    image_03.fill({128, 0, 0});
     image_03.fill_row(
         image_03.height() - (image_03.height() / 3), {0, 255, 255});
     image_03.fill_column(image_03.width() >> 2, {0, 0, 255});
+    random_points_in_threads(image_03, 100, {255, 255, 255});
     image_03.write_to("images/ppm/test_03.ppm");
 }
 
