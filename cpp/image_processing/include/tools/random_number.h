@@ -7,6 +7,38 @@
 namespace Marvin
 {
 
+class RandomNumber
+{
+  public:
+    /**
+     * @brief Generate a random number between lower and upper, both borders
+     * inclusive.
+     *
+     * @param[in] lower Lower limit.
+     * @param[in] upper Upper limit.
+     * @return int A random number in range [lower, upper].
+     */
+    static int generate(int lower, int upper)
+    {
+        return std::uniform_int_distribution {lower, upper}(m_mt);
+    }
+
+  private:
+    static std::random_device m_rd;
+    static std::seed_seq m_seed;
+    static std::mt19937 m_mt;
+
+    // Forbid creation of class instances.
+    RandomNumber() = delete;
+};
+
+std::random_device RandomNumber::m_rd {};
+std::seed_seq RandomNumber::m_seed {
+    static_cast<std::seed_seq::result_type>(
+        std::chrono::steady_clock::now().time_since_epoch().count()),
+    m_rd(), m_rd(), m_rd(), m_rd(), m_rd(), m_rd(), m_rd()};
+std::mt19937 RandomNumber::m_mt {m_seed};
+
 // This header-only Random namespace implements a self-seeding Mersenne Twister.
 // Requires C++17 or newer.
 // It can be #included into as many code files as needed (The inline keyword

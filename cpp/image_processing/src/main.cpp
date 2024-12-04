@@ -156,6 +156,52 @@ static void make_Sierpinski_triangle(int)
 
 }
 
+/**
+ * @brief Divide an interval into desired number of blocks/chunks.
+ *
+ * @param[in] first One end of the interval.
+ * @param[in] second Another end of the interval.
+ * @param[in] count Number of blocks/chunks to create.
+ * @return std::vector<int> Vector containing interval points, each consecutive
+ * pair representing a block/chunk.
+ */
+static std::vector<int> linspace(int first, int second, int count)
+{
+    constexpr double epsilon {1E-9};
+    std::vector<int> result(count + 1);
+    const auto step {static_cast<double>(second - first) / count};
+    result[0] = first;
+    for (int i {1}; i < count; ++i)
+    {
+        // Add a small number to compensate for possible floating point
+        // imprecision.
+        result[i] = static_cast<int>(first + step * i + epsilon);
+    }
+    result[count] = second;
+
+    return result;
+}
+
+static void show_linspace(int first, int second, int count)
+{
+    std::cout << "Linspace for (" << first << ", " << second << ", " << count
+              << ")\n";
+    std::ranges::for_each(
+        linspace(first, second, count), [](int x) { std::cout << x << " "; });
+    std::cout << "\n";
+}
+
+[[maybe_unused]]
+static void test_linspace()
+{
+    show_linspace(10, 40, 4);
+    show_linspace(10, 0, 2);
+    show_linspace(0, 10, 3);
+    show_linspace(0, 10, 7);
+    show_linspace(10, 0, 19);
+    show_linspace(17, 100, 17);
+}
+
 static void fill_in_threads(
     Marvin::PNM_Format::PPMImage& image, const Marvin::RGBColor& color)
 {
@@ -170,12 +216,22 @@ static void fill_in_threads(
 //        thread_count = 7;
     std::vector<std::thread> threads {};
     threads.reserve(thread_count);
-    const auto step {n / thread_count};
+    //const auto step {static_cast<double>(n) / thread_count};
+    const auto chunks {linspace(0, n, thread_count)};
+    //size_type start {0};
     for (size_type i {0}; i < thread_count; ++i)
     {
-        const auto start {i * step};
-        const auto end {i != thread_count - 1 ? start + step : n};
+        // const auto start {i * step};
+        // const auto end {i != thread_count - 1 ? start + step : n};
+        //const auto end {
+        //    i != thread_count - 1
+        //        ? static_cast<size_type>(step * (i + 1) + 1E-6)
+        //        : n};
+
+        const auto start {chunks[i]};
+        const auto end {chunks[i + 1]};
         std::cout << "Start = " << start << "; end = " << end << "\n";
+
         threads.push_back(std::thread {[start, end, &image, &color]()
             {
                 for (auto j {start}; j < end; ++j)
@@ -185,13 +241,7 @@ static void fill_in_threads(
                 }
             }});
     }
-    for (auto& t : threads)
-    {
-        t.join();
-    }
-
-    std::cout << "Image size = " << w << "x" << h << "\n";
-    std::cout << "Number of threads on the system = " << thread_count << "\n";
+    std::ranges::for_each(threads, [](auto& t) { t.join(); });
 }
 
 static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
@@ -203,7 +253,6 @@ static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
 
     auto thread_count {std::min(image.width() * image.height(),
         static_cast<size_type>(std::thread::hardware_concurrency()))};
-    //        thread_count = 7;
 
     std::mutex mutex {};
     auto add_random_point_lambda {
@@ -213,12 +262,10 @@ static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
             for (auto j {0}; j < point_count / thread_count; ++j)
             {
                 std::lock_guard<std::mutex> guard {mutex};
-                image[Marvin::Random::get(0, n - 1)] = point_color;
+                image[Marvin::RandomNumber::generate(0, n - 1)] = point_color;
             }
         }};
 
-    //std::vector<std::thread> threads(
-    //    thread_count, std::move(std::thread {add_random_point_lambda}));
     std::vector<std::thread> threads {};
     threads.reserve(thread_count);
     for (size_type i {0}; i < thread_count; ++i)
@@ -226,10 +273,7 @@ static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
         threads.push_back(std::thread {add_random_point_lambda});
     }
 
-    for (auto& t : threads)
-    {
-        t.join();
-    }
+    std::ranges::for_each(threads, [](auto& t) { t.join(); });
 }
 
 [[maybe_unused]]
@@ -297,8 +341,11 @@ static void create_rgb_image()
 
     image_02.write_to("images/ppm/test_02.ppm");
 
-    //PPMImage image_03 {5, 6};
+#if 0
+    PPMImage image_03 {5, 6};
+#else
     PPMImage image_03 {200, 200};
+#endif
 
     fill_in_threads(image_03, {128, 0, 0});
 
@@ -306,7 +353,9 @@ static void create_rgb_image()
     image_03.fill_row(
         image_03.height() - (image_03.height() / 3), {0, 255, 255});
     image_03.fill_column(image_03.width() >> 2, {0, 0, 255});
+
     random_points_in_threads(image_03, 100, {255, 255, 255});
+
     image_03.write_to("images/ppm/test_03.ppm");
 }
 
@@ -318,6 +367,8 @@ int main()
 
     create_rgb_image();
     // make_Cantor_fractal();
+
+    test_linspace();
 
     return 0;
 }
