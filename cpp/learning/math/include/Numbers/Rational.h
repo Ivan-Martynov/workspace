@@ -73,7 +73,7 @@ class RationalTemplated
      *
      * @param[in] other Number to copy from.
      */
-    explicit constexpr RationalTemplated(const RationalTemplated& other)
+    constexpr RationalTemplated(const RationalTemplated& other)
         : m_num {other.numerator()}, m_den {other.denominator()}
     {
     }
@@ -83,7 +83,7 @@ class RationalTemplated
      *
      * @param[in] other Number to copy from.
      */
-    explicit constexpr RationalTemplated(RationalTemplated&& other)
+    constexpr RationalTemplated(RationalTemplated&& other)
         : m_num {std::move(other.numerator())},
           m_den {std::move(other.denominator())}
     {
@@ -503,12 +503,17 @@ class RationalTemplated
  * @param[in] rhs Rgiht-hand-side operand.
  * @return const RationalTemplated<T> Rational number reprsenting the sum of the
  * two operands.
+ *
+ * @version 1.0 Using const reference for the left operand.
+ * @version 2.0 Changing the left operand to be passed as a copy, because the
+ * operator anyway creates a copy.
  */
 template <typename T>
 const RationalTemplated<T> operator+(
-    const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
+    RationalTemplated<T> lhs, const RationalTemplated<T>& rhs)
 {
-    return RationalTemplated {RationalTemplated {lhs} += rhs};
+    lhs += rhs;
+    return lhs;
 }
 
 /**
@@ -523,12 +528,17 @@ const RationalTemplated<T> operator+(
  * @param[in] rhs Rgiht-hand-side operand.
  * @return const RationalTemplated<T> Rational number reprsenting the difference
  * of the two operands.
+ *
+ * @version 1.0 Using const reference for the left operand.
+ * @version 2.0 Changing the left operand to be passed as a copy, because the
+ * operator anyway creates a copy.
  */
 template <typename T>
 const RationalTemplated<T> operator-(
-    const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
+    RationalTemplated<T> lhs, const RationalTemplated<T>& rhs)
 {
-    return RationalTemplated {RationalTemplated {lhs} -= rhs};
+    lhs -= rhs;
+    return lhs;
 }
 
 /**
@@ -543,12 +553,17 @@ const RationalTemplated<T> operator-(
  * @param[in] rhs Rgiht-hand-side operand.
  * @return const RationalTemplated<T> Rational number reprsenting the product of
  * the two operands.
+ *
+ * @version 1.0 Using const reference for the left operand.
+ * @version 2.0 Changing the left operand to be passed as a copy, because the
+ * operator anyway creates a copy.
  */
 template <typename T>
 constexpr const RationalTemplated<T> operator*(
-    const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
+    RationalTemplated<T> lhs, const RationalTemplated<T>& rhs)
 {
-    return RationalTemplated {RationalTemplated {lhs} *= rhs};
+    lhs *= rhs;
+    return lhs;
 }
 
 /**
@@ -563,12 +578,17 @@ constexpr const RationalTemplated<T> operator*(
  * @param[in] rhs Rgiht-hand-side operand.
  * @return const RationalTemplated<T> Rational number reprsenting the fraction
  * of the two operands.
+ *
+ * @version 1.0 Using const reference for the left operand.
+ * @version 2.0 Changing the left operand to be passed as a copy, because the
+ * operator anyway creates a copy.
  */
 template <typename T>
 const RationalTemplated<T> operator/(
-    const RationalTemplated<T>& lhs, const RationalTemplated<T>& rhs)
+    RationalTemplated<T> lhs, const RationalTemplated<T>& rhs)
 {
-    return RationalTemplated {RationalTemplated {lhs} /= rhs};
+    lhs /= rhs;
+    return lhs;
 }
 
 /**

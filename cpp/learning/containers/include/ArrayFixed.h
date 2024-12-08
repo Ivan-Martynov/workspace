@@ -1,6 +1,8 @@
 #ifndef H_INCLUDE_ARRAY_FIXED_H_H
 #define H_INCLUDE_ARRAY_FIXED_H_H
 
+#include "ContainerHelper.h"
+
 #include <initializer_list>
 #include <span>
 
@@ -32,12 +34,22 @@ class ArrayFixed
      *
      * @param[in] value Value to assign to every element.
      */
-    explicit constexpr ArrayFixed(const value_type& value) : ArrayFixed {}
+    explicit constexpr ArrayFixed(
+        init_container_with_size_t, const value_type& value)
+        : ArrayFixed {}
     {
         fill(value);
     }
 
-#if 0
+    explicit ArrayFixed(
+        std::input_iterator auto first, std::input_iterator auto last)
+        : m_data {}
+    {
+        for (size_type i {0}; (i < N) && (first != last); ++i, ++first)
+        {
+            m_data[i] = *first;
+        }
+    }
     /**
      * @brief Construct an array from initializer list.
      * @remark The std::initializer_list is a view, therefore passed by value.
@@ -45,65 +57,9 @@ class ArrayFixed
      * @param[in] list List to copy elements from.
      */
     explicit constexpr ArrayFixed(std::initializer_list<value_type> list)
-        : m_data {}
+        : ArrayFixed{list.begin(), list.end()}
     {
-        size_type i {0};
-        auto it {list.begin()};
-        while ((i < N) && (it != list.end()))
-        {
-            m_data[i++] = *it++;
-        }
     }
-#endif
-
-    /**
-     * @brief Static function to make an array from a view. For example
-     * std::array or std::vectdor represented as a view.
-     *
-     * @remark The idea is not to use a constructor for view or initializer_list
-     * to avoid ambiguity for brace initialization.
-     *
-     * @param[in] view View to make an array from.
-     * @return ArrayAlloc Result array.
-     */
-    static ArrayFixed from_view(std::span<const value_type> view)
-    {
-        ArrayFixed array {};
-
-        size_type i {0};
-        auto it {view.begin()};
-        while ((i < N) && (it != view.end()))
-        {
-            array[i++] = *it++;
-        }
-
-        return array;
-    }
-
-    /**
-     * @brief Static function to make an array from an initializer_list.
-     * 
-     * @remark The idea is not to use a constructor for view or initializer_list
-     * to avoid ambiguity for brace initialization.
-     *
-     * @param[in] list Initializer list to make an array from.
-     * @return ArrayAlloc Result array.
-     */
-    static ArrayFixed from_view(std::initializer_list<value_type> list)
-    {
-        ArrayFixed array {};
-
-        size_type i {0};
-        auto it {list.begin()};
-        while ((i < N) && (it != list.end()))
-        {
-            array[i++] = *it++;
-        }
-
-        return array;
-    }
-
-
 
     /***************************************************************************
      * End of Constructors & destructor section                                *
@@ -193,7 +149,6 @@ class ArrayFixed
         Iterator(pointer ptr = nullptr) : m_ptr {ptr} {}
 
         reference operator*() const { return *m_ptr; }
-        pointer operator->() { return m_ptr; }
 
         Iterator& operator++()
         {
@@ -233,7 +188,6 @@ class ArrayFixed
         ConstIterator(pointer ptr = nullptr) : m_ptr {ptr} {}
 
         reference operator*() const { return *m_ptr; }
-        pointer operator->() const { return m_ptr; }
 
         ConstIterator& operator++()
         {
@@ -261,7 +215,7 @@ class ArrayFixed
       private:
         pointer m_ptr;
     };
-    static_assert(std::forward_iterator<Iterator>);
+    static_assert(std::forward_iterator<ConstIterator>);
 
     Iterator begin() { return Iterator {m_data}; }
     Iterator end() { return Iterator {&m_data[N]}; }

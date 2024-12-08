@@ -1,4 +1,4 @@
-#include "structures/scoped_thread.h"
+#include "structures/ScopedThread.h"
 
 #include <iostream>
 

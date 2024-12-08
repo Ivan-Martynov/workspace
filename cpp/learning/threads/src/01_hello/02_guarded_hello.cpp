@@ -1,4 +1,4 @@
-#include "structures/thread_guard.h"
+#include "structures/ThreadGuard.h"
 
 #include <iostream>
 

@@ -1,6 +1,19 @@
 #ifndef H_INCLUDE_ARRAY_ALLOC_H_H
 #define H_INCLUDE_ARRAY_ALLOC_H_H
 
+/**
+ * @brief ArrayAlloc class for educational purposes.
+ *
+ * @remarks If someone wants to use an array with allocated memory, then
+ * std::vector is a default option. This file exists only for educational
+ * purposes. One difference is that an empty tag class is used in constructors
+ * to avoid ambiguity when creating objects with std::initializer_list or a
+ * number of elements with a value to fill the container.
+ *
+ */
+
+#include "ContainerHelper.h"
+
 #include <iostream>
 #include <span>
 
@@ -33,7 +46,7 @@ class ArrayAlloc
     /**
      * @brief Default constructor: construct an empty array.
      */
-    explicit ArrayAlloc() : m_data_ptr {nullptr} {}
+    ArrayAlloc() : m_data_ptr {nullptr}, m_length {0}, m_capacity {0} {}
 
     /**
      * @brief Construct an array of given size and fill with the type's default
@@ -41,7 +54,7 @@ class ArrayAlloc
      *
      * @param[in] n Length of array to construct.
      */
-    explicit ArrayAlloc(size_type n)
+    ArrayAlloc(init_container_with_size_t, size_type n)
         : m_data_ptr {m_try_allocate(
               n, "ArrayAlloc constructor: Failed to allocate memory")},
           m_length {n}, m_capacity {n}
@@ -55,7 +68,9 @@ class ArrayAlloc
      * @param[in] n Length of array to construct.
      * @param[in] value Value to fill with.
      */
-    explicit ArrayAlloc(size_type n, const value_type& value) : ArrayAlloc(n)
+    ArrayAlloc(
+        init_container_with_size_t tag, size_type n, const value_type& value)
+        : ArrayAlloc {tag, n}
     {
         for (size_type i {0}; i < m_length; ++i)
         {
@@ -68,7 +83,7 @@ class ArrayAlloc
      *
      * @param[in] other Array to copy from.
      */
-    explicit ArrayAlloc(const ArrayAlloc& other)
+    ArrayAlloc(const ArrayAlloc& other)
         : m_data_ptr {m_try_allocate(other.length(),
               "ArrayAlloc copy constructor: Failed to allocate memory")},
           m_length {other.length()}, m_capacity {other.capacity()}
@@ -130,23 +145,25 @@ class ArrayAlloc
         return *this;
     }
 
-#if 0
+    ArrayAlloc(std::input_iterator auto first, std::input_iterator auto last)
+        : ArrayAlloc {init_container_with_size,
+              static_cast<size_type>(std::distance(first, last))}
+    {
+        for (size_type i {0}; first != last; ++i, ++first)
+        {
+            m_data_ptr[i] = *first;
+        }
+    }
+
     /**
      * @brief Construct an array from initializer list.
      * @remark The std::initializer_list is a view, therefore passed by value.
      *
      * @param[in] list List to copy elements from.
      */
-    explicit ArrayAlloc(std::initializer_list<value_type> list)
-        : ArrayAlloc(static_cast<size_type>(list.size()))
+    ArrayAlloc(std::initializer_list<value_type> list)
+        : ArrayAlloc {list.begin(), list.end()}
     {
-        const auto n {static_cast<size_type>(list.size())};
-        for (size_type i {0}; i < n; ++i)
-        {
-            m_data_ptr[i] = *(list.begin() + i);
-        }
-    }
-
     }
 
     /**
@@ -173,52 +190,6 @@ class ArrayAlloc
         }
 
         return *this;
-    }
-#endif
-
-    /**
-     * @brief Static function to make an array from a view. For example
-     * std::array or std::vectdor represented as a view.
-     *
-     * @remark The idea is not to use a constructor for view or initializer_list
-     * to avoid ambiguity for brace initialization.
-     *
-     * @param[in] view View to make an array from.
-     * @return ArrayAlloc Result array.
-     */
-    static ArrayAlloc from_view(std::span<const value_type> view)
-    {
-        auto n {static_cast<size_type>(view.size())};
-        ArrayAlloc array {n};
-
-        while (n--)
-        {
-            array[n] = view[n];
-        }
-
-        return array;
-    }
-
-    /**
-     * @brief Static function to make an array from an initializer_list.
-     * 
-     * @remark The idea is not to use a constructor for view or initializer_list
-     * to avoid ambiguity for brace initialization.
-     *
-     * @param[in] list Initializer list to make an array from.
-     * @return ArrayAlloc Result array.
-     */
-    static ArrayAlloc from_view(std::initializer_list<value_type> list)
-    {
-        ArrayAlloc array {static_cast<size_type>(list.size())};
-
-        size_type i {0};
-        for (const auto& item : list)
-        {
-            array[i++] = item;
-        }
-
-        return array;
     }
 
     /**
@@ -423,7 +394,6 @@ class ArrayAlloc
         Iterator(pointer ptr = nullptr) : m_ptr {ptr} {}
 
         reference operator*() const { return *m_ptr; }
-        pointer operator->() { return m_ptr; }
 
         Iterator& operator++()
         {
@@ -460,7 +430,6 @@ class ArrayAlloc
         ConstIterator(pointer ptr = nullptr) : m_ptr {ptr} {}
 
         reference operator*() const { return *m_ptr; }
-        pointer operator->() const { return m_ptr; }
 
         ConstIterator& operator++()
         {
@@ -488,7 +457,7 @@ class ArrayAlloc
       private:
         pointer m_ptr;
     };
-    static_assert(std::forward_iterator<Iterator>);
+    static_assert(std::forward_iterator<ConstIterator>);
 
     Iterator begin() { return Iterator {m_data_ptr}; }
     Iterator end() { return Iterator {&m_data_ptr[m_length]}; }
@@ -505,12 +474,12 @@ class ArrayAlloc
 
   private:
     // Pointer to the underlying raw array.
-    value_type* m_data_ptr {nullptr};
+    value_type* m_data_ptr;
     // Length (size) of the array.
-    size_type m_length {0};
+    size_type m_length;
     // Capacity of the array: how many elements the array can hold without
     // resizing.
-    size_type m_capacity {0};
+    size_type m_capacity;
 
     /**
      * @brief Try allocating n elements for the array.
