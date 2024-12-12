@@ -1,6 +1,6 @@
 Language: Cpp
 # BasedOnStyle:  LLVM
-# BasedOnStyle:  Stroustrup
+#BasedOnStyle:  Stroustrup
 AccessModifierOffset: -2
 AlignAfterOpenBracket: DontAlign
 AlignConsecutiveAssignments: false
@@ -23,6 +23,7 @@ BinPackParameters: true
 BraceWrapping:   
   AfterClass:      true
   AfterControlStatement: true
+    #  BraceWrappingAfterControlStatementStyle: Never
   AfterEnum:       true
   AfterFunction:   true
   AfterNamespace:  true
@@ -37,7 +38,7 @@ BraceWrapping:
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: All
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Linux
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
@@ -48,9 +49,9 @@ BreakStringLiterals: true
 ColumnLimit:     80
 CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+#ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 4
-#PackConstructorInitializers: PCIS_CurrentLine
+PackConstructorInitializers: BinPack
 ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
 DerivePointerAlignment: false

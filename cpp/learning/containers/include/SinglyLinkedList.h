@@ -14,15 +14,12 @@
 
 #include "ContainerHelper.h"
 
-namespace Marvin
-{
+namespace Marvin {
 
 template <typename T>
-class SinglyLinkedList
-{
+class SinglyLinkedList {
   private:
-    struct NodeBase
-    {
+    struct NodeBase {
         NodeBase* next;
         explicit NodeBase(NodeBase* ptr = nullptr) : next {ptr} {}
     };
@@ -32,8 +29,7 @@ class SinglyLinkedList
      * Assumes to be very simple.
      *
      */
-    struct Node : public NodeBase
-    {
+    struct Node : public NodeBase {
         T value;
 
 #if 0
@@ -71,8 +67,7 @@ class SinglyLinkedList
 
     struct ConstIterator; // Forward declaration.
 
-    struct Iterator
-    {
+    struct Iterator {
         friend class ConstIterator;
 
         using iterator_category = std::forward_iterator_tag;
@@ -119,8 +114,7 @@ class SinglyLinkedList
     }; // struct IteratorForward
     static_assert(std::forward_iterator<Iterator>);
 
-    struct ConstIterator
-    {
+    struct ConstIterator {
         friend class SinglyLinkedList;
 
         using iterator_category = std::forward_iterator_tag;
@@ -262,12 +256,10 @@ class SinglyLinkedList
     void assign(size_type count, const value_type& value)
     {
         clear();
-        try
-        {
+        try {
             m_from_count_value(count, value);
         }
-        catch (...)
-        {
+        catch (...) {
             throw;
         }
     }
@@ -275,12 +267,10 @@ class SinglyLinkedList
     void assign(std::input_iterator auto first, std::input_iterator auto last)
     {
         clear();
-        try
-        {
+        try {
             m_from_range(first, last);
         }
-        catch (...)
-        {
+        catch (...) {
             throw;
         }
     }
@@ -298,8 +288,7 @@ class SinglyLinkedList
      */
     SinglyLinkedList& operator=(const SinglyLinkedList& rhs)
     {
-        if (this != &rhs)
-        {
+        if (this != &rhs) {
             assign(rhs.cbegin(), rhs.cend());
         }
         return *this;
@@ -330,8 +319,7 @@ class SinglyLinkedList
      */
     SinglyLinkedList& operator=(SinglyLinkedList&& rhs) noexcept
     {
-        if (this != &rhs)
-        {
+        if (this != &rhs) {
             clear();
             std::swap(m_head, rhs.m_head);
             std::swap(m_length, rhs.m_length);
@@ -412,18 +400,17 @@ class SinglyLinkedList
         --m_length;
         delete node_ptr;
 
-        //auto* ptr {it.m_ptr};
-        //auto* node_ptr {static_cast<Node*>(ptr->next)};
-        //ptr->next = node_ptr->next;
+        // auto* ptr {it.m_ptr};
+        // auto* node_ptr {static_cast<Node*>(ptr->next)};
+        // ptr->next = node_ptr->next;
         //--m_length;
-        //delete node_ptr;
+        // delete node_ptr;
     }
 
     void erase_after(NodeBase* pos, NodeBase* last) noexcept
     {
         auto* node_ptr {static_cast<Node*>(pos->next)};
-        while (node_ptr != last)
-        {
+        while (node_ptr != last) {
             auto* temp {node_ptr};
             node_ptr = static_cast<Node*>(node_ptr->next);
             delete temp;
@@ -438,6 +425,81 @@ class SinglyLinkedList
      * End of Element deletion section                                         *
      **************************************************************************/
 
+    // Merge sort, bottom-up.
+    template <typename Comp>
+    void sort(Comp compare_func)
+    {
+        auto* list {static_cast<Node*>(m_head.next)};
+        if (!m_head.next) {
+            return;
+        }
+
+        size_type n {1};
+        while (true) {
+            auto* p {list};
+            list = nullptr;
+            Node* tail {nullptr};
+
+            size_type merge_count {0};
+            while (p) {
+                ++merge_count;
+                auto* q {p};
+                size_type p_size {0};
+                for (size_type i {0}; i < n; ++i) {
+                    ++p_size;
+                    q = static_cast<Node*>(q->next);
+                    if (!q) {
+                        break;
+                    }
+                }
+
+                size_type q_size {n};
+                while ((p_size > 0) || ((q_size > 0) && q)) {
+                    Node* e {};
+                    if (p_size == 0) {
+                        e = q;
+                        q = static_cast<Node*>(q->next);
+                        --q_size;
+                    }
+                    else if ((q_size == 0) || !q) {
+                        e = p;
+                        p = static_cast<Node*>(p->next);
+                        --p_size;
+                    }
+                    else if (!compare_func(q->value, p->value)) {
+                        e = p;
+                        p = static_cast<Node*>(p->next);
+                        --p_size;
+                    }
+                    else {
+                        e = q;
+                        q = static_cast<Node*>(q->next);
+                        --q_size;
+                    }
+
+                    if (tail) {
+                        tail->next = e;
+                    }
+                    else {
+                        list = e;
+                    }
+                    tail = e;
+                }
+                p = q;
+            }
+            tail->next = nullptr;
+            if (merge_count < 2) {
+                m_head.next = list;
+                return;
+            }
+            else {
+                n <<= 1;
+            }
+        }
+    }
+
+    void sort() { return sort(std::less<value_type>()); }
+
   private:
     NodeBase m_head {};
     size_type m_length {};
@@ -446,12 +508,10 @@ class SinglyLinkedList
     static Node* m_create_node(Args&&... args)
     {
         Node* node_ptr {};
-        try
-        {
+        try {
             node_ptr = new Node {std::forward<Args>(args)...};
         }
-        catch (...)
-        {
+        catch (...) {
             delete node_ptr;
             throw;
         }
@@ -462,12 +522,10 @@ class SinglyLinkedList
     static Node* m_create_node(NodeBase* ptr, Args&&... args)
     {
         Node* node_ptr {};
-        try
-        {
+        try {
             node_ptr = new Node {ptr, std::forward<Args>(args)...};
         }
-        catch (...)
-        {
+        catch (...) {
             delete node_ptr;
             throw;
         }
@@ -476,23 +534,19 @@ class SinglyLinkedList
 
     void m_from_count_value(size_type count, const value_type& value)
     {
-        if (count < 1)
-        {
+        if (count < 1) {
             return;
         }
 
-        try
-        {
+        try {
             NodeBase* current_ptr {&m_head};
-            for (; count; --count)
-            {
+            for (; count; --count) {
                 current_ptr->next = m_create_node(value);
                 current_ptr = current_ptr->next;
                 ++m_length;
             }
         }
-        catch (...)
-        {
+        catch (...) {
             // Try to clean up the successfully allocated nodes.
             clear();
             throw;
@@ -502,23 +556,19 @@ class SinglyLinkedList
     void m_from_range(
         std::input_iterator auto first, std::input_iterator auto last)
     {
-        if (first == last)
-        {
+        if (first == last) {
             return;
         }
 
-        try
-        {
+        try {
             NodeBase* current_ptr {&m_head};
-            for (; first != last; ++first)
-            {
+            for (; first != last; ++first) {
                 current_ptr->next = m_create_node(*first);
                 current_ptr = current_ptr->next;
                 ++m_length;
             }
         }
-        catch (...)
-        {
+        catch (...) {
             // Try to clean up the successfully allocated nodes.
             clear();
             throw;
@@ -549,8 +599,7 @@ class SinglyLinkedList
     }
 }; // class SinglyLinkedList
 
-struct ListNodeBase
-{
+struct ListNodeBase {
     ListNodeBase* m_next;
 
     static void swap(ListNodeBase& lhs, ListNodeBase& rhs)
@@ -561,13 +610,11 @@ struct ListNodeBase
     ListNodeBase* transfer_after(ListNodeBase* begin, ListNodeBase* end)
     {
         auto* root {begin->m_next};
-        if (end)
-        {
+        if (end) {
             begin->m_next = end->m_next;
             end->m_next = m_next;
         }
-        else
-        {
+        else {
             begin->m_next = nullptr;
         }
 
@@ -578,8 +625,7 @@ struct ListNodeBase
     ListNodeBase* transfer_after(ListNodeBase* begin)
     {
         auto* end {begin};
-        while (end && end->m_next)
-        {
+        while (end && end->m_next) {
             end = end->m_next;
         }
         return transfer_after(begin, end);
@@ -587,13 +633,11 @@ struct ListNodeBase
 
     void reverse_after()
     {
-        if (!m_next)
-        {
+        if (!m_next) {
             return;
         }
         auto* tail {m_next};
-        while (auto* temp {tail->m_next})
-        {
+        while (auto* temp {tail->m_next}) {
             auto* keep {m_next};
             m_next = temp;
             tail->m_next = temp->m_next;
@@ -601,6 +645,13 @@ struct ListNodeBase
         }
     }
 }; // struct ListNodeBase
+
+#if 0
+template <typename T>
+void sort_list(SinglyLinkedList<T>& linked_list)
+{
+}
+#endif
 
 } // namespace Marvin
 

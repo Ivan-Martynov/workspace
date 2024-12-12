@@ -5,21 +5,21 @@
 #include <forward_list>
 #include <iostream>
 #include <chrono>
+#include <memory>
+#include <stack>
 
-namespace
-{
+namespace {
 
 template <typename T>
 void print_array(const T& array)
 {
-    std::cout << "Length = " << array.length() << "\n";
+    //std::cout << "Length = " << array.length() << "\n";
     //              << "; size in bytes = " << array.size_in_bytes() << "\n";
     // if (array.empty())
     //{
     //    std::cout << "Empty array";
     //}
-    for (auto x : array)
-    {
+    for (auto x : array) {
         std::cout << x << ", ";
     }
 
@@ -37,8 +37,7 @@ Marvin::ArrayAlloc<int> clone_and_double(const Marvin::ArrayAlloc<int>& arr)
 {
     Marvin::ArrayAlloc<int> res {
         Marvin::init_container_with_size, arr.capacity()};
-    for (int i {0}; i < arr.length(); ++i)
-    {
+    for (int i {0}; i < arr.length(); ++i) {
         res[i] = arr[i] << 1;
     }
 
@@ -136,6 +135,7 @@ void test_sll()
     list_04.emplace_front(-2.328901f);
     list_04.emplace_front(-2.328901f);
     list_04.push_front(103);
+    list_04.sort();
     print_array(list_04);
     Marvin::SinglyLinkedList<float> list_05 {2.5f, 2.8f, 2.3f, 2.4f, 2.1f};
     list_01 = list_05;
@@ -157,6 +157,102 @@ void test_sll()
 #endif
 }
 
+struct TreeNodeInt {
+    int value;
+#if 0
+    std::unique_ptr<TreeNodeInt> left;
+    std::unique_ptr<TreeNodeInt> right;
+#else
+    TreeNodeInt* left;
+    TreeNodeInt* right;
+#endif
+
+    TreeNodeInt(int v, TreeNodeInt* l, TreeNodeInt* r)
+        : value {v}, left {l}, right {r}
+    {
+    }
+
+    explicit TreeNodeInt(int v) : TreeNodeInt {v, nullptr, nullptr} {}
+};
+
+[[maybe_unused]]
+void traverse_tree_inorder_recursive(
+    TreeNodeInt* node_ptr, std::vector<TreeNodeInt*>& target)
+{
+    if (node_ptr) {
+        traverse_tree_inorder_recursive(node_ptr->left, target);
+        target.push_back(node_ptr);
+        traverse_tree_inorder_recursive(node_ptr->right, target);
+    }
+}
+
+[[maybe_unused]]
+std::vector<TreeNodeInt*> traverse_tree_inorder_iterative(TreeNodeInt* root)
+{
+    std::stack<TreeNodeInt*> stack {};
+    std::vector<TreeNodeInt*> res {};
+    auto node_ptr {root};
+    while (node_ptr || !stack.empty()) {
+        while (node_ptr) {
+            stack.push(node_ptr);
+            node_ptr = node_ptr->left;
+        }
+        node_ptr = stack.top();
+        stack.pop();
+        res.push_back(node_ptr);
+        node_ptr = node_ptr->right;
+    }
+
+    return res;
+}
+
+[[maybe_unused]]
+std::vector<TreeNodeInt*> traverse_tree_inorder_morris(TreeNodeInt* root)
+{
+    std::vector<TreeNodeInt*> res {};
+
+    auto* node_ptr {root};
+    while (node_ptr) {
+        if (auto* left_ptr {node_ptr->left}; !left_ptr) {
+            res.push_back(node_ptr);
+            node_ptr = node_ptr->right;
+        } else {
+            while (left_ptr->right && (left_ptr->right != node_ptr)) {
+                left_ptr = left_ptr->right;
+            }
+
+            if (left_ptr->right) {
+                left_ptr->right = nullptr;
+                res.push_back(node_ptr);
+                node_ptr = node_ptr->right;
+            } else {
+                left_ptr->right = node_ptr;
+                node_ptr = node_ptr->left;
+            }
+        }
+    }
+
+    return res;
+}
+void test_tree()
+{
+    std::cout << "Testing tree.\n";
+    auto* root {new TreeNodeInt {1}};
+    root->left = new TreeNodeInt {2};
+    root->right = new TreeNodeInt {3};
+    //std::cout << root->value << "\n";
+    std::vector<TreeNodeInt*> values {traverse_tree_inorder_morris(root)};
+    //std::vector<TreeNodeInt*> values {traverse_tree_inorder_iterative(root)};
+    //traverse_tree_inorder_recursive(root, values);
+    //print_array(values);
+    for (auto& v : values)
+    {
+        std::cout << v->value << ' ';
+        delete v;
+    }
+    std::cout << '\n';
+}
+
 } // namespace
 
 int main()
@@ -164,6 +260,9 @@ int main()
     test_array_alloc();
     test_array_fixed();
     test_sll();
+
+    if (3 > 5) {
+    }
 
 #if 0
     std::forward_list<float> list {1, 2, 3};
@@ -177,6 +276,7 @@ int main()
     float f2 {i1};
     std::cout << f1 + f2 << "\n";
 #endif
+    test_tree();
 
     return 0;
 }

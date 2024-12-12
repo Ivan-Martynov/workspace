@@ -11,7 +11,8 @@ namespace Marvin
 
 struct EmptyStack : std::exception
 {
-    const char* what() const throw();
+    EmptyStack() : std::exception {} {}
+    //const char* what() const throw();
 };
 
 template <typename T>
