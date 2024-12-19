@@ -13,8 +13,649 @@
  */
 
 #include "ContainerHelper.h"
+#include <cassert>
 
 namespace Marvin {
+
+template <typename T>
+class SLL {
+  private:
+    struct Node {
+        T value;
+        Node* next;
+
+        explicit Node(const T& v, Node* next_ptr = nullptr)
+            : value {v}, next {next_ptr}
+        {
+        }
+
+        template <typename... Args>
+        explicit Node(Node* next_ptr, Args&&... args)
+            : value {std::forward<Args>(args)...}, next {next_ptr}
+        {
+        }
+
+        template <typename... Args>
+        explicit Node(Args&&... args)
+            : value {std::forward<Args>(args)...}, next {}
+        {
+        }
+
+#if 1
+        Node(const Node&) = default;
+        Node& operator=(const Node&) = default;
+#else
+        Node(const Node& rhs) : value {rhs.value}, next {rhs.next} {}
+
+        Node& operator=(const Node& rhs)
+        {
+            if (this != &rhs) {
+                value = rhs.value;
+                next = rhs.next;
+            }
+            return *this;
+        }
+#endif
+    };
+
+  public:
+    using value_type = T;
+    using size_type = int;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+
+    /***************************************************************************
+     * Iterator section                                                        *
+     **************************************************************************/
+
+    struct ConstIterator; // Forward declaration.
+
+    struct Iterator {
+        friend class ConstIterator;
+
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = ptrdiff_t;
+        using value_type = T;
+        using pointer = value_type*;
+        using reference = value_type&;
+
+        using self_t = Iterator;
+        using node_t = Node;
+
+        Iterator() : m_ptr {} {}
+        explicit Iterator(Node* ptr) : m_ptr {ptr} {}
+
+        reference operator*() const
+        {
+            return m_ptr->value;
+        }
+        pointer operator->() const
+        {
+            return &m_ptr->value;
+        }
+
+        self_t& operator++()
+        {
+            m_ptr = m_ptr->next;
+            return *this;
+        }
+
+        self_t operator++(int)
+        {
+            auto temp {*this};
+            m_ptr = m_ptr->next;
+            return temp;
+        }
+
+        bool operator==(const self_t& rhs) const { return m_ptr == rhs.m_ptr; }
+        bool operator!=(const self_t& rhs) const { return m_ptr != rhs.m_ptr; }
+
+        //self_t next() const { return Iterator {m_ptr ? m_ptr->next : nullptr}; }
+
+      private:
+        Node* m_ptr;
+    }; // struct IteratorForward
+    static_assert(std::forward_iterator<Iterator>);
+
+    struct ConstIterator {
+        friend class SLL;
+
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = ptrdiff_t;
+        using value_type = T;
+        using pointer = const value_type*;
+        using reference = const value_type&;
+
+        using self_t = ConstIterator;
+        using node_t = const Node;
+
+        using iterator_t = Iterator;
+
+        ConstIterator() : m_ptr {} {}
+        explicit ConstIterator(const Node* ptr) : m_ptr {ptr} {}
+        ConstIterator(const iterator_t& it) : m_ptr {it.m_ptr} {}
+
+        reference operator*() const
+        {
+            return m_ptr->value;
+        }
+        pointer operator->() const
+        {
+            return &m_ptr->value;
+        }
+
+        self_t& operator++()
+        {
+            m_ptr = m_ptr->next;
+            return *this;
+        }
+
+        self_t operator++(int)
+        {
+            auto temp {*this};
+            m_ptr = m_ptr->next;
+            return temp;
+        }
+
+        bool operator==(const self_t& rhs) const { return m_ptr == rhs.m_ptr; }
+        bool operator!=(const self_t& rhs) const { return m_ptr != rhs.m_ptr; }
+
+//        self_t next() const
+//        {
+//            return ConstIterator {m_ptr ? m_ptr->next : nullptr};
+//        }
+
+      private:
+        const Node* m_ptr;
+    }; // struct ConstIteratorForward
+    static_assert(std::forward_iterator<ConstIterator>);
+
+    Iterator begin() { return Iterator {m_head}; }
+    Iterator end() { return Iterator {nullptr}; }
+
+    ConstIterator begin() const { return ConstIterator {m_head}; }
+    ConstIterator end() const { return ConstIterator {nullptr}; }
+
+    ConstIterator cbegin() const { return begin(); }
+    ConstIterator cend() const { return end(); }
+
+    /***************************************************************************
+     * End of Iterator section                                                 *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Constructors & destructor section                                       *
+     **************************************************************************/
+
+    /**
+     * @brief Default constructor with null pointer and zero elements.
+     *
+     */
+    explicit SLL() : m_head {}, m_length {0} {}
+
+    /**
+     * @brief Construct a SLL object with a number of elements,
+     * each element assigned to a provided (or default) value.
+     *
+     * @remarks Using tag class to distinguish from the constructor having
+     * initializer_list as a parameter.
+     * Using private function to allocate elements to check for bad_alloc and
+     * throw before initializing the members.
+     *
+     * @param[in] count Number of elements to create.
+     * @param[in] value Value to assign to each element.
+     */
+    SLL(init_container_with_size_t, size_type count,
+        const value_type& value = value_type {})
+        : SLL {}
+    {
+        m_from_count_value(count, value);
+    }
+
+    /**
+     * @brief Construct a SinglyLinkedList object with a pair of input iterators
+     * to fill the linked list.
+     *
+     * @remark Using private function to allocate elements to check for
+     * bad_alloc and throw before initializing the members.
+     *
+     * @param[in] first First iterator.
+     * @param[in] last Second iterator.
+     */
+    SLL(std::input_iterator auto first, std::input_iterator auto last) : SLL {}
+    {
+        m_from_range(first, last);
+    }
+
+    /**
+     * @brief Construct a SinglyLinkedList object from an initializer_list.
+     *
+     * @remark Essentially, using constructor taking two pointers, the beginning
+     * and end of the initializer_list.
+     *
+     * @param[in] list Initializer_list to create a linked list from.
+     */
+    explicit SLL(std::initializer_list<value_type> rhs)
+        : SLL(rhs.begin(), rhs.end())
+    {
+    }
+
+    /**
+     * @brief Copy constructor.
+     *
+     * @remark Essentially, using constructor taking two pointers, the beginning
+     * and end of the linked list.
+     *
+     * @param[in] rhs Another linked list to build from.
+     */
+    explicit SLL(const SLL& rhs) : SLL {rhs.cbegin(), rhs.cend()} {}
+
+    void assign(size_type count, const value_type& value)
+    {
+        clear();
+        try {
+            m_from_count_value(count, value);
+        }
+        catch (...) {
+            throw;
+        }
+    }
+
+    void assign(std::input_iterator auto first, std::input_iterator auto last)
+    {
+        clear();
+        try {
+            m_from_range(first, last);
+        }
+        catch (...) {
+            throw;
+        }
+    }
+
+    void assign(std::initializer_list<value_type> rhs)
+    {
+        assign(rhs.begin(), rhs.end());
+    }
+
+    /**
+     * @brief Assignment operator.
+     *
+     * @param[in] rhs Another linked list to build from.
+     * @return SinglyLinkedList& Reference to the current instance.
+     */
+    SLL& operator=(const SLL& rhs)
+    {
+        if (this != &rhs) {
+            assign(rhs.cbegin(), rhs.cend());
+        }
+        return *this;
+    }
+
+    SLL& operator=(std::initializer_list<value_type> rhs)
+    {
+        assign(rhs.begin(), rhs.end());
+        return *this;
+    }
+
+    /**
+     * @brief Move constructor.
+     *
+     * @param[in] rhs Another linked list to move.
+     */
+    explicit SLL(SLL&& rhs) noexcept
+    {
+        std::swap(m_head, rhs.m_head);
+        std::swap(m_length, rhs.m_length);
+    }
+
+    /**
+     * @brief Move operator.
+     *
+     * @param[in] rhs Another linked list to move.
+     * @return SinglyLinkedList& Reference to the current instance.
+     */
+    SLL& operator=(SLL&& rhs) noexcept
+    {
+        if (this != &rhs) {
+            clear();
+            std::swap(m_head, rhs.m_head);
+            std::swap(m_length, rhs.m_length);
+        }
+        return *this;
+    }
+
+    ~SLL() noexcept { clear(); }
+
+    /***************************************************************************
+     * End Constructors & destructor section                                   *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Accessors section                                                       *
+     **************************************************************************/
+
+    value_type& front() noexcept { return m_head->value; }
+    const value_type& front() const noexcept { return m_head->value; }
+
+    /**
+     * @brief Length (size) of the linked list.
+     *
+     * @return size_type Number of elements in the linked list.
+     */
+    size_type length() const noexcept { return m_length; }
+
+    /**
+     * @brief Size of linked list in bytes.
+     *
+     * @return std::size_t Number of bytes.
+     */
+    std::size_t size_in_bytes() const { return m_length * sizeof(value_type); }
+
+    bool empty() const noexcept
+    {
+        return !m_head;
+    }
+
+    /***************************************************************************
+     * End of Accessors section                                                *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Element insertion section                                               *
+     **************************************************************************/
+
+    /**
+     * @brief Insert a value after the element pointer by the iterator.
+     *
+     * @param[in] it Iterator pointing to the item to insert after.
+     * @param[in] value Value to insert.
+     * @return Iterator Iterator pointing to the inserted element.
+     */
+    Iterator insert_after(ConstIterator it, const value_type& value)
+    {
+        auto* target_ptr {const_cast<Node*>(it.m_ptr)};
+        target_ptr->next = m_create_node(value, target_ptr->next);
+        ++m_length;
+
+        return Iterator {target_ptr->next};
+    }
+
+    /**
+     * @brief Insert an r-value after the element pointer by the iterator.
+     *
+     * @param[in] it Iterator pointing to the item to insert after.
+     * @param[in] value Value to insert.
+     * @return Iterator Iterator pointing to the inserted element.
+     */
+    Iterator insert_after(ConstIterator it, value_type&& value)
+    {
+        auto* target_ptr {const_cast<Node*>(it.m_ptr)};
+        target_ptr->next
+            = m_create_node(target_ptr->next, std::forward<value_type>(value));
+        ++m_length;
+
+        return Iterator {target_ptr->next};
+    }
+
+    /**
+     * @brief Insert several copies of a value after the element pointer by the
+     * iterator.
+     *
+     * @param[in] it Iterator pointing to the item to insert after.
+     * @param[in] count Number of copies to create.
+     * @param[in] value Value to insert.
+     * @return Iterator Iterator pointing to the last inserted element.
+     */
+    Iterator insert_after(
+        ConstIterator it, size_type count, const value_type& value)
+    {
+        try {
+            auto* target_ptr {const_cast<Node*>(it.m_ptr)};
+            while (count-- > 0) {
+                target_ptr->next = m_create_node(value, target_ptr->next);
+                target_ptr = target_ptr->next;
+                ++m_length;
+            }
+            return Iterator {target_ptr};
+        }
+        catch (...) {
+            // If failed to create an item, try to clean up the successfully
+            // allocated nodes.
+            clear();
+            throw;
+        }
+    }
+
+    /**
+     * @brief
+     * @brief Insert elements from the input iterators range after the element
+     * pointer by the iterator.
+     *
+     * @param[in] it Iterator pointing to the item to insert after.
+     * @param[in] first Start of the range, inclusive.
+     * @param[in] last End of the range, exclusive.
+     * @return Iterator Iterator pointing to the last inserted element.
+     */
+    Iterator insert_after(ConstIterator it, std::input_iterator auto first,
+        std::input_iterator auto last)
+    {
+        try {
+            auto* target_ptr {const_cast<Node*>(it.m_ptr)};
+            for (; first != last; ++first) {
+                target_ptr->next = m_create_node(*first, target_ptr->next);
+                target_ptr = target_ptr->next;
+                ++m_length;
+            }
+            return Iterator {target_ptr};
+        }
+        catch (...) {
+            // If failed to create an item, try to clean up the successfully
+            // allocated nodes.
+            clear();
+            throw;
+        }
+    }
+
+    Iterator insert_after(
+        ConstIterator it, std::initializer_list<value_type> list)
+    {
+        return insert_after(it, list.begin(), list.end());
+    }
+
+#if 0
+    template <typename... Args>
+    Iterator emplace_after(ConstIterator it, Args&&... args)
+    {
+        return Iterator {m_insert_after(it, std::forward<Args>(args)...)};
+    }
+#endif
+
+    /**
+     * @brief Add element to the front of the linked list.
+     *
+     * @param[in] value Value to add.
+     */
+    void push_front(const value_type& value)
+    {
+        m_head = m_create_node(value, m_head);
+        ++m_length;
+    }
+
+    /**
+     * @brief Move element to the front of the linked list.
+     *
+     * @param[in] value Value to move.
+     */
+    void push_front(value_type&& value)
+    {
+        m_head = m_create_node(m_head, std::forward<value_type>(value));
+        ++m_length;
+    }
+
+    /**
+     * @brief Emplace element to the front of the linked list using inner type
+     * constructor's parameters.
+     *
+     * @tparam Args Types of arguments to construct an element.
+     * @param[in] args Parameters to use for object's construction.
+     */
+    template <typename... Args>
+    void emplace_front(Args&&... args)
+    {
+        m_head = m_create_node(m_head, std::forward<Args>(args)...);
+        ++m_length;
+    }
+
+    /***************************************************************************
+     * End of Element insertion section                                        *
+     **************************************************************************/
+
+    /***************************************************************************
+     * Element deletion section                                                *
+     **************************************************************************/
+
+    void pop_front() noexcept
+    {
+        if (m_head) {
+            auto* next {m_head->next};
+            delete m_head;
+            m_head = next;
+            --m_length;
+        }
+    }
+
+    Iterator erase_after(ConstIterator it) noexcept
+    {
+        auto* target_ptr {const_cast<Node*>(it.m_ptr)};
+        auto* node_ptr {target_ptr->next};
+        target_ptr->next = node_ptr->next;
+        delete node_ptr;
+        --m_length;
+        return Iterator {target_ptr->next};
+    }
+
+    Iterator erase_after(ConstIterator first, ConstIterator last) noexcept
+    {
+        auto* target_ptr {const_cast<Node*>(first.m_ptr)};
+        while (++first != last) {
+            auto* node_ptr {target_ptr->next};
+            target_ptr->next = node_ptr->next;
+            --m_length;
+        }
+        return Iterator {target_ptr->next};
+    }
+
+    void clear()
+    {
+        while (m_head) {
+            auto* temp {m_head};
+            m_head = m_head->next;
+            delete temp;
+            --m_length;
+        }
+        //assert(m_length == 0);
+        //assert(!m_head);
+    }
+
+    /***************************************************************************
+     * End of Element deletion section                                         *
+     **************************************************************************/
+
+  private:
+    Node* m_head;
+    size_type m_length;
+
+    template <typename... Args>
+    static Node* m_create_node(Node* next, Args&&... args)
+    {
+        Node* node_ptr {};
+        try {
+            node_ptr = new Node {next, std::forward<Args>(args)...};
+        }
+        catch (...) {
+            delete node_ptr;
+            throw;
+        }
+        return node_ptr;
+    }
+
+    template <typename... Args>
+    static Node* m_create_node(Args&&... args)
+    {
+        Node* node_ptr {};
+        try {
+            node_ptr = new Node {std::forward<Args>(args)...};
+        }
+        catch (...) {
+            delete node_ptr;
+            throw;
+        }
+        return node_ptr;
+    }
+
+    static Node* m_create_node(const value_type& value, Node* next = nullptr)
+    {
+        Node* node_ptr {};
+        try {
+            node_ptr = new Node {value, next};
+        }
+        catch (...) {
+            delete node_ptr;
+            throw;
+        }
+        return node_ptr;
+    }
+
+    void m_from_count_value(size_type count, const value_type& value)
+    {
+        if (count < 1) {
+            return;
+        }
+
+        try {
+            m_head = m_create_node(value);
+            ++m_length;
+            auto* current_ptr {m_head};
+            while (--count) {
+                current_ptr->next = m_create_node(value);
+                current_ptr = current_ptr->next;
+                ++m_length;
+            }
+        }
+        catch (...) {
+            // If failed to create an item, try to clean up the successfully
+            // allocated nodes.
+            clear();
+            throw;
+        }
+    }
+
+    void m_from_range(
+        std::input_iterator auto first, std::input_iterator auto last)
+    {
+        if (first == last) {
+            return;
+        }
+
+        try {
+            m_head = m_create_node(*first);
+            ++m_length;
+            auto* current_ptr {m_head};
+            while (++first != last) {
+                current_ptr->next = m_create_node(*first);
+                current_ptr = current_ptr->next;
+                ++m_length;
+            }
+        } catch (...) {
+            // If failed to create an item, try to clean up the successfully
+            // allocated nodes.
+            clear();
+            throw;
+        }
+    }
+};
 
 template <typename T>
 class SinglyLinkedList {

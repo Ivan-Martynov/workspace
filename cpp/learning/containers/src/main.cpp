@@ -98,7 +98,7 @@ void test_array_fixed()
     print_array(array_02);
 }
 
-void test_sll()
+void test_singly_linked_list()
 {
     std::cout << "\nTesting SinglyLinkedList.\n";
 
@@ -157,6 +157,76 @@ void test_sll()
 #endif
 }
 
+void test_sll()
+{
+    std::cout << "\nTesting SLL.\n";
+
+    print_array(
+        Marvin::SLL<int> {Marvin::init_container_with_size, 4});
+
+    Marvin::SLL<float> list_01 {
+        Marvin::init_container_with_size, 4, 2.0f};
+    print_array(list_01);
+    auto it {list_01.begin()};
+    for (int i {0}; i < list_01.length(); ++i)
+    {
+        *it++ = i + 1;
+    }
+    //list_01.front() = 8;
+    print_array(list_01);
+    //++it;
+    //list_01.pop_front();
+    it = list_01.begin();
+    it = list_01.erase_after(it, std::next(it, 2));
+    list_01.pop_front();
+    list_01.push_front(7);
+    list_01.emplace_front(17.0f);
+    if (list_01.empty()) {
+        std::cout << "Empty list.\n";
+    }
+    //*it = 5;
+    //list_01.clear();
+    print_array(list_01);
+    //    const auto it {list_01.insert_after(list_01.begin(), 3.0f)};
+
+#if 1
+    Marvin::ArrayAlloc<std::string> str_array {"One", "Two", "Three"};
+    Marvin::SLL<std::string> str_list {
+        Marvin::init_container_with_size, 8, "help"};
+    std::ostringstream stream {};
+    stream << "Next";
+    str_list.emplace_front(std::string_view {"Front"});
+    str_list.emplace_front(stream.str().c_str());
+    str_list.erase_after(
+        std::next(str_list.cbegin(), 3), std::next(str_list.cbegin(), 6));
+    print_array(str_list);
+    Marvin::SLL<std::string> list_03 {str_array.cbegin(), str_array.cend()};
+    print_array(list_03);
+    auto list_02 {Marvin::SLL<std::string> {"Using", "initializer", "list"}};
+    print_array(list_02);
+    list_03.assign(8, "Val");
+    print_array(Marvin::SLL<std::string> {list_03});
+    str_list = list_03;
+    str_list.emplace_front("Emplacing");
+    auto it_03
+        = str_list.insert_after(std::next(str_list.cbegin(), 3), "Insert 1");
+    std::string s {"Insert 2"};
+    it_03 = str_list.insert_after(it_03, s);
+    it_03 = str_list.insert_after(it_03, 3, "Insert 3");
+    it_03 = str_list.insert_after(it_03, "Insert 4");
+    it_03 = str_list.insert_after(
+        it_03, std::next(list_02.cbegin(), 1), std::next(list_02.cbegin(), 3));
+    it_03 = str_list.insert_after(it_03, {
+                                             "After 1",
+                                             "After 2",
+                                             "After 3",
+                                             "After 4",
+                                         });
+    print_array(str_list);
+    std::cout << str_list.length() << "\n";
+#endif
+}
+ 
 struct TreeNodeInt {
     int value;
 #if 0
@@ -259,7 +329,7 @@ int main()
 {
     test_array_alloc();
     test_array_fixed();
-    test_sll();
+    test_singly_linked_list();
 
     if (3 > 5) {
     }
@@ -277,6 +347,7 @@ int main()
     std::cout << f1 + f2 << "\n";
 #endif
     test_tree();
+    test_sll();
 
     return 0;
 }
