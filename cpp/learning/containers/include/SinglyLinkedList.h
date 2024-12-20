@@ -15,19 +15,16 @@
 #include "ContainerHelper.h"
 #include <cassert>
 
-namespace Marvin {
+namespace Marvin
+{
 
 template <typename T>
-class SLL {
+class SLL
+{
   private:
     struct Node {
         T value;
         Node* next;
-
-        explicit Node(const T& v, Node* next_ptr = nullptr)
-            : value {v}, next {next_ptr}
-        {
-        }
 
         template <typename... Args>
         explicit Node(Node* next_ptr, Args&&... args)
@@ -41,21 +38,15 @@ class SLL {
         {
         }
 
-#if 1
         Node(const Node&) = default;
         Node& operator=(const Node&) = default;
-#else
-        Node(const Node& rhs) : value {rhs.value}, next {rhs.next} {}
 
-        Node& operator=(const Node& rhs)
+        void swap(Node rhs) noexcept
         {
-            if (this != &rhs) {
-                value = rhs.value;
-                next = rhs.next;
-            }
-            return *this;
+            using std::swap;
+            swap(value, rhs.value);
+            swap(next, rhs.next);
         }
-#endif
     };
 
   public:
@@ -87,14 +78,8 @@ class SLL {
         Iterator() : m_ptr {} {}
         explicit Iterator(Node* ptr) : m_ptr {ptr} {}
 
-        reference operator*() const
-        {
-            return m_ptr->value;
-        }
-        pointer operator->() const
-        {
-            return &m_ptr->value;
-        }
+        reference operator*() const { return m_ptr->value; }
+        pointer operator->() const { return &m_ptr->value; }
 
         self_t& operator++()
         {
@@ -112,7 +97,8 @@ class SLL {
         bool operator==(const self_t& rhs) const { return m_ptr == rhs.m_ptr; }
         bool operator!=(const self_t& rhs) const { return m_ptr != rhs.m_ptr; }
 
-        //self_t next() const { return Iterator {m_ptr ? m_ptr->next : nullptr}; }
+        // self_t next() const { return Iterator {m_ptr ? m_ptr->next :
+        // nullptr}; }
 
       private:
         Node* m_ptr;
@@ -137,14 +123,8 @@ class SLL {
         explicit ConstIterator(const Node* ptr) : m_ptr {ptr} {}
         ConstIterator(const iterator_t& it) : m_ptr {it.m_ptr} {}
 
-        reference operator*() const
-        {
-            return m_ptr->value;
-        }
-        pointer operator->() const
-        {
-            return &m_ptr->value;
-        }
+        reference operator*() const { return m_ptr->value; }
+        pointer operator->() const { return &m_ptr->value; }
 
         self_t& operator++()
         {
@@ -162,10 +142,10 @@ class SLL {
         bool operator==(const self_t& rhs) const { return m_ptr == rhs.m_ptr; }
         bool operator!=(const self_t& rhs) const { return m_ptr != rhs.m_ptr; }
 
-//        self_t next() const
-//        {
-//            return ConstIterator {m_ptr ? m_ptr->next : nullptr};
-//        }
+        //        self_t next() const
+        //        {
+        //            return ConstIterator {m_ptr ? m_ptr->next : nullptr};
+        //        }
 
       private:
         const Node* m_ptr;
@@ -255,23 +235,13 @@ class SLL {
     void assign(size_type count, const value_type& value)
     {
         clear();
-        try {
-            m_from_count_value(count, value);
-        }
-        catch (...) {
-            throw;
-        }
+        m_from_count_value(count, value);
     }
 
     void assign(std::input_iterator auto first, std::input_iterator auto last)
     {
         clear();
-        try {
-            m_from_range(first, last);
-        }
-        catch (...) {
-            throw;
-        }
+        m_from_range(first, last);
     }
 
     void assign(std::initializer_list<value_type> rhs)
@@ -304,11 +274,7 @@ class SLL {
      *
      * @param[in] rhs Another linked list to move.
      */
-    explicit SLL(SLL&& rhs) noexcept
-    {
-        std::swap(m_head, rhs.m_head);
-        std::swap(m_length, rhs.m_length);
-    }
+    explicit SLL(SLL&& rhs) noexcept { swap(rhs); }
 
     /**
      * @brief Move operator.
@@ -320,8 +286,7 @@ class SLL {
     {
         if (this != &rhs) {
             clear();
-            std::swap(m_head, rhs.m_head);
-            std::swap(m_length, rhs.m_length);
+            swap(rhs);
         }
         return *this;
     }
@@ -353,10 +318,7 @@ class SLL {
      */
     std::size_t size_in_bytes() const { return m_length * sizeof(value_type); }
 
-    bool empty() const noexcept
-    {
-        return !m_head;
-    }
+    bool empty() const noexcept { return !m_head; }
 
     /***************************************************************************
      * End of Accessors section                                                *
@@ -367,7 +329,7 @@ class SLL {
      **************************************************************************/
 
     /**
-     * @brief Insert a value after the element pointer by the iterator.
+     * @brief Insert a value after the element pointed by the iterator.
      *
      * @param[in] it Iterator pointing to the item to insert after.
      * @param[in] value Value to insert.
@@ -376,14 +338,14 @@ class SLL {
     Iterator insert_after(ConstIterator it, const value_type& value)
     {
         auto* target_ptr {const_cast<Node*>(it.m_ptr)};
-        target_ptr->next = m_create_node(value, target_ptr->next);
+        target_ptr->next = m_create_node(target_ptr->next, value);
         ++m_length;
 
         return Iterator {target_ptr->next};
     }
 
     /**
-     * @brief Insert an r-value after the element pointer by the iterator.
+     * @brief Insert an r-value after the element pointed by the iterator.
      *
      * @param[in] it Iterator pointing to the item to insert after.
      * @param[in] value Value to insert.
@@ -392,15 +354,14 @@ class SLL {
     Iterator insert_after(ConstIterator it, value_type&& value)
     {
         auto* target_ptr {const_cast<Node*>(it.m_ptr)};
-        target_ptr->next
-            = m_create_node(target_ptr->next, std::forward<value_type>(value));
+        target_ptr->next = m_create_node(target_ptr->next, std::move(value));
         ++m_length;
 
         return Iterator {target_ptr->next};
     }
 
     /**
-     * @brief Insert several copies of a value after the element pointer by the
+     * @brief Insert several copies of a value after the element pointed by the
      * iterator.
      *
      * @param[in] it Iterator pointing to the item to insert after.
@@ -411,27 +372,19 @@ class SLL {
     Iterator insert_after(
         ConstIterator it, size_type count, const value_type& value)
     {
-        try {
-            auto* target_ptr {const_cast<Node*>(it.m_ptr)};
-            while (count-- > 0) {
-                target_ptr->next = m_create_node(value, target_ptr->next);
-                target_ptr = target_ptr->next;
-                ++m_length;
-            }
-            return Iterator {target_ptr};
-        }
-        catch (...) {
-            // If failed to create an item, try to clean up the successfully
-            // allocated nodes.
-            clear();
-            throw;
-        }
+        return Iterator {
+            m_insert_after(const_cast<Node*>(it.m_ptr), count, value)};
+    }
+
+    Iterator insert_after(ConstIterator it, size_type count, value_type&& value)
+    {
+        return Iterator {m_insert_after(
+            const_cast<Node*>(it.m_ptr), count, std::move(value))};
     }
 
     /**
-     * @brief
      * @brief Insert elements from the input iterators range after the element
-     * pointer by the iterator.
+     * pointed by the iterator.
      *
      * @param[in] it Iterator pointing to the item to insert after.
      * @param[in] first Start of the range, inclusive.
@@ -441,36 +394,29 @@ class SLL {
     Iterator insert_after(ConstIterator it, std::input_iterator auto first,
         std::input_iterator auto last)
     {
-        try {
-            auto* target_ptr {const_cast<Node*>(it.m_ptr)};
-            for (; first != last; ++first) {
-                target_ptr->next = m_create_node(*first, target_ptr->next);
-                target_ptr = target_ptr->next;
-                ++m_length;
-            }
-            return Iterator {target_ptr};
-        }
-        catch (...) {
-            // If failed to create an item, try to clean up the successfully
-            // allocated nodes.
-            clear();
-            throw;
-        }
+        return Iterator {
+            m_insert_after(const_cast<Node*>(it.m_ptr), first, last)};
     }
 
+    /**
+     * @brief Insert elements from an initializer list after the element pointed
+     * by the iterator.
+     *
+     * @param[in] it
+     * @param[in] list
+     * @return Iterator
+     */
     Iterator insert_after(
         ConstIterator it, std::initializer_list<value_type> list)
     {
         return insert_after(it, list.begin(), list.end());
     }
 
-#if 0
     template <typename... Args>
     Iterator emplace_after(ConstIterator it, Args&&... args)
     {
-        return Iterator {m_insert_after(it, std::forward<Args>(args)...)};
+        return insert_after(it, std::forward<Args>(args)...);
     }
-#endif
 
     /**
      * @brief Add element to the front of the linked list.
@@ -479,7 +425,7 @@ class SLL {
      */
     void push_front(const value_type& value)
     {
-        m_head = m_create_node(value, m_head);
+        m_head = m_create_node(m_head, value);
         ++m_length;
     }
 
@@ -490,7 +436,7 @@ class SLL {
      */
     void push_front(value_type&& value)
     {
-        m_head = m_create_node(m_head, std::forward<value_type>(value));
+        m_head = m_create_node(m_head, std::move(value));
         ++m_length;
     }
 
@@ -528,39 +474,112 @@ class SLL {
 
     Iterator erase_after(ConstIterator it) noexcept
     {
-        auto* target_ptr {const_cast<Node*>(it.m_ptr)};
-        auto* node_ptr {target_ptr->next};
-        target_ptr->next = node_ptr->next;
-        delete node_ptr;
-        --m_length;
-        return Iterator {target_ptr->next};
+        return Iterator {m_erase_after(const_cast<Node*>(it.m_ptr))};
     }
 
     Iterator erase_after(ConstIterator first, ConstIterator last) noexcept
     {
-        auto* target_ptr {const_cast<Node*>(first.m_ptr)};
-        while (++first != last) {
-            auto* node_ptr {target_ptr->next};
-            target_ptr->next = node_ptr->next;
-            --m_length;
-        }
-        return Iterator {target_ptr->next};
+        return Iterator {m_erase_after(
+            const_cast<Node*>(first.m_ptr), const_cast<Node*>(last.m_ptr))};
     }
 
     void clear()
     {
-        while (m_head) {
-            auto* temp {m_head};
-            m_head = m_head->next;
-            delete temp;
-            --m_length;
-        }
-        //assert(m_length == 0);
-        //assert(!m_head);
+        erase_after(cbegin(), cend());
+        pop_front();
+#if 1
+        assert(m_length == 0);
+        assert(!m_head);
+#endif
     }
 
     /***************************************************************************
      * End of Element deletion section                                         *
+     **************************************************************************/
+
+    void swap(SLL& rhs) noexcept
+    {
+        using std::swap;
+        swap(m_head, rhs.m_head);
+        swap(m_length, rhs.m_length);
+    }
+
+    /***************************************************************************
+     * Sort section                                                            *
+     **************************************************************************/
+
+    // Merge sort, bottom-up.
+    template <typename Comp>
+    void sort(Comp compare_func)
+    {
+        auto* list {m_head};
+        if (!m_head->next) {
+            return;
+        }
+
+        size_type n {1};
+        while (true) {
+            auto* p {list};
+            list = nullptr;
+            Node* tail {nullptr};
+
+            size_type merge_count {0};
+            while (p) {
+                ++merge_count;
+                auto* q {p};
+                size_type p_size {0};
+                for (size_type i {0}; i < n; ++i) {
+                    ++p_size;
+                    q = q->next;
+                    if (!q) {
+                        break;
+                    }
+                }
+
+                size_type q_size {n};
+                while ((p_size > 0) || ((q_size > 0) && q)) {
+                    Node* e {};
+                    if (p_size == 0) {
+                        e = q;
+                        q = q->next;
+                        --q_size;
+                    } else if ((q_size == 0) || !q) {
+                        e = p;
+                        p = p->next;
+                        --p_size;
+                    } else if (!compare_func(q->value, p->value)) {
+                        e = p;
+                        p = p->next;
+                        --p_size;
+                    } else {
+                        e = q;
+                        q = q->next;
+                        --q_size;
+                    }
+
+                    if (tail) {
+                        tail->next = e;
+                    } else {
+                        list = e;
+                    }
+                    tail = e;
+                }
+                p = q;
+            }
+            tail->next = nullptr;
+            if (merge_count < 2) {
+                m_head->next = list;
+                return;
+            } else {
+                n <<= 1;
+            }
+        }
+    }
+
+    void sort() { return sort(std::less<value_type>()); }
+
+    /***************************************************************************
+     * End of Sort section                                                     *
      **************************************************************************/
 
   private:
@@ -573,8 +592,7 @@ class SLL {
         Node* node_ptr {};
         try {
             node_ptr = new Node {next, std::forward<Args>(args)...};
-        }
-        catch (...) {
+        } catch (...) {
             delete node_ptr;
             throw;
         }
@@ -587,49 +605,76 @@ class SLL {
         Node* node_ptr {};
         try {
             node_ptr = new Node {std::forward<Args>(args)...};
-        }
-        catch (...) {
+        } catch (...) {
             delete node_ptr;
             throw;
         }
         return node_ptr;
     }
 
-    static Node* m_create_node(const value_type& value, Node* next = nullptr)
+    Node* m_erase_after(Node* node)
     {
-        Node* node_ptr {};
-        try {
-            node_ptr = new Node {value, next};
+        if (node) {
+            auto* current {node->next};
+            node->next = current->next;
+            delete current;
+            return node->next;
+        } else {
+            return nullptr;
         }
-        catch (...) {
-            delete node_ptr;
-            throw;
-        }
-        return node_ptr;
     }
 
-    void m_from_count_value(size_type count, const value_type& value)
+    Node* m_erase_after(Node* first, Node* last)
+    {
+        if (first != last) {
+            auto* current {first->next};
+            while (current != last) {
+                auto* temp {current};
+                current = current->next;
+                delete temp;
+                --m_length;
+            }
+            first->next = last;
+        }
+        return last;
+    }
+
+    template <typename... Args>
+    Iterator m_insert_after(Node* node, size_type count, Args&&... args)
+    {
+        auto* current {node};
+        auto&& arg {std::forward<Args>(args)...};
+        while (count-- > 0) {
+            current->next = m_create_node(current->next, arg);
+            current = current->next;
+            ++m_length;
+        }
+        return Iterator {current};
+    }
+
+    Iterator m_insert_after(Node* node, std::input_iterator auto first,
+        std::input_iterator auto last)
+    {
+        auto* current {node};
+        for (; first != last; ++first) {
+            current->next = m_create_node(current->next, *first);
+            current = current->next;
+            ++m_length;
+        }
+        return Iterator {current};
+    }
+
+    template <typename... Args>
+    void m_from_count_value(size_type count, Args&&... args)
     {
         if (count < 1) {
             return;
         }
 
-        try {
-            m_head = m_create_node(value);
-            ++m_length;
-            auto* current_ptr {m_head};
-            while (--count) {
-                current_ptr->next = m_create_node(value);
-                current_ptr = current_ptr->next;
-                ++m_length;
-            }
-        }
-        catch (...) {
-            // If failed to create an item, try to clean up the successfully
-            // allocated nodes.
-            clear();
-            throw;
-        }
+        auto&& arg {std::forward<Args>(args)...};
+        m_head = m_create_node(arg);
+        ++m_length;
+        m_insert_after(m_head, --count, arg);
     }
 
     void m_from_range(
@@ -639,26 +684,15 @@ class SLL {
             return;
         }
 
-        try {
-            m_head = m_create_node(*first);
-            ++m_length;
-            auto* current_ptr {m_head};
-            while (++first != last) {
-                current_ptr->next = m_create_node(*first);
-                current_ptr = current_ptr->next;
-                ++m_length;
-            }
-        } catch (...) {
-            // If failed to create an item, try to clean up the successfully
-            // allocated nodes.
-            clear();
-            throw;
-        }
+        m_head = m_create_node(*first);
+        ++m_length;
+        m_insert_after(m_head, ++first, last);
     }
 };
 
 template <typename T>
-class SinglyLinkedList {
+class SinglyLinkedList
+{
   private:
     struct NodeBase {
         NodeBase* next;
@@ -899,8 +933,7 @@ class SinglyLinkedList {
         clear();
         try {
             m_from_count_value(count, value);
-        }
-        catch (...) {
+        } catch (...) {
             throw;
         }
     }
@@ -910,8 +943,7 @@ class SinglyLinkedList {
         clear();
         try {
             m_from_range(first, last);
-        }
-        catch (...) {
+        } catch (...) {
             throw;
         }
     }
@@ -1101,18 +1133,15 @@ class SinglyLinkedList {
                         e = q;
                         q = static_cast<Node*>(q->next);
                         --q_size;
-                    }
-                    else if ((q_size == 0) || !q) {
+                    } else if ((q_size == 0) || !q) {
                         e = p;
                         p = static_cast<Node*>(p->next);
                         --p_size;
-                    }
-                    else if (!compare_func(q->value, p->value)) {
+                    } else if (!compare_func(q->value, p->value)) {
                         e = p;
                         p = static_cast<Node*>(p->next);
                         --p_size;
-                    }
-                    else {
+                    } else {
                         e = q;
                         q = static_cast<Node*>(q->next);
                         --q_size;
@@ -1120,8 +1149,7 @@ class SinglyLinkedList {
 
                     if (tail) {
                         tail->next = e;
-                    }
-                    else {
+                    } else {
                         list = e;
                     }
                     tail = e;
@@ -1132,8 +1160,7 @@ class SinglyLinkedList {
             if (merge_count < 2) {
                 m_head.next = list;
                 return;
-            }
-            else {
+            } else {
                 n <<= 1;
             }
         }
@@ -1151,8 +1178,7 @@ class SinglyLinkedList {
         Node* node_ptr {};
         try {
             node_ptr = new Node {std::forward<Args>(args)...};
-        }
-        catch (...) {
+        } catch (...) {
             delete node_ptr;
             throw;
         }
@@ -1165,8 +1191,7 @@ class SinglyLinkedList {
         Node* node_ptr {};
         try {
             node_ptr = new Node {ptr, std::forward<Args>(args)...};
-        }
-        catch (...) {
+        } catch (...) {
             delete node_ptr;
             throw;
         }
@@ -1186,8 +1211,7 @@ class SinglyLinkedList {
                 current_ptr = current_ptr->next;
                 ++m_length;
             }
-        }
-        catch (...) {
+        } catch (...) {
             // Try to clean up the successfully allocated nodes.
             clear();
             throw;
@@ -1208,8 +1232,7 @@ class SinglyLinkedList {
                 current_ptr = current_ptr->next;
                 ++m_length;
             }
-        }
-        catch (...) {
+        } catch (...) {
             // Try to clean up the successfully allocated nodes.
             clear();
             throw;
@@ -1254,8 +1277,7 @@ struct ListNodeBase {
         if (end) {
             begin->m_next = end->m_next;
             end->m_next = m_next;
-        }
-        else {
+        } else {
             begin->m_next = nullptr;
         }
 
@@ -1293,6 +1315,13 @@ void sort_list(SinglyLinkedList<T>& linked_list)
 {
 }
 #endif
+
+template <typename T>
+void swap(SLL<T>& lhs, SLL<T>& rhs) noexcept
+{
+    using std::swap;
+    lhs.swap(rhs);
+}
 
 } // namespace Marvin
 

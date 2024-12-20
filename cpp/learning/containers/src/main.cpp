@@ -181,11 +181,13 @@ void test_sll()
     list_01.pop_front();
     list_01.push_front(7);
     list_01.emplace_front(17.0f);
+    //list_01.sort();
     if (list_01.empty()) {
         std::cout << "Empty list.\n";
     }
     //*it = 5;
-    //list_01.clear();
+    print_array(list_01);
+    list_01.clear();
     print_array(list_01);
     //    const auto it {list_01.insert_after(list_01.begin(), 3.0f)};
 
@@ -197,8 +199,9 @@ void test_sll()
     stream << "Next";
     str_list.emplace_front(std::string_view {"Front"});
     str_list.emplace_front(stream.str().c_str());
-    str_list.erase_after(
-        std::next(str_list.cbegin(), 3), std::next(str_list.cbegin(), 6));
+    //str_list.erase_after(str_list.cbegin(), str_list.cend());
+    //str_list.pop_front();
+    // std::next(str_list.cbegin(), 3), std::next(str_list.cbegin(), 6));
     print_array(str_list);
     Marvin::SLL<std::string> list_03 {str_array.cbegin(), str_array.cend()};
     print_array(list_03);
@@ -222,8 +225,19 @@ void test_sll()
                                              "After 3",
                                              "After 4",
                                          });
+    it_03 = str_list.emplace_after(it_03, "Insert 5");
+    // str_list.sort();
+    std::cout << "Before swap:\n";
     print_array(str_list);
     std::cout << str_list.length() << "\n";
+    print_array(list_02);
+    std::cout << list_02.length() << "\n";
+    swap(list_02, str_list);
+    std::cout << "After swap:\n";
+    print_array(str_list);
+    std::cout << str_list.length() << "\n";
+    print_array(list_02);
+    std::cout << list_02.length() << "\n";
 #endif
 }
  
