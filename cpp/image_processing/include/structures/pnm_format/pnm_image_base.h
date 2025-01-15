@@ -97,10 +97,14 @@ class IPNMImage
      * @param[in] open_mode Mode to open the file.
      * @param[in] comment Comment to add to the header. Default is empty.
      */
-    virtual void write_to(const char* const file_path,
+    //virtual
+    void write_to(const char* const file_path,
         std::ios_base::openmode open_mode,
         std::string_view comment = std::string_view {}) const
-        = 0;
+    {
+        write_to(file_path, comment, open_mode);
+    }
+    //    = 0;
 };
 
 template <pnm_suitable T>
@@ -244,9 +248,9 @@ class PNMImageTemplated : public MatrixTemplated<T>, public IPNMImage
      * @param[in] open_mode Mode to open the file.
      * @param[in] comment Comment to add to the header. Default is empty.
      */
-    void write_to(const char* const file_path,
-        std::ios_base::openmode open_mode,
-        std::string_view comment = std::string_view {}) const override;
+    //void write_to(const char* const file_path,
+    //    std::ios_base::openmode open_mode,
+    //    std::string_view comment = std::string_view {}) const override;
 
     /***************************************************************************
      * End of Read/Write section.                                              *

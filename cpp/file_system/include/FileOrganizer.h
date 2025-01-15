@@ -54,6 +54,8 @@ class FileOrganizer
     explicit FileOrganizer(const std::vector<std::string_view>&,
         const std::vector<std::string_view>&);
 
+    std::filesystem::path extract_date_from_name(const std::filesystem::path&);
+
     void run();
 };
 

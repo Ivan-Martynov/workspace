@@ -1293,12 +1293,12 @@ void PNMImageTemplated<T>::write_to(const char* const file_path,
  * @param[in] open_mode Mode to open the file.
  * @param[in] comment Comment to add to the header.
  */
-template <pnm_suitable T>
-void PNMImageTemplated<T>::write_to(const char* const file_path,
-    std::ios_base::openmode open_mode, std::string_view comment) const
-{
-    write_to(file_path, comment, open_mode);
-}
+//template <pnm_suitable T>
+//void PNMImageTemplated<T>::write_to(const char* const file_path,
+//    std::ios_base::openmode open_mode, std::string_view comment) const
+//{
+//    write_to(file_path, comment, open_mode);
+//}
 
 // Instantiate concrete classes.
 template class PNMImageTemplated<BlackWhiteColor>;

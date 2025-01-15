@@ -19,11 +19,19 @@ namespace Marvin
 {
 
 template <typename T>
-class SLL
+class SinglyLinkedList
 {
+  public:
+    using value_type = T;
+    using size_type = int;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using pointer = value_type*;
+    using const_pointer = const value_type*;
+
   private:
     struct Node {
-        T value;
+        value_type value;
         Node* next;
 
         template <typename... Args>
@@ -34,14 +42,14 @@ class SLL
 
         template <typename... Args>
         explicit Node(Args&&... args)
-            : value {std::forward<Args>(args)...}, next {}
+            : value {std::forward<Args>(args)...}, next {nullptr}
         {
         }
 
         Node(const Node&) = default;
         Node& operator=(const Node&) = default;
 
-        void swap(Node rhs) noexcept
+        void swap(Node& rhs) noexcept
         {
             using std::swap;
             swap(value, rhs.value);
@@ -50,13 +58,6 @@ class SLL
     };
 
   public:
-    using value_type = T;
-    using size_type = int;
-    using reference = value_type&;
-    using const_reference = const value_type&;
-    using pointer = value_type*;
-    using const_pointer = const value_type*;
-
     /***************************************************************************
      * Iterator section                                                        *
      **************************************************************************/
@@ -97,16 +98,13 @@ class SLL
         bool operator==(const self_t& rhs) const { return m_ptr == rhs.m_ptr; }
         bool operator!=(const self_t& rhs) const { return m_ptr != rhs.m_ptr; }
 
-        // self_t next() const { return Iterator {m_ptr ? m_ptr->next :
-        // nullptr}; }
-
       private:
         Node* m_ptr;
     }; // struct IteratorForward
     static_assert(std::forward_iterator<Iterator>);
 
     struct ConstIterator {
-        friend class SLL;
+        friend class SinglyLinkedList;
 
         using iterator_category = std::forward_iterator_tag;
         using difference_type = ptrdiff_t;
@@ -142,11 +140,6 @@ class SLL
         bool operator==(const self_t& rhs) const { return m_ptr == rhs.m_ptr; }
         bool operator!=(const self_t& rhs) const { return m_ptr != rhs.m_ptr; }
 
-        //        self_t next() const
-        //        {
-        //            return ConstIterator {m_ptr ? m_ptr->next : nullptr};
-        //        }
-
       private:
         const Node* m_ptr;
     }; // struct ConstIteratorForward
@@ -173,10 +166,10 @@ class SLL
      * @brief Default constructor with null pointer and zero elements.
      *
      */
-    explicit SLL() : m_head {}, m_length {0} {}
+    SinglyLinkedList() : m_head {}, m_length {0} {}
 
     /**
-     * @brief Construct a SLL object with a number of elements,
+     * @brief Construct a SinglyLinkedList object with a number of elements,
      * each element assigned to a provided (or default) value.
      *
      * @remarks Using tag class to distinguish from the constructor having
@@ -187,9 +180,9 @@ class SLL
      * @param[in] count Number of elements to create.
      * @param[in] value Value to assign to each element.
      */
-    SLL(init_container_with_size_t, size_type count,
+    SinglyLinkedList(init_container_with_size_t, size_type count,
         const value_type& value = value_type {})
-        : SLL {}
+        : SinglyLinkedList {}
     {
         m_from_count_value(count, value);
     }
@@ -204,7 +197,7 @@ class SLL
      * @param[in] first First iterator.
      * @param[in] last Second iterator.
      */
-    SLL(std::input_iterator auto first, std::input_iterator auto last) : SLL {}
+    SinglyLinkedList(std::input_iterator auto first, std::input_iterator auto last) : SinglyLinkedList {}
     {
         m_from_range(first, last);
     }
@@ -217,10 +210,7 @@ class SLL
      *
      * @param[in] list Initializer_list to create a linked list from.
      */
-    explicit SLL(std::initializer_list<value_type> rhs)
-        : SLL(rhs.begin(), rhs.end())
-    {
-    }
+    SinglyLinkedList(std::initializer_list<value_type> rhs) : SinglyLinkedList(rhs.begin(), rhs.end()) {}
 
     /**
      * @brief Copy constructor.
@@ -230,7 +220,7 @@ class SLL
      *
      * @param[in] rhs Another linked list to build from.
      */
-    explicit SLL(const SLL& rhs) : SLL {rhs.cbegin(), rhs.cend()} {}
+    SinglyLinkedList(const SinglyLinkedList& rhs) : SinglyLinkedList {rhs.cbegin(), rhs.cend()} {}
 
     void assign(size_type count, const value_type& value)
     {
@@ -255,7 +245,7 @@ class SLL
      * @param[in] rhs Another linked list to build from.
      * @return SinglyLinkedList& Reference to the current instance.
      */
-    SLL& operator=(const SLL& rhs)
+    SinglyLinkedList& operator=(const SinglyLinkedList& rhs)
     {
         if (this != &rhs) {
             assign(rhs.cbegin(), rhs.cend());
@@ -263,7 +253,7 @@ class SLL
         return *this;
     }
 
-    SLL& operator=(std::initializer_list<value_type> rhs)
+    SinglyLinkedList& operator=(std::initializer_list<value_type> rhs)
     {
         assign(rhs.begin(), rhs.end());
         return *this;
@@ -274,7 +264,7 @@ class SLL
      *
      * @param[in] rhs Another linked list to move.
      */
-    explicit SLL(SLL&& rhs) noexcept { swap(rhs); }
+    SinglyLinkedList(SinglyLinkedList&& rhs) noexcept { swap(rhs); }
 
     /**
      * @brief Move operator.
@@ -282,7 +272,7 @@ class SLL
      * @param[in] rhs Another linked list to move.
      * @return SinglyLinkedList& Reference to the current instance.
      */
-    SLL& operator=(SLL&& rhs) noexcept
+    SinglyLinkedList& operator=(SinglyLinkedList&& rhs) noexcept
     {
         if (this != &rhs) {
             clear();
@@ -291,7 +281,7 @@ class SLL
         return *this;
     }
 
-    ~SLL() noexcept { clear(); }
+    ~SinglyLinkedList() noexcept { clear(); }
 
     /***************************************************************************
      * End Constructors & destructor section                                   *
@@ -454,6 +444,16 @@ class SLL
         ++m_length;
     }
 
+    void splice_after(ConstIterator it, SinglyLinkedList& rhs) noexcept
+    {
+        m_splice_after(const_cast<Node*>(it.m_ptr), rhs);
+    }
+
+    void splice_after(ConstIterator it, SinglyLinkedList&& rhs) noexcept
+    {
+        m_splice_after(const_cast<Node*>(it.m_ptr), rhs);
+    }
+
     /***************************************************************************
      * End of Element insertion section                                        *
      **************************************************************************/
@@ -497,7 +497,7 @@ class SLL
      * End of Element deletion section                                         *
      **************************************************************************/
 
-    void swap(SLL& rhs) noexcept
+    void swap(SinglyLinkedList& rhs) noexcept
     {
         using std::swap;
         swap(m_head, rhs.m_head);
@@ -639,6 +639,24 @@ class SLL
         return last;
     }
 
+    void m_splice_after(Node* node, SinglyLinkedList& rhs) noexcept
+    {
+        if (rhs.empty()) {
+            return;
+        }
+        auto* temp {node->next};
+        node->next = rhs.m_head;
+        auto* slide {rhs.m_head};
+        while (slide->next) {
+            slide = slide->next;
+        }
+        slide->next = temp;
+        m_length += rhs.m_length;
+
+        rhs.m_head = nullptr;
+        rhs.m_length = 0;
+    }
+
     template <typename... Args>
     Iterator m_insert_after(Node* node, size_type count, Args&&... args)
     {
@@ -690,6 +708,7 @@ class SLL
     }
 };
 
+#if 0
 template <typename T>
 class SinglyLinkedList
 {
@@ -1262,62 +1281,10 @@ class SinglyLinkedList
         --m_length;
     }
 }; // class SinglyLinkedList
-
-struct ListNodeBase {
-    ListNodeBase* m_next;
-
-    static void swap(ListNodeBase& lhs, ListNodeBase& rhs)
-    {
-        std::swap(lhs.m_next, rhs.m_next);
-    }
-
-    ListNodeBase* transfer_after(ListNodeBase* begin, ListNodeBase* end)
-    {
-        auto* root {begin->m_next};
-        if (end) {
-            begin->m_next = end->m_next;
-            end->m_next = m_next;
-        } else {
-            begin->m_next = nullptr;
-        }
-
-        m_next = root;
-        return end;
-    }
-
-    ListNodeBase* transfer_after(ListNodeBase* begin)
-    {
-        auto* end {begin};
-        while (end && end->m_next) {
-            end = end->m_next;
-        }
-        return transfer_after(begin, end);
-    }
-
-    void reverse_after()
-    {
-        if (!m_next) {
-            return;
-        }
-        auto* tail {m_next};
-        while (auto* temp {tail->m_next}) {
-            auto* keep {m_next};
-            m_next = temp;
-            tail->m_next = temp->m_next;
-            m_next->m_next = keep;
-        }
-    }
-}; // struct ListNodeBase
-
-#if 0
-template <typename T>
-void sort_list(SinglyLinkedList<T>& linked_list)
-{
-}
 #endif
 
 template <typename T>
-void swap(SLL<T>& lhs, SLL<T>& rhs) noexcept
+void swap(SinglyLinkedList<T>& lhs, SinglyLinkedList<T>& rhs) noexcept
 {
     using std::swap;
     lhs.swap(rhs);

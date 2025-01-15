@@ -1,13 +1,17 @@
 #include "structures/pnm_format/pnm_image_base.h"
 #include "structures/geometric/point2d.h"
 #include "tools/random_number.h"
+#include "tools/RandomUniformNumber.h"
 
 #include <filesystem>
 #include <algorithm>
 #include <thread>
 
+namespace
+{
+
 [[maybe_unused]]
-static void test_pnm_images(const std::filesystem::path& image_path)
+void test_pnm_images(const std::filesystem::path& image_path)
 {
     auto process_subdir_lambda {
         [&image_path](const char* const subdir_name, const char* const suffix,
@@ -36,7 +40,7 @@ static void test_pnm_images(const std::filesystem::path& image_path)
     process_subdir_lambda("plain", "_to_raw", std::ios_base::binary);
 }
 
-static void fractal(double left, double top, double x_side, double y_side,
+void fractal(double left, double top, double x_side, double y_side,
     Marvin::PNM_Format::PPMImage& image)
 {
     static constexpr int max_count {30};
@@ -96,7 +100,7 @@ static void fractal(double left, double top, double x_side, double y_side,
  * @param[in] image Image to write to.
  * @param[in] row Row of the image to place the current segments on.
  */
-static void add_Cantor(
+void add_Cantor(
     int start, int end, Marvin::PNM_Format::PBMImage& image, int row)
 {
     static constexpr int stripe_width {5};
@@ -130,7 +134,7 @@ static void add_Cantor(
 }
 
 [[maybe_unused]]
-static void make_Cantor_fractal(
+void make_Cantor_fractal(
     Marvin::PNM_Format::PBMImage&& image, const char* const file_path)
 {
     add_Cantor(0, image.width(), image, image.height() >> 1);
@@ -138,14 +142,14 @@ static void make_Cantor_fractal(
 }
 
 [[maybe_unused]]
-static void make_Cantor_fractal()
+void make_Cantor_fractal()
 {
     make_Cantor_fractal({27 * 27, 600}, "images/fractals/cantor_01.pbm");
     make_Cantor_fractal({81, 27}, "images/fractals/cantor_02.pbm");
 }
 
 [[maybe_unused]]
-static void make_Sierpinski_triangle(int)
+void make_Sierpinski_triangle(int)
 {
     //Marvin::Geometric::Point2d p {};
 //    int x1 {0}; int y1 {0};
@@ -165,7 +169,7 @@ static void make_Sierpinski_triangle(int)
  * @return std::vector<int> Vector containing interval points, each consecutive
  * pair representing a block/chunk.
  */
-static std::vector<int> linspace(int first, int second, int count)
+std::vector<int> linspace(int first, int second, int count)
 {
     constexpr double epsilon {1E-9};
     std::vector<int> result(count + 1);
@@ -182,7 +186,7 @@ static std::vector<int> linspace(int first, int second, int count)
     return result;
 }
 
-static void show_linspace(int first, int second, int count)
+void show_linspace(int first, int second, int count)
 {
     std::cout << "Linspace for (" << first << ", " << second << ", " << count
               << ")\n";
@@ -192,7 +196,7 @@ static void show_linspace(int first, int second, int count)
 }
 
 [[maybe_unused]]
-static void test_linspace()
+void test_linspace()
 {
     show_linspace(10, 40, 4);
     show_linspace(10, 0, 2);
@@ -202,7 +206,7 @@ static void test_linspace()
     show_linspace(17, 100, 17);
 }
 
-static void fill_in_threads(
+void fill_in_threads(
     Marvin::PNM_Format::PPMImage& image, const Marvin::RGBColor& color)
 {
     using namespace Marvin::PNM_Format;
@@ -244,7 +248,7 @@ static void fill_in_threads(
     std::ranges::for_each(threads, [](auto& t) { t.join(); });
 }
 
-static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
+void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
     const Marvin::PNM_Format::PPMImage::size_type point_count,
     const Marvin::RGBColor& point_color)
 {
@@ -277,7 +281,39 @@ static void random_points_in_threads(Marvin::PNM_Format::PPMImage& image,
 }
 
 [[maybe_unused]]
-static void create_rgb_image()
+void create_grid_image()
+{
+    using namespace Marvin::PNM_Format;
+    PPMImage image {800, 600};
+    image.fill(Marvin::RGBColor{128, 128, 128});
+    const int grid_x_count {20};
+    const int grid_y_count {20};
+    const int cell_size_x {image.width() / grid_x_count};
+    const int cell_size_y {image.height() / grid_y_count};
+
+    auto fill_cell_lambda {[cell_size_x, cell_size_y, &image](
+                               int x, int y, const Marvin::RGBColor& color) {
+        for (int cell_x {1}; cell_x < cell_size_x - 1; ++cell_x) {
+            for (int cell_y {1}; cell_y < cell_size_y - 1; ++cell_y) {
+                image[y * cell_size_y + cell_y, x * cell_size_x + cell_x]
+                    = color;
+            }
+        }
+    }};
+
+    for (int col {0}; col < grid_x_count; ++col) {
+        for (int row {0}; row < grid_y_count; ++row) {
+            fill_cell_lambda(row, col, Marvin::RGBColor {255, 255, 255});
+        }
+    }
+
+    fill_cell_lambda(5, 7, Marvin::RGBColor {0, 0, 0});
+
+    image.write_to("images/grid.ppm");
+}
+
+[[maybe_unused]]
+void create_rgb_image()
 {
     using namespace Marvin::PNM_Format;
 
@@ -359,16 +395,65 @@ static void create_rgb_image()
     image_03.write_to("images/ppm/test_03.ppm");
 }
 
+[[maybe_unused]]
+void test_random()
+{
+    constexpr int sample_count {10};
+    Marvin::RandomUniformNumber gen_01 {1, 5};
+    for (int i {0}; i < sample_count; ++i) {
+        std::cout << gen_01.generate() << ' ';
+    }
+    std::cout << '\n';
+
+    Marvin::RandomUniformNumber<long long int> gen_02 {25};
+    for (int i {0}; i < sample_count; ++i) {
+        std::cout << gen_02.generate() << ' ';
+    }
+    std::cout << '\n';
+
+    Marvin::RandomUniformNumber<short> gen_03 {};
+    for (int i {0}; i < sample_count; ++i) {
+        std::cout << gen_03.generate() << ' ';
+    }
+    std::cout << '\n';
+
+    Marvin::RandomUniformNumber<float> gen_04 {};
+    for (int i {0}; i < sample_count; ++i) {
+        std::cout << gen_04.generate() << ' ';
+    }
+    std::cout << '\n';
+
+    Marvin::RandomUniformNumber<double> gen_05 {-2.3, 3.8};
+    for (int i {0}; i < sample_count; ++i) {
+        std::cout << gen_05.generate() << ' ';
+    }
+    std::cout << '\n';
+
+    std::vector<int> v {};
+    v.reserve(sample_count);
+    std::generate_n(std::back_insert_iterator(v), sample_count,
+        [&gen_01]() { return gen_01.generate(); });
+    for (auto x : v)
+    {
+        std::cout << x << ' ';
+    }
+    std::cout << '\n';
+}
+
+} // namespace
+
 int main()
 {
     // test_pnm_images("images/pbm/");
     // test_pnm_images("images/pgm/");
     // test_pnm_images("images/ppm/");
 
-    create_rgb_image();
+    //create_rgb_image();
     // make_Cantor_fractal();
 
-    test_linspace();
+    //test_linspace();
+    //create_grid_image();
+    test_random();
 
     return 0;
 }

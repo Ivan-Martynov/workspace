@@ -7,6 +7,9 @@
 #include <chrono>
 #include <memory>
 #include <stack>
+#include <array>
+#include <set>
+#include <cmath>
 
 namespace {
 
@@ -26,6 +29,7 @@ void print_array(const T& array)
     std::cout << "\n";
 }
 
+[[maybe_unused]]
 Marvin::ArrayAlloc<int> fun()
 {
     // Most likely copy elision will be performed.
@@ -33,6 +37,7 @@ Marvin::ArrayAlloc<int> fun()
     return arr;
 }
 
+[[maybe_unused]]
 Marvin::ArrayAlloc<int> clone_and_double(const Marvin::ArrayAlloc<int>& arr)
 {
     Marvin::ArrayAlloc<int> res {
@@ -44,6 +49,7 @@ Marvin::ArrayAlloc<int> clone_and_double(const Marvin::ArrayAlloc<int>& arr)
     return res;
 }
 
+[[maybe_unused]]
 void test_array_alloc()
 {
     std::cout << "\nTesting ArrayAlloc.\n";
@@ -86,85 +92,53 @@ void test_array_fixed()
 {
     std::cout << "\nTesting ArrayFixed.\n";
 
-    Marvin::ArrayFixed<int, 3> emtpy {};
-    print_array(emtpy);
+    Marvin::ArrayFixed<int, 3> empty {};
+    empty[0] = 3;
+    print_array(empty);
 
     Marvin::ArrayFixed<float, 7> array_01 {
         Marvin::init_container_with_size, 5.3f};
+    *(array_01.data() + 3) = 2.38f;
     print_array(array_01);
 
-    Marvin::ArrayFixed<long double, 7> array_02 {
+    const Marvin::ArrayFixed<long double, 7> array_02 {
         Marvin::init_container_with_size, 27.083};
     print_array(array_02);
+
+    Marvin::ArrayFixed<int, 4> array_03 {};
+    int i {0};
+    for (auto it {array_03.rbegin()}; it != array_03.crend(); ++it)
+    {
+        *it = ++i;
+    }
+    Marvin::ArrayFixed<int, 4> array_04 {};
+    print_array(array_03);
+    print_array(array_04);
+    Marvin::swap(array_04, array_03);
+    print_array(array_03);
+    print_array(array_04);
+    if (array_03 == array_04) {
+        std::cout << "array_03 equals array_04\n";
+    } else {
+        std::cout << "array_03 does not equal array_04\n";
+    }
+    array_03 = array_04;
+    if (array_03 == array_04) {
+        std::cout << "array_03 equals array_04\n";
+    } else {
+        std::cout << "array_03 does not equal array_04\n";
+    }
 }
 
-void test_singly_linked_list()
-{
-    std::cout << "\nTesting SinglyLinkedList.\n";
-
-    print_array(
-        Marvin::SinglyLinkedList<int> {Marvin::init_container_with_size, 4});
-
-    Marvin::SinglyLinkedList<float> list_01 {
-        Marvin::init_container_with_size, 4, 2.0f};
-    const auto it {list_01.insert_after(list_01.begin(), 3.0f)};
-    list_01.emplace_after(it, 23.0f);
-    list_01.push_front(5);
-    list_01.erase_after(list_01.cbegin());
-#if 1
-    print_array(list_01);
-    Marvin::SinglyLinkedList list_02 {1.3, 2.8, 5.93, -7.89};
-    print_array(list_02);
-    print_array(
-        Marvin::SinglyLinkedList {Marvin::init_container_with_size, 10, -7.89});
-    print_array(
-        Marvin::SinglyLinkedList<float> {1.35, 102.8, 508.93, -7.89, 3});
-    print_array(std::move(list_02));
-    print_array(list_02);
-    print_array(
-        Marvin::SinglyLinkedList<float> {list_01.begin(), list_01.end()});
-    Marvin::SinglyLinkedList<double> list_03 {std::move(list_02)};
-    print_array(list_03);
-    print_array(list_02);
-    list_02 = std::move(list_03);
-    print_array(list_02);
-    print_array(list_03);
-
-    auto list_04 {list_01};
-    list_04.push_front(1.25f);
-    list_04.emplace_front(-2.328901f);
-    list_04.emplace_front(-2.328901f);
-    list_04.push_front(103);
-    list_04.sort();
-    print_array(list_04);
-    Marvin::SinglyLinkedList<float> list_05 {2.5f, 2.8f, 2.3f, 2.4f, 2.1f};
-    list_01 = list_05;
-    list_01.insert_after(list_01.begin(), 2.7f);
-    list_01.emplace_after(std::next(list_01.begin()), 2.9f);
-    list_01.emplace_front(2.0f);
-    list_01.assign(8, 12.4f);
-    list_01 = {12.4f, 89.23f, -98.81f};
-    list_01.assign(std::next(list_05.begin()), list_05.end());
-    print_array(list_01);
-    Marvin::SinglyLinkedList<Marvin::ArrayAlloc<int>> list_06 {
-        std::move(Marvin::ArrayAlloc {1, 2, 4}), {5, 9, 8}};
-    list_06.emplace_front(std::initializer_list<int> {2, 0, -3, 4, 9});
-    list_06.emplace_after(
-        list_06.begin(), std::initializer_list<int> {2, 0, -3, 4, 9});
-    std::cout << "Length of linked list with two dynamically allocated arrays "
-                 "as its items = "
-              << std::distance(list_06.cbegin(), list_06.cend()) << "\n";
-#endif
-}
-
+[[maybe_unused]]
 void test_sll()
 {
     std::cout << "\nTesting SLL.\n";
 
     print_array(
-        Marvin::SLL<int> {Marvin::init_container_with_size, 4});
+        Marvin::SinglyLinkedList<int> {Marvin::init_container_with_size, 4});
 
-    Marvin::SLL<float> list_01 {
+    Marvin::SinglyLinkedList<float> list_01 {
         Marvin::init_container_with_size, 4, 2.0f};
     print_array(list_01);
     auto it {list_01.begin()};
@@ -193,7 +167,7 @@ void test_sll()
 
 #if 1
     Marvin::ArrayAlloc<std::string> str_array {"One", "Two", "Three"};
-    Marvin::SLL<std::string> str_list {
+    Marvin::SinglyLinkedList<std::string> str_list {
         Marvin::init_container_with_size, 8, "help"};
     std::ostringstream stream {};
     stream << "Next";
@@ -203,12 +177,12 @@ void test_sll()
     //str_list.pop_front();
     // std::next(str_list.cbegin(), 3), std::next(str_list.cbegin(), 6));
     print_array(str_list);
-    Marvin::SLL<std::string> list_03 {str_array.cbegin(), str_array.cend()};
+    Marvin::SinglyLinkedList<std::string> list_03 {str_array.cbegin(), str_array.cend()};
     print_array(list_03);
-    auto list_02 {Marvin::SLL<std::string> {"Using", "initializer", "list"}};
+    auto list_02 {Marvin::SinglyLinkedList<std::string> {"Using", "initializer", "list"}};
     print_array(list_02);
     list_03.assign(8, "Val");
-    print_array(Marvin::SLL<std::string> {list_03});
+    print_array(Marvin::SinglyLinkedList<std::string> {list_03});
     str_list = list_03;
     str_list.emplace_front("Emplacing");
     auto it_03
@@ -238,6 +212,20 @@ void test_sll()
     std::cout << str_list.length() << "\n";
     print_array(list_02);
     std::cout << list_02.length() << "\n";
+    std::cout << "Before splice:\n";
+    print_array(str_list);
+    std::cout << str_list.length() << "\n";
+    print_array(list_02);
+    std::cout << list_02.length() << "\n";
+    list_02.splice_after(list_02.cbegin(), str_list);
+    std::cout << "After splice:\n";
+    print_array(str_list);
+    std::cout << str_list.length() << "\n";
+    print_array(list_02);
+    std::cout << list_02.length() << "\n";
+
+    list_02.splice_after(list_02.cbegin(), {"Insert 6", "Insert 7"});
+    print_array(list_02);
 #endif
 }
  
@@ -318,8 +306,11 @@ std::vector<TreeNodeInt*> traverse_tree_inorder_morris(TreeNodeInt* root)
 
     return res;
 }
+
+[[maybe_unused]]
 void test_tree()
 {
+    std::set<int> set_01 {};
     std::cout << "Testing tree.\n";
     auto* root {new TreeNodeInt {1}};
     root->left = new TreeNodeInt {2};
@@ -341,9 +332,8 @@ void test_tree()
 
 int main()
 {
-    test_array_alloc();
-    test_array_fixed();
-    test_singly_linked_list();
+    //test_array_alloc();
+    //test_array_fixed();
 
     if (3 > 5) {
     }
@@ -360,7 +350,7 @@ int main()
     float f2 {i1};
     std::cout << f1 + f2 << "\n";
 #endif
-    test_tree();
+    //test_tree();
     test_sll();
 
     return 0;
