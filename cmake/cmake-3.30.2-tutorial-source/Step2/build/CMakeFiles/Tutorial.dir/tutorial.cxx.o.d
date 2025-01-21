@@ -1,5 +1,5 @@
 CMakeFiles/Tutorial.dir/tutorial.cxx.o: \
- /home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/tutorial.cxx \
+ /home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/tutorial.cxx \
  /usr/include/stdc-predef.h /usr/include/c++/13/cmath \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -157,5 +157,5 @@ CMakeFiles/Tutorial.dir/tutorial.cxx.o: \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
  /usr/include/c++/13/bits/istream.tcc \
- /home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/build/TutorialConfig.h \
- /home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/MathFunctions.h
+ /home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/build/TutorialConfig.h \
+ /home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/MathFunctions.h

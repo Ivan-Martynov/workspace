@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # TODO 2: Create a project named Tutorial
-# project(Tutorial)
+project(Tutorial)
 
 # TODO 7: Set the project version number as 1.0 in the above project command
 project(Tutorial VERSION 1.0)

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_window"
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_window.pdb"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_window"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_window.pdb"
   "CMakeFiles/hello_window.dir/hello_window.cpp.o"
   "CMakeFiles/hello_window.dir/hello_window.cpp.o.d"
 )

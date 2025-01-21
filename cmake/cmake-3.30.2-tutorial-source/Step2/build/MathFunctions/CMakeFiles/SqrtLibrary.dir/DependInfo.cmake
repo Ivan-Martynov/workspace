@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/mysqrt.cxx" "MathFunctions/CMakeFiles/SqrtLibrary.dir/mysqrt.cxx.o" "gcc" "MathFunctions/CMakeFiles/SqrtLibrary.dir/mysqrt.cxx.o.d"
+  "/home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/mysqrt.cxx" "MathFunctions/CMakeFiles/SqrtLibrary.dir/mysqrt.cxx.o" "gcc" "MathFunctions/CMakeFiles/SqrtLibrary.dir/mysqrt.cxx.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

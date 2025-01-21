@@ -1,1 +1,1 @@
-/usr/bin/c++ -g CMakeFiles/hello_shaders.dir/hello_shaders.cpp.o -o /home/samsung/workspace/cpp/learning/OpenGL/bin/hello_shaders  ../glad/libglad.a -lglfw ../window_tools/libWindowController.a ../shader_tools/libShaderCreator.a ../shader_tools/libShaderProgram.a
+/usr/bin/c++ CMakeFiles/hello_shaders.dir/hello_shaders.cpp.o -o /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_shaders  ../glad/libglad.a -lglfw ../window_tools/libWindowController.a ../shader_tools/libShaderCreator.a ../shader_tools/libShaderProgram.a 

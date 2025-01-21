@@ -1,3 +1,3 @@
-/home/samsung/Downloads/cmake-3.30.2-tutorial-source/Step1/build/CMakeFiles/Tutorial.dir
-/home/samsung/Downloads/cmake-3.30.2-tutorial-source/Step1/build/CMakeFiles/edit_cache.dir
-/home/samsung/Downloads/cmake-3.30.2-tutorial-source/Step1/build/CMakeFiles/rebuild_cache.dir
+/home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step1/build/CMakeFiles/Tutorial.dir
+/home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step1/build/CMakeFiles/edit_cache.dir
+/home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step1/build/CMakeFiles/rebuild_cache.dir

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_shaders"
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_shaders.pdb"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_shaders"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_shaders.pdb"
   "CMakeFiles/hello_shaders.dir/hello_shaders.cpp.o"
   "CMakeFiles/hello_shaders.dir/hello_shaders.cpp.o.d"
 )

@@ -1,5 +1,5 @@
 src/01_starting/CMakeFiles/hello_window.dir/hello_window.cpp.o: \
- /home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_window.cpp \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/src/01_starting/hello_window.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/13/iostream \
  /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
@@ -150,9 +150,9 @@ src/01_starting/CMakeFiles/hello_window.dir/hello_window.cpp.o: \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
  /usr/include/c++/13/bits/istream.tcc \
- /home/samsung/workspace/cpp/learning/OpenGL/include/glad/glad.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/KHR/khrplatform.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/glad/glad.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/KHR/khrplatform.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/GLFW/glfw3.h
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/GLFW/glfw3.h

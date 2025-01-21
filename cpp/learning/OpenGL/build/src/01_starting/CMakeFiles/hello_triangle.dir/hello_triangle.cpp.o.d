@@ -1,8 +1,8 @@
 src/01_starting/CMakeFiles/hello_triangle.dir/hello_triangle.cpp.o: \
- /home/samsung/workspace/cpp/learning/OpenGL/src/01_starting/hello_triangle.cpp \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/src/01_starting/hello_triangle.cpp \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/glad/glad.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/KHR/khrplatform.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/glad/glad.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/KHR/khrplatform.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -19,11 +19,11 @@ src/01_starting/CMakeFiles/hello_triangle.dir/hello_triangle.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/GLFW/glfw3.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/GLFW/glfw3.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/window_tools/WindowController.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/shader_tools/ShaderCreator.h \
- /home/samsung/workspace/cpp/learning/OpenGL/include/shader_tools/ShaderProgram.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/window_tools/WindowController.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/shader_tools/ShaderCreator.h \
+ /home/samsung/Data/repos/workspace/cpp/learning/OpenGL/include/shader_tools/ShaderProgram.h \
  /usr/include/c++/13/initializer_list \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \

@@ -1,7 +1,7 @@
 MathFunctions/CMakeFiles/SqrtLibrary.dir/mysqrt.cxx.o: \
- /home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/mysqrt.cxx \
+ /home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/mysqrt.cxx \
  /usr/include/stdc-predef.h \
- /home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/mysqrt.h \
+ /home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions/mysqrt.h \
  /usr/include/c++/13/iostream /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \

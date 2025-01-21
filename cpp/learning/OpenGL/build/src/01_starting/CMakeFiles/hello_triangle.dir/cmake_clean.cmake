@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_triangle"
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_triangle.pdb"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_triangle"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_triangle.pdb"
   "CMakeFiles/hello_triangle.dir/hello_triangle.cpp.o"
   "CMakeFiles/hello_triangle.dir/hello_triangle.cpp.o.d"
 )

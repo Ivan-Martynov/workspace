@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_texture"
-  "/home/samsung/workspace/cpp/learning/OpenGL/bin/hello_texture.pdb"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_texture"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/bin/hello_texture.pdb"
   "CMakeFiles/hello_texture.dir/hello_texture.cpp.o"
   "CMakeFiles/hello_texture.dir/hello_texture.cpp.o.d"
 )

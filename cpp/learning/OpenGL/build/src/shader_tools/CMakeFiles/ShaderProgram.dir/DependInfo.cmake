@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/samsung/workspace/cpp/learning/OpenGL/src/shader_tools/ShaderProgram.cpp" "src/shader_tools/CMakeFiles/ShaderProgram.dir/ShaderProgram.cpp.o" "gcc" "src/shader_tools/CMakeFiles/ShaderProgram.dir/ShaderProgram.cpp.o.d"
+  "/home/samsung/Data/repos/workspace/cpp/learning/OpenGL/src/shader_tools/ShaderProgram.cpp" "src/shader_tools/CMakeFiles/ShaderProgram.dir/ShaderProgram.cpp.o" "gcc" "src/shader_tools/CMakeFiles/ShaderProgram.dir/ShaderProgram.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

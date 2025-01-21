@@ -1,4 +1,4 @@
-# Install script for directory: /home/samsung/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions
+# Install script for directory: /home/samsung/Data/repos/workspace/cmake/cmake-3.30.2-tutorial-source/Step2/MathFunctions
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -37,7 +37,7 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
-# Set path to fallback-tool for dependency-resolution.
+# Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
   set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
