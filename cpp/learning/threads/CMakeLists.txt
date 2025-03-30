@@ -1,0 +1,1 @@
+# Make config to build exe from each c++ file.
