@@ -29,7 +29,7 @@ function love.draw()
         local distance_y = love.mouse.getY() - eye_y
 
         local distance = math.min(math.sqrt(distance_x * distance_x
-            + distance_y * distance_y), eye_radius- pupil_radius - 5)
+            + distance_y * distance_y), eye_radius - pupil_radius - 5)
 
         local angle = atan2(distance_y, distance_x)
 
