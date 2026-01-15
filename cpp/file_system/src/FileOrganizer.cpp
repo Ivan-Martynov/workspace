@@ -133,7 +133,7 @@ void FileOrganizer::actual_copy_or_move(
     std::error_code err_code {};
 
     {
-        std::lock_guard {mutex};
+        std::lock_guard l {mutex};
         std::filesystem::create_directories(
             target_path.parent_path(), err_code);
     }
@@ -204,7 +204,7 @@ void FileOrganizer::process_item(const std::filesystem::directory_entry& item)
 
     if (m_do_copy || m_do_move) {
         {
-            std::lock_guard {mutex};
+            std::lock_guard l {mutex};
             if (!m_overwrite_prompt.is_overwriting(current_path, target_path)) {
                 return;
             }
