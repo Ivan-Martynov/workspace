@@ -133,10 +133,10 @@ bool mrvn_null_empty_or_spaces(const char* const text)
 void mrvn_replace_all_occurrences(
     char text[static 1], const char to_replace, const char replacement)
 {
-    if (!text)
-    {
-        return;
-    }
+    // if (!text)
+    // {
+    //     return;
+    // }
 
     size_t i = strlen(text) - 1;
     do

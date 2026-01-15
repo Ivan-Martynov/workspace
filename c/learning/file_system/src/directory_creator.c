@@ -170,7 +170,7 @@ static void move_file_to_year_month_folder(
 
     const struct tm* const mod_time = gmtime(&path_stat.st_mtime);
 
-    printf("Length of year output %zu\n", strftime(NULL, 100, "/%Y/", mod_time));
+    // printf("Length of year output %zu\n", strftime(NULL, 100, "/%Y/", mod_time));
 
     size_t year_str_size = 32;
     char year_str[year_str_size];
