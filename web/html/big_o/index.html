@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <!--
+  Parameter device-width informs the browser to set web page's width to match
+  the device screen size.
+  Parameter initial-scales sets the zoom: that is, 1.0 = 100% - no scaling.
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Short description to help SEO (search engine optimization). -->
+  <meta name="description" content="Brief overview of the Big-O notation" />
+
+  <!--
+    Open Graph tags (they help controlling website's appearance in social media
+    platforms).
+    -->
+  <meta property="og:title" content="Big-O" />
+  <meta property="og:type" content="website" />
+  <!-- <meta property="og:image" content="image-url">
+  <meta property="og:url" content="website-url"> -->
+
+  <link rel="stylesheet" href="css/index.css" />
+
+  <title>Big O/&Omega;/&Theta;</title>
+</head>
+
+<body>
+  <main>
+    <h1>Big O Notation</h1>
+
+    <section>
+      <h2>Description</h2>
+      <div>
+        <p>
+          <strong>Big O</strong> time is used to measure the efficiency of an
+          algorithm depending on the input size. That is, describing how fast
+          the algorithm grows as the input size increases. For example,
+          finding a sum of elements in an array takes O(N) time, where N is
+          the size of the array. But getting the element at a given index is a
+          constant operation and thus takes O(1) time, regardless of the
+          array's length. Technically, big O determines the upper bound, that
+          is finding a sum is also O(N * N), meaning that the algorithm will
+          not be slower
+        </p>
+
+        <h3>What is Big O?</h3>
+
+        <p>
+          Then there is <strong>Big Omega</strong> notation (&Omega;), which
+          defines the lower bound, meaning that the algorithm will not run
+          faster than this runtime.
+        </p>
+
+        <p>
+          Finally, there is <strong>Big Theta</strong> notation (&theta;),
+          which represents both lower and upper bounds, thus providing a tight
+          bound.
+        </p>
+
+        <p>
+          Usually when we are talking about Big O time, we assume the tight
+          bound. At least we try to find the tightest possible bound.
+        </p>
+        <dl>
+          <dt>Big O</dt>
+          <dd>Defines an upper bound, you can think of it as &lt;=</dd>
+          <dt>Big &Omega;</dt>
+          <dd>Defines a lower bound, you can think of it as &gt;=</dd>
+          <dt>Big &Theta;</dt>
+          <dd>Defines the tight bound, you can think of it as ==</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section>
+      <h2>Common Functions</h2>
+      <p>
+        The table below shows some of commonly known function used to
+        approximate algorithm efficiency. In programming algorithms with
+        polynomial complexity can be considered acceptable, although not
+        always, of course. It always depends on the application and
+        limitations. However, the algorithms, whose complexity falls into the
+        category of 'Too slow', are very often considered as indeed very slow
+        ones even for a relatively small input size.
+      </p>
+      <table>
+        <caption>
+          Common functions
+        </caption>
+
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Notation</th>
+            <th scope="col">Example</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <th scope="row">Constant</th>
+            <td>&Theta;(1)</td>
+            <td>Access an element in an array</td>
+          </tr>
+          <tr>
+            <th scope="row">Logarithmic</th>
+            <td>&Theta;(log(n))</td>
+            <td>Finding an item in a sorted array</td>
+          </tr>
+          <tr>
+            <th scope="row">Linear</th>
+            <td>&Theta;(n)</td>
+            <td>Summing array elements</td>
+          </tr>
+          <tr>
+            <th scope="row">Loglinear</th>
+            <td>&Theta;(n*log(n))</td>
+            <td>Merge sort</td>
+          </tr>
+          <tr>
+            <th scope="row">Quadratic</th>
+            <td>&Theta;(n<sup>2</sup>)</td>
+            <td>Bubble sort</td>
+          </tr>
+          <tr>
+            <th scope="row">Polynomial</th>
+            <td>&Theta;(n<sup>c</sup>)</td>
+            <td>Matrix multiplication (&Theta;(n<sup>3</sup>))</td>
+          </tr>
+          <tr>
+            <th scope="row">Exponential</th>
+            <td>&Theta;(c<sup>n</sup>)</td>
+            <td>Towers of Hanoi</td>
+          </tr>
+          <tr>
+            <th scope="row">Factorial</th>
+            <td>&Theta;(n!)</td>
+            <td>Generate all permutations of n elements</td>
+          </tr>
+        </tbody>
+        <tfoot></tfoot>
+      </table>
+    </section>
+
+    <section>
+      <h2>Examples</h2>
+      <p>Calculate sum of elements</p>
+      <pre>
+<code>
+int sum(int[] array) {
+    int res = 0;
+    for (int i = 0; i &lt; array.size(); ++i) {
+        res += array[i];
+    }
+    return res;
+}
+</code>
+      </pre>
+      <summary>
+        The algorithm takes <code>n</code> steps, where <code>n</code> is the
+        size of the array.
+      </summary>
+    </section>
+  </main>
+</body>
+
+</html>

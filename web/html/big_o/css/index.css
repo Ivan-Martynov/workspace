@@ -1,0 +1,8 @@
+/* Coommon style */
+@import url(general.css);
+
+/* Headings styles */
+@import url(headings.css);
+
+/* Styling tables */
+@import url(table.css);

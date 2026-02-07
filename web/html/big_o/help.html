@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Short description to help SEO (search engine optimization). -->
+  <meta name="description"
+    content="A relaxed, educational guide to Big O notation, complexity analysis, and algorithm efficiency">
+
+  <!--
+    Open Graph tags (they help controlling website's appearance in social media
+    platforms).
+    -->
+  <meta property="og:title" content="Big O Notation - Easy Guide">
+  <meta property="og:type" content="website">
+  <!-- <meta property="og:image" content="image-url">
+  <meta property="og:url" content="website-url"> -->
+
+  <link rel="stylesheet" href="css/index.css">
+  <style>
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d33682;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+    }
+
+    h2 {
+      color: #0087bd;
+      border-bottom: 3px solid #0087bd;
+      padding-bottom: 10px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      color: #0087bd;
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+
+    section {
+      background-color: white;
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    p {
+      line-height: 1.8;
+      margin-bottom: 15px;
+      font-size: 1.05em;
+    }
+
+    code {
+      background-color: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #c41a16;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-left: 4px solid #0087bd;
+      overflow-x: auto;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    pre code {
+      color: #002b36;
+      background-color: transparent;
+      padding: 0;
+      font-size: 0.95em;
+    }
+
+    dl {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+
+    dt {
+      font-weight: bold;
+      color: #d33682;
+      margin-top: 10px;
+    }
+
+    dd {
+      margin-left: 20px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    .example-box {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-left: 4px solid #0087bd;
+      margin: 15px 0;
+      border-radius: 4px;
+    }
+
+    .exercise-container {
+      background-color: #f5f5f5;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 4px solid #0087bd;
+    }
+
+    .difficulty-easy {
+      border-left-color: #27ae60;
+    }
+
+    .difficulty-medium {
+      border-left-color: #f39c12;
+    }
+
+    .difficulty-hard {
+      border-left-color: #e74c3c;
+    }
+
+    .difficulty-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+
+    .difficulty-badge.easy {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .difficulty-badge.medium {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .difficulty-badge.hard {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .complexity-comparison {
+      display: table;
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+
+    .complexity-row {
+      display: table-row;
+    }
+
+    .complexity-cell {
+      display: table-cell;
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    .complexity-header {
+      background-color: #0087bd;
+      color: white;
+      font-weight: bold;
+    }
+
+    ul {
+      line-height: 1.8;
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .highlight {
+      background-color: #ffffcc;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+  </style>
+
+  <title>Big O Notation - Easy Guide</title>
+
+</head>
+
+<body>
+
+  <main>
+
+    <h1>🚀 Big O Notation: A Relaxed Guide</h1>
+
+    <section>
+      <h2>What is Big O? (Description)</h2>
+      <div>
+        <p>Imagine you're writing code and you want to know: <strong>"How fast
+            will my code run as the input gets bigger?"</strong> That's where
+          Big O comes in!</p>
+
+        <p><span class="highlight">Big O notation</span> is a way to describe
+          how efficient an algorithm is. Instead of measuring exact time (which
+          depends on your computer, internet speed, etc.), we measure how the
+          <strong>runtime scales</strong> as the input size grows.
+        </p>
+
+        <p><strong>Here's a real-world analogy:</strong> Imagine you're
+          searching for a friend's name in a phone book.</p>
+        <ul>
+          <li>If the phone book is sorted and you use binary search (checking
+            the middle, then narrowing down), it grows logarithmically. ✅</li>
+          <li>If you check every single entry one by one, it grows linearly. 😴
+          </li>
+          <li>If you check every name against every other name... well, that's
+            quadratic and painful. 🤕</li>
+        </ul>
+
+        <p>Big O helps us understand which approach is smart and which is... not
+          so much.</p>
+
+        <h3>The Three Types</h3>
+        <dl>
+          <dt>Big O (O)</dt>
+          <dd>The <strong>upper bound</strong> – worst-case scenario. Think of
+            it as "at most this fast" or ≤</dd>
+          <dt>Big Omega (Ω)</dt>
+          <dd>The <strong>lower bound</strong> – best-case scenario. Think of it
+            as "at least this fast" or ≥</dd>
+          <dt>Big Theta (Θ)</dt>
+          <dd>The <strong>tight bound</strong> – the exact complexity. Think of
+            it as "exactly this fast" or =</dd>
+        </dl>
+
+        <p><strong>💡 Pro tip:</strong> In most conversations, when people say
+          "Big O," they actually mean Big Theta (the tight bound). We'll do the
+          same in this guide!</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Let's Understand It (Explanation)</h2>
+
+      <h3>The Basics</h3>
+      <p>When we analyze algorithms, we care about how they scale. We ignore:
+      </p>
+      <ul>
+        <li>Constant factors (multiplying by 2, 10, or 1000 doesn't change the
+          order)</li>
+        <li>Lower-order terms (if something is n² + n, we just say O(n²))</li>
+        <li>Exact milliseconds (that varies by computer!)</li>
+      </ul>
+
+      <p>We only care about: <strong>"What happens as n gets really, really
+          big?"</strong></p>
+
+      <h3>Why Does This Matter?</h3>
+      <p>Consider these two algorithms for the same job:</p>
+      <ul>
+        <li><strong>Algorithm A:</strong> O(n) - with 1,000,000 items →
+          1,000,000 operations</li>
+        <li><strong>Algorithm B:</strong> O(n²) - with 1,000,000 items →
+          1,000,000,000,000 operations 😱</li>
+      </ul>
+      <p>Algorithm A finishes in a blink. Algorithm B might take hours. That's
+        why Big O matters!</p>
+
+      <h3>Common Complexities (from best to worst)</h3>
+      <div class="complexity-comparison">
+        <div class="complexity-row">
+          <div class="complexity-cell complexity-header">Notation</div>
+          <div class="complexity-cell complexity-header">Name</div>
+          <div class="complexity-cell complexity-header">Example</div>
+          <div class="complexity-cell complexity-header">Speed (for n=1,000)
+          </div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(1)</code></div>
+          <div class="complexity-cell">Constant</div>
+          <div class="complexity-cell">Get array element by index</div>
+          <div class="complexity-cell">⚡ Instant</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(log n)</code></div>
+          <div class="complexity-cell">Logarithmic</div>
+          <div class="complexity-cell">Binary search</div>
+          <div class="complexity-cell">⚡ ~10 ops</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(n)</code></div>
+          <div class="complexity-cell">Linear</div>
+          <div class="complexity-cell">Find max in array</div>
+          <div class="complexity-cell">✅ ~1,000 ops</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(n log n)</code></div>
+          <div class="complexity-cell">Loglinear</div>
+          <div class="complexity-cell">Merge sort, Quick sort</div>
+          <div class="complexity-cell">✅ ~10,000 ops</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(n²)</code></div>
+          <div class="complexity-cell">Quadratic</div>
+          <div class="complexity-cell">Bubble sort, nested loops</div>
+          <div class="complexity-cell">😐 ~1,000,000 ops</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(n³)</code></div>
+          <div class="complexity-cell">Cubic</div>
+          <div class="complexity-cell">3 nested loops</div>
+          <div class="complexity-cell">🐌 ~1 billion ops</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(2ⁿ)</code></div>
+          <div class="complexity-cell">Exponential</div>
+          <div class="complexity-cell">Fibonacci (recursive)</div>
+          <div class="complexity-cell">🤯 Huge!</div>
+        </div>
+        <div class="complexity-row">
+          <div class="complexity-cell"><code>O(n!)</code></div>
+          <div class="complexity-cell">Factorial</div>
+          <div class="complexity-cell">Generate all permutations</div>
+          <div class="complexity-cell">💀 Insanely slow</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Real-World Examples</h2>
+
+      <h3>Example 1: Finding the Sum (O(n))</h3>
+      <p>Let's say we want to add up all numbers in an array.</p>
+      <pre><code>function sumArray(array) {
+    let sum = 0;
+    for (let i = 0; i < array.length; i++) {
+        sum += array[i];  // Do this once per element
+    }
+    return sum;
+}</code></pre>
+      <div class="example-box">
+        <p><strong>Why O(n)?</strong> We visit each element exactly once. With 5
+          elements, 5 operations. With 1000 elements, 1000 operations. Linear!
+          📈</p>
+      </div>
+
+      <h3>Example 2: Getting an Array Element (O(1))</h3>
+      <p>Arrays let you jump directly to any element. No searching needed!</p>
+      <pre><code>function getFirstElement(array) {
+    return array[0];  // Instant! No matter how big the array is
+}</code></pre>
+      <div class="example-box">
+        <p><strong>Why O(1)?</strong> The computer just grabs the element at
+          index 0. Doesn't matter if the array has 10 items or 10 million. ⚡</p>
+      </div>
+
+      <h3>Example 3: Nested Loops (O(n²))</h3>
+      <p>What if we need to compare every element with every other element?</p>
+      <pre><code>function findDuplicates(array) {
+    for (let i = 0; i < array.length; i++) {
+        for (let j = i + 1; j < array.length; j++) {
+            if (array[i] === array[j]) {
+                console.log("Found duplicate!");
+            }
+        }
+    }
+}</code></pre>
+      <div class="example-box">
+        <p><strong>Why O(n²)?</strong> For each element (n iterations), we check
+          it against every other element (n iterations). That's n × n = n².
+          Ouch! 😬</p>
+        <p>With 100 elements: 10,000 comparisons. With 1000 elements: 1,000,000
+          comparisons. It gets bad fast!</p>
+      </div>
+
+      <h3>Example 4: Binary Search (O(log n))</h3>
+      <p>If a sorted array is available, we can eliminate half the remaining
+        items each time:</p>
+      <pre><code>function binarySearch(sortedArray, target) {
+    let left = 0, right = sortedArray.length - 1;
+    
+    while (left <= right) {
+        let mid = Math.floor((left + right) / 2);
+        if (sortedArray[mid] === target) return mid;
+        if (sortedArray[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1; // Not found
+}</code></pre>
+      <div class="example-box">
+        <p><strong>Why O(log n)?</strong> Each step eliminates half the data.
+          With 1,000,000 items, you only need about 20 checks! 🎯</p>
+      </div>
+    </section>
+
+
+    <section>
+      <h2>Practice Exercises</h2>
+      <p>Ready to test your knowledge? Try to figure out the Big O complexity of
+        each code snippet. Start with easy exercises and work your way up!</p>
+
+      <div class="exercise-container difficulty-easy">
+        <span class="difficulty-badge easy">EASY</span>
+        <h3>Exercise 1.1: Simple Loop</h3>
+        <pre><code>function printNumbers(n) {
+    for (let i = 0; i < n; i++) {
+        console.log(i);  // Print each number
+    }
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n)</strong></p>
+          <p>The loop runs n times, so it's linear. The work inside (printing)
+            is O(1), so the total is O(n).</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-easy">
+        <span class="difficulty-badge easy">EASY</span>
+        <h3>Exercise 1.2: Accessing Array Elements</h3>
+        <pre><code>function getThirdElement(array) {
+    return array[2];  // Just grab the 3rd element
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(1)</strong></p>
+          <p>Accessing an array element by index is constant time. Doesn't
+            matter if the array has 10 or 10 million elements!</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-easy">
+        <span class="difficulty-badge easy">EASY</span>
+        <h3>Exercise 1.3: Simple Operations</h3>
+        <pre><code>function doSomething() {
+    let a = 5;
+    let b = 10;
+    let c = a + b;
+    return c;
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(1)</strong></p>
+          <p>Just a few fixed operations, no matter what happens. Always
+            instant!</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-medium">
+        <span class="difficulty-badge medium">MEDIUM</span>
+        <h3>Exercise 2.1: Nested Loops</h3>
+        <pre><code>function compareAllPairs(array) {
+    for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array.length; j++) {
+            console.log(array[i] + ", " + array[j]);
+        }
+    }
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n²)</strong></p>
+          <p>The outer loop runs n times. For each iteration of the outer loop,
+            the inner loop runs n times. That's n × n = n². With 100 items,
+            that's 10,000 combinations!</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-medium">
+        <span class="difficulty-badge medium">MEDIUM</span>
+        <h3>Exercise 2.2: Loop + Function Call</h3>
+        <pre><code>function processArray(array) {
+    for (let i = 0; i < array.length; i++) {
+        let sorted = array.slice().sort();  // O(n log n)
+        console.log(sorted[0]);
+    }
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n² log n)</strong></p>
+          <p>The outer loop runs n times. Inside, we do sort which is O(n log
+            n). Total: n × (n log n) = n² log n. Definitely not efficient!</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-medium">
+        <span class="difficulty-badge medium">MEDIUM</span>
+        <h3>Exercise 2.3: Loop with Early Exit</h3>
+        <pre><code>function findValue(array, target) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === target) {
+            return i;  // Found it! Exit early
+        }
+    }
+    return -1;  // Not found
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n) worst case, O(1) best case</strong></p>
+          <p>In the worst case, the element is at the end or not present, so we
+            check all n elements. In the best case, it's at the start (O(1)).
+            For Big O, we usually care about worst-case, so it's O(n).</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-hard">
+        <span class="difficulty-badge hard">HARD</span>
+        <h3>Exercise 3.1: Multiple Nested Loops</h3>
+        <pre><code>function threeNestedLoops(n) {
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            for (let k = 0; k < n; k++) {
+                console.log(i, j, k);
+            }
+        }
+    }
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n³)</strong></p>
+          <p>Three nested loops, each running n times. That's n × n × n = n³.
+            With just 100 items, that's 1,000,000 iterations! 🤕</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-hard">
+        <span class="difficulty-badge hard">HARD</span>
+        <h3>Exercise 3.2: Reduce to Half Each Time</h3>
+        <pre><code>function divideByTwo(n) {
+    let count = 0;
+    while (n > 1) {
+        console.log(n);
+        n = n / 2;  // Cut in half each time
+        count++;
+    }
+    return count;
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(log n)</strong></p>
+          <p>Each iteration cuts n in half. To get from 1000 to 1, you only need
+            about 10 halvings! This is logarithmic growth. Very efficient!</p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-hard">
+        <span class="difficulty-badge hard">HARD</span>
+        <h3>Exercise 3.3: Complex Combination</h3>
+        <pre><code>function complexAlgorithm(array) {
+    // First, sort the array: O(n log n)
+    array.sort();
+    
+    // Then, for each element...
+    for (let i = 0; i < array.length; i++) {
+        // ...check against all others: O(n)
+        for (let j = i + 1; j < array.length; j++) {
+            if (array[i] === array[j]) {
+                console.log("Duplicate");
+            }
+        }
+    }
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n²)</strong></p>
+          <p>We have O(n log n) for sorting, and O(n²) for the nested loops.
+            When adding complexities, we keep the dominant term (the biggest
+            one). Since n² grows much faster than n log n, the answer is O(n²).
+          </p>
+        </details>
+      </div>
+
+      <div class="exercise-container difficulty-hard">
+        <span class="difficulty-badge hard">HARD</span>
+        <h3>Exercise 3.4: Find the Big O</h3>
+        <pre><code>function mysteryFunction(array) {
+    for (let i = 0; i < array.length; i++) {
+        console.log(array[i]);
+    }
+    
+    for (let j = 0; j < array.length; j++) {
+        for (let k = 0; k < array.length; k++) {
+            console.log(array[j] + array[k]);
+        }
+    }
+}</code></pre>
+        <details>
+          <summary>💡 Click to reveal answer</summary>
+          <p><strong>Answer: O(n²)</strong></p>
+          <p>The first loop is O(n). The nested loops are O(n²). Total would be
+            O(n) + O(n²) = O(n²) because the n² part dominates. Always drop the
+            smaller terms!</p>
+        </details>
+      </div>
+    </section>
+
+    <section>
+      <h2>Key Takeaways 🎓</h2>
+      <ul>
+        <li><strong>Big O</strong> describes how algorithms scale as input grows
+        </li>
+        <li><strong>O(1)</strong> is the best: instant, no matter the input size
+        </li>
+        <li><strong>O(log n)</strong> is excellent: divide and conquer
+          algorithms</li>
+        <li><strong>O(n)</strong> is good: simple loops, visit each element once
+        </li>
+        <li><strong>O(n log n)</strong> is acceptable: good sorting algorithms
+          like merge sort</li>
+        <li><strong>O(n²)</strong> is okay for small inputs: nested loops, but
+          gets slow fast</li>
+        <li><strong>O(2ⁿ)</strong> and <strong>O(n!)</strong> are usually too
+          slow: avoid these!</li>
+        <li>Always <strong>drop constants and smaller terms</strong> when
+          simplifying</li>
+        <li><strong>Practice analyzing code</strong> to spot patterns and
+          complexities</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Want to Learn More?</h2>
+      <p>Here are some next steps in your Big O journey:</p>
+      <ul>
+        <li><strong>Space Complexity:</strong> Just like time complexity, we can
+          analyze how much memory an algorithm uses</li>
+        <li><strong>Sorting Algorithms:</strong> Compare bubble sort (O(n²)),
+          merge sort (O(n log n)), quick sort (O(n log n) avg)</li>
+        <li><strong>Data Structures:</strong> Different data structures have
+          different access times (arrays vs linked lists vs hash tables)</li>
+        <li><strong>Dynamic Programming:</strong> A technique to optimize
+          recursive algorithms that would otherwise be exponential</li>
+      </ul>
+    </section>
+
+  </main>
+
+</body>
+
+</html>

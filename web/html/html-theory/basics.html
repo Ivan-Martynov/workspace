@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/basics.css">
+  <title>Basics</title>
+</head>
+
+<body>
+  <h1>Basics</h1>
+  <h2>Initial Structure</h2>
+  <h3>The <span class="tag-element">&lt;!DOCTYPE html&gt;</span> tag</h3>
+  <div>
+    <p> A void, non-closing tag, and, guess what? It tells the browser you are using... html! You didn't expect that coming, right? Alright, to be more specific, it is HTML5, that standard for 2026. Who knows, maybe there will be HTML6 and things change a lot. But so far the HTML5 along with CSS3 are "living standards", and we all hope it is gonna stay that way, those version evolving without breaking changes. However, never say never.</p>
+  </div>
+  <h3>The <span class="tag-element">&lt;html&gt;</span> tag</h3>
+  <div>
+    <p>Besides being the tag to embrace all the staff, it often has attribute <span class="tag-element">lang</span> with the value to specify page's language.</p>
+  </div>
+  <h3>Head</h3>
+  <div>You know, keep metadata here, link external resource, give the title to the website &ndash; all those familiar elements to place under the hood.</div>
+  <h3>Meta</h3>
+  <div>
+    <p>It is not unusual to have quite a few meta tags. And they are all non-closing, void tags. We keep web page encoding information here, usually unicode as of 2026: <span class="tag-element">&lt;meta charset="UTF-8" /&gt;</span></p>
+    <p>Another common specification:
+      <span class="tag-element">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</span> &ndash; follow the device width and zoom level at one, that is, no zooming in or out.
+    </p>
+  </div>
+  <h3>Body</h3>
+  <div>
+    <p>Naturally, body under the head. Here we place the main content &ndash; no surprises.</p>
+  </div>
+
+  <h2>Headings</h2>
+  <div>
+    <p>So you know how to start your html, right? Doctype, head, body and yada
+      yada. Now headings. The biggest is <span class="tag-element">&lt;h1&gt;</span>, the smallest is <span class="tag-element">&lt;h6&gt;</span>. Don't skip when going to the next
+      heading in the hierarchy of your web page. Okay? After <span class="tag-element">&lt;h1&gt;</span> don't put <span class="tag-element">&lt;h3&gt;</span> or <span class="tag-element">&lt;h5&gt;</span>, always <span class="tag-element">&lt;h2&gt;</span>. Good! Done. </p>
+  </div>
+  <h2>Paragraphs</h2>
+  <div>
+    <p>That's a paragraph made with the <span class="tag-element">&lt;p&gt;</span>span tag. A block element in the html page. Everybody knows that, done.</p>
+  </div>
+  <h2>Images</h2>
+  <div>
+    <p>That's one without a closing tag, often closed with a slash, kind of
+      self-closing element. Sometimes seen without a slash. Up to you. Or the
+      guidelines of your superiors.</p>
+    <p>Need a <span class="tag-element">src</span> attribute, otherwise
+      what's the point of having an <span class="tag-element">&lt;img&gt;</span>
+      element in the first place? Provide a valid path to the image in the <span class="tag-element">src</span> attribute, otherwise no image!</p>
+    <p>Add an <span class="tag-element">alt</span> attribute. It will work
+      without one, but it's appreciated to have a description of the image.</p>
+    <p>Strict tools will require the width attribute for the image element. So,
+      you know, it's good to have it.</p>
+  </div>
+
+  <h2>Links</h2>
+  <h3>The <span class="tag-element">&lt;a&gt;</span> elements</h3>
+  <div>
+    <p>The well known <span class="tag-element">&lt;a&gt;</span> element. Attributes like <span class="tag-element">target</span> with value of <span class="tag-element">_blank</span> are quite familiar, right? And of course, you never forget to specify the source with the <span class="tag-element">href</span> attribute, don't you?</p>
+  </div>
+  <h3>The <span class="tag-element">&lt;link&gt;</span> elements</h3>
+  <div>
+    <p>Another type of link &ndash; linking to external resource. Actually, these guys belong to the head, we don't put them in the body. Often used to attach a stylesheet file to the html file. I often forget what attributes are proper and how fill their values. Often you need a <span class="tag-element">href</span> attribute with the path to that resource. For a stylesheet you need the <span class="tag-element">rel</span> attribute with value <span class="tag-element">stylesheet</span></p>
+    <p>Another example is connecting to a codebase,for example, to use a Google Font. In this case you might see the <span class="tag-element">rel</span> attribute with value <span class="tag-element">preconnect</span> and attribute <span class="tag-element">crossorigin</span> with no value.</p>
+    <p>One more example is linking an icon: <span class="tag-element">rel="icon"</span> with the path to an icon file.</p>
+  </div>
+
+  <h2>Containers</h2>
+  <h3>The <span class="tag-element">&lt;div&gt;</span> tag</h3>
+  <div>
+    <p>Group the elements &ndash; easy! Style them.</p>
+  </div>
+  <h3>The <span class="tag-element">&lt;section&gt;</span> tag</h3>
+  <div>
+    <p>A more semantic block to logically structure the content.</p>
+  </div>
+
+</body>
+
+</html>

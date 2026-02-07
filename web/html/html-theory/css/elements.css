@@ -1,0 +1,6 @@
+.tag-element {
+  background-color: gainsboro;
+  padding: 1px;
+  border: 2px solid gray;
+  border-radius: 10%;
+}

@@ -1,0 +1,36 @@
+table {
+  /* width: 880px; */
+  /* width: 300px; */
+  margin-top: 20px;
+  border-collapse: collapse;
+
+  margin: 0 auto;
+  width: auto;
+
+  /* font-size: 18px; */
+}
+
+th,
+td {
+  /* border: 1px solid #343a40; */
+  padding: 16px 24px;
+  text-align: center;
+  /* color: #fdf6e3; */
+}
+
+thead th {
+  background-color: greenyellow;
+  font-style: italic;
+}
+
+tbody th {
+  text-align: left;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #fdf6e3;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #e9ecef;
+}
