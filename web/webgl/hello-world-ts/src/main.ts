@@ -65,6 +65,7 @@ gl.vertexAttribPointer(
     type,
     normalize,
     stride,
-    offset
+    offset,
 );
 gl.drawArrays(gl.TRIANGLES, 0, 3);
+
