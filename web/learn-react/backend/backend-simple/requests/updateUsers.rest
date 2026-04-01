@@ -1,0 +1,18 @@
+### Update a user
+
+PATCH http://localhost:3003/api/users/69b7dec90d605b905fcb3f2d HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "alice.update@example.com"
+}
+
+### Set root's role
+
+PATCH http://localhost:3003/api/users/69b94fd61edf8c171c64cf7b/role HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjkxMjMzZGZiNGEyZWU2MWZkZmJjZCIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NzM3NTIzNTUsImV4cCI6MTc3Mzc1NTk1NX0.Td2t2EjoSDExXZX6dnkprslzhCO9nTuGk4bMAF9h-Nc
+Content-Type: application/json
+
+{
+  "role": "admin"
+}

@@ -1,0 +1,15 @@
+### Delete the dummy user
+
+DELETE http://localhost:3003/api/users/69b7dd2abb12883220f2a5ac HTTP/1.1
+
+
+
+### Delete admin
+
+DELETE http://localhost:3003/api/users/69b91233dfb4a2ee61fdfbcd HTTP/1.1
+
+
+
+### Delete user
+
+DELETE http://localhost:3003/api/users/69c583ed99027df4fd66699b HTTP/1.1

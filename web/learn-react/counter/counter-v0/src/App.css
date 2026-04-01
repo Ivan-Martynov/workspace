@@ -1,0 +1,16 @@
+.buttons-container {
+  /* display: grid; */
+  /* grid-template-columns: 1fr 1fr; */
+}
+
+.error {
+  color: red;
+}
+
+.warning {
+  color: orange;
+}
+
+.info {
+  color: green;
+}
