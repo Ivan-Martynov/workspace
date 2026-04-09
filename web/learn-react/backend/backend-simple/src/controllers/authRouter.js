@@ -10,6 +10,7 @@ import {
 } from '../validators/authValidator.js'
 import { getFrontendUrl } from '../utils/url.js'
 import authService from '../services/authService.js'
+import { requireAuth, userExtractor } from '../utils/auth.js'
 
 const authRouter = Router()
 
@@ -28,7 +29,25 @@ authRouter.post(
   },
 )
 
-authRouter.post('/verify/:token', async (request, response, next) => {
+// Stored token verification
+authRouter.get(
+  '/verify-session/',
+  userExtractor,
+  requireAuth,
+  async (request, response, next) => {
+    try {
+      response.json({
+        id: request.user.id,
+        username: request.user.username,
+      })
+    } catch (err) {
+      next(err)
+    }
+  },
+)
+
+// Email verification
+authRouter.post('/verify-email/:token', async (request, response, next) => {
   try {
     const payload = await authService.verifyEmail(request.params.token)
     response.json(payload)
