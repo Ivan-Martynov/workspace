@@ -1,0 +1,118 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Peruuta",
+    "close": "Sulje",
+    "confirm": "Hyväksy",
+    "logout": "Kirjaudu ulos",
+    "loggingOut": "Kirjaudutaan ulos...",
+    "goNow": "Siiry nyt",
+    "waitingUser": "Odotetaan käyttäjän toimintoa...",
+    "redirectIn_one": "Sinut ohjataan {{target}} {{count}} sekunnin kuluttua",
+    "redirectIn_other": "Sinut ohjataan {{target}} {{count}} sekunnin kuluttua",
+    "toMainPage": "pääsivulle",
+    "toLoginPage": "kirjautumiseen"
+  },
+  "login": {
+    "submit": "Kirjaudu sisään",
+    "submitting": "Kirjaudutaan sisään..."
+  },
+  "register": {
+    "submit": "Rekisteröidy",
+    "submitting": "Rekisteröidään..."
+  },
+  "delete": {
+    "title": "Poista Tili",
+    "successMessage": "Tili on poistettu onnistuneesti!",
+    "submit": "Poista tili",
+    "submitting": "Poistetaan...",
+    "confirmTitle": "Poiston vahvistus",
+    "confirm": "Kirjoita <strong>{{username}}</strong> vahvistaaksesi poiston. Tätä ei voi perua."
+  },
+  "forgot": {
+    "submit": "Lähetä nollauslinkki",
+    "submitting": "Lähetetään...",
+    "reset": "Nollaa salasana",
+    "resetting": "Nollataan...",
+    "resetTitle": "Nollaa salasana",
+    "setNewTitle": "Aseta uusi salasana"
+  },
+  "verifyEmail": {
+    "notice": {
+      "title": "Vahvista sähköpostiosoitteesi",
+      "checkInbox": "Jos osoite on saatavilla, vahvistussähköposti on lähetetty.",
+      "resend": "Lähetä vahvistussähköposti uudelleen",
+      "resending": "Lähetetään uudelleen...",
+      "resendIn_one": "Lähetä uudelleen {{count}} sekunnin kuluttua",
+      "resendIn_other": "Lähetä uudelleen {{count}} sekunnin kuluttua"
+    },
+    "confirmation": {
+      "title": "Sähköpostin vahvistus",
+      "verifying": "Vahvistetaan..."
+    }
+  },
+  "auth": {
+    "signIn": "Kirjaudu sisään",
+    "noAccount": "Eikö sinulla ole tiliä? Rekisteröidy",
+    "hasAccount": "Onko sinulla jo tili? Kirjaudu sisään",
+    "forgottenPassword": "Unohtunut salasana",
+    "forgotPassword": "Unohditko salasanasi?",
+    "backToLogin": "Takaisin kirjautumiseen"
+  },
+  "navbar": {
+    "game": "Peli",
+    "loggedInAs": "Käyttäjä: <strong>{{username}}</strong>"
+  },
+  "fields": {
+    "usernameOrEmail": "Tunnus tai sähköposti",
+    "username": "Käyttäjänimi",
+    "email": "Sähköposti",
+    "password": "Salasana",
+    "newPassword": "Uusi salasana",
+    "confirmPassword": "Vahvista salasana"
+  },
+  "errors": {
+    "passwordTooShort": "Salasanan on oltava vähintään {{min}} merkkiä pitkä",
+    "passwordTooLong": "Salasanan on oltava enintään {{max}} merkkiä pitkä",
+    "passwordMismatch": "Salasanat eivät täsmää",
+    "invalidEmail": "Anna kelvollinen sähköpostiosoite",
+    "usernameTooShort": "Käyttäjätunnuksen on oltava vähintään {{min}} merkkiä pitkä",
+    "usernameTooLong": "Käyttäjätunnuksen on oltava enintään {{max}} merkkiä pitkä",
+    "usernameInvalidChars": "Käyttäjätunnus voi sisältää vain kirjaimia, numeroita ja alaviivoja",
+    "identifierRequired": "Tunniste on pakollinen",
+    "passwordRequired": "Salasana on pakollinen",
+    "invalidCredentials": "Virheelliset tunnistetiedot",
+    "emailNotVerified": "Vahvista sähköpostiosoitteesi ennen sisäänkirjautumista",
+    "invalidVerificationToken": "Virheellinen tai vanhentunut vahvistustunnus",
+    "invalidResetToken": "Virheellinen tai vanhentunut nollaustunnus",
+    "atLeastOneField": "Ainakin yksi kenttä on täytettävä",
+    "invalidRole": "Virheellinen rooli",
+    "deleteAccountFailed": "Tilin poistaminen epäonnistui",
+    "tooManyRequests": "Liian monta pyyntöä, yritä myöhemmin uudelleen",
+    "malformattedId": "Virheellinen pyyntö",
+    "duplicateKey": "Pyyntöä ei voitu suorittaa, tarkista syötteesi",
+    "invalidToken": "Istuntosi on virheellinen, kirjaudu sisään uudelleen",
+    "tokenExpired": "Istuntosi on vanhentunut, kirjaudu sisään uudelleen",
+    "serverError": "Palvelinvirhe, yritä myöhemmin uudelleen",
+    "genericError": "Jotain meni pieleen, yritä uudelleen"
+  },
+  "success": {
+    "registrationSuccess": "Jos tämä osoite on saatavilla, vahvistussähköposti on lähetetty",
+    "forgotPasswordSuccess": "Jos tili on olemassa, nollauslinkki on lähetetty",
+    "resendVerificationSuccess": "Jos tili on olemassa, vahvistussähköposti on lähetetty",
+    "emailVerified": "Sähköpostiosoite on vahvistettu",
+    "passwordReset": "Salasana on nollattu"
+  },
+  "game": {
+    "header": "Peli",
+    "countTo": "Laske numeroon {{number}} asti",
+    "zero": "nollaan",
+    "reset": "nollaa"
+  },
+  "theme": {
+    "dark": "🌙 Tumma",
+    "light": "☀️ Vaalea",
+    "switchToDark": "Vaihda tummaan tilaan",
+    "switchToLight": "Vaihda vaaleaan tilaan"
+  }
+}

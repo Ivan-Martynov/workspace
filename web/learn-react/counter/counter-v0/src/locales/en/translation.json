@@ -1,0 +1,118 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "goNow": "Go now",
+    "waitingUser": "Waiting for user's action...",
+    "redirectIn_one": "You'll be redirected to {{target}} in {{count}} second",
+    "redirectIn_other": "You'll be redirected to {{target}} in {{count}} seconds",
+    "toMainPage": "main page",
+    "toLoginPage": "login"
+  },
+  "login": {
+    "submit": "Login",
+    "submitting": "Logging in..."
+  },
+  "register": {
+    "submit": "Register",
+    "submitting": "Registering..."
+  },
+  "delete": {
+    "title": "Delete Account",
+    "successMessage": "Account has been successfully deleted!",
+    "submit": "Delete account",
+    "submitting": "Deleting...",
+    "confirmTitle": "Delete confirmation",
+    "confirm": "Type <strong>{{username}}</strong> to confirm deletion. This cannot be undone."
+  },
+  "forgot": {
+    "submit": "Send reset link",
+    "submitting": "Sending...",
+    "reset": "Reset password",
+    "resetting": "Resetting...",
+    "resetTitle": "Reset password",
+    "setNewTitle": "Set new password"
+  },
+  "verifyEmail": {
+    "notice": {
+      "title": "Verify your email",
+      "checkInbox": "If the address is available, a verification email has been sent.",
+      "resend": "Resend verification email",
+      "resending": "Resending...",
+      "resendIn_one": "Resend in {{count}} second",
+      "resendIn_other": "Resend in {{count}} seconds"
+    },
+    "confirmation": {
+      "title": "Email verification",
+      "verifying": "Verifying..."
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "noAccount": "Don't have an account? Register",
+    "hasAccount": "Already have an account? Login",
+    "forgottenPassword": "Forgot password",
+    "forgotPassword": "Forgot password?",
+    "backToLogin": "Back to login"
+  },
+  "navbar": {
+    "game": "Game",
+    "loggedInAs": "Logged in as <strong>{{username}}</strong>"
+  },
+  "fields": {
+    "usernameOrEmail": "Username or email",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password"
+  },
+  "errors": {
+    "passwordTooShort": "Password must be at least {{min}} characters",
+    "passwordTooLong": "Password must be at most {{max}} characters",
+    "passwordMismatch": "Passwords do not match",
+    "invalidEmail": "Please enter a valid email address",
+    "usernameTooShort": "Username must be at least {{min}} characters",
+    "usernameTooLong": "Username must be at most {{max}} characters",
+    "usernameInvalidChars": "Username may only contain letters, numbers, and underscores",
+    "identifierRequired": "Identifier is required",
+    "passwordRequired": "Password is required",
+    "invalidCredentials": "Invalid credentials",
+    "emailNotVerified": "Please verify your email before logging in",
+    "invalidVerificationToken": "Invalid or expired verification token",
+    "invalidResetToken": "Invalid or expired reset token",
+    "atLeastOneField": "At least one field must be provided",
+    "invalidRole": "Invalid role",
+    "deleteAccountFailed": "Failed to delete account",
+    "tooManyRequests": "Too many requests, please try again later",
+    "malformattedId": "Invalid request",
+    "duplicateKey": "Request could not be completed, please check your input",
+    "invalidToken": "Your session is invalid, please log in again",
+    "tokenExpired": "Your session has expired, please log in again",
+    "serverError": "Server error, please try again later",
+    "genericError": "Something went wrong, please try again"
+  },
+  "success": {
+    "registrationSuccess": "If this address is available, a verification email has been sent",
+    "forgotPasswordSuccess": "If an account exists, a reset link has been sent",
+    "resendVerificationSuccess": "If an account exists, a verification email has been sent",
+    "emailVerified": "Email verified successfully",
+    "passwordReset": "Password reset successfully"
+  },
+  "game": {
+    "header": "Game",
+    "countTo": "Count to {{number}}",
+    "zero": "zero",
+    "reset": "reset"
+  },
+  "theme": {
+    "dark": "🌙 Dark",
+    "light": "☀️ Light",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
+  }
+}

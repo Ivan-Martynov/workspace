@@ -1,51 +1,43 @@
-import { useEffect } from 'react'
-import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { resendVerificationRequest } from '../services/auth'
+import { useCountdown, useFormSubmit } from '../hooks'
+import Message from './Message'
+import { useState } from 'react'
 
-const VerifyEmailNotice = ({ email, message }) => {
-  const [error, setError] = useState('')
-  const [countdown, setCountdown] = useState(0)
-  const [loading, setLoading] = useState(false)
+const VerifyEmailNotice = ({ email }) => {
+  const { t } = useTranslation()
+  const { countdown, reset } = useCountdown()
+  const [messageId, setMessageId] = useState(0)
 
-  const handleResend = async () => {
-    setError('')
-
-    if (loading || countdown > 0) {
-      return
-    }
-
-    setLoading(true)
-    try {
-      await resendVerificationRequest(email)
-      setCountdown(30)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [countdown])
+  const { errorMessage, loading, handleSubmit } = useFormSubmit(async () => {
+    await resendVerificationRequest(email)
+    reset(3)
+    setMessageId((prev) => prev + 1)
+  })
 
   return (
     <div>
-      <h2>Verify your email</h2>
-      {error ? (
-        <p>{error}</p>
+      {errorMessage ? (
+        <Message text={errorMessage} type='error' />
       ) : (
-        <p>If the address is available, a verification email has been sent.</p>
+        <Message
+          id={messageId}
+          text={t('verifyEmail.notice.checkInbox')}
+          type='success'
+          duration={5000}
+        />
       )}
 
-      <button onClick={handleResend} disabled={loading || countdown > 0}>
-        {countdown > 0
-          ? `Resend in ${countdown}s`
-          : 'Resend verification email'}
-      </button>
+      <form onSubmit={handleSubmit}>
+        <button type='submit' disabled={loading || countdown > 0}>
+          {countdown > 0
+            ? t('verifyEmail.notice.resendIn', { count: countdown })
+            : loading
+              ? t('verifyEmail.notice.resending')
+              : t('verifyEmail.notice.resend')}
+        </button>
+      </form>
     </div>
   )
 }

@@ -11,6 +11,10 @@
   color: orange;
 }
 
-.info {
+.success {
   color: green;
+}
+
+.info {
+  color: blue;
 }

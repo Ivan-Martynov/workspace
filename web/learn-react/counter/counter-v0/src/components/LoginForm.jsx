@@ -1,44 +1,32 @@
-import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { useAuth } from '../context/useAuth'
-import { useInputField } from '../hooks'
+import { useInputField, useFormSubmit } from '../hooks'
+import Message from './Message'
 
 const LoginForm = () => {
+  const { t } = useTranslation()
   const { login } = useAuth()
 
-  const identifier = useInputField('username or email')
-  const password = useInputField('password', { type: 'password' })
-  const fields = [identifier, password]
+  const identifier = useInputField(t('fields.usernameOrEmail'))
+  const password = useInputField(t('fields.password'), { type: 'password' })
 
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (ev) => {
-    ev.preventDefault()
-    setError('')
-    setLoading(true)
-    try {
-      await login(identifier.value.trim(), password.value)
-      for (const f of fields) {
-        f.reset()
-      }
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { errorMessage, loading, handleSubmit } = useFormSubmit(async () => {
+    await login(identifier.value.trim(), password.value)
+    identifier.reset()
+    password.reset()
+  })
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <p>{error}</p>}
-      {fields.map((f) => (
-        <input key={f.inputProps.placeholder} {...f.inputProps} />
-      ))}
+    <form noValidate onSubmit={handleSubmit}>
+      <Message text={errorMessage} type='error' />
+      <input {...identifier.inputProps} disabled={loading} />
+      <input {...password.inputProps} disabled={loading} />
       <button
         type='submit'
         disabled={loading || !(identifier.value && password.value)}
       >
-        {loading ? 'Logging in...' : 'Login'}
+        {loading ? t('login.submitting') : t('login.submit')}
       </button>
     </form>
   )

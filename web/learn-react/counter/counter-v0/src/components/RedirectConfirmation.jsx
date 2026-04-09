@@ -1,34 +1,39 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
 import { ROUTES } from '../routes'
+import { useCountdown } from '../hooks'
+import Message from './Message'
 
 const RedirectConfirmation = ({
   message,
-  targetName = 'main',
+  targetName,
   target = ROUTES.HOME,
-  countdownStart = 5,
+  countdownSeconds = 5,
 }) => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
-  const [countdown, setCountdown] = useState(countdownStart)
+
+  const { countdown } = useCountdown(countdownSeconds)
 
   useEffect(() => {
-    if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000)
-      return () => clearTimeout(timer)
+    if (countdown <= 0) {
+      navigate(target)
     }
-    navigate(target)
-  }, [navigate, countdown])
-
-  const textSeconds = countdown === 1 ? 'second' : 'seconds'
+  }, [navigate, countdown, target])
 
   return (
     <div>
-      <p>{message}</p>
+      <Message text={message} type='success' />
       <p>
-        You'll be redirected to {targetName} in {countdown} {textSeconds}
+        {t('common.redirectIn', {
+          target: targetName ?? t('common.toMainPage'),
+          count: countdown,
+        })}
       </p>
       <button type='button' onClick={() => navigate(target)}>
-        Go now
+        {t('common.goNow')}
       </button>
     </div>
   )

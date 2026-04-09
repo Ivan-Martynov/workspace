@@ -1,42 +1,25 @@
-import { useState } from 'react'
 import { requestPasswordReset } from '../services/auth'
+import { useTranslation } from 'react-i18next'
+
+import { useFormSubmit, useInputField } from '../hooks'
+import Message from './Message'
 
 const ForgotPasswordForm = ({ onSuccess }) => {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { t } = useTranslation()
+  const email = useInputField(t('fields.email'), { type: 'email' })
 
-  const handleSubmit = async (ev) => {
-    ev.preventDefault()
-    setError('')
-    setLoading(true)
-
-    try {
-      const response = await requestPasswordReset(email.trim())
-      setEmail('')
-      onSuccess(response.message)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { errorMessage, loading, handleSubmit } = useFormSubmit(async () => {
+    const response = await requestPasswordReset(email.value.trim())
+    onSuccess(response.message)
+    email.reset()
+  })
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && (
-        <p className='error' role='alert'>
-          {error}
-        </p>
-      )}
-      <input
-        type='email'
-        value={email}
-        onChange={(ev) => setEmail(ev.target.value)}
-        placeholder='email'
-      />
-      <button type='submit' disabled={loading || !email.trim()}>
-        {loading ? 'Sending...' : 'Send reset link'}
+    <form noValidate onSubmit={handleSubmit}>
+      <Message text={errorMessage} type='error' />
+      <input {...email.inputProps} />
+      <button type='submit' disabled={loading || !email.value.trim()}>
+        {loading ? t('forgot.submitting') : t('forgot.submit')}
       </button>
     </form>
   )

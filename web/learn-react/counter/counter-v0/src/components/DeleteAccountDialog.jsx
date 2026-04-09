@@ -1,60 +1,43 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Trans, useTranslation } from 'react-i18next'
+
 import { useAuth } from '../context/useAuth'
 import { ROUTES } from '../routes'
+import { useFormSubmit, useInputField } from '../hooks'
+import Message from './Message'
 
 const DeleteAccountDialog = ({ onCancel }) => {
+  const { t } = useTranslation()
   const { user, deleteAccount } = useAuth()
 
-  const [confirmText, setConfirmText] = useState('')
-  const [error, setError] = useState(null)
-
-  const [loading, setLoading] = useState(false)
+  const confirmText = useInputField(user.username)
   const navigate = useNavigate()
 
-  const handleDeleteAccount = async (ev) => {
-    ev.preventDefault()
-    setLoading(true)
-
-    try {
-      await deleteAccount()
-      navigate(ROUTES.CONFIRM_ACCOUNT_DELETION)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (!user) {
-    return null
-  }
-
-  const confirmed = confirmText === user.username
+  const { errorMessage, loading, handleSubmit } = useFormSubmit(async () => {
+    await deleteAccount()
+    navigate(ROUTES.CONFIRM_ACCOUNT_DELETION)
+  })
 
   return (
-    <form>
-      <h3>Delete Account</h3>
-      {error && <p>{error}</p>}
+    <form onSubmit={handleSubmit}>
+      <h3>{t('delete.title')}</h3>
+      <Message text={errorMessage} type='error' />
       <p>
-        Type <strong>{user.username}</strong> to confirm deletion. This cannot
-        be undone.
+        <Trans
+          i18nKey='delete.confirm'
+          values={{ username: user.username }}
+          components={{ strong: <strong></strong> }}
+        />
       </p>
-      <input
-        value={confirmText}
-        onChange={(ev) => setConfirmText(ev.target.value)}
-        placeholder={user.username}
-        disabled={loading}
-      />
+      <input {...confirmText.inputProps} disabled={loading} />
       <button
         type='submit'
-        onClick={handleDeleteAccount}
-        disabled={!confirmed || loading}
+        disabled={confirmText.value !== user.username || loading}
       >
-        {loading ? 'Deleting...' : 'Delete Account'}
+        {loading ? t('delete.submitting') : t('delete.submit')}
       </button>
       <button type='button' onClick={onCancel} disabled={loading}>
-        Cancel
+        {t('common.cancel')}
       </button>
     </form>
   )
