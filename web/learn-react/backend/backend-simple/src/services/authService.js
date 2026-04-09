@@ -13,10 +13,12 @@ import {
   generateJSONWebToken,
   generateTokenWithExpiry,
   getPasswordHash,
+  getToken,
   hashToken,
+  verifyJSONWebToken,
 } from '../utils/auth.js'
 import logger from '../utils/logger.js'
-import { AUTH_MESSAGES } from '../utils/messages.js'
+import { AUTH_ERRORS, AUTH_SUCCESS } from '../utils/messages.js'
 
 let dummyHash = null
 const getDummyHash = async () => {
@@ -37,7 +39,7 @@ const registerUser = async ({ username, email, password, frontendUrl }) => {
     .sendVerificationEmail(user.email, verificationToken, frontendUrl)
     .catch((err) => logger.error('Failed to send verification email: ', err))
 
-  const payload = { message: AUTH_MESSAGES.REGISTER, userId: user.id }
+  const payload = { message: AUTH_SUCCESS.REGISTER, userId: user.id }
   if (config.MODE === MODES.TEST) {
     payload.verificationToken = verificationToken
   }
@@ -55,12 +57,12 @@ const loginUser = async ({ identifier, password }) => {
   const passwordMatch = await bcrypt.compare(password, hash)
 
   if (!(user && passwordMatch)) {
-    throw new UnauthorizedError(AUTH_MESSAGES.LOGIN_FAILED)
+    throw new UnauthorizedError(AUTH_ERRORS.LOGIN_FAILED)
   }
 
   // If the user is registered, but not verified, remind about verification.
   if (!user.verified) {
-    throw new ForbiddenError(AUTH_MESSAGES.REMIND_VERIFY)
+    throw new ForbiddenError(AUTH_ERRORS.REMIND_VERIFY)
   }
 
   return {
@@ -72,6 +74,10 @@ const loginUser = async ({ identifier, password }) => {
     },
   }
 }
+const verifySession = async (request) => {
+  const token = getToken(request)
+  return verifyJSONWebToken(token)
+}
 
 const verifyEmail = async (token) => {
   const user = await User.findOne({
@@ -80,7 +86,7 @@ const verifyEmail = async (token) => {
   })
 
   if (!user) {
-    throw new BadRequestError(AUTH_MESSAGES.VERIFY_FAILED)
+    throw new BadRequestError(AUTH_ERRORS.VERIFY_FAILED)
   }
 
   // Mark user as verified and then nullify the token (not needed anymore).
@@ -90,7 +96,7 @@ const verifyEmail = async (token) => {
 
   await user.save()
 
-  return { message: AUTH_MESSAGES.EMAIL_VERIFIED }
+  return { message: AUTH_SUCCESS.EMAIL_VERIFIED }
 }
 
 const resendVerificationEmail = async (identifier, frontendUrl) => {
@@ -112,7 +118,7 @@ const resendVerificationEmail = async (identifier, frontendUrl) => {
 
   // Regardless whether a user exists or not, we send the same message to
   // avoid checking for existing users/accounts.
-  return { message: AUTH_MESSAGES.RESEND_VERIFICATION }
+  return { message: AUTH_SUCCESS.RESEND_VERIFICATION }
 }
 
 const forgotPassword = async (email, frontendUrl) => {
@@ -131,7 +137,7 @@ const forgotPassword = async (email, frontendUrl) => {
     await mailService.sendPasswordResetEmail(user.email, token, frontendUrl)
   }
 
-  const payload = { message: AUTH_MESSAGES.FORGOT_PASSWORD }
+  const payload = { message: AUTH_SUCCESS.FORGOT_PASSWORD }
 
   if (config.MODE === MODES.TEST) {
     payload.resetToken = token
@@ -148,7 +154,7 @@ const resetPassword = async (token, password) => {
   })
 
   if (!user) {
-    throw new BadRequestError(AUTH_MESSAGES.PASSWORD_RESET_FAILED)
+    throw new BadRequestError(AUTH_ERRORS.PASSWORD_RESET_FAILED)
   }
 
   // Generate new hash and nullify the reset token.
@@ -158,12 +164,13 @@ const resetPassword = async (token, password) => {
 
   await user.save()
 
-  return { message: AUTH_MESSAGES.PASSWORD_RESET }
+  return { message: AUTH_SUCCESS.PASSWORD_RESET }
 }
 
 export default {
   registerUser,
   loginUser,
+  verifySession,
   verifyEmail,
   resendVerificationEmail,
   forgotPassword,

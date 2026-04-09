@@ -1,19 +1,32 @@
-import config, { MODES } from './config.js'
-
 import rateLimit from 'express-rate-limit'
+
+import config, { MODES } from './config.js'
+import { HTTP_ERRORS } from './messages.js'
+
+const loginLimits = {
+  [MODES.PRODUCTION]: 5,
+  [MODES.DEVELOPMENT]: 50,
+  [MODES.TEST]: 200,
+}
+
+const passwordLimits = {
+  [MODES.PRODUCTION]: 3,
+  [MODES.DEVELOPMENT]: 30,
+  [MODES.TEST]: 100,
+}
 
 // The 15-minute window for all limiters
 const createLimiter = (limit) =>
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: config.MODE === MODES.PRODUCTION ? limit : 1000,
-    message: { error: 'Too many requests, please try again later' },
+    limit,
+    message: { error: HTTP_ERRORS.TOO_MANY_REQUESTS },
     standardHeaders: 'draft-8',
     legacyHeaders: false,
   })
 
-const loginLimiterBase = createLimiter(100)
-const passwordLimiterBase = createLimiter(50)
+const loginLimiterBase = createLimiter(loginLimits[config.MODE])
+const passwordLimiterBase = createLimiter(passwordLimits[config.MODE])
 
 export const loginLimiter = (request, response, next) =>
   config.MODE === MODES.TEST

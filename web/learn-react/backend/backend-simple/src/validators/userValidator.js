@@ -1,16 +1,15 @@
 import { z } from 'zod'
 import { emailSchema, passwordSchema } from './sharedSchemas.js'
+import { VALIDATION_ERRORS } from '../utils/messages.js'
+import config from '../utils/config.js'
 
 const usernameSchema = z
   .string()
   .trim()
   .toLowerCase()
-  .min(3, 'Username must be at least 3 characters')
-  .max(30, 'Username must be at most 30 characters')
-  .regex(
-    /^[a-zA-Z0-9_]+$/,
-    'Username may only contain letters, numbers, and underscores',
-  )
+  .min(config.USERNAME_MIN_LENGTH, VALIDATION_ERRORS.USERNAME_TOO_SHORT)
+  .max(config.USERNAME_MAX_LENGTH, VALIDATION_ERRORS.USERNAME_TOO_LONG)
+  .regex(/^[a-zA-Z0-9_]+$/, VALIDATION_ERRORS.USERNAME_INVALID_CHARS)
 
 export const createUserSchema = z.object({
   username: usernameSchema,
@@ -26,9 +25,11 @@ export const updateUserSchema = z
     password: passwordSchema.optional(),
   })
   .refine((data) => Object.values(data).some((v) => v !== undefined), {
-    message: 'At least one field must be provided',
+    message: VALIDATION_ERRORS.AT_LEAST_ONE_FIELD,
   })
 
 export const updateRoleSchema = z.object({
-  role: z.enum(['user', 'admin']),
+  role: z.enum(['user', 'admin'], {
+    errorMap: () => ({ message: VALIDATION_ERRORS.INVALID_ROLE }),
+  }),
 })

@@ -1,12 +1,38 @@
-export const AUTH_MESSAGES = {
-  REGISTER: 'If this address is available, a verification email has been sent',
-  LOGIN_FAILED: 'Invalid credentials',
-  REMIND_VERIFY: 'Please verify your email before logging in',
-  VERIFY_FAILED: 'Invalid or expired verification token',
-  FORGOT_PASSWORD: 'If an account exists, a reset link has been sent',
-  RESEND_VERIFICATION:
-    'If an account exists, a verification email has been sent',
-  PASSWORD_RESET_FAILED: 'Invalid or expired reset token',
-  EMAIL_VERIFIED: 'Email verified successfully',
-  PASSWORD_RESET: 'Password reset successfully',
+export const AUTH_ERRORS = {
+  LOGIN_FAILED: 'invalidCredentials',
+  REMIND_VERIFY: 'emailNotVerified',
+  VERIFY_FAILED: 'invalidVerificationToken',
+  PASSWORD_RESET_FAILED: 'invalidResetToken',
+}
+
+export const HTTP_ERRORS = {
+  TOO_MANY_REQUESTS: 'tooManyRequests',
+}
+
+export const SYSTEM_ERRORS = {
+  MALFORMATTED_ID: 'malformattedId',
+  DUPLICATE_KEY: 'duplicateKey',
+  INVALID_TOKEN: 'invalidToken',
+  TOKEN_EXPIRED: 'tokenExpired',
+}
+
+export const VALIDATION_ERRORS = {
+  INVALID_EMAIL: 'invalidEmail',
+  PASSWORD_TOO_SHORT: 'passwordTooShort',
+  PASSWORD_TOO_LONG: 'passwordTooLong',
+  USERNAME_TOO_SHORT: 'usernameTooShort',
+  USERNAME_TOO_LONG: 'usernameTooLong',
+  USERNAME_INVALID_CHARS: 'usernameInvalidChars',
+  IDENTIFIER_REQUIRED: 'identifierRequired',
+  PASSWORD_REQUIRED: 'passwordRequired',
+  AT_LEAST_ONE_FIELD: 'atLeastOneField',
+  INVALID_ROLE: 'invalidRole',
+}
+
+export const AUTH_SUCCESS = {
+  REGISTER: 'registrationSuccess',
+  FORGOT_PASSWORD: 'forgotPasswordSuccess',
+  RESEND_VERIFICATION: 'resendVerificationSuccess',
+  EMAIL_VERIFIED: 'emailVerified',
+  PASSWORD_RESET: 'passwordReset',
 }

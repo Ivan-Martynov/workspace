@@ -1,9 +1,14 @@
 import { z } from 'zod'
 import { emailSchema, passwordSchema } from './sharedSchemas.js'
+import { VALIDATION_ERRORS } from '../utils/messages.js'
 
 export const loginSchema = z.object({
-  identifier: z.string().min(1, 'Identifier is required').trim().toLowerCase(),
-  password: z.string().min(1, 'Password is required'),
+  identifier: z
+    .string()
+    .min(1, VALIDATION_ERRORS.IDENTIFIER_REQUIRED)
+    .trim()
+    .toLowerCase(),
+  password: z.string().min(1, VALIDATION_ERRORS.PASSWORD_REQUIRED),
 })
 
 export const forgotPasswordSchema = z.object({
@@ -16,6 +21,10 @@ export const resetPasswordSchema = z.object({
 })
 
 export const resendVerificationSchema = z.object({
-  identifier: z.string().min(1, 'Identifier is required').trim().toLowerCase(),
+  identifier: z
+    .string()
+    .min(1, VALIDATION_ERRORS.IDENTIFIER_REQUIRED)
+    .trim()
+    .toLowerCase(),
   redirectUrl: z.string().optional(),
 })

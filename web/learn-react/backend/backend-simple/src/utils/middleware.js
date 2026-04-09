@@ -3,6 +3,14 @@ import { ZodError } from 'zod'
 
 import config, { MODES } from './config.js'
 import logger from './logger.js'
+import { SYSTEM_ERRORS, VALIDATION_ERRORS } from './messages.js'
+
+const ERROR_PARAMS = {
+  [VALIDATION_ERRORS.PASSWORD_TOO_SHORT]: { min: config.PASSWORD_MIN_LENGTH },
+  [VALIDATION_ERRORS.PASSWORD_TOO_LONG]: { max: config.PASSWORD_MAX_LENGTH },
+  [VALIDATION_ERRORS.USERNAME_TOO_SHORT]: { min: config.USERNAME_MIN_LENGTH },
+  [VALIDATION_ERRORS.USERNAME_TOO_LONG]: { max: config.USERNAME_MAX_LENGTH },
+}
 
 /**
  * Express middleware factory that validates `request.body` against a Zod
@@ -14,8 +22,11 @@ import logger from './logger.js'
 export const validate = (schema) => (request, response, next) => {
   const result = schema.safeParse(request.body)
   if (!result.success) {
-    const errors = result.error.issues.map((err) => err.message)
-    return response.status(400).json({ error: errors.join() })
+    const errors = result.error.issues.map((err) => ({
+      code: err.message,
+      params: ERROR_PARAMS[err.message] ?? {},
+    }))
+    return response.status(400).json({ errors })
   }
   request.body = result.data
   next()
@@ -138,7 +149,7 @@ export const errorHandler = (error, _request, response, next) => {
   logger.error(error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).json({ error: 'Malformatted id' })
+    return response.status(400).json({ error: SYSTEM_ERRORS.MALFORMATTED_ID })
   }
 
   if (error.name === 'ValidationError') {
@@ -149,17 +160,15 @@ export const errorHandler = (error, _request, response, next) => {
     error.name === 'MongoServerError' &&
     error.message.includes('E11000 duplicate key error')
   ) {
-    return response
-      .status(409)
-      .json({ error: 'Failed. Please check your input and try again.' })
+    return response.status(409).json({ error: SYSTEM_ERRORS.DUPLICATE_KEY })
   }
 
   if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({ error: 'Invalid token' })
+    return response.status(401).json({ error: SYSTEM_ERRORS.INVALID_TOKEN })
   }
 
   if (error.name === 'TokenExpiredError') {
-    return response.status(401).json({ error: 'Token expired' })
+    return response.status(401).json({ error: SYSTEM_ERRORS.TOKEN_EXPIRED })
   }
 
   if (error instanceof ZodError) {
