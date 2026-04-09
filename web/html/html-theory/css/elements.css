@@ -1,6 +1,44 @@
-.tag-element {
-  background-color: gainsboro;
-  padding: 1px;
-  border: 2px solid gray;
-  border-radius: 10%;
+body {
+  background-color: var(--bg-light)
 }
+
+section {
+  margin-top: 12px;
+}
+
+body:has(#color-mode:checked) {
+  background-color: var(--bg-dark)
+}
+
+.color-scheme-wrapper,
+label[for="color-mode"] {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+.tag-element {
+  padding: 0 4px;
+  border: 2px solid;
+  border-radius: 8px;
+}
+
+#color-mode:checked~.color-scheme-wrapper,
+#color-mode:checked~label[for="color-mode"] {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* h1, */
+/* h2, */
+/* h3 { */
+/*   color: darkviolet; */
+/* } */
+
+/* @media(prefers-color-scheme: dark) { */
+/**/
+/*   h1, */
+/*   h2, */
+/*   h3 { */
+/*     color: violet; */
+/*   } */
+/* } */
