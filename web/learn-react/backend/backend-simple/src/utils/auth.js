@@ -67,6 +67,10 @@ export const getToken = (request) => {
   return null
 }
 
+export const verifyJSONWebToken = (token) => {
+  return jwt.verify(token, config.JWT_SECRET)
+}
+
 /**
  * Returns the SHA-256 hex digest of a token. Used to store reset/verification
  * tokens in the database without saving the raw value.
