@@ -1,11 +1,25 @@
 import { useEffect, useState } from 'react'
+
 import { AuthContext } from './AuthContext'
 import { AUTH_STORAGE_KEY } from '../services/constants'
 import {
   deleteAccountRequest,
   loginRequest,
   registerRequest,
+  sendVerifySessionToken,
 } from '../services/auth'
+
+// const isTokenExpired = (token) => {
+//   if (!token) {
+//     return true
+//   }
+//   try {
+//     const payload = JSON.parse(atob(token.split('.')[1]))
+//     return payload.exp * 1000 < Date.now()
+//   } catch {
+//     return true
+//   }
+// }
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
@@ -14,6 +28,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     try {
       const stored = JSON.parse(window.localStorage.getItem(AUTH_STORAGE_KEY))
+      // if (stored?.user && !isTokenExpired(stored?.token)) {
       if (stored?.user) {
         setUser(stored.user)
       }
@@ -23,6 +38,49 @@ export const AuthProvider = ({ children }) => {
       setLoading(false)
     }
   }, [])
+
+  useEffect(() => {
+    const handleStorageChange = (ev) => {
+      if (ev.key !== AUTH_STORAGE_KEY) {
+        return
+      }
+      if (!ev.newValue) {
+        setUser(null)
+        return
+      }
+      try {
+        const newData = JSON.parse(ev.newValue)
+        setUser(newData.user ?? null)
+      } catch {
+        setUser(null)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  // useEffect(() => {
+  //   const checkSession = async () => {
+  //     try {
+  //       const user = await sendVerifySessionToken()
+  //       setUser(user)
+  //     } catch {
+  //       logout()
+  //     }
+  //   }
+  //
+  //   checkSession()
+  //
+  //   window.addEventListener('focus', async () => {
+  //     try {
+  //       await sendVerifySessionToken()
+  //     } catch {
+  //       logout()
+  //     }
+  //   })
+  //   return () => window.removeEventListener('focus', handleFocus)
+  // }, [])
 
   const login = async (identifier, password) => {
     try {

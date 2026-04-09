@@ -1,74 +1,61 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
 import { resetPasswordReset } from '../services/auth'
 import RedirectConfirmation from '../components/RedirectConfirmation'
 import { ROUTES } from '../routes'
-import { useInputField } from '../hooks'
+import { useFormSubmit, useInputField } from '../hooks'
+import Message from '../components/Message'
 
 const ResetPasswordPage = () => {
+  const { t } = useTranslation()
   const { token } = useParams()
 
-  const password = useInputField('new password', { type: 'password' })
-  const confirmPassword = useInputField('confirm password', {
+  const password = useInputField(t('fields.newPassword'), { type: 'password' })
+  const confirmPassword = useInputField(t('fields.confirmPassword'), {
     type: 'password',
   })
-  const fields = [password, confirmPassword]
 
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
+  const [messageKey, setMessageKey] = useState('')
 
-  const handleSubmit = async (ev) => {
-    ev.preventDefault()
-    setError('')
-    setMessage('')
-
+  const { errorMessage, loading, handleSubmit } = useFormSubmit(async () => {
     if (password.value !== confirmPassword.value) {
-      setError('Passwords do not match')
-      return
+      throw { code: 'passwordMismatch', params: {} }
     }
 
-    setLoading(true)
-    try {
-      const response = await resetPasswordReset(token, password.value)
-      setMessage(response.message)
+    const response = await resetPasswordReset(token, password.value)
+    setMessageKey(response.message)
 
-      for (const f of fields) {
-        f.reset()
-      }
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+    password.reset()
+    confirmPassword.reset()
+  })
 
-  if (!token) {
-    return <p>Invalid or missing token</p>
-  }
+  return (
+    <main>
+      <h1>{t('forgot.setNewTitle')}</h1>
+      {messageKey ? (
+        <RedirectConfirmation
+          message={t(`success.${messageKey}`)}
+          targetName='login'
+          target={ROUTES.AUTH}
+          countdownSeconds={5}
+        />
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <Message text={errorMessage} type='error' />
+          <input {...password.inputProps} />
+          <input {...confirmPassword.inputProps} />
 
-  return message ? (
-    <RedirectConfirmation
-      message={message}
-      targetName='login'
-      target={ROUTES.AUTH}
-    />
-  ) : (
-    <form onSubmit={handleSubmit}>
-      <h2>Set new password</h2>
-
-      {error && <p>{error}</p>}
-      {fields.map((f) => (
-        <input key={f.inputProps.placeholder} {...f.inputProps} />
-      ))}
-
-      <button
-        type='submit'
-        disabled={loading || !(password.value && confirmPassword.value)}
-      >
-        Reset password
-      </button>
-    </form>
+          <button
+            type='submit'
+            disabled={loading || !(password.value && confirmPassword.value)}
+          >
+            {loading ? t('forgot.resetting') : t('forgot.reset')}
+          </button>
+        </form>
+      )}
+    </main>
   )
 }
 

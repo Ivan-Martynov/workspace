@@ -45,5 +45,8 @@ export const resendVerificationRequest = async (identifier) =>
     redirectUrl: `${window.location.origin}/verify-confirmation`,
   })
 
-export const sendVerifyToken = async (token) =>
-  api.post(`/api/auth/verify/${token}`)
+export const sendVerifyEmailToken = async (token) =>
+  api.post(`/api/auth/verify-email/${token}`)
+
+export const sendVerifySessionToken = async () =>
+  api.get(`/api/auth/verify-session/`)

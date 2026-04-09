@@ -23,7 +23,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-describe.skip('auth service', () => {
+describe('auth service', () => {
   describe('loginRequest', () => {
     // Test case: verify that loginRequest returns a token and user object
     test('loginRequest returns token and user', async () => {
@@ -45,11 +45,11 @@ describe.skip('auth service', () => {
       mockFetchResponse({
         ok: false,
         status: 401,
-        json: async () => ({ error: 'Invalid credentials' }),
+        json: async () => ({ error: 'invalidCredentials' }),
       })
 
       await expect(loginRequest('alice', 'wrong')).rejects.toThrow(
-        'Invalid credentials',
+        'invalidCredentials',
       )
     })
 
@@ -57,7 +57,7 @@ describe.skip('auth service', () => {
       mockFetchResponse({ ok: false, status: 400, json: async () => ({}) })
 
       await expect(loginRequest('alice', 'secret')).rejects.toThrow(
-        'Request failed',
+        'requestFailed',
       )
     })
 
@@ -105,13 +105,13 @@ describe.skip('auth service', () => {
         ok: false,
         status: 409,
         json: async () => ({
-          error: 'Username or email already exists',
+          error: 'duplicateKey',
         }),
       })
 
       await expect(
         registerRequest('alice', 'alice@example.com', 'secret'),
-      ).rejects.toThrow('Username or email already exists')
+      ).rejects.toThrow('duplicateKey')
     })
 
     test('calls fetch with correct url and body', async () => {
@@ -120,7 +120,7 @@ describe.skip('auth service', () => {
         json: async () => ({ message: 'User created', userId: '123' }),
       })
 
-      await registerRequest('alice', 'alice@example.com', 'secret')
+      await registerRequest('alice', 'alice@example.com', 'secret123')
       expect(fetch).toHaveBeenCalledWith(
         '/api/users',
         expect.objectContaining({
@@ -128,7 +128,8 @@ describe.skip('auth service', () => {
           body: JSON.stringify({
             username: 'alice',
             email: 'alice@example.com',
-            password: 'secret',
+            password: 'secret123',
+            redirectUrl: 'http://localhost/verify-confirmation',
           }),
         }),
       )

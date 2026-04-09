@@ -1,5 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { vi, describe, expect, test } from 'vitest'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 
 import { AuthContext } from '../context/AuthContext'
@@ -24,7 +25,18 @@ const renderNavbar = (authValue = {}) => {
   )
 }
 
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en', changeLanguage: vi.fn() },
+  }),
+  Trans: ({ i18nKey, values }) =>
+    values ? `${i18nKey} ${Object.values(values).join(' ')}` : i18nKey,
+}))
+
 describe('Navbar', () => {
+  const user = userEvent.setup()
+
   describe('logged out', () => {
     test('shows login link when no user', () => {
       renderNavbar()
@@ -47,7 +59,7 @@ describe('Navbar', () => {
   describe('logged in', () => {
     test('shows username', () => {
       renderNavbar({ user: mockUser })
-      expect(screen.getByText('alice')).toBeInTheDocument()
+      expect(screen.getByText(/alice/)).toBeInTheDocument()
     })
 
     test('shows logout button', () => {
@@ -64,10 +76,10 @@ describe('Navbar', () => {
       ).not.toBeInTheDocument()
     })
 
-    test('calling logout when logout button is clicked', () => {
+    test('calling logout when logout button is clicked', async () => {
       const logout = vi.fn()
       renderNavbar({ user: mockUser, logout })
-      fireEvent.click(screen.getByRole('button', { name: /logout/i }))
+      await user.click(screen.getByRole('button', { name: /logout/i }))
       expect(logout).toHaveBeenCalledOnce()
     })
   })
@@ -76,21 +88,21 @@ describe('Navbar', () => {
     test('shows delete account button when logged in', () => {
       renderNavbar({ user: mockUser })
       expect(
-        screen.getByRole('button', { name: /delete account/i }),
+        screen.getByRole('button', { name: /delete.submit/i }),
       ).toBeInTheDocument()
     })
 
-    test('shows dialog button when delete account is clicked', () => {
+    test('shows dialog button when delete account is clicked', async () => {
       renderNavbar({ user: mockUser })
-      fireEvent.click(screen.getByRole('button', { name: /delete account/i }))
-      expect(screen.getByText(/confirm deletion/i)).toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: /delete.submit/i }))
+      expect(screen.getByText(/delete.confirm/i)).toBeInTheDocument()
     })
 
-    test('hides dialog when cancel is clicked', () => {
+    test('hides dialog when cancel is clicked', async () => {
       renderNavbar({ user: mockUser })
-      fireEvent.click(screen.getByRole('button', { name: /delete account/i }))
-      fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
-      expect(screen.queryByText(/confirm deletion/i)).not.toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: /delete.submit/i }))
+      await user.click(screen.getByRole('button', { name: /cancel/i }))
+      expect(screen.queryByText(/delete.confirm/i)).not.toBeInTheDocument()
     })
   })
 })

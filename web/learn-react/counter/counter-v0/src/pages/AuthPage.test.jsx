@@ -1,71 +1,88 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { vi, describe, expect, test } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { vi, beforeEach, describe, expect, test } from 'vitest'
 
 import { AuthContext } from '../context/AuthContext'
 import AuthPage from './AuthPage'
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key) => key }),
+}))
 
 const defaultAuth = {
   login: vi.fn(),
   register: vi.fn(),
 }
 
-const renderAuthPage = () =>
+const renderPage = () =>
   render(
     <AuthContext.Provider value={defaultAuth}>
       <AuthPage />
     </AuthContext.Provider>,
   )
 
-describe.skip('AuthPage', () => {
+describe('AuthPage', () => {
+  const usernamePlaceholder = /^fields\.username$/i
+  const identifierPlaceholder = /^fields\.usernameOrEmail$/i
+  const noAccountPlaceholder = /^auth\.noAccount$/i
+  const hasAccountPlaceholder = /^auth\.hasAccount$/i
+
+  let user
+  beforeEach(() => (user = userEvent.setup()))
+
   describe('render', () => {
     test('shows login form by default', () => {
-      renderAuthPage()
+      renderPage()
       expect(
-        screen.getByPlaceholderText('username or email'),
+        screen.getByPlaceholderText(identifierPlaceholder),
       ).toBeInTheDocument()
     })
 
     test('shows register button by default', () => {
-      renderAuthPage()
+      renderPage()
       expect(
-        screen.getByRole('button', { name: /don't have an account/i }),
+        screen.getByRole('button', { name: noAccountPlaceholder }),
       ).toBeInTheDocument()
     })
   })
 
   describe('toggle', () => {
-    test('switches to register form when toggle is clicked', () => {
-      renderAuthPage()
-      fireEvent.click(
-        screen.getByRole('button', { name: /don't have an account/i }),
+    test('switches to register form when toggle is clicked', async () => {
+      renderPage()
+      await user.click(
+        screen.getByRole('button', { name: noAccountPlaceholder }),
       )
       expect(
-        screen.queryByPlaceholderText('username or email'),
+        screen.queryByPlaceholderText(identifierPlaceholder),
       ).not.toBeInTheDocument()
-      expect(screen.getByPlaceholderText('username')).toBeInTheDocument()
-    })
-
-    test('shows login button when register form is visible', () => {
-      renderAuthPage()
-      fireEvent.click(
-        screen.getByRole('button', { name: /don't have an account/i }),
-      )
       expect(
-        screen.getByRole('button', { name: /already have an account/i }),
+        screen.getByPlaceholderText(usernamePlaceholder),
       ).toBeInTheDocument()
     })
 
-    test('switches back to login form when toggle is clicked again', () => {
-      renderAuthPage()
-      fireEvent.click(
-        screen.getByRole('button', { name: /don't have an account/i }),
+    test('shows login button when register form is visible', async () => {
+      renderPage()
+      await user.click(
+        screen.getByRole('button', { name: noAccountPlaceholder }),
       )
-      fireEvent.click(
-        screen.getByRole('button', { name: /already have an account/i }),
-      )
-      expect(screen.queryByPlaceholderText('username')).not.toBeInTheDocument()
       expect(
-        screen.getByPlaceholderText('username or email'),
+        screen.getByRole('button', { name: hasAccountPlaceholder }),
+      ).toBeInTheDocument()
+    })
+
+    test('switches back to login form when toggle is clicked again', async () => {
+      renderPage()
+      await user.click(
+        screen.getByRole('button', { name: noAccountPlaceholder }),
+      )
+      await user.click(
+        screen.getByRole('button', { name: hasAccountPlaceholder }),
+      )
+      expect(
+        screen.queryByPlaceholderText(usernamePlaceholder),
+      ).not.toBeInTheDocument()
+      expect(
+        screen.getByPlaceholderText(identifierPlaceholder),
       ).toBeInTheDocument()
     })
   })

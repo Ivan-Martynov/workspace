@@ -1,23 +1,42 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, expect, test } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { vi, beforeEach, describe, expect, test } from 'vitest'
+import userEvent from '@testing-library/user-event'
+
 import GamePage from './GamePage'
 
-const clickButton = (name, times = 1) => {
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key, params) =>
+      params && Object.keys(params).length
+        ? `${key} ${JSON.stringify(params)}`
+        : key,
+  }),
+}))
+
+let user
+const clickButton = async (name, times = 1) => {
   for (let i = 0; i < times; ++i) {
-    fireEvent.click(screen.getByRole('button', { name }))
+    await user.click(screen.getByRole('button', { name }))
   }
 }
 
-describe.skip('GamePage', () => {
+describe('GamePage', () => {
+  beforeEach(() => (user = userEvent.setup()))
+
   describe('render', () => {
     test('renders heading with target count', () => {
       render(<GamePage />)
-      expect(screen.getByText('Count to 100')).toBeInTheDocument()
+      expect(
+        screen.getByText(`game.countTo {"number":100}`),
+      ).toBeInTheDocument()
     })
 
     test('renders with custom count', () => {
-      render(<GamePage targetCount={50} />)
-      expect(screen.getByText('Count to 50')).toBeInTheDocument()
+      const value = 50
+      render(<GamePage targetCount={value} />)
+      expect(
+        screen.getByText(`game.countTo {"number":${value}}`),
+      ).toBeInTheDocument()
     })
 
     test('renders initial count as 0', () => {
@@ -27,78 +46,82 @@ describe.skip('GamePage', () => {
   })
 
   describe('counting', () => {
-    test('increment count on +1 click', () => {
+    test('increment count on +1 click', async () => {
       render(<GamePage />)
       const n = 3
-      clickButton('+1', n)
+      await clickButton('+1', n)
       expect(screen.getByText(`${n}`)).toBeInTheDocument()
     })
 
-    test('decrements count on -1 click', () => {
+    test('decrements count on -1 click', async () => {
       render(<GamePage />)
 
       const n = 2
-      clickButton('-1', n)
+      await clickButton('-1', n)
       expect(screen.getByText(`-${n}`)).toBeInTheDocument()
     })
 
-    test('doubles count on ×2 click', () => {
+    test('doubles count on ×2 click', async () => {
       render(<GamePage />)
-      clickButton('+1', 3)
-      clickButton('×2')
+      await clickButton('+1', 3)
+      await clickButton('×2')
       expect(screen.getByText('6')).toBeInTheDocument()
     })
 
-    test('halves count on ÷2 click', () => {
+    test('halves count on ÷2 click', async () => {
       render(<GamePage />)
-      clickButton('+1', 2)
-      clickButton('÷2')
+      await clickButton('+1', 2)
+      await clickButton('÷2')
       expect(screen.getByText('1')).toBeInTheDocument()
     })
 
-    test('squares count on ^2 click', () => {
+    test('squares count on ^2 click', async () => {
       render(<GamePage />)
-      clickButton('+1', 2)
-      clickButton('^2')
+      await clickButton('+1', 2)
+      await clickButton('^2')
       expect(screen.getByText('4')).toBeInTheDocument()
     })
 
-    test('resets count to 0 on reset click', () => {
+    test('sets count to 0 on zero click', async () => {
       render(<GamePage />)
-      clickButton('+1', 2)
-      clickButton('reset')
+      await clickButton('+1', 2)
+      await clickButton('game.zero')
+      expect(screen.getByText('0')).toBeInTheDocument()
+    })
+
+    test('resets count to 0 on reset click', async () => {
+      render(<GamePage />)
+      await clickButton('+1', 2)
+      await clickButton('game.reset')
       expect(screen.getByText('0')).toBeInTheDocument()
     })
   })
 
   describe('game over', () => {
-    test('disables operation buttons when target is reached', () => {
-      render(<GamePage targetCount={1} />)
-      clickButton('+1')
+    test.each(['+1', '×2', '-1', '÷2', '^2', 'game.zero'])(
+      'disables %s button when target is reached',
+      async (name) => {
+        render(<GamePage targetCount={1} />)
+        await clickButton('+1')
 
-      expect(screen.getByRole('button', { name: '+1' })).toBeDisabled()
-      expect(screen.getByRole('button', { name: '-1' })).toBeDisabled()
-      expect(screen.getByRole('button', { name: '×2' })).toBeDisabled()
-      expect(screen.getByRole('button', { name: '÷2' })).toBeDisabled()
-      expect(screen.getByRole('button', { name: '^2' })).toBeDisabled()
+        expect(screen.getByRole('button', { name })).toBeDisabled()
+      },
+    )
+
+    test('reset button stays enabled when game is over', async () => {
+      render(<GamePage targetCount={1} />)
+      await clickButton('+1')
+      expect(screen.getByRole('button', { name: 'game.reset' })).toBeEnabled()
     })
 
-    test('reset button stays enabled when game is over', () => {
-      render(<GamePage targetCount={1} />)
-      clickButton('+1')
-      expect(screen.getByRole('button', { name: 'reset' })).not.toBeDisabled()
-    })
-
-    test('can restart after game over', () => {
-      render(<GamePage targetCount={1} />)
-      clickButton('+1')
-      clickButton('reset')
-      expect(screen.getByText('0')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: '+1' })).not.toBeDisabled()
-      expect(screen.getByRole('button', { name: '-1' })).not.toBeDisabled()
-      expect(screen.getByRole('button', { name: '×2' })).not.toBeDisabled()
-      expect(screen.getByRole('button', { name: '÷2' })).not.toBeDisabled()
-      expect(screen.getByRole('button', { name: '^2' })).not.toBeDisabled()
-    })
+    test.each(['+1', '×2', '-1', '÷2', '^2', 'game.zero'])(
+      'enables %s button after resetting after game over',
+      async (name) => {
+        render(<GamePage targetCount={1} />)
+        await clickButton('+1')
+        await clickButton('game.reset')
+        expect(screen.getByRole('button', { name })).toBeEnabled()
+      },
+    )
   })
 })

@@ -1,4 +1,5 @@
 import { vi, describe, expect, test, beforeEach, afterEach } from 'vitest'
+
 import { api } from './api'
 import { AUTH_STORAGE_KEY } from './constants'
 
@@ -21,7 +22,7 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-describe.skip('api', () => {
+describe('api', () => {
   describe('headers', () => {
     test('sends Content-Type application/json', async () => {
       mockFetchResponse()
@@ -79,9 +80,7 @@ describe.skip('api', () => {
         json: async () => ({}),
       })
 
-      await expect(api.get('/api/test')).rejects.toThrow(
-        'Server error, please try again later',
-      )
+      await expect(api.get('/api/test')).rejects.toThrow('serverError')
     })
 
     test('throws with fallback message with no error in response', async () => {
@@ -91,7 +90,7 @@ describe.skip('api', () => {
         json: async () => ({}),
       })
 
-      await expect(api.get('/api/test')).rejects.toThrow('Request failed')
+      await expect(api.get('/api/test')).rejects.toThrow('requestFailed')
     })
 
     test('throws connection error when fetch fails', async () => {

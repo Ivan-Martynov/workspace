@@ -1,117 +1,152 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { vi, describe, expect } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { vi, beforeEach, describe, test, expect } from 'vitest'
+import userEvent from '@testing-library/user-event'
 
 import { AuthContext } from '../context/AuthContext'
 import RegisterForm from './RegisterForm'
 
-const renderRegisterForm = (authValue = {}) => {
-  const defaultAuth = {
-    register: vi.fn(),
-    ...authValue,
-  }
-  return render(
-    <AuthContext.Provider value={defaultAuth}>
-      <RegisterForm />
-    </AuthContext.Provider>,
-  )
-}
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key) => key,
+    i18n: { language: 'en', changeLanguage: vi.fn() },
+  }),
+}))
+
 const mockData = {
   username: 'alice',
   email: 'alice@example.com',
   password: 'strongsecretpassword',
-  ['confirm password']: 'strongsecretpassword',
+  confirmPassword: 'strongsecretpassword',
 }
 
-const fillForm = (username, email, password, confirmPassword) => {
-  fireEvent.change(screen.getByPlaceholderText('username'), {
-    target: { value: username },
-  })
-  fireEvent.change(screen.getByPlaceholderText('email'), {
-    target: { value: email },
-  })
-  fireEvent.change(screen.getByPlaceholderText('password'), {
-    target: { value: password },
-  })
-  fireEvent.change(screen.getByPlaceholderText('confirm password'), {
-    target: { value: confirmPassword },
-  })
+const onSuccess = vi.fn()
+
+const renderForm = (authValue = {}) => {
+  const defaultAuth = { register: vi.fn(), ...authValue }
+  return render(
+    <AuthContext.Provider value={defaultAuth}>
+      <RegisterForm onSuccess={onSuccess} />
+    </AuthContext.Provider>,
+  )
+}
+
+const usernamePlaceholder = /fields\.username/i
+const emailPlaceholder = /fields\.email/i
+const passwordPlaceholder = /^fields\.password$/i
+const confirmPasswordPlaceholder = /^fields\.confirmPassword$/i
+
+const fillForm = async (user, data = mockData) => {
+  await user.type(
+    screen.getByPlaceholderText(usernamePlaceholder),
+    data.username ?? '',
+  )
+  await user.type(
+    screen.getByPlaceholderText(emailPlaceholder),
+    data.email ?? '',
+  )
+  await user.type(
+    screen.getByPlaceholderText(passwordPlaceholder),
+    data.password ?? '',
+  )
+  await user.type(
+    screen.getByPlaceholderText(confirmPasswordPlaceholder),
+    data.confirmPassword ?? '',
+  )
 }
 
 describe('RegisterForm', () => {
-  describe('render', () => {
-    test('renders username, email and password inputs', () => {
-      renderRegisterForm()
+  const submitCode = /register\.submit/i
+  const submittingCode = /register\.submitting/i
 
-      expect(screen.getByPlaceholderText('username')).toBeInTheDocument()
-      expect(screen.getByPlaceholderText('email')).toBeInTheDocument()
-      expect(screen.getByPlaceholderText('password')).toBeInTheDocument()
-      expect(
-        screen.getByPlaceholderText('confirm password'),
-      ).toBeInTheDocument()
+  let user
+  beforeEach(() => {
+    vi.clearAllMocks()
+    user = userEvent.setup()
+  })
+
+  describe('render', () => {
+    test.each([
+      usernamePlaceholder,
+      emailPlaceholder,
+      passwordPlaceholder,
+      confirmPasswordPlaceholder,
+    ])('renders %s input', (placeholder) => {
+      renderForm()
+      expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument()
     })
 
     test('renders register button', () => {
-      renderRegisterForm()
-
+      renderForm()
       expect(
-        screen.getByRole('button', { name: /register/i }),
+        screen.getByRole('button', { name: submitCode }),
       ).toBeInTheDocument()
     })
 
     test('does not show error initially', () => {
-      renderRegisterForm()
-
-      expect(document.querySelector('p')).not.toBeInTheDocument()
+      renderForm()
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     })
-  })
 
-  describe.only('interaction', () => {
-    test('updates username, email and password input on change', () => {
-      renderRegisterForm()
-
-      for (const [key, value] of Object.entries(mockData)) {
-        const input = screen.getByPlaceholderText(key)
-        fireEvent.change(input, { target: { value: value } })
-        expect(input.value).toBe(value)
-      }
+    test('submit button is disabled when password fields are empty', () => {
+      renderForm()
+      expect(screen.getByRole('button', { name: submitCode })).toBeDisabled()
     })
   })
 
   describe('validation', () => {
-    test('shows error when password is too short', async () => {
-      renderRegisterForm()
-      fillForm(mockData.username, mockData.email, 'short')
+    test('shows error when backend rejects short password', async () => {
+      const register = vi.fn().mockRejectedValue({
+        code: 'passwordTooShort',
+        params: { min: 8 },
+      })
+      renderForm({ register })
 
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
-
+      await fillForm(user, {
+        ...mockData,
+        password: 'short',
+        confirmPassword: 'short',
+      })
+      await user.click(screen.getByRole('button', { name: submitCode }))
       await waitFor(() => {
-        expect(
-          screen.getByText('Password must be at least 8 characters'),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toHaveTextContent(
+          'errors.passwordTooShort',
+        )
       })
     })
 
-    test('does not call register if password is too short', async () => {
-      const register = vi.fn()
-      renderRegisterForm({ register })
-      fillForm(mockData.username, mockData.email, 'short')
-
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
-
-      await waitFor(() => {
-        expect(register).not.toHaveBeenCalled()
+    test('shows error when passwords do not match', async () => {
+      renderForm()
+      await fillForm(user, {
+        ...mockData,
+        confirmPassword: 'differentPassword',
       })
+      await user.click(screen.getByRole('button', { name: submitCode }))
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(
+          'errors.passwordMismatch',
+        )
+      })
+    })
+
+    test('does not call register when passwords do not match', async () => {
+      const register = vi.fn()
+      renderForm({ register })
+      await fillForm(user, {
+        ...mockData,
+        confirmPassword: 'differentPassword',
+      })
+      await user.click(screen.getByRole('button', { name: submitCode }))
+      await waitFor(() => expect(register).not.toHaveBeenCalled())
     })
   })
 
   describe('submission', () => {
     test('calls register with username, email and password', async () => {
       const register = vi.fn().mockResolvedValue(undefined)
-      renderRegisterForm({ register })
-      fillForm(mockData.username, mockData.email, mockData.password)
+      renderForm({ register })
 
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
-
+      await fillForm(user)
+      await user.click(screen.getByRole('button', { name: submitCode }))
       await waitFor(() => {
         expect(register).toHaveBeenCalledWith(
           mockData.username,
@@ -123,15 +158,14 @@ describe('RegisterForm', () => {
 
     test('trims username and email before calling register', async () => {
       const register = vi.fn().mockResolvedValue(undefined)
-      renderRegisterForm({ register })
-      fillForm(
-        `   ${mockData.username} `,
-        ` ${mockData.email}    `,
-        mockData.password,
-      )
+      renderForm({ register })
 
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
-
+      await fillForm(user, {
+        ...mockData,
+        username: `   ${mockData.username} `,
+        email: ` ${mockData.email}    `,
+      })
+      await user.click(screen.getByRole('button', { name: submitCode }))
       await waitFor(() => {
         expect(register).toHaveBeenCalledWith(
           mockData.username,
@@ -141,44 +175,83 @@ describe('RegisterForm', () => {
       })
     })
 
-    test('shows error on failed registration', async () => {
-      const register = vi
-        .fn()
-        .mockRejectedValue(new Error('Username or email already exists'))
-      renderRegisterForm({ register })
-      fillForm(mockData.username, mockData.email, mockData.password)
+    test('calls onSuccess with email after registration', async () => {
+      const register = vi.fn().mockResolvedValue(undefined)
+      renderForm({ register })
 
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
-
+      await fillForm(user)
+      await user.click(screen.getByRole('button', { name: submitCode }))
       await waitFor(() => {
-        expect(
-          screen.getByText('Username or email already exists'),
-        ).toBeInTheDocument()
+        expect(onSuccess).toHaveBeenCalledWith(mockData.email)
       })
     })
 
-    test('clears error on new submission attempt', async () => {
+    test('shows error on failed registration', async () => {
+      const register = vi.fn().mockRejectedValue({
+        code: 'duplicateKey',
+        message: 'Request could not be completed, please check your input',
+      })
+      renderForm({ register })
+
+      await fillForm(user)
+      await user.click(screen.getByRole('button', { name: submitCode }))
+      await waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(
+          'errors.duplicateKey',
+        )
+      })
+    })
+
+    test('clears error on new submission', async () => {
       const register = vi
         .fn()
-        .mockRejectedValueOnce(new Error('Username or email already exists'))
+        .mockRejectedValueOnce({
+          code: 'duplicateKey',
+          message: 'Request could not be completed, please check your input',
+        })
         .mockResolvedValueOnce(undefined)
-      renderRegisterForm({ register })
-      fillForm(mockData.username, mockData.email, mockData.password)
+      renderForm({ register })
 
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
-
+      await fillForm(user)
+      await user.click(screen.getByRole('button', { name: submitCode }))
       await waitFor(() => {
-        expect(
-          screen.getByText('Username or email already exists'),
-        ).toBeInTheDocument()
+        expect(screen.getByRole('alert')).toBeInTheDocument()
       })
 
-      fireEvent.click(screen.getByRole('button', { name: /register/i }))
+      await user.click(screen.getByRole('button', { name: submitCode }))
+      await waitFor(() => {
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      })
+    })
+
+    test('shows loading state during submission', async () => {
+      let resolve
+      const register = vi.fn().mockReturnValueOnce(
+        new Promise((res) => {
+          resolve = res
+        }),
+      )
+      renderForm({ register })
+
+      await fillForm(user)
+      await user.click(screen.getByRole('button', { name: submitCode }))
+
+      expect(
+        screen.getByRole('button', { name: submittingCode }),
+      ).toBeDisabled()
+      expect(screen.getByPlaceholderText(usernamePlaceholder)).toBeDisabled()
+      expect(screen.getByPlaceholderText(emailPlaceholder)).toBeDisabled()
+      expect(screen.getByPlaceholderText(passwordPlaceholder)).toBeDisabled()
+      expect(
+        screen.getByPlaceholderText(confirmPasswordPlaceholder),
+      ).toBeDisabled()
+
+      resolve()
 
       await waitFor(() => {
         expect(
-          screen.queryByText('Username or email already exists'),
-        ).not.toBeInTheDocument()
+          screen.getByRole('button', { name: submitCode }),
+        ).toBeInTheDocument()
       })
     })
   })

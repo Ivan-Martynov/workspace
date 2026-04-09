@@ -1,18 +1,22 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { vi, describe, expect, test } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { vi, beforeEach, describe, expect, test } from 'vitest'
+import userEvent from '@testing-library/user-event'
 
 import OperationButton from './OperationButton'
 
 describe('OperationButton', () => {
+  let user
+  beforeEach(() => (user = userEvent.setup()))
+
   test('renders children', () => {
     render(<OperationButton onClick={vi.fn()}>+1</OperationButton>)
     expect(screen.getByRole('button', { name: '+1' })).toBeInTheDocument()
   })
 
-  test('calls onClick when clicked', () => {
+  test('calls onClick when clicked', async () => {
     const onClick = vi.fn()
     render(<OperationButton onClick={onClick}>+1</OperationButton>)
-    fireEvent.click(screen.getByRole('button', { name: '+1' }))
+    await user.click(screen.getByRole('button', { name: '+1' }))
     expect(onClick).toHaveBeenCalledOnce()
   })
 
@@ -30,7 +34,7 @@ describe('OperationButton', () => {
     expect(screen.getByRole('button', { name: '+1' })).not.toBeDisabled()
   })
 
-  test('has the button type', () => {
+  test('has type button to prevent form submission', () => {
     render(<OperationButton onClick={vi.fn()}>+1</OperationButton>)
     expect(screen.getByRole('button', { name: '+1' })).toHaveAttribute(
       'type',

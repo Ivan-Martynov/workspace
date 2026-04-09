@@ -36,12 +36,20 @@ const handleErrorResponse = async (response) => {
     result = await response.json()
   } catch {}
 
-  const error = new Error(
-    result?.error ||
-      (response.status >= 500
-        ? 'Server error, please try again later'
-        : 'Request failed'),
-  )
+  // validation errors - array of { code, params }
+  if (result?.errors?.length) {
+    const first = result.errors[0]
+    const error = new Error(first.code)
+    error.code = first.code
+    error.params = first.params
+    error.status = response.status
+    throw error
+  }
+
+  const code =
+    result?.error ?? (response.status >= 500 ? 'serverError' : 'requestFailed')
+  const error = new Error(code)
+  error.code = code
   error.status = response.status
   throw error
 }
@@ -65,6 +73,11 @@ const handleErrorResponse = async (response) => {
  */
 const apiFetch = async (url, options = {}) => {
   const response = await fetchWithAuth(url, options)
+  if (response.status === 401) {
+    window.localStorage.removeItem(AUTH_STORAGE_KEY)
+    window.dispatchEvent(new Event('auth:logout'))
+  }
+
   if (!response.ok) {
     await handleErrorResponse(response)
   }
