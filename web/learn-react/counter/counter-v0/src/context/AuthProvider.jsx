@@ -9,18 +9,6 @@ import {
   sendVerifySessionToken,
 } from '../services/auth'
 
-// const isTokenExpired = (token) => {
-//   if (!token) {
-//     return true
-//   }
-//   try {
-//     const payload = JSON.parse(atob(token.split('.')[1]))
-//     return payload.exp * 1000 < Date.now()
-//   } catch {
-//     return true
-//   }
-// }
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -60,27 +48,29 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
-  // useEffect(() => {
-  //   const checkSession = async () => {
-  //     try {
-  //       const user = await sendVerifySessionToken()
-  //       setUser(user)
-  //     } catch {
-  //       logout()
-  //     }
-  //   }
-  //
-  //   checkSession()
-  //
-  //   window.addEventListener('focus', async () => {
-  //     try {
-  //       await sendVerifySessionToken()
-  //     } catch {
-  //       logout()
-  //     }
-  //   })
-  //   return () => window.removeEventListener('focus', handleFocus)
-  // }, [])
+  useEffect(() => {
+    const checkSession = async () => {
+      const stored = JSON.parse(window.localStorage.getItem(AUTH_STORAGE_KEY))
+      if (!stored?.token) {
+        return
+      }
+
+      try {
+        const data = await sendVerifySessionToken()
+        setUser(data)
+      } catch (err) {
+        if (err.status === 401) {
+          window.localStorage.removeItem(AUTH_STORAGE_KEY)
+          setUser(null)
+        }
+      }
+    }
+
+    checkSession()
+
+    window.addEventListener('focus', checkSession)
+    return () => window.removeEventListener('focus', checkSession)
+  }, [])
 
   const login = async (identifier, password) => {
     try {

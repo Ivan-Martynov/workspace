@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import { vi, describe, test, beforeEach, expect } from 'vitest'
 import userEvent from '@testing-library/user-event'
 
@@ -12,6 +12,9 @@ import {
   deleteAccountRequest,
   sendVerifySessionToken,
 } from '../services/auth'
+
+const mockUser = { id: '1', username: 'alice', email: 'alice@example.com' }
+const mockLoginResponse = { token: 'abc', user: mockUser }
 
 // Mock the auth service.
 vi.mock('../services/auth', () => ({
@@ -65,9 +68,6 @@ const renderWithAuth = () =>
       <TestComponent />
     </AuthProvider>,
   )
-
-const mockUser = { id: '1', username: 'alice', email: 'alice@example.com' }
-const mockLoginResponse = { token: 'abc', user: mockUser }
 
 describe('AuthProvider', () => {
   let user
@@ -267,6 +267,95 @@ describe('AuthProvider', () => {
       await user.click(screen.getByRole('button', { name: /delete/i }))
       await waitFor(() => {
         expect(deleteAccountRequest).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe('session verification', () => {
+    test('verifies session on mount', async () => {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockLoginResponse))
+      sendVerifySessionToken.mockResolvedValue(mockUser)
+      renderWithAuth()
+
+      await waitFor(() => {
+        expect(sendVerifySessionToken).toHaveBeenCalledOnce()
+      })
+    })
+
+    test('logs out when session verification fails', async () => {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockLoginResponse))
+      const unauthorizedError = new Error('Unauthorized')
+      unauthorizedError.status = 401
+      sendVerifySessionToken.mockRejectedValue(unauthorizedError)
+      renderWithAuth()
+
+      await waitFor(() => {
+        expect(screen.getByTestId('user')).toHaveTextContent('no user')
+        expect(localStorage.getItem(AUTH_STORAGE_KEY)).toBeNull()
+      })
+    })
+
+    test('keeps user logged in when session verification fails with network error', async () => {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockLoginResponse))
+      sendVerifySessionToken.mockRejectedValue(new Error('Unauthorized'))
+      renderWithAuth()
+
+      await waitFor(() => {
+        expect(sendVerifySessionToken).toHaveBeenCalledOnce()
+      })
+
+      expect(screen.getByTestId('user')).toHaveTextContent('alice')
+      expect(localStorage.getItem(AUTH_STORAGE_KEY)).not.toBeNull()
+    })
+
+    test('re-verifies session on window focus', async () => {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockLoginResponse))
+      sendVerifySessionToken.mockResolvedValue(mockUser)
+      renderWithAuth()
+
+      await waitFor(() => {
+        expect(sendVerifySessionToken).toHaveBeenCalledOnce()
+      })
+      act(() => window.dispatchEvent(new Event('focus')))
+
+      await waitFor(() => {
+        expect(sendVerifySessionToken).toHaveBeenCalledTimes(2)
+      })
+    })
+
+    test('logs out on focus if session expired', async () => {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockLoginResponse))
+      const unauthorizedError = new Error('Unauthorized')
+      unauthorizedError.status = 401
+      sendVerifySessionToken
+        .mockResolvedValueOnce(mockUser)
+        .mockRejectedValueOnce(unauthorizedError)
+      renderWithAuth()
+
+      await waitFor(() => {
+        expect(screen.getByTestId('user')).toHaveTextContent('alice')
+      })
+      act(() => window.dispatchEvent(new Event('focus')))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('user')).toHaveTextContent('no user')
+      })
+    })
+
+    test.skip('keeps user logged in if verification fails with network error', async () => {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockLoginResponse))
+      sendVerifySessionToken
+        .mockResolvedValueOnce(mockUser)
+        .mockRejectedValueOnce(new Error('Unauthorized'))
+      renderWithAuth()
+
+      await waitFor(() => {
+        expect(screen.getByTestId('user')).toHaveTextContent('alice')
+      })
+      act(() => window.dispatchEvent(new Event('focus')))
+
+      await waitFor(() => {
+        expect(sendVerifySessionToken).toHaveBeenCalledTimes(2)
       })
     })
   })
